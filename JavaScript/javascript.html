@@ -2341,11 +2341,6 @@ const createOption = (value, text, selected = false) => {
   option.selected = selected;
   return option;
 };
-google.script.run.withSuccessHandler((res)=>{
-  $('#pickupHeadder').html(`เรียน ${res[0][2]}`);
-  selectAgency(res);
-}).selectAgency();
-
 const selectAgency = (data) => {
   data.sort((a, b) => a[0] - b[0]);
   const selectElements = [
@@ -2363,11 +2358,6 @@ const selectAgency = (data) => {
     });
   });
 };
-
-google.script.run.withSuccessHandler((res)=>{
-  departMentData = res;
-  selectDepartMent(res);
-}).selectDepartment();
 
 const selectDepartMent = (data) => {
   data.sort((a, b) => a[0] - b[0]);
@@ -2400,10 +2390,6 @@ const selectDepartMent = (data) => {
   });
 };
 
-google.script.run.withSuccessHandler((res)=>{
-  selectPosiTion(res);
-}).selectPosition();
-
 const selectPosiTion = (data) => {
   data.sort((a, b) => a[0] - b[0]);
   const selectElements = [
@@ -2422,10 +2408,6 @@ const selectPosiTion = (data) => {
     });
   });
 };
-
-google.script.run.withSuccessHandler((res)=>{
-  selectClassSpeed(res);
-}).selectClassSpeed();
 
 const selectClassSpeed = (data) => {
   data.sort((a, b) => a[0] - b[0]);
@@ -2452,10 +2434,6 @@ const selectClassSpeed = (data) => {
   });
 };
 
-google.script.run.withSuccessHandler((res)=>{
-  selectClassSecret(res);
-}).selectClassSecret();
-
 const selectClassSecret = (data) => {
   data.sort((a, b) => a[0] - b[0]);
   const selectElements = [
@@ -2475,10 +2453,6 @@ const selectClassSecret = (data) => {
     });
   });
 };
-
-google.script.run.withSuccessHandler((res)=>{
-  selectDocCategory(res);
-}).selectDocCategory();
 
 const selectDocCategory = (data) => {
   data.sort((a, b) => a[0] - b[0]);
@@ -2512,10 +2486,6 @@ const selectDocCategory = (data) => {
   });
 };
 
-google.script.run.withSuccessHandler((res)=>{
-  selectObjective(res);
-}).selectObjective();
-
 const selectObjective = (data) => {
   data.sort((a, b) => a[0] - b[0]);
   const selectElements = [
@@ -2535,10 +2505,6 @@ const selectObjective = (data) => {
     });
   });
 };
-
-google.script.run.withSuccessHandler((res)=>{
-  selectResponseStatus(res);
-}).selectResponseStatus();
 
 const selectResponseStatus = (data) => {
   data.sort((a, b) => a[0] - b[0]);
@@ -2561,10 +2527,6 @@ const selectResponseStatus = (data) => {
   });
 };
 
-google.script.run.withSuccessHandler((res)=>{
-  selectJobWord(res);
-}).selectJobWord();
-
 const selectJobWord = (data) => {
   data.sort((a, b) => a[0] - b[0]);
   const selectElements = [
@@ -2585,10 +2547,6 @@ const selectJobWord = (data) => {
     });
   });
 };
-
-google.script.run.withSuccessHandler((res)=>{
-  selectTypeEmployee(res);
-}).selectTypeEmployee();
 
 const selectTypeEmployee = (data) => {
   data.sort((a, b) => a[0] - b[0]);
@@ -2612,10 +2570,6 @@ const selectTypeEmployee = (data) => {
     });
   });
 };
-
-google.script.run.withSuccessHandler((res)=>{
-  selectMooBan(res);
-}).selectMooBan();
 
 const selectMooBan = (data) => {
   const groupedData = data.reduce((acc, cur) => {
@@ -2664,6 +2618,48 @@ const selectMooBan = (data) => {
 
   mooNumber.addEventListener('change', updateHomeName);
 }
+
+function applyAllDropdownData(data) {
+  if (!data) return;
+  if (data.agency && data.agency.length > 0) {
+    $('#pickupHeadder').html(`เรียน ${data.agency[0][2]}`);
+    selectAgency(data.agency);
+  }
+  if (data.department) {
+    departMentData = data.department;
+    selectDepartMent(data.department);
+  }
+  if (data.position) selectPosiTion(data.position);
+  if (data.classSpeed) selectClassSpeed(data.classSpeed);
+  if (data.classSecret) selectClassSecret(data.classSecret);
+  if (data.docCategory) selectDocCategory(data.docCategory);
+  if (data.objective) selectObjective(data.objective);
+  if (data.responseStatus) selectResponseStatus(data.responseStatus);
+  if (data.jobWord) selectJobWord(data.jobWord);
+  if (data.typeEmployee) selectTypeEmployee(data.typeEmployee);
+  if (data.mooBan) selectMooBan(data.mooBan);
+}
+
+function initAllDropdowns() {
+  const cached = sessionStorage.getItem('JK_DROPDOWN_DATA');
+  if (cached) {
+    try {
+      const data = JSON.parse(cached);
+      applyAllDropdownData(data);
+      return;
+    } catch(e) {}
+  }
+  google.script.run.withSuccessHandler((res) => {
+    if (res) {
+      try {
+        sessionStorage.setItem('JK_DROPDOWN_DATA', JSON.stringify(res));
+      } catch(e) {}
+      applyAllDropdownData(res);
+    }
+  }).getAllDropdownData();
+}
+
+initAllDropdowns();
 
 const departmentSel = (num) => {
   $("#departmentModalBtn").click();

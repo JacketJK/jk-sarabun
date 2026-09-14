@@ -654,6 +654,7 @@ const setEditSetting1 = (obj) => {
   ranges.forEach((range, index) => {
     sheet.getRange(range).setValue(values[index]);
   });
+  clearSystemSettingsCache();
 }
 const setEditSetting2 = (obj) => {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Setting");
@@ -663,6 +664,7 @@ const setEditSetting2 = (obj) => {
   ranges.forEach((range, index) => {
     sheet.getRange(range).setValue(values[index]);
   });
+  clearSystemSettingsCache();
 }
 const setEditSetting3 = (obj) => {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Setting");
@@ -672,6 +674,7 @@ const setEditSetting3 = (obj) => {
   ranges.forEach((range, index) => {
     sheet.getRange(range).setValue(values[index]);
   });
+  clearSystemSettingsCache();
 }
 const setEditSetting4 = (obj) => {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Setting");
@@ -681,6 +684,7 @@ const setEditSetting4 = (obj) => {
   ranges.forEach((range, index) => {
     sheet.getRange(range).setValue(values[index]);
   });
+  clearSystemSettingsCache();
 }
 
 ////////////////////// Meeting Room /////////////////////////

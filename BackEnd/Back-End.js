@@ -107,11 +107,13 @@ function checkLogoutSystem(username, userIpAddress, userAgent) {
 function checkActive(user) {
   var ss = SpreadsheetApp.openById(sheetUseds);
   var sheet = ss.getSheetByName('Log');
-  var range = sheet.getDataRange();
-  var values = range.getDisplayValues();
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return [];
+  var fetchRows = Math.min(lastRow - 1, 300);
+  var values = sheet.getRange(lastRow - fetchRows + 1, 1, fetchRows, sheet.getLastColumn()).getDisplayValues();
   var filteredData = [];
 
-  for (var i = values.length - 1; i >= 1; i--) { 
+  for (var i = values.length - 1; i >= 0; i--) { 
     var dateValue = values[i][3]; 
     var userValue = values[i][0]; 
     if (dateValue !== "" && userValue === user) {
@@ -127,14 +129,19 @@ function checkActive(user) {
 function checkHistory(user) {
   var ss = SpreadsheetApp.openById(sheetUseds);
   var sheet = ss.getSheetByName('History');
-  var range = sheet.getDataRange();
-  var values = range.getDisplayValues();
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return [];
+  var fetchRows = Math.min(lastRow - 1, 300);
+  var values = sheet.getRange(lastRow - fetchRows + 1, 1, fetchRows, sheet.getLastColumn()).getDisplayValues();
   var filteredData = [];
 
-  for (var i = values.length - 1; i >= 1; i--) { 
+  for (var i = values.length - 1; i >= 0; i--) { 
     var userValue = values[i][0]; 
     if (userValue === user) {
       filteredData.push(values[i]);
+      if (filteredData.length >= 20) {
+        break;
+      }
     }
   }
 
@@ -582,113 +589,164 @@ function testSendNotify(token) {
     return '⚠️ ทดสอบส่งข้อความแจ้งเตือนไม่สำเร็จ';
   }
 }
+function clearDropdownCache() {
+  try {
+    const cache = CacheService.getScriptCache();
+    cache.remove('ALL_DROPDOWN_DATA');
+  } catch (e) {}
+}
+
+function getAllDropdownData() {
+  try {
+    const cache = CacheService.getScriptCache();
+    const cached = cache.get('ALL_DROPDOWN_DATA');
+    if (cached) {
+      return JSON.parse(cached);
+    }
+  } catch (e) {}
+
+  try {
+    const ss = SpreadsheetApp.openById(sheetSetting);
+
+    function getSheetData(sheetName, colLimit) {
+      try {
+        const sh = ss.getSheetByName(sheetName);
+        if (!sh) return [];
+        const lastRow = sh.getLastRow();
+        if (lastRow < 3) return [];
+        const data = sh.getRange('A3:' + colLimit + lastRow).getValues();
+        return data.filter(function(row) {
+          return row[0] !== '';
+        });
+      } catch (err) {
+        return [];
+      }
+    }
+
+    const result = {
+      agency: getSheetData("Agency", "C"),
+      institute: getSheetData("Institute", "C"),
+      department: getSheetData("DepartMent", "F"),
+      position: getSheetData("Position", "C"),
+      classSpeed: getSheetData("ClassSpeed", "C"),
+      classSecret: getSheetData("ClassSecret", "C"),
+      docCategory: getSheetData("DocCategory", "C"),
+      objective: getSheetData("Objective", "C"),
+      responseStatus: getSheetData("Response", "C"),
+      jobWord: getSheetData("JobWord", "C"),
+      typeEmployee: getSheetData("TypeEmployee", "C"),
+      mooBan: getSheetData("MooBan", "C")
+    };
+
+    try {
+      const jsonStr = JSON.stringify(result);
+      if (jsonStr.length < 100000) {
+        CacheService.getScriptCache().put('ALL_DROPDOWN_DATA', jsonStr, 21600); // 6 hours
+      }
+    } catch (e) {}
+
+    return result;
+  } catch (err) {
+    Logger.log('Error in getAllDropdownData: ' + err);
+    return {};
+  }
+}
+
 function selectAgency() {
+  const all = getAllDropdownData();
+  if (all && all.agency && all.agency.length > 0) return all.agency;
   var sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("Agency"); 
-  var data = sheet.getRange('A3:C' + sheet.getLastRow()).getValues();
-  
-  data = data.filter(function(row) {
-    return row[0] !== '';
-  });
-  return data;
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  return sheet.getRange('A3:C' + lastRow).getValues().filter(function(row) { return row[0] !== ''; });
 }
 function getInstitute() {
+  const all = getAllDropdownData();
+  if (all && all.institute && all.institute.length > 0) return all.institute;
   var sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("Institute"); 
-  var data = sheet.getRange('A3:C' + sheet.getLastRow()).getValues();
-  
-  data = data.filter(function(row) {
-    return row[0] !== '';
-  });
-  return data;
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  return sheet.getRange('A3:C' + lastRow).getValues().filter(function(row) { return row[0] !== ''; });
 }
 function selectDepartment() {
+  const all = getAllDropdownData();
+  if (all && all.department && all.department.length > 0) return all.department;
   var sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("DepartMent"); 
-  var data = sheet.getRange('A3:F' + sheet.getLastRow()).getValues();
-  
-  data = data.filter(function(row) {
-    return row[0] !== '';
-  });
-  return data;
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  return sheet.getRange('A3:F' + lastRow).getValues().filter(function(row) { return row[0] !== ''; });
 }
 function selectPosition() {
+  const all = getAllDropdownData();
+  if (all && all.position && all.position.length > 0) return all.position;
   var sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("Position"); 
-  var data = sheet.getRange('A3:C' + sheet.getLastRow()).getValues();
-  
-  data = data.filter(function(row) {
-    return row[0] !== '';
-  });
-  return data;
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  return sheet.getRange('A3:C' + lastRow).getValues().filter(function(row) { return row[0] !== ''; });
 }
 function selectClassSpeed() {
+  const all = getAllDropdownData();
+  if (all && all.classSpeed && all.classSpeed.length > 0) return all.classSpeed;
   var sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("ClassSpeed"); 
-  var data = sheet.getRange('A3:C' + sheet.getLastRow()).getValues();
-  
-  data = data.filter(function(row) {
-    return row[0] !== '';
-  });
-  return data;
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  return sheet.getRange('A3:C' + lastRow).getValues().filter(function(row) { return row[0] !== ''; });
 }
 function selectClassSecret() {
+  const all = getAllDropdownData();
+  if (all && all.classSecret && all.classSecret.length > 0) return all.classSecret;
   var sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("ClassSecret"); 
-  var data = sheet.getRange('A3:C' + sheet.getLastRow()).getValues();
-  
-  data = data.filter(function(row) {
-    return row[0] !== '';
-  });
-  return data;
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  return sheet.getRange('A3:C' + lastRow).getValues().filter(function(row) { return row[0] !== ''; });
 }
 function selectDocCategory() {
+  const all = getAllDropdownData();
+  if (all && all.docCategory && all.docCategory.length > 0) return all.docCategory;
   var sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("DocCategory"); 
-  var data = sheet.getRange('A3:C' + sheet.getLastRow()).getValues();
-  
-  data = data.filter(function(row) {
-    return row[0] !== '';
-  });
-  return data;
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  return sheet.getRange('A3:C' + lastRow).getValues().filter(function(row) { return row[0] !== ''; });
 }
 function selectObjective() {
+  const all = getAllDropdownData();
+  if (all && all.objective && all.objective.length > 0) return all.objective;
   var sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("Objective"); 
-  var data = sheet.getRange('A3:C' + sheet.getLastRow()).getValues();
-  
-  data = data.filter(function(row) {
-    return row[0] !== '';
-  });
-  return data;
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  return sheet.getRange('A3:C' + lastRow).getValues().filter(function(row) { return row[0] !== ''; });
 }
 function selectResponseStatus() {
+  const all = getAllDropdownData();
+  if (all && all.responseStatus && all.responseStatus.length > 0) return all.responseStatus;
   var sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("Response"); 
-  var data = sheet.getRange('A3:C' + sheet.getLastRow()).getValues();
-  
-  data = data.filter(function(row) {
-    return row[0] !== '';
-  });
-  return data;
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  return sheet.getRange('A3:C' + lastRow).getValues().filter(function(row) { return row[0] !== ''; });
 }
 function selectJobWord() {
+  const all = getAllDropdownData();
+  if (all && all.jobWord && all.jobWord.length > 0) return all.jobWord;
   var sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("JobWord"); 
-  var data = sheet.getRange('A3:C' + sheet.getLastRow()).getValues();
-  
-  data = data.filter(function(row) {
-    return row[0] !== '';
-  });
-  return data;
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  return sheet.getRange('A3:C' + lastRow).getValues().filter(function(row) { return row[0] !== ''; });
 }
 function selectTypeEmployee() {
+  const all = getAllDropdownData();
+  if (all && all.typeEmployee && all.typeEmployee.length > 0) return all.typeEmployee;
   var sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("TypeEmployee"); 
-  var data = sheet.getRange('A3:C' + sheet.getLastRow()).getValues();
-  
-  data = data.filter(function(row) {
-    return row[0] !== '';
-  });
-  return data;
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  return sheet.getRange('A3:C' + lastRow).getValues().filter(function(row) { return row[0] !== ''; });
 }
 function selectMooBan() {
+  const all = getAllDropdownData();
+  if (all && all.mooBan && all.mooBan.length > 0) return all.mooBan;
   var sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("MooBan"); 
-  var data = sheet.getRange('A3:C' + sheet.getLastRow()).getValues();
-  
-  data = data.filter(function(row) {
-    return row[0] !== '';
-  });
-  return data;
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  return sheet.getRange('A3:C' + lastRow).getValues().filter(function(row) { return row[0] !== ''; });
 }
 function formatDate(date) {
   const year = date.getFullYear().toString().slice(-2); 
@@ -1144,8 +1202,9 @@ function openDocument(key) {
   }
 }
 function dataDocInprogress(key) {
-  const sheet = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("SendDocument");
-  const sheetDoc = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument");
+  const ssDoc = SpreadsheetApp.openById(sheetDocuMent);
+  const sheet = ssDoc.getSheetByName("SendDocument");
+  const sheetDoc = ssDoc.getSheetByName("DataDocument");
   const data = sheet.getDataRange().getValues().slice(1);
   const dataDoc = sheetDoc.getDataRange().getValues().slice(1);
 
@@ -1164,12 +1223,18 @@ function dataDocInprogress(key) {
   return [filteredData, filteredDataDoc];
 }
 function dataDocInprogressOut(key) {
-  const sheet = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("SendDocument");
-  const sheetDoc = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument");
+  const ssDoc = SpreadsheetApp.openById(sheetDocuMent);
+  const sheet = ssDoc.getSheetByName("SendDocument");
+  const sheetDoc = ssDoc.getSheetByName("DataDocument");
   const sheetUser = SpreadsheetApp.openById(sheetUseds).getSheetByName("User");
   const data = sheet.getDataRange().getValues().slice(1);
   const dataDoc = sheetDoc.getDataRange().getValues().slice(1);
   const dataUser = sheetUser.getDataRange().getValues().slice(1);
+
+  const userMap = new Map();
+  for (let u = 0; u < dataUser.length; u++) {
+    userMap.set(dataUser[u][0], dataUser[u]);
+  }
 
   const filteredData = dataDoc.filter(row => row[21] === key && (row[1] === "ลงรับภายนอก" || row[1] === "ลงรับภายใน"));
   const filteredDataDoc = [];
@@ -1181,20 +1246,28 @@ function dataDocInprogressOut(key) {
     filteredDataDoc.push(...matchingRows);
     for (const rowUser of matchingRows) {
       const userCode = rowUser[2];
-      const matchingUser = dataUser.filter(userRow => userRow[0] === userCode);
-      filteredDataUser.push(...matchingUser);
+      const matchingUser = userMap.get(userCode);
+      if (matchingUser) {
+        filteredDataUser.push(matchingUser);
+      }
     }
   }
   
   return [filteredData, filteredDataDoc, filteredDataUser];
 }
 function dataDocuMentSave(key) {
-  const sheet = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("SendDocument");
-  const sheetDoc = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument");
+  const ssDoc = SpreadsheetApp.openById(sheetDocuMent);
+  const sheet = ssDoc.getSheetByName("SendDocument");
+  const sheetDoc = ssDoc.getSheetByName("DataDocument");
   const sheetUser = SpreadsheetApp.openById(sheetUseds).getSheetByName("User");
   const data = sheet.getDataRange().getValues().slice(1);
   const dataDoc = sheetDoc.getDataRange().getValues().slice(1);
   const dataUser = sheetUser.getDataRange().getValues().slice(1);
+
+  const userMap = new Map();
+  for (let u = 0; u < dataUser.length; u++) {
+    userMap.set(dataUser[u][0], dataUser[u]);
+  }
 
   const filteredDataDoc = dataDoc.filter(row => row[0] === key);
   const filteredData = [];
@@ -1206,8 +1279,10 @@ function dataDocuMentSave(key) {
     filteredStatus.push(...matchingRows);
     for (const rowUser of matchingRows) {
       const userCode = rowUser[2];
-      const matchingUser = dataUser.filter(userRow => userRow[0] === userCode);
-      filteredData.push(...matchingUser);
+      const matchingUser = userMap.get(userCode);
+      if (matchingUser) {
+        filteredData.push(matchingUser);
+      }
     }
   }
   

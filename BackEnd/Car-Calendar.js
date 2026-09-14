@@ -1475,14 +1475,19 @@ function getDataAllCalendar(key) {
   const data = sheet.getDataRange().getValues().slice(1);
   const dataUser = sheetUser.getDataRange().getValues().slice(1);
 
+  const userMap = new Map();
+  for (let u = 0; u < dataUser.length; u++) {
+    userMap.set(dataUser[u][0], dataUser[u]);
+  }
+
   const filteredData = data.filter(row => row[14] === key);
   const filteredUser = [];
 
   for (const row of filteredData) {
     const userCode = row[8];
-    const matchingRows = dataUser.filter(user => user[0] === userCode);
-    if (matchingRows.length > 0) {
-      filteredUser.push(matchingRows[0]);
+    const matched = userMap.get(userCode);
+    if (matched) {
+      filteredUser.push(matched);
     } else {
       filteredUser.push(["", "", "", "-", "", "", "-", "-"]);
     }
