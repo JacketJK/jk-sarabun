@@ -374,7 +374,7 @@
         <i class="fa-duotone fa-computer"></i> ข้อมูลองค์ประกอบครุภัณฑ์
       </h5>
     </div>
-    <button type="button" class="btn btn-outline-green rounded-4 shadow btn-sm px-3"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
+    <button type="button" id="btnAddEquipComponent" class="btn btn-outline-green rounded-4 shadow btn-sm px-3"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
 
   </div>
 
@@ -384,7 +384,7 @@
         <i class="fa-duotone fa-computer"></i> ข้อมูลทรัพย์สินย่อย
       </h5>
     </div>
-    <button type="button" class="btn btn-outline-green rounded-4 shadow btn-sm px-3"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
+    <button type="button" id="btnAddSubEquip" class="btn btn-outline-green rounded-4 shadow btn-sm px-3"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
 
     <div class="table-responsive mt-4">
       <table id="subEquipmentTable" class="table table-sm">
@@ -394,21 +394,21 @@
             <th scope="col" >หมายเลขครุภัณฑ์</th>
             <th scope="col" >รายการ</th>
             <th scope="col" >มูลค่าสุทธิ</th>
+            <th scope="col" >ลบ</th>
           </tr>
         </thead>
         <tbody id="subEquipmentTable-body">
-          <tr>
-            <td class="text-center p-4" colspan="4"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          <tr id="emptySubEquipRow">
+            <td class="text-center p-4" colspan="5"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
           </tr>
-          <!-- แทรกข้อมูลจากฐานข้อมูล -->
         </tbody>
       </table>
     </div>
   </div>
   
-  <div class="mt-2 d-flex justify-content-center align-items-center w-100" style="background-color: var(--grey)">
-    <button type="submit" class="btn btn-blue rounded-3 me-2 px-4">บันทึก</button>
-    <button type="reset" class="btn btn-red rounded-3 px-4">ยกเลิก</button>
+  <div class="mt-2 d-flex justify-content-center align-items-center w-100 py-3" style="background-color: var(--grey)">
+    <button type="button" id="btnSaveEquipmentForm" class="btn btn-blue rounded-3 me-2 px-4"><i class="fa-solid fa-floppy-disk me-1"></i> บันทึก</button>
+    <button type="button" id="btnResetEquipmentForm" class="btn btn-red rounded-3 px-4"><i class="fa-solid fa-rotate-left me-1"></i> ยกเลิก</button>
   </div>
 
 </div>
@@ -435,22 +435,22 @@
         </div>
         <div class="col-lg-3 mt-2">
           <label for="equipfilter5" class="col-label-form">รหัสทรัพย์สิน GFMIS</label>
-          <input type="text" id="equipfilter5" style="font-size: 14px;" class="form-control rounded-4">
+          <input type="text" id="equipfilter5" style="font-size: 14px;" class="form-control rounded-4" placeholder="ค้นหารหัส GFMIS">
         </div>
         <div class="col-lg-3 mt-2">
-          <label for="equipfilter6" class="col-label-form">หมายเลขครุภัณฑ์</label>
-          <input type="text" id="equipfilter6" style="font-size: 14px;" class="form-control rounded-4">
+          <label for="equipfilter6" class="col-label-form">หมายเลขหรือชื่อครุภัณฑ์</label>
+          <input type="text" id="equipfilter6" style="font-size: 14px;" class="form-control rounded-4" placeholder="ระบุคำค้นหา">
         </div>
-        <div class="col-lg-6 d-flex justify-content-end align-items-end">
-          <button class="btn btn-violet rounded-4 btn-sm px-5"><i class="fa-solid fa-magnifying-glass"></i> ค้นหา</button>
+        <div class="col-lg-6 d-flex justify-content-end align-items-end mt-2">
+          <button id="btnSearchEquipment" class="btn btn-violet rounded-4 btn-sm px-5"><i class="fa-solid fa-magnifying-glass"></i> ค้นหา</button>
         </div>
       </div>
     </div>
   </div>
   <div class="container-fluid">
     <div class="d-flex justify-content-start align-items-center">
-      <button class="btn btn-green btn-sm rounded-4 px-4"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
-      <button class="btn btn-orange btn-sm rounded-4 px-4 ms-2"><i class="fa-solid fa-marker"></i> Update GFMIS</button>
+      <button id="btnNavToAddEquipment" class="btn btn-green btn-sm rounded-4 px-4"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
+      <button id="btnOpenUpdateGFMISModal" class="btn btn-orange btn-sm rounded-4 px-4 ms-2"><i class="fa-solid fa-marker"></i> Update GFMIS</button>
     </div>
 
     <div class="table-responsive mt-4">
@@ -471,7 +471,6 @@
           <tr>
             <td class="text-center p-4" colspan="8"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
           </tr>
-          <!-- แทรกข้อมูลจากฐานข้อมูล -->
         </tbody>
       </table>
     </div> 
@@ -496,21 +495,21 @@
         </div>
         <div class="col-lg-3">
           <label for="parcelfilter4" class="col-label-form">หมายเลขวัสดุ</label>
-          <select id="parcelfilter4" style="font-size: 14px;" class="form-select rounded-4"></select> 
+          <input type="text" id="parcelfilter4" style="font-size: 14px;" class="form-control rounded-4" placeholder="ระบุรหัสวัสดุ">
         </div>
         <div class="col-lg-9 mt-2">
           <label for="parcelfilter6" class="col-label-form">ชื่อวัสดุ</label>
-          <input type="text" id="parcelfilter6" style="font-size: 14px;" class="form-control rounded-4">
+          <input type="text" id="parcelfilter6" style="font-size: 14px;" class="form-control rounded-4" placeholder="ระบุชื่อวัสดุ">
         </div>
-        <div class="col-lg-3 d-flex justify-content-end align-items-end">
-          <button class="btn btn-violet rounded-4 btn-sm px-5"><i class="fa-solid fa-magnifying-glass"></i> ค้นหา</button>
+        <div class="col-lg-3 d-flex justify-content-end align-items-end mt-2">
+          <button id="btnSearchMaterial" class="btn btn-violet rounded-4 btn-sm px-5"><i class="fa-solid fa-magnifying-glass"></i> ค้นหา</button>
         </div>
       </div>
     </div>
   </div>
   <div class="container-fluid">
     <div class="d-flex justify-content-start align-items-center">
-      <button class="btn btn-green btn-sm rounded-4 px-4"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
+      <button id="btnOpenAddMaterialModal" class="btn btn-green btn-sm rounded-4 px-4"><i class="fa-solid fa-plus"></i> เพิ่มวัสดุ</button>
     </div>
 
     <div class="table-responsive mt-4">
@@ -530,7 +529,6 @@
           <tr>
             <td class="text-center p-4" colspan="7"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
           </tr>
-          <!-- แทรกข้อมูลจากฐานข้อมูล -->
         </tbody>
       </table>
     </div> 
@@ -545,6 +543,88 @@
       </h5>
     </div>
 
-    
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="p-3 rounded-4 bg-light shadow-sm border-start border-4 border-primary">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted small mb-1">กำลังยืม (รายการ)</p>
+              <h4 id="borrowCountActive" class="fw-bold mb-0 text-primary">0</h4>
+            </div>
+            <i class="fa-duotone fa-hand-holding-box fs-1 text-primary opacity-50"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3 rounded-4 bg-light shadow-sm border-start border-4 border-success">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted small mb-1">คืนแล้ว (รายการ)</p>
+              <h4 id="borrowCountReturned" class="fw-bold mb-0 text-success">0</h4>
+            </div>
+            <i class="fa-duotone fa-box-check fs-1 text-success opacity-50"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3 rounded-4 bg-light shadow-sm border-start border-4 border-danger">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted small mb-1">เกินกำหนดส่งคืน (รายการ)</p>
+              <h4 id="borrowCountOverdue" class="fw-bold mb-0 text-danger">0</h4>
+            </div>
+            <i class="fa-duotone fa-triangle-exclamation fs-1 text-danger opacity-50"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid mb-3 px-0">
+      <div class="row g-2 align-items-end" style="font-size: 14px;">
+        <div class="col-lg-3">
+          <label for="borrowFilterStatus" class="col-label-form">สถานะการยืม</label>
+          <select id="borrowFilterStatus" class="form-select rounded-4" style="font-size: 14px;">
+            <option value="">-- ทุกสถานะ --</option>
+            <option value="กำลังใช้งาน">กำลังยืม</option>
+            <option value="คืนแล้ว">คืนแล้ว</option>
+            <option value="เกินกำหนดส่งคืน">เกินกำหนดส่งคืน</option>
+          </select>
+        </div>
+        <div class="col-lg-6">
+          <label for="borrowFilterKeyword" class="col-label-form">ค้นหา (ผู้ยืม / หมายเลข / รายการ)</label>
+          <input type="text" id="borrowFilterKeyword" class="form-control rounded-4" style="font-size: 14px;" placeholder="ระบุชื่อผู้ยืม, หมายเลข หรือ รายการ">
+        </div>
+        <div class="col-lg-3 d-flex justify-content-end gap-2">
+          <button id="btnSearchBorrow" class="btn btn-violet rounded-4 btn-sm px-4"><i class="fa-solid fa-magnifying-glass"></i> ค้นหา</button>
+          <button id="btnOpenBorrowModal" class="btn btn-green rounded-4 btn-sm px-4"><i class="fa-solid fa-plus"></i> บันทึกขอยืม</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-3">
+      <table id="borrowTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col">รหัสยืม</th>
+            <th scope="col">ประเภท</th>
+            <th scope="col">หมายเลข</th>
+            <th scope="col">รายการ</th>
+            <th scope="col">ผู้ยืม</th>
+            <th scope="col">หน่วยงาน</th>
+            <th scope="col">วันที่ยืม</th>
+            <th scope="col">กำหนดคืน</th>
+            <th scope="col">วันที่คืนจริง</th>
+            <th scope="col">สถานะ</th>
+            <th scope="col">จัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="borrowTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="11"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 </div>

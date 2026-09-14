@@ -2671,3 +2671,312 @@
     </div>
   </div>
 </div>
+
+<!-- ============================================================ -->
+<!-- Equipment & Materials Modals                                 -->
+<!-- ============================================================ -->
+
+<!-- Modal ดูรายละเอียดครุภัณฑ์ -->
+<div class="modal fade" id="modalViewEquipment" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fs-5"><i class="fa-duotone fa-computer text-primary me-2"></i> รายละเอียดครุภัณฑ์</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4" id="viewEquipmentBody">
+        <!-- Content will be injected by JavaScript -->
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary rounded-4 px-4" data-bs-dismiss="modal">ปิด</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal อัปเดต GFMIS -->
+<div class="modal fade" id="modalUpdateGFMIS" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fs-5"><i class="fa-duotone fa-marker text-warning me-2"></i> อัปเดตหมายเลข GFMIS</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <input type="hidden" id="gfmisEquipKey">
+        <div class="mb-3">
+          <label class="col-form-label fw-bold">รายการครุภัณฑ์:</label>
+          <p id="gfmisEquipName" class="text-body-secondary mb-0"></p>
+        </div>
+        <div class="mb-3">
+          <label class="col-form-label fw-bold">หมายเลขครุภัณฑ์เดิม:</label>
+          <p id="gfmisEquipNumber" class="text-body-secondary mb-0"></p>
+        </div>
+        <div class="mb-3">
+          <label for="inputGFMISCode" class="col-form-label fw-bold">รหัสทรัพย์สิน GFMIS ใหม่:</label>
+          <input type="text" class="form-control rounded-3" id="inputGFMISCode" placeholder="ระบุรหัส GFMIS">
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary rounded-4 px-3" data-bs-dismiss="modal">ยกเลิก</button>
+        <button type="button" class="btn btn-warning rounded-4 px-4" id="btnSaveGFMIS"><i class="fa-solid fa-check"></i> บันทึก GFMIS</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ตัดจำหน่ายครุภัณฑ์ -->
+<div class="modal fade" id="modalDisposeEquipment" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fs-5 text-danger"><i class="fa-duotone fa-trash-can text-danger me-2"></i> บันทึกตัดจำหน่ายครุภัณฑ์</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <input type="hidden" id="disposeEquipKey">
+        <div class="alert alert-warning rounded-3 fs-6">
+          <i class="fa-solid fa-triangle-exclamation me-1"></i> เมื่อตัดจำหน่ายแล้ว สถานะของครุภัณฑ์นี้จะเปลี่ยนเป็น <strong>"ตัดจำหน่าย"</strong>
+        </div>
+        <div class="mb-3">
+          <label class="col-form-label fw-bold">รายการ:</label>
+          <p id="disposeEquipName" class="text-body-secondary mb-0"></p>
+        </div>
+        <div class="mb-3">
+          <label for="disposeReason" class="col-form-label fw-bold">สาเหตุการตัดจำหน่าย:</label>
+          <textarea class="form-control rounded-3" id="disposeReason" rows="3" placeholder="ระบุสาเหตุ เช่น ชำรุดจนไม่สามารถซ่อมแซมได้, สูญหาย, หมดอายุการใช้งาน"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary rounded-4 px-3" data-bs-dismiss="modal">ยกเลิก</button>
+        <button type="button" class="btn btn-danger rounded-4 px-4" id="btnConfirmDispose"><i class="fa-solid fa-check"></i> ยืนยันตัดจำหน่าย</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal QR Code ครุภัณฑ์ -->
+<div class="modal fade" id="modalQREquipment" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm text-center">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fs-6 w-100 text-center"><i class="fa-duotone fa-qrcode me-2"></i> QR Code ครุภัณฑ์</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4 text-center">
+        <div id="qrcodeContainer" class="d-flex justify-content-center p-2 mb-2"></div>
+        <h6 id="qrEquipNumber" class="fw-bold mb-1"></h6>
+        <p id="qrEquipName" class="text-body-secondary small mb-0"></p>
+      </div>
+      <div class="modal-footer border-0 justify-content-center">
+        <button type="button" class="btn btn-primary btn-sm rounded-4 px-3" onclick="window.print()"><i class="fa-solid fa-print"></i> พิมพ์</button>
+        <button type="button" class="btn btn-secondary btn-sm rounded-4 px-3" data-bs-dismiss="modal">ปิด</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal เพิ่ม/แก้ไข วัสดุ -->
+<div class="modal fade" id="modalAddMaterial" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fs-5" id="modalAddMaterialTitle"><i class="fa-duotone fa-box-archive text-success me-2"></i> บันทึกข้อมูลวัสดุ</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form id="formAddMaterial">
+          <input type="hidden" id="matKey">
+          <div class="mb-2">
+            <label class="col-form-label fw-bold">หมายเลขวัสดุ <span class="text-danger">*</span></label>
+            <input type="text" class="form-control rounded-3" id="matNumber" required placeholder="เช่น MAT-001">
+          </div>
+          <div class="mb-2">
+            <label class="col-form-label fw-bold">รายการ/ชื่อวัสดุ <span class="text-danger">*</span></label>
+            <input type="text" class="form-control rounded-3" id="matName" required placeholder="เช่น กระดาษ A4 80 แกรม">
+          </div>
+          <div class="row">
+            <div class="col-6 mb-2">
+              <label class="col-form-label fw-bold">หมวดหมู่วัสดุ</label>
+              <input type="text" class="form-control rounded-3" id="matCategory" placeholder="เช่น วัสดุสำนักงาน">
+            </div>
+            <div class="col-6 mb-2">
+              <label class="col-form-label fw-bold">ประเภทวัสดุ</label>
+              <input type="text" class="form-control rounded-3" id="matType" placeholder="เช่น กระดาษและสิ่งพิมพ์">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 mb-2">
+              <label class="col-form-label fw-bold">หน่วยงาน</label>
+              <select class="form-select rounded-3" id="matAgency"></select>
+            </div>
+            <div class="col-6 mb-2">
+              <label class="col-form-label fw-bold">สถานที่เก็บ</label>
+              <input type="text" class="form-control rounded-3" id="matLocation" placeholder="เช่น ห้องพัสดุ ตู้ A">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4 mb-2">
+              <label class="col-form-label fw-bold">จำนวนคงเหลือ</label>
+              <input type="number" class="form-control rounded-3" id="matQty" value="0" min="0">
+            </div>
+            <div class="col-4 mb-2">
+              <label class="col-form-label fw-bold">หน่วยนับ</label>
+              <input type="text" class="form-control rounded-3" id="matUnit" placeholder="เช่น รีม, กล่อง, เล่ม">
+            </div>
+            <div class="col-4 mb-2">
+              <label class="col-form-label fw-bold">ราคา/หน่วย</label>
+              <input type="number" step="0.01" class="form-control rounded-3" id="matPrice" value="0">
+            </div>
+          </div>
+          <div class="mb-2">
+            <label class="col-form-label fw-bold">จุดสั่งซื้อขั้นต่ำ (เตือนเมื่อใกล้หมด)</label>
+            <input type="number" class="form-control rounded-3" id="matMinStock" value="5" min="0">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary rounded-4 px-3" data-bs-dismiss="modal">ยกเลิก</button>
+        <button type="button" class="btn btn-success rounded-4 px-4" id="btnSaveMaterial"><i class="fa-solid fa-check"></i> บันทึก</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal รับเข้า / เบิกจ่าย วัสดุ (Stock In / Stock Out) -->
+<div class="modal fade" id="modalStockMaterial" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fs-5" id="modalStockTitle"><i class="fa-duotone fa-boxes-packing text-primary me-2"></i> รับเข้า / เบิกจ่ายวัสดุ</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <input type="hidden" id="stockMatKey">
+        <input type="hidden" id="stockAction">
+        <div class="mb-3">
+          <label class="col-form-label fw-bold">รายการวัสดุ:</label>
+          <h6 id="stockMatName" class="text-primary mb-1"></h6>
+          <p class="small text-body-secondary mb-0">คงเหลือปัจจุบัน: <span id="stockCurrentQty" class="fw-bold fs-6 text-dark">0</span> <span id="stockMatUnit"></span></p>
+        </div>
+        <div class="mb-3">
+          <label for="stockQuantity" class="col-form-label fw-bold" id="stockQtyLabel">จำนวนที่ต้องการเบิก/รับเข้า: <span class="text-danger">*</span></label>
+          <input type="number" class="form-control rounded-3" id="stockQuantity" min="1" value="1" required>
+        </div>
+        <div class="mb-3">
+          <label for="stockUser" class="col-form-label fw-bold" id="stockUserLabel">ชื่อผู้เบิก / ผู้รับ:</label>
+          <input type="text" class="form-control rounded-3" id="stockUser" placeholder="ระบุชื่อ-นามสกุล">
+        </div>
+        <div class="mb-3">
+          <label for="stockPurpose" class="col-form-label fw-bold" id="stockPurposeLabel">วัตถุประสงค์ / หมายเหตุ:</label>
+          <textarea class="form-control rounded-3" id="stockPurpose" rows="2" placeholder="เช่น ใช้ในโครงการอบรม, เอกสารงานสารบรรณ"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary rounded-4 px-3" data-bs-dismiss="modal">ยกเลิก</button>
+        <button type="button" class="btn btn-primary rounded-4 px-4" id="btnConfirmStock"><i class="fa-solid fa-check"></i> ยืนยัน</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ทำรายการยืมวัสดุ/ครุภัณฑ์ -->
+<div class="modal fade" id="modalBorrowItem" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fs-5"><i class="fa-duotone fa-swap-arrows text-primary me-2"></i> ทำรายการขอยืมวัสดุ-ครุภัณฑ์</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form id="formBorrowItem">
+          <div class="mb-3">
+            <label class="col-form-label fw-bold">ประเภททรัพย์สิน:</label>
+            <div class="d-flex gap-3">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="borrowType" id="borrowTypeEquip" value="ครุภัณฑ์" checked>
+                <label class="form-check-label" for="borrowTypeEquip">ครุภัณฑ์</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="borrowType" id="borrowTypeMat" value="วัสดุ">
+                <label class="form-check-label" for="borrowTypeMat">วัสดุ</label>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="borrowItemSelect" class="col-form-label fw-bold">เลือกรายการที่ต้องการยืม: <span class="text-danger">*</span></label>
+            <select class="form-select rounded-3" id="borrowItemSelect" required></select>
+          </div>
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label for="borrowerName" class="col-form-label fw-bold">ชื่อผู้ยืม: <span class="text-danger">*</span></label>
+              <input type="text" class="form-control rounded-3" id="borrowerName" required placeholder="ชื่อ-นามสกุล ผู้ยืม">
+            </div>
+            <div class="col-6 mb-3">
+              <label for="borrowerAgency" class="col-form-label fw-bold">หน่วยงานผู้ยืม:</label>
+              <select class="form-select rounded-3" id="borrowerAgency"></select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label for="borrowDate" class="col-form-label fw-bold">วันที่ยืม: <span class="text-danger">*</span></label>
+              <input type="date" class="form-control rounded-3" id="borrowDate" required>
+            </div>
+            <div class="col-6 mb-3">
+              <label for="returnDueDate" class="col-form-label fw-bold">กำหนดส่งคืน: <span class="text-danger">*</span></label>
+              <input type="date" class="form-control rounded-3" id="returnDueDate" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="borrowPurpose" class="col-form-label fw-bold">วัตถุประสงค์การใช้งาน:</label>
+            <textarea class="form-control rounded-3" id="borrowPurpose" rows="2" placeholder="เช่น ใช้ในการประชุมสภา, ใช้งานนอกสถานที่"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary rounded-4 px-3" data-bs-dismiss="modal">ยกเลิก</button>
+        <button type="button" class="btn btn-primary rounded-4 px-4" id="btnSaveBorrow"><i class="fa-solid fa-check"></i> ยืนยันการยืม</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal บันทึกรับคืน -->
+<div class="modal fade" id="modalReturnItem" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fs-5"><i class="fa-duotone fa-arrow-rotate-left text-success me-2"></i> บันทึกรับคืนพัสดุ/ครุภัณฑ์</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <input type="hidden" id="returnBorrowKey">
+        <div class="mb-3">
+          <label class="col-form-label fw-bold">รายการ:</label>
+          <p id="returnItemName" class="text-primary mb-0 fw-bold"></p>
+        </div>
+        <div class="mb-3">
+          <label class="col-form-label fw-bold">ผู้ยืม:</label>
+          <p id="returnBorrowerName" class="text-body-secondary mb-0"></p>
+        </div>
+        <div class="mb-3">
+          <label for="actualReturnDate" class="col-form-label fw-bold">วันที่คืนจริง: <span class="text-danger">*</span></label>
+          <input type="date" class="form-control rounded-3" id="actualReturnDate" required>
+        </div>
+        <div class="mb-3">
+          <label for="returnCondition" class="col-form-label fw-bold">สภาพทรัพย์สินเมื่อคืน:</label>
+          <select class="form-select rounded-3" id="returnCondition">
+            <option value="สภาพปกติพร้อมใช้งาน" selected>สภาพปกติพร้อมใช้งาน</option>
+            <option value="ชำรุดเล็กน้อย (ส่งซ่อม)">ชำรุดเล็กน้อย (ส่งซ่อม)</option>
+            <option value="ชำรุดเสียหายหนัก">ชำรุดเสียหายหนัก</option>
+            <option value="อุปกรณ์ไม่ครบ">อุปกรณ์ไม่ครบ</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary rounded-4 px-3" data-bs-dismiss="modal">ยกเลิก</button>
+        <button type="button" class="btn btn-success rounded-4 px-4" id="btnConfirmReturn"><i class="fa-solid fa-check"></i> บันทึกรับคืน</button>
+      </div>
+    </div>
+  </div>
+</div>

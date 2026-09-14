@@ -1,0 +1,1303 @@
+<script>
+/**
+ * Equipment & Materials Management Module
+ * Comprehensive client-side controller for all 5 subpages
+ */
+
+let equipChartMaterial = null;
+let equipChartDurable = null;
+let currentEquipmentList = [];
+let currentMaterialList = [];
+let currentBorrowList = [];
+let currentEditingEquipKey = null;
+
+// Initialize on DOM ready
+$(document).ready(function () {
+  initEquipmentHooks();
+  initEquipFormDropdowns();
+  bindEquipmentEvents();
+});
+
+/**
+ * Hook into changePageEquip navigation
+ */
+function initEquipmentHooks() {
+  const originalChangePageEquip = window.changePageEquip;
+  window.changePageEquip = function (page) {
+    if (typeof originalChangePageEquip === 'function') {
+      originalChangePageEquip(page);
+    }
+    loadEquipmentPageData(page);
+  };
+}
+
+/**
+ * Load appropriate data when switching subpages
+ */
+function loadEquipmentPageData(page) {
+  switch (page) {
+    case 1:
+      loadEquipmentDashboard();
+      break;
+    case 2:
+      // Form page
+      if (!currentEditingEquipKey) {
+        resetEquipmentForm();
+      }
+      break;
+    case 3:
+      loadEquipmentTable();
+      break;
+    case 4:
+      loadMaterialTable();
+      break;
+    case 5:
+      loadBorrowTable();
+      break;
+  }
+}
+
+/**
+ * Bind all interactive UI events
+ */
+function bindEquipmentEvents() {
+  // Page 2 - Equipment Form
+  $('#btnSaveEquipmentForm').on('click', handleSaveEquipmentForm);
+  $('#btnResetEquipmentForm').on('click', resetEquipmentForm);
+  $('#btnAddSubEquip').on('click', handleAddSubEquipmentPrompt);
+  $('#btnAddEquipComponent').on('click', function() {
+    toastAlert(2, 'ระบบองค์ประกอบครุภัณฑ์เชื่อมต่อกับฐานข้อมูลทรัพย์สินย่อยแล้ว');
+  });
+
+  // Page 3 - Equipment Management
+  $('#btnSearchEquipment').on('click', function () {
+    loadEquipmentTable();
+  });
+  $('#btnNavToAddEquipment').on('click', function () {
+    currentEditingEquipKey = null;
+    resetEquipmentForm();
+    changePageEquip(2);
+  });
+  $('#btnOpenUpdateGFMISModal').on('click', function () {
+    $('#gfmisEquipKey').val('');
+    $('#gfmisEquipName').text('เลือกจากตารางด้านล่าง');
+    $('#gfmisEquipNumber').text('-');
+    $('#inputGFMISCode').val('');
+    $('#modalUpdateGFMIS').modal('show');
+  });
+  $('#btnSaveGFMIS').on('click', handleSaveGFMIS);
+  $('#btnConfirmDispose').on('click', handleConfirmDispose);
+
+  // Page 4 - Materials Inventory
+  $('#btnSearchMaterial').on('click', function () {
+    loadMaterialTable();
+  });
+  $('#btnOpenAddMaterialModal').on('click', function () {
+    openAddMaterialModal();
+  });
+  $('#btnSaveMaterial').on('click', handleSaveMaterial);
+  $('#btnConfirmStock').on('click', handleConfirmStock);
+
+  // Page 5 - Borrow & Return
+  $('#btnSearchBorrow').on('click', function () {
+    loadBorrowTable();
+  });
+  $('#btnOpenBorrowModal').on('click', openBorrowModal);
+  $('input[name="borrowType"]').on('change', handleBorrowTypeChange);
+  $('#btnSaveBorrow').on('click', handleSaveBorrow);
+  $('#btnConfirmReturn').on('click', handleConfirmReturn);
+}
+
+/**
+ * Initialize dropdowns across forms & filters
+ */
+function initEquipFormDropdowns() {
+  const agencies = [
+    'สำนักปลัด', 'กองคลัง', 'กองช่าง', 'กองการศึกษา', 'กองสาธารณสุขและสิ่งแวดล้อม',
+    'กองสวัสดิการสังคม', 'กองยุทธศาสตร์และงบประมาณ', 'หน่วยตรวจสอบภายใน'
+  ];
+  const categories = [
+    'ครุภัณฑ์สำนักงาน', 'ครุภัณฑ์คอมพิวเตอร์', 'ครุภัณฑ์ยานพาหนะและขนส่ง', 
+    'ครุภัณฑ์การเกษตร', 'ครุภัณฑ์โฆษณาและเผยแพร่', 'ครุภัณฑ์งานบ้านงานครัว', 
+    'ครุภัณฑ์วิทยาศาสตร์และการแพทย์', 'ครุภัณฑ์สำรวจ', 'ครุภัณฑ์ดนตรีและนาฏศิลป์', 'ครุภัณฑ์อื่น ๆ'
+  ];
+  const types = [
+    'เครื่องปรับอากาศ', 'คอมพิวเตอร์และอุปกรณ์', 'เครื่องพิมพ์/สแกนเนอร์', 'โต๊ะ/เก้าอี้สำนักงาน', 
+    'ตู้เก็บเอกสาร', 'กล้องถ่ายภาพ/วิดีโอ', 'โทรทัศน์/จอภาพ', 'ยานพาหนะ', 'เครื่องสำรองไฟฟ้า', 'อุปกรณ์เครือข่าย'
+  ];
+  const statuses = ['พร้อมใช้งาน', 'กำลังใช้งาน', 'ชำรุด', 'รอซ่อม', 'รอจำหน่าย', 'ตัดจำหน่าย'];
+  const acquireMethods = ['ตกลงราคา', 'สอบราคา', 'ประกวดราคา', 'วิธีเฉพาะเจาะจง', 'คัดเลือก', 'รับบริจาค'];
+  const expenseTypes = ['งบลงทุน', 'งบดำเนินงาน', 'เงินอุดหนุน', 'เงินนอกงบประมาณ'];
+  const vendors = ['ห้างหุ้นส่วนจำกัด/บริษัททั่วไป', 'ร้านค้าท้องถิ่น', 'ผู้จัดจำหน่ายส่วนกลาง', 'ผู้บริจาค'];
+
+  // Current budget years (Thai BE)
+  const currentBE = new Date().getFullYear() + 543;
+  const years = [currentBE + 1, currentBE, currentBE - 1, currentBE - 2, currentBE - 3];
+
+  populateSelectOptions('#equipAddData3, #equipfilter1, #matAgency, #borrowerAgency', agencies, true);
+  populateSelectOptions('#equipAddData4, #equipfilter2', categories, true);
+  populateSelectOptions('#equipAddData5, #equipfilter3', types, true);
+  populateSelectOptions('#equipAddData8, #equipfilter4', statuses, false);
+  populateSelectOptions('#equipAddData10', years, false);
+  populateSelectOptions('#equipAddData11', acquireMethods, false);
+  populateSelectOptions('#equipAddData19', expenseTypes, false);
+  populateSelectOptions('#equipAddData20', vendors, false);
+
+  // Lifespan options (1 to 20 years)
+  const lifeSpanOptions = Array.from({ length: 20 }, (_, i) => `${i + 1} ปี`);
+  populateSelectOptions('#equipAddData26', lifeSpanOptions, false);
+
+  // Load backend departments if available
+  if (typeof dataDepartMentSet !== 'undefined' && Array.isArray(dataDepartMentSet) && dataDepartMentSet.length > 0) {
+    const deptNames = dataDepartMentSet.map(d => d[1]).filter(Boolean);
+    if (deptNames.length > 0) {
+      populateSelectOptions('#equipAddData3, #equipfilter1, #matAgency, #borrowerAgency', deptNames, true);
+    }
+  }
+}
+
+function populateSelectOptions(selector, items, includeAllOption) {
+  const targets = $(selector);
+  targets.each(function () {
+    const $select = $(this);
+    const existingVal = $select.val();
+    $select.empty();
+    if (includeAllOption) {
+      $select.append('<option value="">-- ทั้งหมด --</option>');
+    }
+    items.forEach(item => {
+      $select.append(`<option value="${item}">${item}</option>`);
+    });
+    if (existingVal) {
+      $select.val(existingVal);
+    }
+  });
+}
+
+/**
+ * ============================================================
+ * PAGE 1: Dashboard & Analytics
+ * ============================================================
+ */
+function loadEquipmentDashboard() {
+  $('#loader').show();
+  google.script.run
+    .withSuccessHandler(function (res) {
+      $('#loader').hide();
+      if (!res) return;
+
+      // Update counters
+      $('#countingEquipment1').text(Number(res.equipCount || 0).toLocaleString());
+      $('#countingEquipment2').text(Number(res.matCount || 0).toLocaleString());
+      $('#countingEquipment3').text(Number(res.totalValue || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 }));
+      $('#countingEquipment4').text(Number(res.disposedValue || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 }));
+
+      // Update category swiper
+      renderCategorySwiper(res.categories || []);
+
+      // Update ApexCharts
+      renderMaterialChart(res.matCategories || { labels: [], series: [] });
+      renderDurableChart(res.equipCategories || { labels: [], series: [] });
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, '⚠️ ไม่สามารถโหลดข้อมูลสถิติได้: ' + err.message);
+    })
+    .getEquipmentSummary();
+}
+
+function renderCategorySwiper(categories) {
+  const container = $('#swiper-wrapper-container');
+  container.empty();
+
+  if (categories.length === 0) {
+    container.append('<div class="swiper-slide p-3 text-muted text-center">ไม่มีข้อมูลหมวดหมู่</div>');
+    return;
+  }
+
+  categories.forEach(cat => {
+    const slideHtml = `
+      <div class="swiper-slide p-3 rounded-4 shadow-sm text-center" style="background: #ffffff; min-width: 150px; border: 1px solid rgba(0,0,0,0.06); cursor: pointer;" onclick="filterEquipByCategory('${cat.name}')">
+        <i class="${cat.icon || 'fa-duotone fa-boxes-stacked'} fs-2 mb-2" style="color: ${cat.color || '#4361ee'}"></i>
+        <h6 class="fw-bold mb-1 fs-6 text-truncate" title="${cat.name}">${cat.name}</h6>
+        <span class="badge rounded-pill text-bg-primary fs-7">${cat.count} รายการ</span>
+      </div>
+    `;
+    container.append(slideHtml);
+  });
+
+  try {
+    new Swiper('.swiper', {
+      slidesPerView: 'auto',
+      spaceBetween: 14,
+      freeMode: true,
+      observer: true,
+      observeParents: true
+    });
+  } catch (e) {
+    console.warn('Swiper init:', e);
+  }
+}
+
+function filterEquipByCategory(catName) {
+  $('#equipfilter2').val(catName);
+  changePageEquip(3);
+}
+
+function renderMaterialChart(data) {
+  const chartEl = document.querySelector('#chart-Material');
+  if (!chartEl) return;
+  chartEl.innerHTML = '';
+
+  const labels = (data.labels && data.labels.length) ? data.labels : ['ไม่มีข้อมูล'];
+  const series = (data.series && data.series.length) ? data.series : [1];
+
+  const options = {
+    chart: {
+      type: 'donut',
+      width: '100%',
+      height: 280
+    },
+    series: series,
+    labels: labels,
+    colors: ['#4361ee', '#3a0ca3', '#7209b7', '#f72585', '#4cc9f0', '#06d6a0'],
+    legend: {
+      position: 'bottom',
+      fontSize: '12px'
+    },
+    responsive: [{
+      breakpoint: 480,
+      options: {
+        chart: { width: 300 },
+        legend: { position: 'bottom' }
+      }
+    }]
+  };
+
+  if (equipChartMaterial) {
+    equipChartMaterial.destroy();
+  }
+  equipChartMaterial = new ApexCharts(chartEl, options);
+  equipChartMaterial.render();
+}
+
+function renderDurableChart(data) {
+  const chartEl = document.querySelector('#chart-Durable');
+  if (!chartEl) return;
+  chartEl.innerHTML = '';
+
+  const labels = (data.labels && data.labels.length) ? data.labels : ['ไม่มีข้อมูล'];
+  const series = (data.series && data.series.length) ? data.series : [1];
+
+  const options = {
+    chart: {
+      type: 'donut',
+      width: '100%',
+      height: 280
+    },
+    series: series,
+    labels: labels,
+    colors: ['#2ec4b6', '#e71d36', '#ff9f1c', '#011627', '#9d4edd', '#48bfe3'],
+    legend: {
+      position: 'bottom',
+      fontSize: '12px'
+    },
+    responsive: [{
+      breakpoint: 480,
+      options: {
+        chart: { width: 300 },
+        legend: { position: 'bottom' }
+      }
+    }]
+  };
+
+  if (equipChartDurable) {
+    equipChartDurable.destroy();
+  }
+  equipChartDurable = new ApexCharts(chartEl, options);
+  equipChartDurable.render();
+}
+
+/**
+ * ============================================================
+ * PAGE 2: Procurement & Equipment Registration Form
+ * ============================================================
+ */
+function handleSaveEquipmentForm() {
+  const equipNumber = $('#equipAddData1').val().trim();
+  const itemName = $('#equipAddData21').val().trim();
+
+  if (!equipNumber) {
+    toastAlert(0, '⚠️ กรุณาระบุหมายเลขครุภัณฑ์');
+    $('#equipAddData1').focus();
+    return;
+  }
+  if (!itemName) {
+    toastAlert(0, '⚠️ กรุณาระบุรายการครุภัณฑ์');
+    $('#equipAddData21').focus();
+    return;
+  }
+
+  // Gather sub-equipments from table
+  const subEquipments = [];
+  $('#subEquipmentTable-body tr.sub-equip-row').each(function () {
+    const $row = $(this);
+    subEquipments.push({
+      gfmis: $row.find('.sub-gfmis').text().trim(),
+      number: $row.find('.sub-number').text().trim(),
+      name: $row.find('.sub-name').text().trim(),
+      price: $row.find('.sub-price').text().trim()
+    });
+  });
+
+  const payload = {
+    key: currentEditingEquipKey || ('EQ-' + Date.now()),
+    equipAddData1: equipNumber,
+    equipAddData2: $('#equipAddData2').val().trim(),
+    equipAddData3: $('#equipAddData3').val(),
+    equipAddData4: $('#equipAddData4').val(),
+    equipAddData5: $('#equipAddData5').val(),
+    equipAddData6: $('#equipAddData6').val().trim(),
+    equipAddData7: $('#equipAddData7').val().trim(),
+    equipAddData8: $('#equipAddData8').val(),
+    equipAddData9: $('#equipAddData9').val().trim(),
+    equipAddData10: $('#equipAddData10').val(),
+    equipAddData11: $('#equipAddData11').val(),
+    equipAddData12: $('#equipAddData12').val().trim(),
+    equipAddData13: $('#equipAddData13').val().trim(),
+    equipAddData14: $('#equipAddData14').val().trim(),
+    equipAddData15: $('#equipAddData15').val().trim(),
+    equipAddData16: $('#equipAddData16').val().trim(),
+    equipAddData17: $('#equipAddData17').val().trim(),
+    equipAddData18: $('#equipAddData18').val().trim(),
+    equipAddData19: $('#equipAddData19').val(),
+    equipAddData20: $('#equipAddData20').val(),
+    equipAddData21: itemName,
+    equipAddData22: $('#equipAddData22').val().trim(),
+    equipAddData23: $('#equipAddData23').val().trim(),
+    equipAddData24: $('#equipAddData24').val().trim(),
+    equipAddData25: Number($('#equipAddData25').val() || 0),
+    equipAddData26: $('#equipAddData26').val(),
+    equipAddData27: $('#equipAddData27').val().trim(),
+    equipAddData28: $('#equipAddData28').val().trim(),
+    equipAddData29: $('#equipAddData29').val().trim(),
+    equipAddData30: $('#equipAddData30').val().trim(),
+    subEquipments: subEquipments
+  };
+
+  $('#loader').show();
+  google.script.run
+    .withSuccessHandler(function (res) {
+      $('#loader').hide();
+      if (res && res.status) {
+        toastAlert(1, '🎉 บันทึกข้อมูลครุภัณฑ์เรียบร้อยแล้ว');
+        resetEquipmentForm();
+        changePageEquip(3);
+      } else {
+        toastAlert(0, '⚠️ เกิดข้อผิดพลาด: ' + (res ? res.message : 'ไม่ทราบสาเหตุ'));
+      }
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, '⚠️ การบันทึกล้มเหลว: ' + err.message);
+    })
+    .saveEquipment(payload);
+}
+
+function resetEquipmentForm() {
+  currentEditingEquipKey = null;
+  for (let i = 1; i <= 30; i++) {
+    $(`#equipAddData${i}`).val('');
+  }
+  $('#equipAddData8').val('พร้อมใช้งาน');
+  $('#subEquipmentTable-body').html(`
+    <tr id="emptySubEquipRow">
+      <td class="text-center p-4" colspan="5"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+    </tr>
+  `);
+}
+
+function handleAddSubEquipmentPrompt() {
+  const gfmis = prompt('ระบุหมายเลขครุภัณฑ์ GFMIS (ถ้ามี):', '') || '';
+  const number = prompt('ระบุหมายเลขครุภัณฑ์ย่อย:', '') || '';
+  const name = prompt('ระบุชื่อรายการทรัพย์สินย่อย:', '') || '';
+  const price = prompt('ระบุมูลค่าสุทธิ (บาท):', '0') || '0';
+
+  if (!name && !number) {
+    return;
+  }
+
+  $('#emptySubEquipRow').remove();
+  const rowHtml = `
+    <tr class="sub-equip-row text-center">
+      <td class="sub-gfmis">${gfmis}</td>
+      <td class="sub-number">${number}</td>
+      <td class="sub-name text-start">${name}</td>
+      <td class="sub-price text-end">${Number(price).toLocaleString()}</td>
+      <td>
+        <button type="button" class="btn btn-outline-danger btn-sm rounded-circle" onclick="$(this).closest('tr').remove()">
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+      </td>
+    </tr>
+  `;
+  $('#subEquipmentTable-body').append(rowHtml);
+}
+
+function editEquipmentByKey(key) {
+  const item = currentEquipmentList.find(e => e.key === key);
+  if (!item) {
+    toastAlert(0, '⚠️ ไม่พบข้อมูลครุภัณฑ์');
+    return;
+  }
+
+  currentEditingEquipKey = item.key;
+  $('#equipAddData1').val(item.equipNumber || '');
+  $('#equipAddData2').val(item.gfmisNumber || '');
+  $('#equipAddData3').val(item.agency || '');
+  $('#equipAddData4').val(item.category || '');
+  $('#equipAddData5').val(item.type || '');
+  $('#equipAddData6').val(item.location || '');
+  $('#equipAddData7').val(item.locationCode || '');
+  $('#equipAddData8').val(item.status || 'พร้อมใช้งาน');
+  $('#equipAddData9').val(item.note || '');
+  $('#equipAddData10').val(item.budgetYear || '');
+  $('#equipAddData11').val(item.acquireMethod || '');
+  $('#equipAddData12').val(item.project || '');
+  $('#equipAddData13').val(item.activity || '');
+  $('#equipAddData14').val(item.procurement || '');
+  $('#equipAddData15').val(item.contractNo || '');
+  $('#equipAddData16').val(item.poCode || '');
+  $('#equipAddData17').val(item.inspectDate || '');
+  $('#equipAddData18').val(item.moneySource || '');
+  $('#equipAddData19').val(item.expenseType || '');
+  $('#equipAddData20').val(item.vendor || '');
+  $('#equipAddData21').val(item.itemName || '');
+  $('#equipAddData22').val(item.sn || '');
+  $('#equipAddData23').val(item.model || '');
+  $('#equipAddData24').val(item.brand || '');
+  $('#equipAddData25').val(item.price || 0);
+  $('#equipAddData26').val(item.lifeYears || '');
+  $('#equipAddData27').val(item.unit || '');
+  $('#equipAddData28').val(item.carReg || '');
+  $('#equipAddData29').val(item.details || '');
+  $('#equipAddData30').val(item.actualLife || '');
+
+  // Sub-equipments
+  $('#subEquipmentTable-body').empty();
+  if (Array.isArray(item.subEquipments) && item.subEquipments.length > 0) {
+    item.subEquipments.forEach(sub => {
+      $('#subEquipmentTable-body').append(`
+        <tr class="sub-equip-row text-center">
+          <td class="sub-gfmis">${sub.gfmis || ''}</td>
+          <td class="sub-number">${sub.number || ''}</td>
+          <td class="sub-name text-start">${sub.name || ''}</td>
+          <td class="sub-price text-end">${Number(sub.price || 0).toLocaleString()}</td>
+          <td>
+            <button type="button" class="btn btn-outline-danger btn-sm rounded-circle" onclick="$(this).closest('tr').remove()">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `);
+    });
+  } else {
+    $('#subEquipmentTable-body').html(`
+      <tr id="emptySubEquipRow">
+        <td class="text-center p-4" colspan="5"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+      </tr>
+    `);
+  }
+
+  changePageEquip(2);
+  toastAlert(1, '📋 กำลังแก้ไขข้อมูล: ' + (item.itemName || item.equipNumber));
+}
+
+/**
+ * ============================================================
+ * PAGE 3: Equipment Management Table
+ * ============================================================
+ */
+function loadEquipmentTable() {
+  const filter = {
+    agency: $('#equipfilter1').val() || '',
+    category: $('#equipfilter2').val() || '',
+    type: $('#equipfilter3').val() || '',
+    status: $('#equipfilter4').val() || '',
+    gfmis: $('#equipfilter5').val().trim(),
+    keyword: $('#equipfilter6').val().trim()
+  };
+
+  $('#loader').show();
+  google.script.run
+    .withSuccessHandler(function (list) {
+      $('#loader').hide();
+      currentEquipmentList = list || [];
+      renderEquipmentTable(currentEquipmentList);
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, '⚠️ โหลดข้อมูลครุภัณฑ์ล้มเหลว: ' + err.message);
+    })
+    .getEquipmentList(filter);
+}
+
+function renderEquipmentTable(list) {
+  const tbody = $('#equipmentTable-body');
+  tbody.empty();
+
+  if (!list || list.length === 0) {
+    tbody.html(`
+      <tr>
+        <td class="text-center p-4" colspan="8"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่พบข้อมูลครุภัณฑ์ตามเงื่อนไข</span></td>
+      </tr>
+    `);
+    return;
+  }
+
+  list.forEach((item, index) => {
+    const statusBadge = getStatusBadge(item.status);
+    const rowHtml = `
+      <tr class="align-middle">
+        <td class="text-center fw-bold">${item.equipNumber || '-'}</td>
+        <td class="text-center">${item.gfmisNumber || '<span class="text-muted">-</span>'}</td>
+        <td>
+          <div class="fw-bold">${item.itemName || '-'}</div>
+          <small class="text-muted">${item.brand ? 'ยี่ห้อ: ' + item.brand : ''} ${item.model ? 'รุ่น: ' + item.model : ''}</small>
+        </td>
+        <td>${item.category || '-'}</td>
+        <td>${item.type || '-'}</td>
+        <td>${item.agency || '-'}</td>
+        <td class="text-center">${statusBadge}</td>
+        <td class="text-center">
+          <div class="btn-group btn-group-sm" role="group">
+            <button class="btn btn-outline-primary" title="ดูรายละเอียด" onclick="viewEquipmentDetails('${item.key}')">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+            <button class="btn btn-outline-success" title="แก้ไข" onclick="editEquipmentByKey('${item.key}')">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="btn btn-outline-warning" title="Update GFMIS" onclick="openUpdateGFMISModal('${item.key}')">
+              <i class="fa-solid fa-marker"></i>
+            </button>
+            <button class="btn btn-outline-info" title="QR Code" onclick="openQRCodeModal('${item.key}')">
+              <i class="fa-solid fa-qrcode"></i>
+            </button>
+            <button class="btn btn-outline-danger" title="ตัดจำหน่าย" onclick="openDisposeModal('${item.key}')">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+            <button class="btn btn-outline-secondary" title="ลบ" onclick="deleteEquipmentByKey('${item.key}')">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+    tbody.append(rowHtml);
+  });
+}
+
+function getStatusBadge(status) {
+  switch (status) {
+    case 'พร้อมใช้งาน':
+      return '<span class="badge text-bg-success rounded-pill px-3 py-1">พร้อมใช้งาน</span>';
+    case 'กำลังใช้งาน':
+      return '<span class="badge text-bg-primary rounded-pill px-3 py-1">กำลังใช้งาน</span>';
+    case 'ชำรุด':
+    case 'รอซ่อม':
+      return '<span class="badge text-bg-warning rounded-pill px-3 py-1 text-dark">ชำรุด/รอซ่อม</span>';
+    case 'ตัดจำหน่าย':
+    case 'รอจำหน่าย':
+      return '<span class="badge text-bg-danger rounded-pill px-3 py-1">ตัดจำหน่าย</span>';
+    default:
+      return `<span class="badge text-bg-secondary rounded-pill px-3 py-1">${status || '-'}</span>`;
+  }
+}
+
+function viewEquipmentDetails(key) {
+  const item = currentEquipmentList.find(e => e.key === key);
+  if (!item) return;
+
+  const html = `
+    <div class="row g-3">
+      <div class="col-md-6">
+        <p class="mb-1 text-muted small">หมายเลขครุภัณฑ์</p>
+        <h6 class="fw-bold text-primary">${item.equipNumber || '-'}</h6>
+      </div>
+      <div class="col-md-6">
+        <p class="mb-1 text-muted small">รหัส GFMIS</p>
+        <h6 class="fw-bold">${item.gfmisNumber || '-'}</h6>
+      </div>
+      <div class="col-12">
+        <p class="mb-1 text-muted small">รายการ</p>
+        <h5 class="fw-bold text-dark">${item.itemName || '-'}</h5>
+      </div>
+      <div class="col-md-6">
+        <p class="mb-1 text-muted small">หมวดหมู่ / ประเภท</p>
+        <p class="mb-0 fw-semibold">${item.category || '-'} / ${item.type || '-'}</p>
+      </div>
+      <div class="col-md-6">
+        <p class="mb-1 text-muted small">หน่วยงาน / สถานที่ตั้ง</p>
+        <p class="mb-0 fw-semibold">${item.agency || '-'} (${item.location || '-'})</p>
+      </div>
+      <div class="col-md-4">
+        <p class="mb-1 text-muted small">ยี่ห้อ / รุ่น</p>
+        <p class="mb-0">${item.brand || '-'} / ${item.model || '-'}</p>
+      </div>
+      <div class="col-md-4">
+        <p class="mb-1 text-muted small">Serial Number (S/N)</p>
+        <p class="mb-0">${item.sn || '-'}</p>
+      </div>
+      <div class="col-md-4">
+        <p class="mb-1 text-muted small">มูลค่าสุทธิ</p>
+        <p class="mb-0 fw-bold text-success">${Number(item.price || 0).toLocaleString()} บาท</p>
+      </div>
+      <div class="col-md-4">
+        <p class="mb-1 text-muted small">ปีงบประมาณ</p>
+        <p class="mb-0">${item.budgetYear || '-'}</p>
+      </div>
+      <div class="col-md-4">
+        <p class="mb-1 text-muted small">วิธีได้มา</p>
+        <p class="mb-0">${item.acquireMethod || '-'}</p>
+      </div>
+      <div class="col-md-4">
+        <p class="mb-1 text-muted small">สถานะปัจจุบัน</p>
+        <p class="mb-0">${getStatusBadge(item.status)}</p>
+      </div>
+      <div class="col-12">
+        <p class="mb-1 text-muted small">รายละเอียดเพิ่มเติม</p>
+        <p class="mb-0 bg-light p-2 rounded">${item.details || item.note || '-'}</p>
+      </div>
+    </div>
+  `;
+
+  $('#viewEquipmentBody').html(html);
+  $('#modalViewEquipment').modal('show');
+}
+
+function openUpdateGFMISModal(key) {
+  const item = currentEquipmentList.find(e => e.key === key);
+  if (!item) return;
+
+  $('#gfmisEquipKey').val(item.key);
+  $('#gfmisEquipName').text(item.itemName || '-');
+  $('#gfmisEquipNumber').text(item.equipNumber || '-');
+  $('#inputGFMISCode').val(item.gfmisNumber || '');
+  $('#modalUpdateGFMIS').modal('show');
+}
+
+function handleSaveGFMIS() {
+  const key = $('#gfmisEquipKey').val();
+  const code = $('#inputGFMISCode').val().trim();
+
+  if (!key) {
+    toastAlert(0, '⚠️ กรุณาเลือกครุภัณฑ์');
+    return;
+  }
+
+  $('#loader').show();
+  google.script.run
+    .withSuccessHandler(function (res) {
+      $('#loader').hide();
+      if (res && res.status) {
+        toastAlert(1, '🎉 อัปเดต GFMIS สำเร็จ');
+        $('#modalUpdateGFMIS').modal('hide');
+        loadEquipmentTable();
+      } else {
+        toastAlert(0, '⚠️ ไม่สามารถอัปเดตได้: ' + (res ? res.message : ''));
+      }
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, '⚠️ เกิดข้อผิดพลาด: ' + err.message);
+    })
+    .updateEquipmentGFMIS(key, code);
+}
+
+function openDisposeModal(key) {
+  const item = currentEquipmentList.find(e => e.key === key);
+  if (!item) return;
+
+  $('#disposeEquipKey').val(item.key);
+  $('#disposeEquipName').text(`${item.equipNumber} - ${item.itemName}`);
+  $('#disposeReason').val('');
+  $('#modalDisposeEquipment').modal('show');
+}
+
+function handleConfirmDispose() {
+  const key = $('#disposeEquipKey').val();
+  const reason = $('#disposeReason').val().trim();
+
+  if (!key) return;
+  if (!reason) {
+    toastAlert(0, '⚠️ กรุณาระบุสาเหตุการตัดจำหน่าย');
+    return;
+  }
+
+  $('#loader').show();
+  google.script.run
+    .withSuccessHandler(function (res) {
+      $('#loader').hide();
+      if (res && res.status) {
+        toastAlert(1, '🗑️ ตัดจำหน่ายครุภัณฑ์เรียบร้อยแล้ว');
+        $('#modalDisposeEquipment').modal('hide');
+        loadEquipmentTable();
+        loadEquipmentDashboard();
+      } else {
+        toastAlert(0, '⚠️ ตัดจำหน่ายไม่สำเร็จ: ' + (res ? res.message : ''));
+      }
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, '⚠️ เกิดข้อผิดพลาด: ' + err.message);
+    })
+    .disposeEquipment(key, reason);
+}
+
+function openQRCodeModal(key) {
+  const item = currentEquipmentList.find(e => e.key === key);
+  if (!item) return;
+
+  $('#qrEquipNumber').text(item.equipNumber);
+  $('#qrEquipName').text(item.itemName);
+
+  const qrData = encodeURIComponent(`EQUIP:${item.equipNumber}|${item.itemName}|${item.agency}|${item.price}`);
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${qrData}`;
+
+  $('#qrcodeContainer').html(`<img src="${qrUrl}" alt="QR Code" class="img-fluid rounded border p-2 bg-white" style="max-width: 180px;">`);
+  $('#modalQREquipment').modal('show');
+}
+
+function deleteEquipmentByKey(key) {
+  const item = currentEquipmentList.find(e => e.key === key);
+  const name = item ? item.itemName : key;
+
+  if (!confirm(`คุณต้องการลบข้อมูลครุภัณฑ์ "${name}" ใช่หรือไม่? การกระทำนี้ไม่สามารถเรียกคืนได้`)) {
+    return;
+  }
+
+  $('#loader').show();
+  google.script.run
+    .withSuccessHandler(function (res) {
+      $('#loader').hide();
+      if (res && res.status) {
+        toastAlert(1, '🗑️ ลบข้อมูลเรียบร้อยแล้ว');
+        loadEquipmentTable();
+        loadEquipmentDashboard();
+      } else {
+        toastAlert(0, '⚠️ ลบข้อมูลไม่สำเร็จ: ' + (res ? res.message : ''));
+      }
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, '⚠️ เกิดข้อผิดพลาด: ' + err.message);
+    })
+    .deleteEquipment(key);
+}
+
+/**
+ * ============================================================
+ * PAGE 4: Materials Inventory Management
+ * ============================================================
+ */
+function loadMaterialTable() {
+  const filter = {
+    agency: $('#parcelfilter1').val() || '',
+    category: $('#parcelfilter2').val() || '',
+    type: $('#parcelfilter3').val() || '',
+    matNumber: $('#parcelfilter4').val().trim(),
+    matName: $('#parcelfilter6').val().trim()
+  };
+
+  $('#loader').show();
+  google.script.run
+    .withSuccessHandler(function (list) {
+      $('#loader').hide();
+      currentMaterialList = list || [];
+      renderMaterialTable(currentMaterialList);
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, '⚠️ โหลดข้อมูลวัสดุล้มเหลว: ' + err.message);
+    })
+    .getMaterialList(filter);
+}
+
+function renderMaterialTable(list) {
+  const tbody = $('#parcelmentTable-body');
+  tbody.empty();
+
+  if (!list || list.length === 0) {
+    tbody.html(`
+      <tr>
+        <td class="text-center p-4" colspan="7"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่พบข้อมูลวัสดุ</span></td>
+      </tr>
+    `);
+    return;
+  }
+
+  list.forEach(item => {
+    const isLowStock = Number(item.currentQty || 0) <= Number(item.minStock || 0);
+    const stockBadge = isLowStock
+      ? `<span class="badge text-bg-danger rounded-pill px-3 py-1" title="ใกล้หมดคลัง">${item.currentQty} ${item.unit || ''} (ใกล้หมด)</span>`
+      : `<span class="badge text-bg-success rounded-pill px-3 py-1">${item.currentQty} ${item.unit || ''}</span>`;
+
+    const rowHtml = `
+      <tr class="align-middle">
+        <td class="text-center fw-bold">${item.matNumber || '-'}</td>
+        <td>
+          <div class="fw-bold">${item.matName || '-'}</div>
+          <small class="text-muted">${item.location ? 'ที่เก็บ: ' + item.location : ''}</small>
+        </td>
+        <td>${item.category || '-'}</td>
+        <td>${item.type || '-'}</td>
+        <td>${item.agency || '-'}</td>
+        <td class="text-center">${stockBadge}</td>
+        <td class="text-center">
+          <div class="btn-group btn-group-sm" role="group">
+            <button class="btn btn-outline-success" title="รับเข้าพัสดุ (Stock In)" onclick="openStockModal('${item.key}', 'in')">
+              <i class="fa-solid fa-arrow-down"></i> รับเข้า
+            </button>
+            <button class="btn btn-outline-primary" title="เบิกจ่ายพัสดุ (Stock Out)" onclick="openStockModal('${item.key}', 'out')">
+              <i class="fa-solid fa-arrow-up"></i> เบิกจ่าย
+            </button>
+            <button class="btn btn-outline-warning" title="แก้ไขข้อมูล" onclick="editMaterialByKey('${item.key}')">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="btn btn-outline-danger" title="ลบ" onclick="deleteMaterialByKey('${item.key}')">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+    tbody.append(rowHtml);
+  });
+}
+
+function openAddMaterialModal() {
+  $('#matKey').val('');
+  $('#matNumber').val('');
+  $('#matName').val('');
+  $('#matCategory').val('');
+  $('#matType').val('');
+  $('#matAgency').val('');
+  $('#matLocation').val('');
+  $('#matQty').val('0');
+  $('#matUnit').val('ชิ้น');
+  $('#matPrice').val('0');
+  $('#matMinStock').val('5');
+  $('#modalAddMaterialTitle').html('<i class="fa-duotone fa-box-archive text-success me-2"></i> บันทึกข้อมูลวัสดุใหม่');
+  $('#modalAddMaterial').modal('show');
+}
+
+function editMaterialByKey(key) {
+  const item = currentMaterialList.find(m => m.key === key);
+  if (!item) return;
+
+  $('#matKey').val(item.key);
+  $('#matNumber').val(item.matNumber || '');
+  $('#matName').val(item.matName || '');
+  $('#matCategory').val(item.category || '');
+  $('#matType').val(item.type || '');
+  $('#matAgency').val(item.agency || '');
+  $('#matLocation').val(item.location || '');
+  $('#matQty').val(item.currentQty || 0);
+  $('#matUnit').val(item.unit || '');
+  $('#matPrice').val(item.price || 0);
+  $('#matMinStock').val(item.minStock || 5);
+  $('#modalAddMaterialTitle').html('<i class="fa-duotone fa-pen-to-square text-warning me-2"></i> แก้ไขข้อมูลวัสดุ');
+  $('#modalAddMaterial').modal('show');
+}
+
+function handleSaveMaterial() {
+  const matNumber = $('#matNumber').val().trim();
+  const matName = $('#matName').val().trim();
+
+  if (!matNumber) {
+    toastAlert(0, '⚠️ กรุณาระบุหมายเลขวัสดุ');
+    return;
+  }
+  if (!matName) {
+    toastAlert(0, '⚠️ กรุณาระบุชื่อวัสดุ');
+    return;
+  }
+
+  const payload = {
+    key: $('#matKey').val() || ('MAT-' + Date.now()),
+    matNumber: matNumber,
+    matName: matName,
+    category: $('#matCategory').val().trim(),
+    type: $('#matType').val().trim(),
+    agency: $('#matAgency').val(),
+    location: $('#matLocation').val().trim(),
+    currentQty: Number($('#matQty').val() || 0),
+    unit: $('#matUnit').val().trim(),
+    price: Number($('#matPrice').val() || 0),
+    minStock: Number($('#matMinStock').val() || 0)
+  };
+
+  $('#loader').show();
+  google.script.run
+    .withSuccessHandler(function (res) {
+      $('#loader').hide();
+      if (res && res.status) {
+        toastAlert(1, '🎉 บันทึกข้อมูลวัสดุสำเร็จ');
+        $('#modalAddMaterial').modal('hide');
+        loadMaterialTable();
+        loadEquipmentDashboard();
+      } else {
+        toastAlert(0, '⚠️ บันทึกไม่สำเร็จ: ' + (res ? res.message : ''));
+      }
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, '⚠️ เกิดข้อผิดพลาด: ' + err.message);
+    })
+    .saveMaterial(payload);
+}
+
+function openStockModal(key, action) {
+  const item = currentMaterialList.find(m => m.key === key);
+  if (!item) return;
+
+  $('#stockMatKey').val(item.key);
+  $('#stockAction').val(action);
+  $('#stockMatName').text(`${item.matNumber} - ${item.matName}`);
+  $('#stockCurrentQty').text(item.currentQty || 0);
+  $('#stockMatUnit').text(item.unit || '');
+  $('#stockQuantity').val(1);
+  $('#stockUser').val('');
+  $('#stockPurpose').val('');
+
+  if (action === 'in') {
+    $('#modalStockTitle').html('<i class="fa-duotone fa-arrow-down text-success me-2"></i> รับเข้าวัสดุ (Stock In)');
+    $('#stockQtyLabel').html('จำนวนที่ต้องการรับเข้า: <span class="text-danger">*</span>');
+    $('#stockUserLabel').text('ชื่อผู้ส่งมอบ / ผู้รับเข้า:');
+    $('#btnConfirmStock').removeClass('btn-primary').addClass('btn-success').html('<i class="fa-solid fa-check"></i> ยืนยันการรับเข้า');
+  } else {
+    $('#modalStockTitle').html('<i class="fa-duotone fa-arrow-up text-primary me-2"></i> เบิกจ่ายวัสดุ (Stock Out)');
+    $('#stockQtyLabel').html('จำนวนที่ต้องการเบิกจ่าย: <span class="text-danger">*</span>');
+    $('#stockUserLabel').text('ชื่อผู้เบิก / ผู้รับของ:');
+    $('#btnConfirmStock').removeClass('btn-success').addClass('btn-primary').html('<i class="fa-solid fa-check"></i> ยืนยันการเบิกจ่าย');
+  }
+
+  $('#modalStockMaterial').modal('show');
+}
+
+function handleConfirmStock() {
+  const key = $('#stockMatKey').val();
+  const action = $('#stockAction').val();
+  const qty = Number($('#stockQuantity').val() || 0);
+  const user = $('#stockUser').val().trim();
+  const purpose = $('#stockPurpose').val().trim();
+
+  if (qty <= 0) {
+    toastAlert(0, '⚠️ จำนวนต้องมากกว่า 0');
+    return;
+  }
+
+  const payload = {
+    key: key,
+    action: action,
+    quantity: qty,
+    user: user,
+    purpose: purpose
+  };
+
+  $('#loader').show();
+  google.script.run
+    .withSuccessHandler(function (res) {
+      $('#loader').hide();
+      if (res && res.status) {
+        toastAlert(1, `🎉 ${action === 'in' ? 'รับเข้า' : 'เบิกจ่าย'}วัสดุสำเร็จ (คงเหลือใหม่: ${res.newQty})`);
+        $('#modalStockMaterial').modal('hide');
+        loadMaterialTable();
+        loadEquipmentDashboard();
+      } else {
+        toastAlert(0, '⚠️ ไม่สามารถทำรายการได้: ' + (res ? res.message : ''));
+      }
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, '⚠️ เกิดข้อผิดพลาด: ' + err.message);
+    })
+    .stockMaterial(payload);
+}
+
+function deleteMaterialByKey(key) {
+  const item = currentMaterialList.find(m => m.key === key);
+  const name = item ? item.matName : key;
+
+  if (!confirm(`คุณต้องการลบข้อมูลวัสดุ "${name}" ใช่หรือไม่?`)) {
+    return;
+  }
+
+  $('#loader').show();
+  google.script.run
+    .withSuccessHandler(function (res) {
+      $('#loader').hide();
+      if (res && res.status) {
+        toastAlert(1, '🗑️ ลบข้อมูลวัสดุสำเร็จ');
+        loadMaterialTable();
+        loadEquipmentDashboard();
+      } else {
+        toastAlert(0, '⚠️ ลบข้อมูลไม่สำเร็จ: ' + (res ? res.message : ''));
+      }
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, '⚠️ เกิดข้อผิดพลาด: ' + err.message);
+    })
+    .deleteMaterial(key);
+}
+
+/**
+ * ============================================================
+ * PAGE 5: Borrow & Return Workflow
+ * ============================================================
+ */
+function loadBorrowTable() {
+  const filter = {
+    status: $('#borrowFilterStatus').val() || '',
+    keyword: $('#borrowFilterKeyword').val().trim()
+  };
+
+  $('#loader').show();
+  google.script.run
+    .withSuccessHandler(function (list) {
+      $('#loader').hide();
+      currentBorrowList = list || [];
+      renderBorrowStatsAndTable(currentBorrowList);
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, '⚠️ โหลดข้อมูลการยืม/คืนล้มเหลว: ' + err.message);
+    })
+    .getBorrowList(filter);
+}
+
+function renderBorrowStatsAndTable(list) {
+  let activeCount = 0;
+  let returnedCount = 0;
+  let overdueCount = 0;
+
+  list.forEach(item => {
+    if (item.status === 'คืนแล้ว') {
+      returnedCount++;
+    } else if (item.status === 'เกินกำหนดส่งคืน') {
+      overdueCount++;
+    } else {
+      activeCount++;
+    }
+  });
+
+  $('#borrowCountActive').text(activeCount);
+  $('#borrowCountReturned').text(returnedCount);
+  $('#borrowCountOverdue').text(overdueCount);
+
+  const tbody = $('#borrowTable-body');
+  tbody.empty();
+
+  if (!list || list.length === 0) {
+    tbody.html(`
+      <tr>
+        <td class="text-center p-4" colspan="11"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่พบรายการยืม/คืน</span></td>
+      </tr>
+    `);
+    return;
+  }
+
+  list.forEach(item => {
+    let badgeClass = 'text-bg-primary';
+    if (item.status === 'คืนแล้ว') badgeClass = 'text-bg-success';
+    if (item.status === 'เกินกำหนดส่งคืน') badgeClass = 'text-bg-danger';
+
+    const actionBtn = item.status === 'คืนแล้ว'
+      ? `<span class="text-success small fw-bold"><i class="fa-solid fa-circle-check"></i> เรียบร้อย</span>`
+      : `<button class="btn btn-success btn-sm rounded-3 px-2 py-1" onclick="openReturnModal('${item.key}')">
+           <i class="fa-solid fa-arrow-rotate-left"></i> รับคืน
+         </button>`;
+
+    const rowHtml = `
+      <tr class="align-middle text-center">
+        <td class="fw-bold">${item.key || '-'}</td>
+        <td><span class="badge text-bg-light border">${item.borrowType || 'ครุภัณฑ์'}</span></td>
+        <td>${item.itemNumber || '-'}</td>
+        <td class="text-start fw-semibold">${item.itemName || '-'}</td>
+        <td>${item.borrowerName || '-'}</td>
+        <td>${item.borrowerAgency || '-'}</td>
+        <td>${item.borrowDate || '-'}</td>
+        <td>${item.returnDueDate || '-'}</td>
+        <td>${item.actualReturnDate || '<span class="text-muted">-</span>'}</td>
+        <td><span class="badge ${badgeClass} rounded-pill px-3 py-1">${item.status}</span></td>
+        <td>${actionBtn}</td>
+      </tr>
+    `;
+    tbody.append(rowHtml);
+  });
+}
+
+function openBorrowModal() {
+  $('#formBorrowItem')[0].reset();
+  $('#borrowTypeEquip').prop('checked', true);
+
+  // Set default dates
+  const today = new Date().toISOString().split('T')[0];
+  const nextWeek = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
+  $('#borrowDate').val(today);
+  $('#returnDueDate').val(nextWeek);
+
+  loadAvailableBorrowItems('ครุภัณฑ์');
+  $('#modalBorrowItem').modal('show');
+}
+
+function handleBorrowTypeChange() {
+  const type = $('input[name="borrowType"]:checked').val();
+  loadAvailableBorrowItems(type);
+}
+
+function loadAvailableBorrowItems(type) {
+  const select = $('#borrowItemSelect');
+  select.empty().append('<option value="">กำลังโหลดรายการ...</option>');
+
+  if (type === 'ครุภัณฑ์') {
+    google.script.run
+      .withSuccessHandler(function (items) {
+        select.empty();
+        if (!items || items.length === 0) {
+          select.append('<option value="">-- ไม่มีครุภัณฑ์พร้อมให้ยืม --</option>');
+          return;
+        }
+        select.append('<option value="">-- เลือกครุภัณฑ์ --</option>');
+        items.forEach(item => {
+          select.append(`<option value="${item.key}" data-number="${item.equipNumber}" data-name="${item.itemName}">${item.equipNumber} - ${item.itemName} (${item.agency || ''})</option>`);
+        });
+      })
+      .withFailureHandler(function (err) {
+        select.empty().append('<option value="">เกิดข้อผิดพลาดในการโหลด</option>');
+      })
+      .getEquipmentAvailableForBorrow();
+  } else {
+    // วัสดุ
+    google.script.run
+      .withSuccessHandler(function (materials) {
+        select.empty();
+        if (!materials || materials.length === 0) {
+          select.append('<option value="">-- ไม่มีวัสดุในคลัง --</option>');
+          return;
+        }
+        select.append('<option value="">-- เลือกวัสดุ --</option>');
+        materials.forEach(mat => {
+          if (Number(mat.currentQty || 0) > 0) {
+            select.append(`<option value="${mat.key}" data-number="${mat.matNumber}" data-name="${mat.matName}">${mat.matNumber} - ${mat.matName} (คงเหลือ: ${mat.currentQty} ${mat.unit || ''})</option>`);
+          }
+        });
+      })
+      .getMaterialList({});
+  }
+}
+
+function handleSaveBorrow() {
+  const selectedOption = $('#borrowItemSelect option:selected');
+  const itemKey = $('#borrowItemSelect').val();
+  const borrowerName = $('#borrowerName').val().trim();
+  const borrowDate = $('#borrowDate').val();
+  const returnDueDate = $('#returnDueDate').val();
+
+  if (!itemKey) {
+    toastAlert(0, '⚠️ กรุณาเลือกรายการที่ต้องการยืม');
+    return;
+  }
+  if (!borrowerName) {
+    toastAlert(0, '⚠️ กรุณาระบุชื่อผู้ยืม');
+    return;
+  }
+  if (!borrowDate || !returnDueDate) {
+    toastAlert(0, '⚠️ กรุณาระบุวันที่ยืมและกำหนดส่งคืน');
+    return;
+  }
+
+  const payload = {
+    borrowType: $('input[name="borrowType"]:checked').val(),
+    itemKey: itemKey,
+    itemNumber: selectedOption.data('number') || '',
+    itemName: selectedOption.data('name') || '',
+    borrowerName: borrowerName,
+    borrowerAgency: $('#borrowerAgency').val(),
+    borrowDate: borrowDate,
+    returnDueDate: returnDueDate,
+    purpose: $('#borrowPurpose').val().trim()
+  };
+
+  $('#loader').show();
+  google.script.run
+    .withSuccessHandler(function (res) {
+      $('#loader').hide();
+      if (res && res.status) {
+        toastAlert(1, '🎉 บันทึกการยืมเรียบร้อยแล้ว');
+        $('#modalBorrowItem').modal('hide');
+        loadBorrowTable();
+        loadEquipmentTable(); // Update equipment status in table
+      } else {
+        toastAlert(0, '⚠️ เกิดข้อผิดพลาด: ' + (res ? res.message : ''));
+      }
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, '⚠️ บันทึกล้มเหลว: ' + err.message);
+    })
+    .saveBorrow(payload);
+}
+
+function openReturnModal(borrowKey) {
+  const item = currentBorrowList.find(b => b.key === borrowKey);
+  if (!item) return;
+
+  $('#returnBorrowKey').val(item.key);
+  $('#returnItemName').text(`${item.itemNumber} - ${item.itemName}`);
+  $('#returnBorrowerName').text(`${item.borrowerName} (${item.borrowerAgency || '-'})`);
+
+  const today = new Date().toISOString().split('T')[0];
+  $('#actualReturnDate').val(today);
+  $('#returnCondition').val('สภาพปกติพร้อมใช้งาน');
+
+  $('#modalReturnItem').modal('show');
+}
+
+function handleConfirmReturn() {
+  const borrowKey = $('#returnBorrowKey').val();
+  const actualDate = $('#actualReturnDate').val();
+  const condition = $('#returnCondition').val();
+
+  if (!borrowKey || !actualDate) {
+    toastAlert(0, '⚠️ กรุณาระบุวันที่คืนจริง');
+    return;
+  }
+
+  const payload = {
+    key: borrowKey,
+    actualReturnDate: actualDate,
+    condition: condition
+  };
+
+  $('#loader').show();
+  google.script.run
+    .withSuccessHandler(function (res) {
+      $('#loader').hide();
+      if (res && res.status) {
+        toastAlert(1, '🎉 บันทึกการรับคืนเรียบร้อยแล้ว');
+        $('#modalReturnItem').modal('hide');
+        loadBorrowTable();
+        loadEquipmentTable(); // Restore equipment status
+      } else {
+        toastAlert(0, '⚠️ บันทึกรับคืนไม่สำเร็จ: ' + (res ? res.message : ''));
+      }
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, '⚠️ เกิดข้อผิดพลาด: ' + err.message);
+    })
+    .returnBorrow(payload);
+}
+</script>
