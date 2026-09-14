@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   await runSettingMenu();
   
   if (isLoggedIn === 'true') {
-    await changePage(1);
+    initAppHashRouter();
     // await changePageProflie(6);
     // await profileManu(6);
 
@@ -286,7 +286,253 @@ document.addEventListener("keydown", function(e) {
   } 
 });
 
-const changePage = (data) => {
+// ============================================================
+// URL Hash Router & Page Persistence System
+// ============================================================
+function setAppHash(hash) {
+  if (!hash) return;
+  hash = String(hash).replace(/^#/, '');
+  
+  // 1. Save in localStorage for persistent reload
+  try {
+    localStorage.setItem('jk_active_hash', hash);
+  } catch (e) {}
+
+  // 2. Update browser history / address bar
+  try {
+    if (window.location.hash !== '#' + hash) {
+      history.replaceState(null, null, '#' + hash);
+    }
+  } catch (e) {
+    try { window.location.hash = hash; } catch (err) {}
+  }
+
+  // 3. Update Google Apps Script top-level iframe URL hash
+  try {
+    if (typeof google !== 'undefined' && google.script && google.script.history) {
+      google.script.history.replace(null, null, hash);
+    }
+  } catch (e) {}
+}
+
+function getAppHash() {
+  let hash = '';
+  try {
+    if (window.location.hash) {
+      hash = window.location.hash.replace(/^#/, '');
+    }
+  } catch (e) {}
+
+  if (!hash) {
+    try {
+      hash = localStorage.getItem('jk_active_hash') || '';
+    } catch (e) {}
+  }
+  return hash;
+}
+
+function restorePageFromHash(targetHash) {
+  const hash = targetHash || getAppHash();
+  if (!hash) {
+    changePage(1, true);
+    return;
+  }
+
+  let page = null;
+  let sub = null;
+
+  if (hash.includes('=')) {
+    const params = new URLSearchParams(hash);
+    page = params.get('page') ? Number(params.get('page')) : null;
+    sub = params.get('sub') ? Number(params.get('sub')) : null;
+  } else if (/^\d+([/-]\d+)?$/.test(hash)) {
+    const parts = hash.split(/[-/]/);
+    page = Number(parts[0]);
+    sub = parts[1] ? Number(parts[1]) : null;
+  } else if (hash.startsWith('equipment') || hash.startsWith('equip')) {
+    page = 23;
+    const parts = hash.split(/[-/]/);
+    sub = parts[1] ? Number(parts[1]) : 1;
+  } else if (hash.startsWith('checkbin')) {
+    page = 22;
+    const parts = hash.split(/[-/]/);
+    sub = parts[1] ? Number(parts[1]) : 1;
+  } else if (hash.startsWith('esalary')) {
+    page = 24;
+    const parts = hash.split(/[-/]/);
+    sub = parts[1] ? Number(parts[1]) : 1;
+  } else if (hash.startsWith('hrm')) {
+    page = 20;
+    const parts = hash.split(/[-/]/);
+    sub = parts[1] ? Number(parts[1]) : 1;
+  } else if (hash.startsWith('land') || hash.startsWith('saveland')) {
+    page = 21;
+    const parts = hash.split(/[-/]/);
+    sub = parts[1] ? Number(parts[1]) : 1;
+  } else if (hash.startsWith('page')) {
+    const parts = hash.split(/[-/]/);
+    page = parts[1] ? Number(parts[1]) : 1;
+    sub = parts[2] ? Number(parts[2]) : null;
+  }
+
+  if (page === 23) {
+    if (typeof changePageEquip === 'function') {
+      changePageEquip(sub || 1, true);
+    } else {
+      changePage(23, true);
+    }
+  } else if (page === 22) {
+    if (typeof changePageCheckBin === 'function') {
+      changePageCheckBin(sub || 1, true);
+    } else {
+      changePage(22, true);
+    }
+  } else if (page === 24) {
+    if (typeof changePageESalary === 'function') {
+      changePageESalary(sub || 1, true);
+    } else {
+      changePage(24, true);
+    }
+  } else if (page === 20) {
+    if (typeof changePageHrm === 'function') {
+      changePageHrm(sub || 1, true);
+    } else {
+      changePage(20, true);
+    }
+  } else if (page === 21) {
+    if (typeof changePageLand === 'function') {
+      changePageLand(sub || 1, true);
+    } else {
+      changePage(21, true);
+    }
+  } else if (page === 2) {
+    if (typeof changePageSenddoc === 'function') {
+      changePageSenddoc(sub || 1, true);
+    } else {
+      changePage(2, true);
+    }
+  } else if (page === 3) {
+    if (typeof changePageBookSend === 'function') {
+      changePageBookSend(sub || 1, true);
+    } else {
+      changePage(3, true);
+    }
+  } else if (page === 4) {
+    if (typeof changePageGetDoc === 'function') {
+      changePageGetDoc(sub || 1, true);
+    } else {
+      changePage(4, true);
+    }
+  } else if (page === 5) {
+    if (typeof changePageDocOut === 'function') {
+      changePageDocOut(sub || 1, true);
+    } else {
+      changePage(5, true);
+    }
+  } else if (page === 6) {
+    if (typeof changePageCarReserve === 'function') {
+      changePageCarReserve(sub || 1, true);
+    } else {
+      changePage(6, true);
+    }
+  } else if (page === 7) {
+    if (typeof changePageCalendar === 'function') {
+      changePageCalendar(sub || 1, true);
+    } else {
+      changePage(7, true);
+    }
+  } else if (page === 8) {
+    if (typeof changePageLeave === 'function') {
+      changePageLeave(sub || 1, true);
+    } else {
+      changePage(8, true);
+    }
+  } else if (page === 9) {
+    if (typeof changePageReport === 'function') {
+      changePageReport(sub || 1, true);
+    } else {
+      changePage(9, true);
+    }
+  } else if (page === 10) {
+    if (typeof changePageProject === 'function') {
+      changePageProject(sub || 1, true);
+    } else {
+      changePage(10, true);
+    }
+  } else if (page === 13) {
+    if (typeof changePageNotify === 'function') {
+      changePageNotify(sub || 1, true);
+    } else {
+      changePage(13, true);
+    }
+  } else if (page === 14) {
+    if (typeof changePageSetAgency === 'function') {
+      changePageSetAgency(sub || 1, true);
+    } else {
+      changePage(14, true);
+    }
+  } else if (page === 15) {
+    if (typeof changePageDatabase === 'function') {
+      changePageDatabase(sub || 1, true);
+    } else {
+      changePage(15, true);
+    }
+  } else if (page === 17) {
+    if (typeof changePageProflie === 'function') {
+      changePageProflie(sub || 1, true);
+    } else {
+      changePage(17, true);
+    }
+  } else if (page === 18) {
+    if (typeof changePageMeeting === 'function') {
+      changePageMeeting(sub || 1, true);
+    } else {
+      changePage(18, true);
+    }
+  } else if (page === 19) {
+    if (typeof changePageLicense === 'function') {
+      changePageLicense(sub || 1, true);
+    } else {
+      changePage(19, true);
+    }
+  } else if (page && page >= 1 && page <= 30) {
+    changePage(page, true);
+  } else {
+    changePage(1, true);
+  }
+}
+
+function initAppHashRouter() {
+  if (typeof google !== 'undefined' && google.script && google.script.url) {
+    google.script.url.getLocation(function (loc) {
+      if (loc && loc.hash) {
+        restorePageFromHash(loc.hash);
+      } else {
+        restorePageFromHash();
+      }
+    });
+  } else {
+    restorePageFromHash();
+  }
+
+  // Listen for browser Back / Forward buttons and manual hash changes
+  window.addEventListener('hashchange', function () {
+    restorePageFromHash();
+  });
+
+  if (typeof google !== 'undefined' && google.script && google.script.history) {
+    google.script.history.setChangeHandler(function (e) {
+      if (e && e.hash) {
+        restorePageFromHash(e.hash);
+      }
+    });
+  }
+}
+
+const changePage = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash('page=' + data);
+  }
   $("#loader").show();
   $('.tooltip.custom-tooltip').remove();
   $('#notificationDropdown').dropdown('hide');
@@ -306,11 +552,14 @@ const changePage = (data) => {
   }, 500); 
 }
 
-const changePageProflie = (data) => {
+const changePageProflie = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=17&sub=${data}`);
+  }
   $("#loader").show();
 
   setTimeout(() => {
-    changePage(17);
+    changePage(17, true);
     if (data == 1) {
       profileManu(3);  
       toastAlert(1, "🌟 หน้าโปรไฟล์ของฉัน"); 
@@ -398,7 +647,10 @@ const toastAlert = (status, text, delay = 3000) => {
     }, delay);
 }
 
-const changePageSenddoc = (data) => {
+const changePageSenddoc = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=2&sub=${data}`);
+  }
   const textMap = {
     1: 'สร้างหนังสือส่งภายใน',
     2: 'หนังสือรอดำเนินการ',
@@ -418,7 +670,7 @@ const changePageSenddoc = (data) => {
     6: insertDataReturn,
   };
 
-  changePage(2);
+  changePage(2, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -437,13 +689,16 @@ const changePageSenddoc = (data) => {
     $("#sendDoc").text(textMap[data]);
   }, 500);
 };
-const changePageBookSend = (data) => {
+const changePageBookSend = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=3&sub=${data}`);
+  }
   const textMap = {
     1: 'บันทึกหนังสือส่ง',
     2: 'รายงานหนังสือส่ง',
   };
 
-  changePage(3);
+  changePage(3, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -457,7 +712,10 @@ const changePageBookSend = (data) => {
     $("#docAnnoncebreadcrumb1").text(textMap[data])
   }, 500);
 }   
-const changePageGetDoc = (data) => {
+const changePageGetDoc = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=4&sub=${data}`);
+  }
   const textMap = {
     1: 'รับหนังสือ (ภายใน)',
     2: 'รับหนังสือ (ภายนอก)',
@@ -469,7 +727,7 @@ const changePageGetDoc = (data) => {
     2: insertDataGetDocOut,
     3: insertDataGetDocFollow,
   };  
-  changePage(4);
+  changePage(4, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -483,7 +741,10 @@ const changePageGetDoc = (data) => {
     $("#pickupbreadcrumb1").text(textMap[data]);
   }, 500);
 }
-const changePageDocOut = (data) => {
+const changePageDocOut = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=5&sub=${data}`);
+  }
   const textMap = {
     1: 'สร้างหนังสือส่งภายนอก',
     2: 'หนังสือรอดำเนินการ',
@@ -501,7 +762,7 @@ const changePageDocOut = (data) => {
     5: insertDataOutFollow,
     6: insertDataOutReturn,
   };
-  changePage(5);
+  changePage(5, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -515,7 +776,10 @@ const changePageDocOut = (data) => {
     $("#receivebreadcrumb1").text(textMap[data])
   }, 500);
 }
-const changePageCarReserve = (data) => {
+const changePageCarReserve = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=6&sub=${data}`);
+  }
   const textMap = {
     1: 'รถทั้งหมด',
     2: 'ประวัติการขอใช้รถ',
@@ -523,7 +787,7 @@ const changePageCarReserve = (data) => {
     4: 'การอนุมัติใช้รถ',
   };
 
-  changePage(6);
+  changePage(6, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -534,14 +798,17 @@ const changePageCarReserve = (data) => {
     $("#carbreadcrumb3").text(textMap[data])
   }, 500); 
 }
-const changePageCalendar = (data) => {
+const changePageCalendar = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=7&sub=${data}`);
+  }
   const textMap = {
     1: 'กิจกรรมทั้งหมด',
     2: 'เพิ่มกิจกรรม',
     3: 'แก้ไขกิจกรรม',
   };
 
-  changePage(7);
+  changePage(7, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -556,7 +823,10 @@ const changePageCalendar = (data) => {
     $("#loader").hide();
   }, 500); 
 }
-const changePageLeave = (data) => {
+const changePageLeave = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=8&sub=${data}`);
+  }
   const textMap = {
     1: 'แดชบอร์ด',
     2: 'แบบฟอร์มการลา',
@@ -567,7 +837,7 @@ const changePageLeave = (data) => {
     7: 'รายละเอียด',
   };
 
-  changePage(8);
+  changePage(8, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -589,14 +859,17 @@ const changePageLeave = (data) => {
     $("#loader").hide();
   }, 500); 
 }
-const changePageReport = (data) => {
+const changePageReport = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=9&sub=${data}`);
+  }
   const textMap = {
     1: 'การรายงาน',
     2: 'เพิ่มรายงาน',
     3: 'ประวัติการรายงาน',
     4: 'รายละเอียดการรายงาน',
   };
-  changePage(9);
+  changePage(9, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -611,13 +884,16 @@ const changePageReport = (data) => {
     $("#loader").hide();
   }, 500); 
 }
-const changePageProject = (data) => {
+const changePageProject = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=10&sub=${data}`);
+  }
   const textMap = {
     1: 'เพิ่มโครงการ',
     2: 'ตรวจสอบโครงการ',
     3: 'รายละเอียดของโครงการ',
   };
-  changePage(10);
+  changePage(10, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -628,13 +904,16 @@ const changePageProject = (data) => {
     $("#loader").hide();
   }, 500);  
 }
-const changePageNotify = (data) => {
+const changePageNotify = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=13&sub=${data}`);
+  }
   const textMap = {
     1: 'บันทึกประกาศแจ้งเตือน',
     2: 'รายการประกาศแจ้งเตือน',
     3: 'ตรวจสอบ Line Token',
   };
-  changePage(13);
+  changePage(13, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -645,7 +924,10 @@ const changePageNotify = (data) => {
     $("#loader").hide();
   }, 500); 
 }
-const changePageSetAgency = (data) => {
+const changePageSetAgency = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=14&sub=${data}`);
+  }
   const textMap = {
     1: 'ตั้งค่าหน่วยงาน',
     2: 'ตั้งค่าแผนก',
@@ -657,7 +939,7 @@ const changePageSetAgency = (data) => {
     8: 'หมู่บ้านในพื้นที่',
     9: 'ตั้งค่าบัตรประจำตัว',
   };
-  changePage(14);
+  changePage(14, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -668,7 +950,10 @@ const changePageSetAgency = (data) => {
     $("#loader").hide();
   }, 500); 
 }
-const changePageDatabase = (data) => {
+const changePageDatabase = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=15&sub=${data}`);
+  }
   const textMap = {
     1: 'หน่วยงานที่เกี่ยวข้อง',
     2: 'หมวดของหนังสือ',
@@ -684,7 +969,7 @@ const changePageDatabase = (data) => {
     12: 'รายการรายรับต่อเดือน',
     13: 'รายการหักเงินเดือน',
   };
-  changePage(15);
+  changePage(15, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -695,13 +980,16 @@ const changePageDatabase = (data) => {
     $("#loader").hide();
   }, 500); 
 }
-const changePageMeeting = (data) => {
+const changePageMeeting = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=18&sub=${data}`);
+  }
   const textMap = {
     1: 'รายงานการใช้งานประชุม',
     2: 'เพิ่มข้อมูลการจอง',
     3: 'รายละเอียดการจองห้องประชุม',
   };
-  changePage(18);
+  changePage(18, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -720,12 +1008,15 @@ const changePageMeeting = (data) => {
     $("#loader").hide();
   }, 500);  
 }
-const changePageLicense = (data) => {
+const changePageLicense = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=19&sub=${data}`);
+  }
   const textMap = {
     1: 'การตั้งค่าสิทธิ์ผู้ใช้งาน',
     2: 'กำหนดสิทธิ์การใช้งาน',
   };
-  changePage(19);
+  changePage(19, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -736,13 +1027,16 @@ const changePageLicense = (data) => {
     $("#loader").hide();
   }, 500);  
 }
-const changePageHrm = (data) => {
+const changePageHrm = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=20&sub=${data}`);
+  }
   const textMap = {
     1: 'บุคลากรในหน่วยงานทั้งหมด',
     2: 'ออกบัตรประจำตัวเจ้าหน้าที่',
     3: 'สถานะบุคลากร',
   };
-  changePage(20);
+  changePage(20, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -763,12 +1057,15 @@ const changePageHrm = (data) => {
     $("#loader").hide();
   }, 500);   
 }
-const changePageLand = (data) => {
+const changePageLand = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=21&sub=${data}`);
+  }
   const textMap = {
     1: 'ฐานข้อมูลการอุทิศที่ดิน',
     2: 'เพิ่มข้อมูลการอุทิศที่ดิน',
   };
-  changePage(21);
+  changePage(21, true);
   $("#loader").show();
 
   setTimeout(() => {
@@ -779,10 +1076,13 @@ const changePageLand = (data) => {
     $("#loader").hide();
   }, 500);  
 }
-const changePageCheckBin = (data) => {
+const changePageCheckBin = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=22&sub=${data}`);
+  }
   const textMap = { 1: 'รายงานถังขยะทั้งหมด', 2: 'การจัดการถังขยะ', 3: 'ค่าธรรมเนียมการกำจัดสิ่งปฏิกูลและมูลฝอย', 4: 'การแจ้งปัญหาเกี่ยวกับถังขยะ' };
 
-  changePage(22); 
+  changePage(22, true); 
   $("#loader").show();
 
   setTimeout(() => {
@@ -802,10 +1102,13 @@ const changePageCheckBin = (data) => {
     $("#loader").hide(); 
   }, 500);
 }
-const changePageEquip = (data) => {
+const changePageEquip = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=23&sub=${data}`);
+  }
   const textMap = { 1: 'ข้อมูลวัสดุและครุภัณฑ์ในหน่วยงาน', 2: 'การจัดซื้อ-จัดจ้างวัสดุและครุภัณฑ์', 3: 'ครุภัณฑ์ในหน่วยงาน', 4: 'วัสดุในหน่วยงาน', 5: 'การยืม/คืนวัสดุและครุภัณฑ์' };
 
-  changePage(23); 
+  changePage(23, true); 
   $("#loader").show();
   
   setTimeout(() => {
@@ -817,10 +1120,13 @@ const changePageEquip = (data) => {
   }, 500);
 }
 
-const changePageESalary = (data) => {
+const changePageESalary = (data, skipHash) => {
+  if (!skipHash) {
+    setAppHash(`page=24&sub=${data}`);
+  }
   const textMap = { 1: 'ข้อมูลสลิปเงินเดือน', 2: 'การจัดการข้อมูลเงินเดือน', 3: 'แก้ไขข้อมูลเงินเดือน' };
 
-  changePage(24); 
+  changePage(24, true); 
   $("#loader").show();
   
   setTimeout(() => {

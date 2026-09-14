@@ -23,9 +23,9 @@ $(document).ready(function () {
  */
 function initEquipmentHooks() {
   const originalChangePageEquip = window.changePageEquip;
-  window.changePageEquip = function (page) {
+  window.changePageEquip = function (page, skipHash) {
     if (typeof originalChangePageEquip === 'function') {
-      originalChangePageEquip(page);
+      originalChangePageEquip(page, skipHash);
     }
     loadEquipmentPageData(page);
   };
