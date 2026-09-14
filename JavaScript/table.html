@@ -126,8 +126,8 @@ function renderHomeDocSendTable() {
   // 2. เรนเดอร์แถวตาราง
   if (totalCount === 0) {
     tableBody.innerHTML = `<tr>
-      <td class="text-center p-4 text-danger" colspan="4">
-        <i class="fa-solid fa-circle-info text-danger me-1"></i> ไม่พบข้อมูลหนังสือที่ตรงกับเงื่อนไข
+      <td class="text-center py-4 text-danger" colspan="4">
+        <i class="fa fa-info-circle text-danger me-1"></i> <span class="text-danger">ไม่พบข้อมูล!</span>
       </td>
     </tr>`;
   } else {
@@ -142,27 +142,25 @@ function renderHomeDocSendTable() {
     for (let i = 0; i < pagedData.length; i++) {
       const item = pagedData[i];
       const sendHtml = item.isOriginal
-        ? `<span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size:11px; width: fit-content;">ส่งต้นฉบับ</span>`
-        : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle" style="font-size:11px; width: fit-content;">ไม่ส่งต้นฉบับ</span>`;
+        ? '<span style="color:green; font-size:12px;">ส่งต้นฉบับ</span>'
+        : '<span style="color:red; font-size:12px;">ไม่ส่งต้นฉบับ</span>';
 
       const fromText = `${item.senderName} (${item.senderAgency})`;
       const statusIcon = statusMap[item.status] || '';
 
       html += `<tr>
         <td>
-          <div class="d-flex flex-column gap-1">
-            <span class="text-primary text-nowrap fw-semibold" style="font-size:13.5px; cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิดดูเอกสาร" onclick="docdetailOpenfile('${item.docId}', '${item.receiptId}', '${item.receiptParam9}')">
+          <div class="d-flex flex-column">
+            <span class="text-primary text-nowrap" style="font-size:14px; cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด" onclick="docdetailOpenfile('${item.docId}', '${item.receiptId}', '${item.receiptParam9}')">
               ${escapeHtml(item.docNum)}
             </span>
             ${sendHtml}
           </div>
         </td>
-        <td class="text-center text-nowrap" style="font-size:13px;">${escapeHtml(item.dateStr)}</td>
+        <td class="text-center" style="font-size:14px;">${escapeHtml(item.dateStr)}</td>
         <td>
-          <div style="max-width: 260px;">
-            <span class="fw-medium text-dark d-inline-block text-truncate w-100" style="font-size:13.5px;" title="${escapeHtml(item.subject)}">${escapeHtml(item.subject)}</span>
-            <div class="small text-muted text-truncate" title="จาก : ${escapeHtml(fromText)}"><span class="text-primary">จาก:</span> ${escapeHtml(fromText)}</div>
-          </div>
+          <span style="font-size:14px; font-weight: 500;">${escapeHtml(item.subject)}</span><br>
+          <span class="text-primary" style="font-size:12px;">จาก : </span><span style="font-size:12px;">${escapeHtml(fromText)}</span>
         </td>
         <td class="text-center">${statusIcon}</td>
       </tr>`;
@@ -232,8 +230,8 @@ function renderHomeDocOwnerTable() {
   // 2. เรนเดอร์แถวตาราง
   if (totalCount === 0) {
     tableBody.innerHTML = `<tr>
-      <td class="text-center p-4 text-danger" colspan="4">
-        <i class="fa-solid fa-circle-info text-danger me-1"></i> ไม่พบข้อมูลหนังสือที่ตรงกับเงื่อนไข
+      <td class="text-center py-4 text-danger" colspan="4">
+        <i class="fa fa-info-circle text-danger me-1"></i> <span class="text-danger">ไม่พบข้อมูล!</span>
       </td>
     </tr>`;
   } else {
@@ -250,8 +248,8 @@ function renderHomeDocOwnerTable() {
     for (let i = 0; i < pagedData.length; i++) {
       const item = pagedData[i];
       const sendHtml = item.isOriginal
-        ? `<span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size:11px; width: fit-content;">ส่งต้นฉบับ</span>`
-        : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle" style="font-size:11px; width: fit-content;">ไม่ส่งต้นฉบับ</span>`;
+        ? '<span style="color:green; font-size:12px;">ส่งต้นฉบับ</span>'
+        : '<span style="color:red; font-size:12px;">ไม่ส่งต้นฉบับ</span>';
 
       const fromText = `${item.fromName} (${item.fromOrg})`;
       const toText = `${item.toName} (${item.toOrg})`;
@@ -259,20 +257,18 @@ function renderHomeDocOwnerTable() {
 
       html += `<tr>
         <td>
-          <div class="d-flex flex-column gap-1">
-            <span class="text-primary text-nowrap fw-semibold" style="font-size:13.5px; cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิดดูเอกสาร" onclick="docdetailfile('${item.docId}')">
+          <div class="d-flex flex-column">
+            <span class="text-primary text-nowrap" style="font-size:14px; cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด" onclick="docdetailfile('${item.docId}')">
               ${escapeHtml(item.docNum)}
             </span>
             ${sendHtml}
           </div>
         </td>
-        <td class="text-center text-nowrap" style="font-size:13px;">${escapeHtml(item.date)}</td>
+        <td class="text-center" style="font-size:14px;">${escapeHtml(item.date)}</td>
         <td>
-          <div style="max-width: 260px;">
-            <span class="fw-medium text-dark d-inline-block text-truncate w-100" style="font-size:13.5px;" title="${escapeHtml(item.subject)}">${escapeHtml(item.subject)}</span>
-            <div class="small text-muted text-truncate" title="จาก : ${escapeHtml(fromText)}"><span class="text-primary">จาก:</span> ${escapeHtml(fromText)}</div>
-            <div class="small text-muted text-truncate" title="ถึง : ${escapeHtml(toText)}"><span class="text-primary">ถึง:</span> ${escapeHtml(toText)}</div>
-          </div>
+          <span style="font-size:14px; font-weight: 500;">${escapeHtml(item.subject)}</span><br>
+          <span class="text-primary" style="font-size:12px;">จาก : </span><span style="font-size:12px;">${escapeHtml(fromText)}</span><br>
+          <span class="text-primary" style="font-size:12px;">ถึง : </span><span style="font-size:12px;">${escapeHtml(toText)}</span>
         </td>
         <td class="text-center">${statusIcon}</td>
       </tr>`;
