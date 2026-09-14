@@ -1,163 +1,479 @@
 <script>
+// ==========================================
+// ระบบฟิลเตอร์ ค้นหา และแบ่งหน้าของหน้าแรก
+// ==========================================
+const homeDocSendState = {
+  data: [],
+  searchTerm: '',
+  statusFilter: 'all',
+  limit: 5,
+  currentPage: 1
+};
+
+const homeDocOwnerState = {
+  data: [],
+  searchTerm: '',
+  statusFilter: 'all',
+  limit: 5,
+  currentPage: 1
+};
+
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function renderPaginationUI(containerId, currentPage, totalPages, onPageChange) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  if (totalPages <= 1) {
+    container.innerHTML = '';
+    return;
+  }
+
+  let html = '';
+
+  // ปุ่มก่อนหน้า
+  const prevDisabled = currentPage === 1 ? 'disabled' : '';
+  html += `<li class="page-item ${prevDisabled}">
+    <a class="page-link" href="#" data-page="${currentPage - 1}" aria-label="Previous">
+      <i class="fa-solid fa-chevron-left" style="font-size:11px;"></i>
+    </a>
+  </li>`;
+
+  // คำนวณช่วงเลขหน้าที่จะแสดง (สูงสุด 5 หน้า)
+  let startPage = Math.max(1, currentPage - 2);
+  let endPage = Math.min(totalPages, startPage + 4);
+  if (endPage - startPage < 4) {
+    startPage = Math.max(1, endPage - 4);
+  }
+
+  if (startPage > 1) {
+    html += `<li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>`;
+    if (startPage > 2) {
+      html += `<li class="page-item disabled"><span class="page-link" style="padding: 0.25rem 0.5rem;">...</span></li>`;
+    }
+  }
+
+  for (let p = startPage; p <= endPage; p++) {
+    const activeClass = p === currentPage ? 'active' : '';
+    html += `<li class="page-item ${activeClass}"><a class="page-link" href="#" data-page="${p}">${p}</a></li>`;
+  }
+
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) {
+      html += `<li class="page-item disabled"><span class="page-link" style="padding: 0.25rem 0.5rem;">...</span></li>`;
+    }
+    html += `<li class="page-item"><a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a></li>`;
+  }
+
+  // ปุ่มถัดไป
+  const nextDisabled = currentPage === totalPages ? 'disabled' : '';
+  html += `<li class="page-item ${nextDisabled}">
+    <a class="page-link" href="#" data-page="${currentPage + 1}" aria-label="Next">
+      <i class="fa-solid fa-chevron-right" style="font-size:11px;"></i>
+    </a>
+  </li>`;
+
+  container.innerHTML = html;
+
+  $(container).find('a.page-link').off('click').on('click', function(e) {
+    e.preventDefault();
+    const targetPage = parseInt($(this).attr('data-page'), 10);
+    if (targetPage && targetPage >= 1 && targetPage <= totalPages && targetPage !== currentPage) {
+      onPageChange(targetPage);
+    }
+  });
+}
+
+function renderHomeDocSendTable() {
+  const tableBody = document.getElementById("docsendTable-body");
+  if (!tableBody) return;
+
+  // 1. กรองข้อมูลตามสถานะและคำค้นหา
+  let filtered = homeDocSendState.data.filter(item => {
+    if (homeDocSendState.statusFilter !== 'all') {
+      if (String(item.status) !== String(homeDocSendState.statusFilter)) return false;
+    }
+    if (homeDocSendState.searchTerm) {
+      const q = homeDocSendState.searchTerm.toLowerCase().trim();
+      const statusTextMap = { 0: 'ยังไม่ได้เปิด', 1: 'เปิดแล้ว', 2: 'ส่งตีกลับ', 3: 'เกษียนแล้ว' };
+      const sendType = item.isOriginal ? 'ส่งต้นฉบับ' : 'ไม่ส่งต้นฉบับ';
+      const textToSearch = `${item.docNum} ${item.subject} ${item.senderName} ${item.senderAgency} ${item.dateStr} ${sendType} ${statusTextMap[item.status] || ''}`.toLowerCase();
+      if (!textToSearch.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const totalCount = filtered.length;
+  const limitVal = homeDocSendState.limit;
+  const pageSize = limitVal === 'all' ? (totalCount || 1) : parseInt(limitVal, 10);
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+
+  if (homeDocSendState.currentPage > totalPages) {
+    homeDocSendState.currentPage = totalPages;
+  }
+  const currentPage = homeDocSendState.currentPage;
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, totalCount);
+  const pagedData = limitVal === 'all' ? filtered : filtered.slice(startIndex, endIndex);
+
+  // 2. เรนเดอร์แถวตาราง
+  if (totalCount === 0) {
+    tableBody.innerHTML = `<tr>
+      <td class="text-center p-4 text-danger" colspan="4">
+        <i class="fa-solid fa-circle-info text-danger me-1"></i> ไม่พบข้อมูลหนังสือที่ตรงกับเงื่อนไข
+      </td>
+    </tr>`;
+  } else {
+    const statusMap = {
+      0: '<i class="fa-duotone fa-envelope text-warning fa-xl" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ยังไม่ได้เปิด"></i>',
+      1: '<i class="fa-duotone fa-envelope-open-text fa-xl" style="color: var(--box2)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เปิดแล้ว"></i>',
+      2: '<i class="fa-duotone fa-share-all fa-flip-horizontal fa-xl" style="color: var(--box4)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ส่งตีกลับ"></i>',
+      3: '<i class="fa-duotone fa-pencil fa-xl" style="color: var(--box3)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เกษียนแล้ว"></i>',
+    };
+
+    let html = '';
+    for (let i = 0; i < pagedData.length; i++) {
+      const item = pagedData[i];
+      const sendHtml = item.isOriginal
+        ? `<span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size:11px; width: fit-content;">ส่งต้นฉบับ</span>`
+        : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle" style="font-size:11px; width: fit-content;">ไม่ส่งต้นฉบับ</span>`;
+
+      const fromText = `${item.senderName} (${item.senderAgency})`;
+      const statusIcon = statusMap[item.status] || '';
+
+      html += `<tr>
+        <td>
+          <div class="d-flex flex-column gap-1">
+            <span class="text-primary text-nowrap fw-semibold" style="font-size:13.5px; cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิดดูเอกสาร" onclick="docdetailOpenfile('${item.docId}', '${item.receiptId}', '${item.receiptParam9}')">
+              ${escapeHtml(item.docNum)}
+            </span>
+            ${sendHtml}
+          </div>
+        </td>
+        <td class="text-center text-nowrap" style="font-size:13px;">${escapeHtml(item.dateStr)}</td>
+        <td>
+          <div style="max-width: 260px;">
+            <span class="fw-medium text-dark d-inline-block text-truncate w-100" style="font-size:13.5px;" title="${escapeHtml(item.subject)}">${escapeHtml(item.subject)}</span>
+            <div class="small text-muted text-truncate" title="จาก : ${escapeHtml(fromText)}"><span class="text-primary">จาก:</span> ${escapeHtml(fromText)}</div>
+          </div>
+        </td>
+        <td class="text-center">${statusIcon}</td>
+      </tr>`;
+    }
+    tableBody.innerHTML = html;
+
+    const tooltipTriggerList = tableBody.querySelectorAll('[data-bs-toggle="tooltip"]');
+    [...tooltipTriggerList].forEach(el => new bootstrap.Tooltip(el));
+  }
+
+  // 3. ปรับปรุงข้อมูลสรุปและ Pagination
+  const infoEl = document.getElementById("infoDocSend");
+  if (infoEl) {
+    if (totalCount === 0) {
+      infoEl.textContent = 'ไม่พบข้อมูล';
+    } else {
+      infoEl.innerHTML = `แสดง <strong>${startIndex + 1}</strong> - <strong>${endIndex}</strong> จาก <strong>${totalCount}</strong> รายการ` +
+        (homeDocSendState.data.length !== totalCount ? ` <span class="text-muted">(กรองจากทั้งหมด ${homeDocSendState.data.length})</span>` : '');
+    }
+  }
+
+  renderPaginationUI('paginationDocSend', currentPage, totalPages, function(page) {
+    homeDocSendState.currentPage = page;
+    renderHomeDocSendTable();
+  });
+}
+
+function renderHomeDocOwnerTable() {
+  const tableBody = document.getElementById("docOwnerTable-body");
+  if (!tableBody) return;
+
+  // 1. กรองข้อมูลตามสถานะและคำค้นหา
+  let filtered = homeDocOwnerState.data.filter(item => {
+    if (homeDocOwnerState.statusFilter !== 'all') {
+      if (String(item.status) !== String(homeDocOwnerState.statusFilter)) return false;
+    }
+    if (homeDocOwnerState.searchTerm) {
+      const q = homeDocOwnerState.searchTerm.toLowerCase().trim();
+      const statusTextMap = {
+        1: 'ลงทะเบียน',
+        0: 'ตีกลับ',
+        3: 'กำลังดำเนินการ',
+        2: 'เตรียมส่ง',
+        4: 'เสร็จแล้ว',
+        5: 'ปิดงานแล้ว'
+      };
+      const sendType = item.isOriginal ? 'ส่งต้นฉบับ' : 'ไม่ส่งต้นฉบับ';
+      const textToSearch = `${item.docNum} ${item.subject} ${item.fromName} ${item.fromOrg} ${item.toName} ${item.toOrg} ${item.date} ${sendType} ${statusTextMap[item.status] || ''}`.toLowerCase();
+      if (!textToSearch.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const totalCount = filtered.length;
+  const limitVal = homeDocOwnerState.limit;
+  const pageSize = limitVal === 'all' ? (totalCount || 1) : parseInt(limitVal, 10);
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+
+  if (homeDocOwnerState.currentPage > totalPages) {
+    homeDocOwnerState.currentPage = totalPages;
+  }
+  const currentPage = homeDocOwnerState.currentPage;
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, totalCount);
+  const pagedData = limitVal === 'all' ? filtered : filtered.slice(startIndex, endIndex);
+
+  // 2. เรนเดอร์แถวตาราง
+  if (totalCount === 0) {
+    tableBody.innerHTML = `<tr>
+      <td class="text-center p-4 text-danger" colspan="4">
+        <i class="fa-solid fa-circle-info text-danger me-1"></i> ไม่พบข้อมูลหนังสือที่ตรงกับเงื่อนไข
+      </td>
+    </tr>`;
+  } else {
+    const statusMap = {
+      1: "<i class='fa-duotone fa-typewriter fa-xl' style='color: var(--blue);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ลงทะเบียน'></i>",
+      0: "<i class='fa-duotone fa-share-all fa-flip-horizontal fa-xl' style='color: var(--box4);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ตีกลับ'></i>",
+      3: "<i class='fa-duotone fa-timer fa-xl' style='color: var(--box3);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='กำลังดำเนินการ'></i>",
+      2: "<i class='fa-duotone fa-inboxes fa-xl' style='color: var(--box1);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เตรียมส่ง'></i>",
+      4: "<i class='fa-duotone fa-check-to-slot fa-xl' style='color: var(--box2);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เสร็จแล้ว'></i>",
+      5: "<i class='fa-duotone fa-power-off fa-xl' style='color: var(--orange);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ปิดงานแล้ว'></i>",
+    };
+
+    let html = '';
+    for (let i = 0; i < pagedData.length; i++) {
+      const item = pagedData[i];
+      const sendHtml = item.isOriginal
+        ? `<span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size:11px; width: fit-content;">ส่งต้นฉบับ</span>`
+        : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle" style="font-size:11px; width: fit-content;">ไม่ส่งต้นฉบับ</span>`;
+
+      const fromText = `${item.fromName} (${item.fromOrg})`;
+      const toText = `${item.toName} (${item.toOrg})`;
+      const statusIcon = statusMap[item.status] || '';
+
+      html += `<tr>
+        <td>
+          <div class="d-flex flex-column gap-1">
+            <span class="text-primary text-nowrap fw-semibold" style="font-size:13.5px; cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิดดูเอกสาร" onclick="docdetailfile('${item.docId}')">
+              ${escapeHtml(item.docNum)}
+            </span>
+            ${sendHtml}
+          </div>
+        </td>
+        <td class="text-center text-nowrap" style="font-size:13px;">${escapeHtml(item.date)}</td>
+        <td>
+          <div style="max-width: 260px;">
+            <span class="fw-medium text-dark d-inline-block text-truncate w-100" style="font-size:13.5px;" title="${escapeHtml(item.subject)}">${escapeHtml(item.subject)}</span>
+            <div class="small text-muted text-truncate" title="จาก : ${escapeHtml(fromText)}"><span class="text-primary">จาก:</span> ${escapeHtml(fromText)}</div>
+            <div class="small text-muted text-truncate" title="ถึง : ${escapeHtml(toText)}"><span class="text-primary">ถึง:</span> ${escapeHtml(toText)}</div>
+          </div>
+        </td>
+        <td class="text-center">${statusIcon}</td>
+      </tr>`;
+    }
+    tableBody.innerHTML = html;
+
+    const tooltipTriggerList = tableBody.querySelectorAll('[data-bs-toggle="tooltip"]');
+    [...tooltipTriggerList].forEach(el => new bootstrap.Tooltip(el));
+  }
+
+  // 3. ปรับปรุงข้อมูลสรุปและ Pagination
+  const infoEl = document.getElementById("infoDocOwner");
+  if (infoEl) {
+    if (totalCount === 0) {
+      infoEl.textContent = 'ไม่พบข้อมูล';
+    } else {
+      infoEl.innerHTML = `แสดง <strong>${startIndex + 1}</strong> - <strong>${endIndex}</strong> จาก <strong>${totalCount}</strong> รายการ` +
+        (homeDocOwnerState.data.length !== totalCount ? ` <span class="text-muted">(กรองจากทั้งหมด ${homeDocOwnerState.data.length})</span>` : '');
+    }
+  }
+
+  renderPaginationUI('paginationDocOwner', currentPage, totalPages, function(page) {
+    homeDocOwnerState.currentPage = page;
+    renderHomeDocOwnerTable();
+  });
+}
+
+function initHomepageFilters() {
+  // --- DocSend (ลงรับล่าสุด) ---
+  $('#searchDocSend').off('input').on('input', function() {
+    const val = $(this).val();
+    $('#clearSearchDocSend').toggle(val.length > 0);
+    homeDocSendState.searchTerm = val;
+    homeDocSendState.currentPage = 1;
+    renderHomeDocSendTable();
+  });
+
+  $('#clearSearchDocSend').off('click').on('click', function() {
+    $('#searchDocSend').val('');
+    $(this).hide();
+    homeDocSendState.searchTerm = '';
+    homeDocSendState.currentPage = 1;
+    renderHomeDocSendTable();
+  });
+
+  $('#statusFilterDocSend').off('change').on('change', function() {
+    homeDocSendState.statusFilter = $(this).val();
+    homeDocSendState.currentPage = 1;
+    renderHomeDocSendTable();
+  });
+
+  $('#limitDocSend').off('change').on('change', function() {
+    homeDocSendState.limit = $(this).val();
+    homeDocSendState.currentPage = 1;
+    renderHomeDocSendTable();
+  });
+
+  // --- DocOwner (หนังสือส่งล่าสุด) ---
+  $('#searchDocOwner').off('input').on('input', function() {
+    const val = $(this).val();
+    $('#clearSearchDocOwner').toggle(val.length > 0);
+    homeDocOwnerState.searchTerm = val;
+    homeDocOwnerState.currentPage = 1;
+    renderHomeDocOwnerTable();
+  });
+
+  $('#clearSearchDocOwner').off('click').on('click', function() {
+    $('#searchDocOwner').val('');
+    $(this).hide();
+    homeDocOwnerState.searchTerm = '';
+    homeDocOwnerState.currentPage = 1;
+    renderHomeDocOwnerTable();
+  });
+
+  $('#statusFilterDocOwner').off('change').on('change', function() {
+    homeDocOwnerState.statusFilter = $(this).val();
+    homeDocOwnerState.currentPage = 1;
+    renderHomeDocOwnerTable();
+  });
+
+  $('#limitDocOwner').off('change').on('change', function() {
+    homeDocOwnerState.limit = $(this).val();
+    homeDocOwnerState.currentPage = 1;
+    renderHomeDocOwnerTable();
+  });
+}
+
+const refreshDocSendTable = (btn) => {
+  const $icon = $(btn).find('i');
+  $icon.addClass('fa-spin');
+  const publicKey = localStorage.getItem('publicKey');
+  insertDataDocSend(publicKey);
+};
+
+const refreshDocOwnerTable = (btn) => {
+  const $icon = $(btn).find('i');
+  $icon.addClass('fa-spin');
+  const publicKey = localStorage.getItem('publicKey');
+  insertDataDocOwner(publicKey);
+};
+
 const insertDataDocSend = (key) => {
-  var tableBody = document.getElementById("docsendTable-body");
-
-  var waitingReceive = 0; 
-
+  initHomepageFilters();
   google.script.run.withSuccessHandler(function(data) {
-
-    if (data[1].length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "4"; 
-      tableBody.innerHTML = "";
-
-      noDataRow.appendChild(noDataCell);
-      tableBody.appendChild(noDataRow);
+    $('#refreshDocSendBtn i').removeClass('fa-spin');
+    if (!data || !data[1] || data[1].length === 0) {
+      $('#countingDocNo1').text('0');
+      $('#badgeDocSendCount').text('0');
+      homeDocSendState.data = [];
+      renderHomeDocSendTable();
       return;
     }
 
-    data[1].sort((a, b) => b[0].localeCompare(a[0]));
+    let pairedList = [];
+    let waitingReceive = 0;
 
-    for (var i = 0; i < data[1].length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
-      
-      var cell0 = row.insertCell(0);
-      var send = "";
-      if (data[1][i][16] == 1) {
-        send = `<span style="color:green;font-size:12px;">ส่งต้นฉบับ</span>`;
-      } else {
-        send = `<span style="color:red; font-size:12px;">ไม่ส่งต้นฉบับ</span>`;
-      }
-      cell0.innerHTML = `<div class="d-flex flex-column">
-                          <span class="text-primary text-nowrap" style="font-size:14px; cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด" onclick="docdetailOpenfile('${data[1][i][0]}', '${data[0][i][0]}', '${data[0][i][9]}')">${data[1][i][2]}</span>
-                          ${send}
-                        </div>`;
-
-      var cell1 = row.insertCell(1);
-      cell1.innerHTML = data[1][i][24];
-
-      var cell2 = row.insertCell(2);
-      var form = data[1][i][3] + ' (' + data[1][i][4]+ ')';
-      cell2.innerHTML ="<span style='font-size:14px; font-weight: 500;'>" + data[1][i][7] + "</span><br>" +   
-                       "<span class='text-primary' style='font-size:12px;'>จาก : </span><span style='font-size:12px;'>" + form + "</span>";
-
-      var cell3 = row.insertCell(3); 
-      const statusMap = {
-        0: '<i class="fa-duotone fa-envelope text-warning fa-xl" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ยังไม่ได้เปิด"></i>',
-        1: '<i class="fa-duotone fa-envelope-open-text fa-xl" style="color: var(--box2)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เปิดแล้ว"></i>',
-        2: '<i class="fa-duotone fa-share-all fa-flip-horizontal fa-xl" style="color: var(--box4)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ส่งตีกลับ"></i>',
-        3: '<i class="fa-duotone fa-pencil fa-xl" style="color: var(--box3)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เกษียนแล้ว"></i>',
-      };
-      if (data[0][i][3] == 0) {
+    for (let i = 0; i < data[1].length; i++) {
+      const receipt = (data[0] && data[0][i]) ? data[0][i] : [];
+      const doc = data[1][i];
+      const statusVal = receipt[3] !== undefined ? receipt[3] : 0;
+      if (statusVal == 0) {
         waitingReceive++;
       }
-      const status = statusMap[data[0][i][3]] || '';
-      cell3.innerHTML = status;  
+      pairedList.push({
+        docId: doc[0],
+        receiptId: receipt[0] || '',
+        receiptParam9: receipt[9] || '',
+        docNum: doc[2] || '',
+        subject: doc[7] || '',
+        senderName: doc[3] || '',
+        senderAgency: doc[4] || '',
+        isOriginal: doc[16] == 1,
+        dateStr: doc[24] || '',
+        status: statusVal
+      });
     }
-    for (var i = 0; i < tableBody.rows.length; i++) {
-      while (tableBody.rows[i].cells.length > 4) {
-        tableBody.rows[i].deleteCell(tableBody.rows[i].cells.length - 1);
-      }
-    }
+
+    pairedList.sort((a, b) => String(b.docId).localeCompare(String(a.docId)));
     $('#countingDocNo1').text(waitingReceive);
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    $('#badgeDocSendCount').text(pairedList.length);
+
+    homeDocSendState.data = pairedList;
+    renderHomeDocSendTable();
+  }).withFailureHandler(function(err) {
+    $('#refreshDocSendBtn i').removeClass('fa-spin');
+    console.error("Error loading DocSend:", err);
   }).dataDocInprogress(key);
-}  
+};
+
 const insertDataDocOwner = (key) => {
-  var tableBody = document.getElementById("docOwnerTable-body");
-
-  var bounceBook = 0;
-  var pendingBooks = 0; 
-
+  initHomepageFilters();
   google.script.run.withSuccessHandler(function(data) {
-    data = data.filter((row) =>{
-      return row[1] === "หนังสือส่งภายใน" || row[1] === "หนังสือส่งภายใน (แจ้งเวียน)";
-    })
-
-    if (data.length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "4"; 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
+    $('#refreshDocOwnerBtn i').removeClass('fa-spin');
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      $('#countingDocNo2').text('0');
+      $('#countingDocNo3').text('0');
+      $('#badgeDocOwnerCount').text('0');
+      homeDocOwnerState.data = [];
+      renderHomeDocOwnerTable();
       return;
     }
 
-    data.sort((a, b) => b[0].localeCompare(a[0]));
+    data = data.filter((row) => {
+      return row[1] === "หนังสือส่งภายใน" || row[1] === "หนังสือส่งภายใน (แจ้งเวียน)";
+    });
 
-    for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
-      
-      var cell0 = row.insertCell(0);
-      var send = '';
-      if (data[i][16] == 1) {
-        send = '<span style="color:green;font-size:12px;">ส่งต้นฉบับ</span>';
-      } else {
-        send = '<span style="color:red; font-size:12px;">ไม่ส่งต้นฉบับ</span>';
-      }
-      cell0.innerHTML = `<div class="d-flex flex-column">
-                          <span class="text-primary text-nowrap" style="font-size:14px; cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด" onclick="docdetailfile('${data[i][0]}')">${data[i][2]}</span>
-                          ${send}
-                        </div>`;
+    let bounceBook = 0;
+    let pendingBooks = 0;
+    let ownerList = [];
 
-      var cell1 = row.insertCell(1);
-      cell1.innerHTML = '<span style="font-size:14px;">' + formatThaiDateTime(new Date((data[i][9]))) + '</span>';
+    for (let i = 0; i < data.length; i++) {
+      const row = data[i];
+      if (row[15] == 1 && row[22] <= 4) bounceBook++;
+      if (row[22] != 0 && row[22] <= 2) pendingBooks++;
 
-      var cell2 = row.insertCell(2);
-      var form = data[i][3] + ' (' + data[i][4]+ ')';
-      var to = data[i][5] + ' (' + data[i][6]+ ')';
-      cell2.innerHTML ="<span style='font-size:14px; font-weight: 500;'>" + data[i][7] + "</span><br>" +   
-                       "<span class='text-primary' style='font-size:12px;'>จาก : </span><span style='font-size:12px;'>" + form + "</span><br>" +  
-                       "<span class='text-primary' style='font-size:12px;'>ถึง : </span><span style='font-size:12px;'>" + to + "</span>";
-
-      var cell3 = row.insertCell(3);
-      const statusMap = {
-        1: "<i class='fa-duotone fa-typewriter fa-xl' style='color: var(--blue);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ลงทะเบียน'></i>",
-        0: "<i class='fa-duotone fa-share-all fa-flip-horizontal fa-xl' style='color: var(--box4);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ตีกลับ'></i>",
-        3: "<i class='fa-duotone fa-timer fa-xl' style='color: var(--box3);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='กำลังดำเนินการ'></i>",
-        2: "<i class='fa-duotone fa-inboxes fa-xl' style='color: var(--box1);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เตรียมส่ง'></i>",
-        4: "<i class='fa-duotone fa-check-to-slot fa-xl' style='color: var(--box2);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เสร็จแล้ว'></i>",
-        5: "<i class='fa-duotone fa-power-off fa-xl' style='color: var(--orange);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ปิดงานแล้ว'></i>",
-      };
-      if (data[i][15] == 1 && data[i][22] <= 4) {
-        bounceBook++;
-      } 
-      if (data[i][22] != 0 && data[i][22] <= 2) {
-        pendingBooks++;
-      }
-      const status = statusMap[data[i][22]] || '';
-      cell3.innerHTML = status;  
+      ownerList.push({
+        docId: row[0],
+        docNum: row[2] || '',
+        date: row[9] ? formatThaiDateTime(new Date(row[9])) : '',
+        subject: row[7] || '',
+        fromName: row[3] || '',
+        fromOrg: row[4] || '',
+        toName: row[5] || '',
+        toOrg: row[6] || '',
+        isOriginal: row[16] == 1,
+        status: row[22]
+      });
     }
-    for (var i = 0; i < tableBody.rows.length; i++) {
-      while (tableBody.rows[i].cells.length > 4) {
-        tableBody.rows[i].deleteCell(tableBody.rows[i].cells.length - 1);
-      }
-    }
+
+    ownerList.sort((a, b) => String(b.docId).localeCompare(String(a.docId)));
     $('#countingDocNo2').text(pendingBooks);
     $('#countingDocNo3').text(bounceBook);
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-  }).dataDocInside(key)
-}  
+    $('#badgeDocOwnerCount').text(ownerList.length);
+
+    homeDocOwnerState.data = ownerList;
+    renderHomeDocOwnerTable();
+  }).withFailureHandler(function(err) {
+    $('#refreshDocOwnerBtn i').removeClass('fa-spin');
+    console.error("Error loading DocOwner:", err);
+  }).dataDocInside(key);
+};  
 function insertActiveData(user) {
   var tableBody = document.getElementById("historyActiveTable-body");
   

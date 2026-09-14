@@ -53,53 +53,141 @@
 </ul>
 
 <div class="data-contianer">
+  <!-- ตารางลงรับหนังสือล่าสุด (DocSend) -->
   <div class="datacontent">
-    <div class="head mb-0">
-      <h5><i class="fa-solid fa-download"></i> รายการลงรับหนังสือล่าสุด</h5>
+    <div class="head mb-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <h5 class="m-0 d-flex align-items-center gap-2">
+        <i class="fa-solid fa-download text-primary"></i>
+        <span>รายการลงรับหนังสือล่าสุด</span>
+        <span class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle fs-7 px-2 py-1" id="badgeDocSendCount">0</span>
+      </h5>
+      <button class="btn btn-sm btn-outline-primary rounded-pill px-2 py-1" id="refreshDocSendBtn" title="รีเฟรชข้อมูล" onclick="refreshDocSendTable(this)">
+        <i class="fa-solid fa-rotate-right"></i>
+      </button>
     </div>
 
-    <div class="table-responsive mt-3">
-      <table id="docsendTable" class="table table-sm">
+    <!-- แถบค้นหาและตัวกรอง -->
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+      <div class="input-group input-group-sm flex-grow-1" style="min-width: 170px;">
+        <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa-regular fa-magnifying-glass"></i></span>
+        <input type="text" id="searchDocSend" class="form-control form-control-sm border-start-0 border-end-0" placeholder="ค้นหาเลขที่, เรื่อง, ผู้ส่ง..." autocomplete="off">
+        <button class="btn btn-outline-secondary btn-sm border-start-0 bg-white" type="button" id="clearSearchDocSend" style="display:none;" title="ล้างคำค้นหา"><i class="fa-solid fa-xmark text-muted"></i></button>
+      </div>
+      <div style="min-width: 120px;">
+        <select id="statusFilterDocSend" class="form-select form-select-sm" title="กรองสถานะ">
+          <option value="all">สถานะทั้งหมด</option>
+          <option value="0">ยังไม่ได้เปิด</option>
+          <option value="1">เปิดแล้ว</option>
+          <option value="2">ส่งตีกลับ</option>
+          <option value="3">เกษียนแล้ว</option>
+        </select>
+      </div>
+      <div style="min-width: 95px;">
+        <select id="limitDocSend" class="form-select form-select-sm" title="จำนวนที่แสดง">
+          <option value="5" selected>แสดง 5</option>
+          <option value="10">แสดง 10</option>
+          <option value="20">แสดง 20</option>
+          <option value="all">แสดงทั้งหมด</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table id="docsendTable" class="table table-sm table-hover align-middle mb-0">
         <thead>
-          <tr class="text-center">
-            <th scope="col" class="text-center">เลขที่หนังสือ</th>
-            <th scope="col" class="text-center">เข้าเมื่อ</th>
-            <th scope="col" class="text-center">รายละเอียด</th>
-            <th scope="col" class="text-center">สถานะ</th>
+          <tr class="text-center" style="font-size: 13.5px;">
+            <th scope="col" class="text-center" style="width: 28%;">เลขที่หนังสือ</th>
+            <th scope="col" class="text-center" style="width: 22%;">เข้าเมื่อ</th>
+            <th scope="col" class="text-center" style="width: 38%;">รายละเอียด</th>
+            <th scope="col" class="text-center" style="width: 12%;">สถานะ</th>
           </tr>
         </thead>
         <tbody id="docsendTable-body">
           <tr>
-            <td class="text-center" colspan="4"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+            <td class="text-center p-4 text-muted" colspan="4">
+              <i class="fa-solid fa-spinner fa-spin text-primary me-1"></i> กำลังโหลดข้อมูล...
+            </td>
           </tr>
-          <!-- แทรกข้อมูลจากฐานข้อมูล -->
         </tbody>
       </table>
-    </div>     
-  </div>
-
-  <div class="databox">
-    <div class="head mb-0">
-      <h5><i class="fa-solid fa-envelopes-bulk"></i> รายการหนังสือส่งล่าสุด</h5>
     </div>
 
-    <div class="table-responsive mt-3">
-      <table id="docOwnerTable" class="table table-sm">
+    <!-- ส่วนสรุปจำนวนและ Pagination -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between pt-3 border-top mt-3 gap-2" id="footerDocSend">
+      <small class="text-muted" id="infoDocSend">แสดง 0 รายการ</small>
+      <nav aria-label="DocSend pagination">
+        <ul class="pagination pagination-sm mb-0" id="paginationDocSend"></ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- ตารางหนังสือส่งล่าสุด (DocOwner) -->
+  <div class="databox">
+    <div class="head mb-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <h5 class="m-0 d-flex align-items-center gap-2">
+        <i class="fa-solid fa-envelopes-bulk text-primary"></i>
+        <span>รายการหนังสือส่งล่าสุด</span>
+        <span class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle fs-7 px-2 py-1" id="badgeDocOwnerCount">0</span>
+      </h5>
+      <button class="btn btn-sm btn-outline-primary rounded-pill px-2 py-1" id="refreshDocOwnerBtn" title="รีเฟรชข้อมูล" onclick="refreshDocOwnerTable(this)">
+        <i class="fa-solid fa-rotate-right"></i>
+      </button>
+    </div>
+
+    <!-- แถบค้นหาและตัวกรอง -->
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+      <div class="input-group input-group-sm flex-grow-1" style="min-width: 170px;">
+        <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa-regular fa-magnifying-glass"></i></span>
+        <input type="text" id="searchDocOwner" class="form-control form-control-sm border-start-0 border-end-0" placeholder="ค้นหาเลขที่, เรื่อง, ผู้ส่ง/รับ..." autocomplete="off">
+        <button class="btn btn-outline-secondary btn-sm border-start-0 bg-white" type="button" id="clearSearchDocOwner" style="display:none;" title="ล้างคำค้นหา"><i class="fa-solid fa-xmark text-muted"></i></button>
+      </div>
+      <div style="min-width: 120px;">
+        <select id="statusFilterDocOwner" class="form-select form-select-sm" title="กรองสถานะ">
+          <option value="all">สถานะทั้งหมด</option>
+          <option value="1">ลงทะเบียน</option>
+          <option value="0">ตีกลับ</option>
+          <option value="3">กำลังดำเนินการ</option>
+          <option value="2">เตรียมส่ง</option>
+          <option value="4">เสร็จแล้ว</option>
+          <option value="5">ปิดงานแล้ว</option>
+        </select>
+      </div>
+      <div style="min-width: 95px;">
+        <select id="limitDocOwner" class="form-select form-select-sm" title="จำนวนที่แสดง">
+          <option value="5" selected>แสดง 5</option>
+          <option value="10">แสดง 10</option>
+          <option value="20">แสดง 20</option>
+          <option value="all">แสดงทั้งหมด</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table id="docOwnerTable" class="table table-sm table-hover align-middle mb-0">
         <thead>
-          <tr class="text-center">
-            <th scope="col" class="text-center">เลขที่หนังสือ</th>
-            <th scope="col" class="text-center">ส่งเมื่อ</th>
-            <th scope="col" class="text-center">รายละเอียด</th>
-            <th scope="col" class="text-center">สถานะ</th>
+          <tr class="text-center" style="font-size: 13.5px;">
+            <th scope="col" class="text-center" style="width: 28%;">เลขที่หนังสือ</th>
+            <th scope="col" class="text-center" style="width: 22%;">ส่งเมื่อ</th>
+            <th scope="col" class="text-center" style="width: 38%;">รายละเอียด</th>
+            <th scope="col" class="text-center" style="width: 12%;">สถานะ</th>
           </tr>
         </thead>
         <tbody id="docOwnerTable-body">
           <tr>
-            <td class="text-center" colspan="4"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+            <td class="text-center p-4 text-muted" colspan="4">
+              <i class="fa-solid fa-spinner fa-spin text-primary me-1"></i> กำลังโหลดข้อมูล...
+            </td>
           </tr>
-          <!-- แทรกข้อมูลจากฐานข้อมูล -->
         </tbody>
       </table>
-    </div>            
+    </div>
+
+    <!-- ส่วนสรุปจำนวนและ Pagination -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between pt-3 border-top mt-3 gap-2" id="footerDocOwner">
+      <small class="text-muted" id="infoDocOwner">แสดง 0 รายการ</small>
+      <nav aria-label="DocOwner pagination">
+        <ul class="pagination pagination-sm mb-0" id="paginationDocOwner"></ul>
+      </nav>
+    </div>
   </div>
 </div>        
