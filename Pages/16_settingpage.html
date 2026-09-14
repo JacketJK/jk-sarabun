@@ -1,0 +1,410 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-wrench "></i> ตั้งค่าระบบ</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>การตั้งค่า</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="settingbreadcrumb1">การตั้งค่าระบบ</a>
+      </li>
+      <li style="display:none" id="settingbreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="settingbreadcrumb3"></a>
+      </li>
+      <li style="display:none" id="settingbreadcrumb4"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="settingbreadcrumb5"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+<div class="data-contianer">
+  <div class="container-fluid">
+    <div class="head mb-4">
+      <h5><h5><i class="fa-duotone fa-gear-complex fa-spin"></i> การตั้งค่าต่างๆ ในระบบ <i class="fa-duotone fa-gear-complex fa-spin"></i></h5></h5>
+    </div>
+    <hr class="opacity-10 my-3">
+    <div class="head my-2">
+      <h5><i class="fa-duotone fa-solar-system"></i> ระบบการทำงาน</h5>
+    </div>
+
+    <form onsubmit="settingFormData1(this)">
+      <div class="row mb-3">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <p class="col-form-label">ชื่อระบบการทำงาน</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-window-flip input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData9" id="settingData9" required>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <p class="col-form-label">โลโก้ระบบการทำงาน</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-shield-cat input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData10" id="settingData10" required>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-3 d-flex justify-content-center">
+        <button type="submit" class="btn btn-blue btn-sm rounded-4 px-5"><i class="fa-regular fa-solar-system"></i> บันทึกระบบการทำงาน</button>
+      </div>  
+    </form>  
+  </div>
+
+  <div class="container-fluid">
+    <div class="head mb-3">
+      <h5><i class="fa-brands fa-line"></i> ตั้งค่า Line Messaging API</h5>
+    </div>
+
+    <form id="setting_notify" onsubmit="setting_notify(this, event)">
+      <div class="row d-flex justify-content-center">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">                   
+          <div class="mb-3 row">
+            <p class="col-sm-12 col-form-label">Channel Access Token :</p>
+            <div class="col-sm-12 field-input">
+              <i class="fa-regular fa-thought-bubble input-icon fs-5"></i>
+              <input type="text" class="form-field" id="setting_system_7" name="setting_system_7" required>
+            </div>
+          </div>
+          <!-- <div class="mb-3 row">
+            <p class="col-sm-12 col-form-label">RedirectUri :</p>
+            <div class="col-sm-12 field-input">
+              <i class="fa-regular fa-link input-icon fs-5"></i>
+              <input type="text" class="form-field" id="setting_system_9" name="setting_system_9" required>
+            </div>
+          </div> -->
+        </div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-4">
+          <div class="mb-3 row">
+            <p class="col-sm-12 col-form-label">Line Business Account :</p>
+            <div class="col-sm-12 field-input">
+              <i class="fa-regular fa-server input-icon fs-5"></i>
+              <input type="text" class="form-field" id="setting_system_8" name="setting_system_8" required>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm"></div>
+      </div>
+      <div class="d-flex justify-content-center align-items-center mt-3">
+        <button type="submit" class="btn btn-warning rounded-4" style="width: 230px;"><i class="fa-brands fa-line"></i> บันทึกข้อมูล</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="container-fluid">
+    <div class="head my-2">
+      <h5><i class="fa-duotone fa-file-spreadsheet"></i> ฐานข้อมูล Google Sheet</h5>
+    </div>
+
+    <form onsubmit="settingFormData2(this)">
+      <div class="row mb-3">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลการตั้งค่าระบบ</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-gears input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData1" id="settingData1" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData1" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลระบบการขอใช้รถส่วนกลาง</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-car input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData3" id="settingData3" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลระบบการขออนุญาตลา</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-face-vomit input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData5" id="settingData5" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData5" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลระบบการเสนอโครงการ</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-paper-plane input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData7" id="settingData7" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData7" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลการแจ้งเตือน</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-bell input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData21" id="settingData21" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData21" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลบุคลากรในหน่วยงาน</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-users input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData28" id="settingData28" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData28" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลการอุทิศที่ดิน</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-mountain input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData29" id="settingData29" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData29" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลผู้ใช้งานระบบ</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-file-user input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData32" id="settingData32" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData32" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลเอกสาร</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-file input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData2" id="settingData2" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลระบบปฏิทินกิจกรรม</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-calendar input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData4" id="settingData4" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData4" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลระบบรายงานประจำหมู่บ้าน</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-house-chimney input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData6" id="settingData6" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData6" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลระบบประกาศแจ้งเตือน</p>
+            <div class="field-input">
+              <i class="fa-brands fa-line input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData8" id="settingData8" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData8" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลระบบจองห้องประชุม</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-swatchbook input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData22" id="settingData22" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData22" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลระบบ Check Bin</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-trash input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData30" id="settingData30" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData30" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลวัสดุ ครุภัณฑ์</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-computer-classic input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData31" id="settingData31" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData31" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ฐานข้อมูลระบบสนทนา</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-comments input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData33" id="settingData33" required>
+              <i class="fa-duotone text-warning fa-link" id="seesheetData33" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-3 d-flex justify-content-center">
+        <button type="submit" class="btn btn-violet btn-sm rounded-4 px-5"><i class="fa-regular fa-file-spreadsheet"></i> บันทึกฐานข้อมูล Google Sheet</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="container-fluid">
+    <div class="head my-2">
+      <h5><i class="fa-duotone fa-folder-open"></i> ฐานข้อมูล Google Folder</h5>
+    </div>
+    
+    <form onsubmit="settingFormData3(this)">
+      <div class="row mb-3">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <p class="col-form-label">โฟลเดอร์ผู้ใช้งาน</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-users input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData11" id="settingData11" required>
+              <i class="fa-duotone text-primary fa-link" id="seesheetData11" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">โฟลเดอร์ประกาศแจ้งเตือน</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-bullhorn input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData12" id="settingData12" required>
+              <i class="fa-duotone text-primary fa-link" id="seesheetData12" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">โฟลเดอร์ระบบจองห้องประชุม</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-folder-image input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData23" id="settingData23" required>
+              <i class="fa-duotone text-primary fa-link" id="seesheetData23" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">โฟลเดอร์ระบบฐานข้อมูลบุคลากร</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-users-gear input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData24" id="settingData24" required>
+              <i class="fa-duotone text-primary fa-link" id="seesheetData24" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">โฟลเดอร์ระบบการเก็บข้อมูลการอุทิศที่ดิน</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-mountain-sun input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData25" id="settingData25" required>
+              <i class="fa-duotone text-primary fa-link" id="seesheetData25" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <p class="col-form-label">โฟลเดอร์เอกสาร</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-file-zipper input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData13" id="settingData13" required>
+              <i class="fa-duotone text-primary fa-link" id="seesheetData13" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">โฟลเดอร์เอกสารขอใช้รถ</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-car-side input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData14" id="settingData14" required>
+              <i class="fa-duotone text-primary fa-link" id="seesheetData14" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">โฟลเดอร์ระบบฐานข้อมูลถังขยะในพื้นที่</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-trash-can input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData26" id="settingData26" required>
+              <i class="fa-duotone text-primary fa-link" id="seesheetData26" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">โฟลเดอร์ระบบวัสดุ ครุภัณฑ์</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-computer input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2" name="settingData27" id="settingData27" required>
+              <i class="fa-duotone text-primary fa-link" id="seesheetData27" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-3 d-flex justify-content-center">
+        <button type="submit" class="btn btn-yellow btn-sm rounded-4 px-5"><i class="fa-regular fa-folder-open"></i> บันทึกฐานข้อมูล Google Folder</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="container-fluid">
+    <div class="head my-2">
+      <h5><i class="fa-duotone fa-cabinet-filing"></i> เลขที่หนังสือ</h5>
+    </div>
+
+    <form onsubmit="settingFormData4(this)">
+      <div class="row mb-3">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <p class="col-form-label">เลขทะเบียนรับหนังสือภายนอก</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2 text-center" name="settingData15" id="settingData15" required>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">เลขหนังสือนำส่ง</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-file-arrow-up input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2 text-center" name="settingData17" id="settingData17" required>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ลำดับประกาศ</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-file-audio input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2 text-center" name="settingData19" id="settingData19" required>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <p class="col-form-label">เลขทะเบียนรับหนังสือภายใน</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-file-lines input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2 text-center" name="settingData16" id="settingData16" required>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">เลขหนังสือคำสั่ง</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-file-exclamation input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2 text-center" name="settingData18" id="settingData18" required>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">เลขหนังสือรับรอง</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-file-contract input-icon fs-5"></i>
+              <input type="text" class="input-field ms-2 text-center" name="settingData20" id="settingData20" required>
+            </div>
+          </div>
+        </div>
+      </div>  
+      <div class="mt-3 d-flex justify-content-center">
+        <button type="submit" class="btn btn-green btn-sm rounded-4 px-5"><i class="fa-regular fa-cabinet-filing"></i> บันทึกเลขที่หนังสือ</button>
+      </div> 
+    </form>   
+  </div>
+</div>

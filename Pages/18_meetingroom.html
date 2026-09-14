@@ -1,0 +1,172 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-projector"></i> การจองห้องประชุม</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>แบบฟอร์ม</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a id="meetbreadcrumb1">ห้องประชุม</a>
+      </li>
+      <li id="meetbreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="meetbreadcrumb3"></a>
+      </li>
+      <li style="display:none" id="meetbreadcrumb4"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="meetbreadcrumb5"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+<div class="data-contianer" id="meetingPage1" style="display: none">
+  <div class="container-fluid">
+    <div class="head mb-0">
+      <h5><i class="fa-duotone fa-swatchbook"></i> ห้องประชุม</h5>
+    </div>
+    <div class="mb-3 row d-flex justify-content-end">
+      <div class="col-sm-8"></div>
+      <p class="col-sm-4 col-form-label" >ดูวันที่ :</p>
+      <div class="col-sm-8"></div>
+      <div class="col-sm-4 field-input">
+        <i class="fa-regular fa-calendar input-icon fs-5"></i>
+        <input type="text" class="form-field text-center" id="filterMeetdate" name="filterMeetdate" placeholder="เลือกวันที่">
+      </div>
+    </div>
+    <div class="loadContianer d-flex justify-content-center align-items-center p-5 my-3 d-none">
+      <div class="loaderContainer"></div>
+    </div>
+    <div id="meetingRoomDiv"></div>
+  </div>
+</div>
+
+<div class="data-contianer" id="meetingPage2" style="display: none">
+  <div class="container-fluid">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-booth-curtain"></i> เพิ่มข้อมูลการจอง</h5>
+    </div>
+
+    <form id="addMeetingForm" onsubmit="addMeetingSubmit(this)">
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5">
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >ห้องประชุม :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-regular fa-people-roof input-icon fs-5"></i>
+              <select class="form-field" id="addMeetingData1" name="addMeetingData1" required></select>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >วันที่จอง :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-regular fa-calendar input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addMeetingData2" name="addMeetingData2" placeholder="เลือกวันที่" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >เวลาที่ต้องการจอง :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-regular fa-timer input-icon fs-5"></i>
+              <select class="form-field" id="addMeetingData3" name="addMeetingData3" required>
+                <option selected value="">โปรดเลือก</option>
+                <option value="1">07:00 น.</option>
+                <option value="2">08:00 น.</option>
+                <option value="3">09:00 น.</option>
+                <option value="4">10:00 น.</option>
+                <option value="5">11:00 น.</option>
+                <option value="6">12:00 น.</option>
+                <option value="7">13:00 น.</option>
+                <option value="8">14:00 น.</option>
+                <option value="9">15:00 น.</option>
+                <option value="10">16:00 น.</option>
+                <option value="11">17:00 น.</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >เวลาที่ใช้ :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-regular fa-business-time input-icon fs-5"></i>
+              <input type="range" class="form-field" id="addMeetingData4" name="addMeetingData4" step="1" min="1" max="11" required>
+              <span id="spanMeetingData4"></span>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" ></p>
+            <p class="col-sm-7 col-form-label text-success" id="spanMeetingData3"></p>
+          </div>
+        </div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5">
+          <div class="mb-3 d-flex justify-content-center align-items-start">
+            <div style="width: 250px; height: 250px;background-color: var(--grey);" class="z-index-5 rounded-circle border border-5 border-light shadow">
+              <img src="https://placehold.co/250x250" id="imageMeetingData" class="w-100 h-100 object-fit-cover rounded-circle">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="head">
+        <h5><i class="fa-duotone fa-hotel"></i> ส่งคำขอหาผู้ดูแล</h5>
+      </div>
+      <select id="addMeetingData5" name="addMeetingData5"></select>
+
+      <div class="mt-5 d-flex justify-content-center align-items-center">
+        <button type="reset" class="btn btn-outline-danger rounded-pill btn-sm" style="width: 180px"><i class="fa-regular fa-arrows-rotate"></i> ยกเลิก</button>
+        <button type="submit" class="btn btn-outline-green rounded-pill btn-sm ms-2" style="width: 180px;"><i class="fa-regular fa-cloud-arrow-down"></i> บันทึกข้อมูล</button>
+    </div>
+    </form>
+  </div>
+</div>
+
+<div class="data-contianer" id="meetingPage3" style="display: none">
+  <div class="datarespone">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-mug-marshmallows"></i> อนุมัติการจองห้องประชุม</h5>
+    </div>
+
+    <div id="meetingAllowDiv"></div>
+  </div>
+
+  <div class="databox">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-sparkles"></i> เลือกอนุมัติ</h5>
+    </div>
+    
+    <div class="loadContianer d-flex justify-content-center align-items-center p-5 my-3 d-none">
+      <div class="loaderContainer"></div>
+    </div>
+    <form id="senderMeetingroom" onsubmit="allowMeetingData(this)">
+      <div class="mt-2">
+        <input type="text" id="dataMeetingroom1" name="dataMeetingroom1" class="form-control rounded-4 is-invalid" placeholder="รหัสคำร้อง..." readonly required>
+      </div>
+      <div class="row mt-4">
+        <div class="col-sm-6 text-center">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="dataMeetingroom2" id="dataMeetingroom2_1" value="1">
+            <label class="form-check-label text-success" for="dataMeetingroom2_1">อนุญาต</label> 
+          </div>
+        </div>
+        <div class="col-sm-6 text-center">
+          <div class="form-check form-check-inline col-6 text-center">
+            <input class="form-check-input" type="radio" name="dataMeetingroom2" id="dataMeetingroom2_2" value="2" required>
+            <label class="form-check-label text-danger" for="dataMeetingroom2_2">ไม่อนุญาต</label>
+          </div>
+        </div>
+      </div>
+      <div class="mt-1">
+        <label for="dataMeetingroom3" class="form-label">หมายเหตุ</label>
+        <textarea class="form-control rounded-4" id="dataMeetingroom3" name="dataMeetingroom3" rows="3"></textarea>
+      </div>
+      <div class="mt-2">
+        <button type="submit" class="btn btn-primary rounded-pill w-100"><i class="fa-regular fa-paper-plane"></i> บันทึกผลการพิจารณา</button>
+      </div>
+    </form>
+  </div>
+</div>

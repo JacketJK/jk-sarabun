@@ -1,0 +1,344 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-car-building"></i> ระบบขออนุญาตใช้รถส่วนกลาง</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>แบบฟอร์ม</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a id="carbreadcrumb1">ขออนุญาตใช้รถ</a>
+      </li>
+      <li id="carbreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a id="carbreadcrumb3" class="active"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+<div class="data-contianer" id="carPage1" style="display:none">
+  <div class="datacontent">
+    <div class="head mb-0">
+      <h5><i class="fa-solid fa-car"></i> รถส่วนกลาง</h5>
+    </div>
+    <div id="cardCar-container"></div>              
+  </div>
+</div>
+
+<div class="data-contianer" id="carPage2" style="display:none">
+  <div class="datarespone"> 
+    <div class="head mb-0">
+      <h5><i class="fa-solid fa-car-wrench"></i> ประวัติการขอใช้รถ</h5>
+    </div>
+
+    <div class="container-fluid my-4">
+      <div class="row">
+        <div class="col-lg-2">
+          <label for="carHistotyfilter1" class="label-form">ทะเบียนรถ</label>
+          <select id="carHistotyfilter1" class="form-select rounded-4"></select>  
+        </div>
+        <div class="col-lg-2">
+          <label for="carHistotyfilter2" class="label-form">ผู้ใช้รถ</label>
+          <select id="carHistotyfilter2" class="form-select rounded-4">
+            <option selected value="">ผู้ใช้รถทั้งหมด</option>
+          </select>
+        </div>
+        <div class="col-lg-2">
+          <label for="carHistotyfilter3" class="label-form">ห้วงเวลา</label>
+          <input type="text" id="carHistotyfilter3" class="form-control rounded-4">
+        </div>
+        <div class="col-lg-2">
+          <label for="carHistotyfilter4" class="label-form">ถึงวันที่</label>
+          <input type="text" id="carHistotyfilter4" class="form-control rounded-4">
+        </div>
+        <div class="col-lg-4">
+          <label for="carHistotyfilter5" class="label-form">ค้นหา</label>
+          <div class="input-group z-index-0">
+            <input type="text" id="carHistotyfilter5" class="form-control rounded-4 rounded-end-0" placeholder="คำค้นหา">
+            <button type="button" class="btn btn-primary rounded-4 rounded-start-0 ">ค้นหา</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container text-center my-4">
+      <div>บันทึกการใช้รถยนต์ส่วนกลาง หมายเลขทะเบียน <span id="historyHeader">โปรดเลือกทะเบียนรถ</span></div>
+      <div>หน่วยงาน <span id="agencyHeader"></span></div>
+    </div>
+    <div class="table-responsive mt-3" style="padding-bottom: 80px;">
+      <table id="tableCarHistory" class="table table-sm">
+        <thead>
+          <tr class="text-center">
+            <th scope="col" rowspan="2">ที่</th>
+            <th scope="col" colspan="2">ออกเดินทาง</th>
+            <th scope="col" rowspan="2">ผู้ใช้รถ</th>
+            <th scope="col" rowspan="2">สถานที่ไป</th>
+            <th scope="col" rowspan="2">ระยะ กม./ไมล์<br>เมื่อรถออกเดินทาง</th>
+            <th scope="col" colspan="2">กลับถึงสำนักงาน</th>
+            <th scope="col" rowspan="2">ระยะ กม./ไมล์<br>เมื่อกลับถึงสำนักงาน</th>
+            <th scope="col" rowspan="2">รวมระยะทาง<br>กม.</th>
+            <th scope="col" rowspan="2">พนักงานขับรถ</th>
+            <th scope="col" rowspan="2">หมายเหตุ</th>
+          </tr>
+          <tr class="text-center">
+            <th scope="col">วันที่</th>
+            <th scope="col">เวลา</th>
+            <th scope="col">วันที่</th>
+            <th scope="col">เวลา</th>
+          </tr>
+        </thead>
+        <tbody id="tableCarHistory-body" class="table-group-divider">
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+          <tr>
+            <td class="text-center py-4" colspan="13"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> 
+  </div>
+</div>
+
+<div class="data-contianer" id="carPage3" style="display:none">
+  <div class="datarespone"> 
+    <div class="head mb-0">
+      <h5><i class="fa-solid fa-clipboard-list"></i> การอนุมัติขอใช้รถ</h5>
+    </div>
+    <div class="container mt-3">
+      <div id="containerConsider"></div>
+    </div>
+  </div>
+  
+  <div class="databox">
+    <div class="head mb-3">
+      <h5><i class="fa-solid fa-user-tie"></i> เลือกส่งการขออนุญาต</h5>
+    </div>
+      <div class="mb-2">
+        <input type="text" id="searchUserConsider" placeholder="ค้นหาชื่อ..." class="form-control rounded-4">
+      </div>
+      <div class="accordion" id="accordionConsider">
+        <div class="accordion-item rounded-pill border-0" style="background-color: var(--light);">
+          <h2 class="accordion-header">
+            <button class="accordion-button rounded-pill  border-0" style="background-color: var(--light); color: var(--dark);" type="button" data-bs-toggle="collapse" data-bs-target="#considerOne" aria-expanded="true" aria-controls="considerOne">
+              <i class="fa-solid fa-user-tie"></i> บุคลากร
+            </button>
+          </h2>
+          <div id="considerOne" class="accordion-collapse collapse border-0" style="background-color: var(--light);" data-bs-parent="#accordionConsider">
+            <div class="accordion-body">
+              <div id="radioUser"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <form id="senderConsider">
+        <div class="mt-2">
+          <input type="text" id="codeConsider" class="form-control rounded-4 is-invalid" placeholder="รหัสคำร้องขอใช้รถ..." readonly>
+        </div>
+        <div class="row mt-4">
+          <div class="col-sm-6 text-center">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="radioConsider" id="radioConsider1" value="เห็นควรอนุญาต">
+              <label class="form-check-label text-success" for="radioConsider1">อนุญาต</label>
+            </div>
+          </div>
+          <div class="col-sm-6 text-center">
+            <div class="form-check form-check-inline col-6 text-center">
+              <input class="form-check-input" type="radio" name="radioConsider" id="radioConsider2" value="ไม่เห็นควรอนุญาต">
+              <label class="form-check-label text-danger" for="radioConsider2">ไม่อนุญาต</label>
+            </div>
+          </div>
+        </div>
+        <div class="mt-1">
+          <label for="noteConsider" class="form-label">หมายเหตุ</label>
+          <textarea class="form-control rounded-4" id="noteConsider" rows="3"></textarea>
+        </div>
+        <div class="mt-2">
+          <a class="btn btn-primary rounded-pill w-100" onclick="addSendConsider()"><i class="fa-regular fa-paper-plane"></i> ส่งข้อพิจารณา</a>
+        </div>
+      </form>
+  </div>
+</div>
+
+<div class="data-contianer" id="carPage4" style="display:none">
+  <div class="datarespone"> 
+    <div class="head mb-0">
+      <h5><i class="fa-solid fa-clipboard-list"></i> การอนุมัติขอใช้รถ</h5>
+    </div>
+
+    <div class="container mt-3">
+      <div id="dataCountApprover"></div>
+    </div>
+    <div class="container" id="containerApprove"></div>
+  </div>
+  
+  <div class="databox">
+    <div class="head mb-3">
+      <h5><i class="fa-solid fa-gears"></i> ข้อพิจารณาการขออนุญาตใช้รถ</h5>
+    </div>
+
+      <form id="senderApprover">
+        <div class="mt-2">
+          <input type="text" id="codeApprover" class="form-control rounded-4 is-invalid" placeholder="รหัสคำร้องขอใช้รถ..." readonly>
+        </div>
+        <div class="row mt-4">
+          <div class="col-sm-6 text-center">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="radioApprover" id="radioApprover1" value="อนุญาต">
+              <label class="form-check-label text-success" for="radioApprover1">อนุญาต</label>
+            </div>
+          </div>
+          <div class="col-sm-6 text-center">
+            <div class="form-check form-check-inline col-6 text-center">
+              <input class="form-check-input" type="radio" name="radioApprover" id="radioApprover2" value="ไม่อนุญาต">
+              <label class="form-check-label text-danger" for="radioApprover2">ไม่อนุญาต</label>
+            </div>
+          </div>
+        </div>
+        <div class="mt-1">
+          <label for="noteApprover" class="form-label">หมายเหตุ</label>
+          <textarea class="form-control rounded-4" id="noteApprover" rows="3"></textarea>
+        </div>
+        <div class="mt-2">
+          <a class="btn btn-primary rounded-pill w-100" onclick="addApprove()"><i class="fa-regular fa-paper-plane"></i> บันทึกผลการพิจารณา</a>
+        </div>
+      </form>
+  </div>
+</div>
+
+<div class="data-contianer" id="carPage5" style="display:none">
+  <div class="container-fluid">
+    <div class="head mb-4">
+      <h5 id="userCar1"></h5>
+    </div>
+
+    <form id="formAddDataCar">
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5">                   
+          <div class="mb-3 row">
+            <img src="" style="max-width:600px;" class="card-img-top" alt="" id="userCar2">
+          </div>          
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >เลขไมล์ปัจจุบัน :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-gauge-simple-high input-icon fs-5"></i>
+              <input type="text" class="form-field" id="dataCarAdd9" name="dataCarAdd9" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >ผู้ขอใช้รถคนล่าสุด :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-user-secret input-icon fs-5"></i>
+              <input type="text" class="form-field" id="dataCarAdd10" name="dataCarAdd10" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label text-danger" ><i class="fa-solid fa-gas-pump fa-2xl"></i> :</p>
+            <div class="col-sm-7 d-flex align-items-center">
+              <div class="progress w-100 rounded-pill" role="progressbar" style="height: 30px;" id="dataCarAdd11" aria-valuenow="" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" id="dataCarAdd12" style="width: ;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5">                   
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >ทะเบียนรถ :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-sign-hanging input-icon fs-5"></i>
+              <input type="text" class="form-field" id="dataCarAdd1" name="dataCarAdd1" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >ขออนุญาตใช้รถ(ไปที่ไหน) :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-car-bus input-icon fs-5"></i>
+              <textarea class="form-field" id="dataCarAdd2" name="dataCarAdd2" rows="3" required></textarea>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >เพื่อนำรถไป :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-steering-wheel input-icon fs-5"></i>
+              <textarea class="form-field" id="dataCarAdd3" name="dataCarAdd3" rows="3" required></textarea>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >มีคนนั่ง จำนวน :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-chair input-icon fs-5"></i>
+              <input type="number" class="form-field" id="dataCarAdd4" name="dataCarAdd4" required>
+              <span>คน</span>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >ในวันที่ :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-calendar-minus input-icon fs-5"></i>
+              <input type="text" class="form-field" id="dataCarAdd5" name="dataCarAdd5" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >ถึงวันที่ :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-calendar-xmark input-icon fs-5"></i>
+              <input type="text" class="form-field" id="dataCarAdd6" name="dataCarAdd6" required>
+            </div>
+          </div>
+          <datalist id="listDriver"></datalist>
+
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >พนักงานขับรถ :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-taxi input-icon fs-5"></i>
+              <input list="listDriver" type="text" class="form-field" id="dataCarAdd7" name="dataCarAdd7" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >เขตพื้นที่ :</p>
+            <div class="col-sm-7">
+              <div class="row">
+                <div class="col">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="dataCarAdd8" id="dataCarAdd8_1" value="ในตำบล">
+                    <label class="form-check-label" style="color: var(--blue);" role="button" for="dataCarAdd8_1">
+                      <i class="fa-duotone fa-location-crosshairs fs-5"></i> ในตำบล                          
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="dataCarAdd8" id="dataCarAdd8_2" value="นอกตำบล">
+                    <label class="form-check-label" style="color: var(--blue);" role="button" for="dataCarAdd8_2">
+                      <i class="fa-duotone fa-location-dot fs-5"></i> นอกตำบล
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="dataCarAdd8" id="dataCarAdd8_3" value="นอกจังหวัด">
+                    <label class="form-check-label" style="color: var(--blue);" role="button" for="dataCarAdd8_3">
+                      <i class="fa-duotone fa-map-location fs-5"></i> นอกจังหวัด
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="head my-4">
+        <h5><i class="fa-duotone fa-user-tie"></i> เลือกส่งการขออนุญาต</h5>
+      </div>
+      <select id="dataCarAdd13"></select>
+      <div class="text-center">
+        <button type="button" class="btn btn-blue btn-sm px-5 rounded-4 mt-4" id="addCarSuccess" style="display:none" onclick="addCarRequrst()">
+          <i class="fa-solid fa-plus"></i>
+          <span class="text">บันทึกการขออนุญาตใช้รถ</span>
+        </button>
+      </div>
+    </form>
+  </div> 
+</div>

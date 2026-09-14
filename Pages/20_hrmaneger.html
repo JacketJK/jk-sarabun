@@ -1,0 +1,429 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-clipboard-user"></i> ฐานข้อมูลบุคลากรในหน่วยงาน</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>ระบบเพิ่มเติม</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="hrmbreadcrumb1">บุคลากรในหน่วยงาน</a>
+      </li>
+      <li style="display:none" id="hrmbreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="hrmbreadcrumb3"></a>
+      </li>
+      <li style="display:none" id="hrmbreadcrumb4"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="hrmbreadcrumb5"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+<ul class="box-info" id="dashboard_hrm_1" style="display: none;">
+  <li>
+    <i class="fa-solid fa-users"></i>
+    <span class="text">
+      <p>บุคลากรทั้งหมด <span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingHrm1">0</h3>                
+    </span>
+  </li>
+  <li>
+    <i class="fa-solid fa-user-police-tie"></i>
+    <span class="text">
+      <p>ข้าราชการ <span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingHrm2">0</h3>                
+    </span>
+  </li>
+  <li style="background-color: var(--yellow)">
+    <i style="background-color: var(--yellow)" class="fa-solid fa-user-tie"></i>
+    <span class="text">
+      <p>พนักงานจ้าง <span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingHrm3">0</h3>        
+    </span>
+  </li>
+  <li style="background-color: var(--box3)">
+    <i style="background-color: var(--box3)" class="fa-solid fa-user-helmet-safety"></i>
+    <span class="text">
+      <p>ลูกจ้างประจำ <span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingHrm4">0</h3>               
+    </span>
+  </li>
+</ul>
+
+<ul class="box-info" id="dashboard_hrm_3" style="display: none;">
+  <li style="background-color: var(--box2)">
+    <i style="background-color: var(--box2)" class="fa-duotone fa-briefcase"></i>
+    <span class="text">
+      <p>ปฏิบัติราชการอยู่ <span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingHrm5">0</h3>                
+    </span>
+  </li>
+  <li style="background-color: var(--orange)">
+    <i style="background-color: var(--orange)" class="fa-duotone fa-plane-engines"></i>
+    <span class="text">
+      <p>ย้าย <span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingHrm6">0</h3>                
+    </span>
+  </li>
+  <li style="background-color: var(--yellow)">
+    <i style="background-color: var(--yellow)" class="fa-duotone fa-file-certificate"></i>
+    <span class="text">
+      <p>หมดสัญญา <span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingHrm7">0</h3>        
+    </span>
+  </li>
+  <li>
+    <i class="fa-duotone fa-right-from-bracket"></i>
+    <span class="text">
+      <p>ลาออก <span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingHrm8">0</h3>               
+    </span>
+  </li>
+</ul>
+
+<div class="data-contianer" id="hrmPage1" style="display: none;">
+  <div class="datacontent">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-list-check"></i> การจัดการบุคลากรในหน่วยงาน</h5>
+      <button class="btn btn-outline-green rounded-4 btn-sm px-3" onclick="changePage(12)">
+        <i class="fa-solid fa-plus"></i> เพิ่มบุคลากรในหน่วยงาน
+      </button>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row" style="font-size: 14px;">
+        <div class="col-lg-3">
+          <label for="hrmfilter1" class="col-label-form">ประเภท</label>
+          <select id="hrmfilter1" style="font-size: 14px;" class="form-select rounded-4">
+            <option selected value="">บุคลากรทั้งหมด</option>
+            <option value="ข้าราชการ">ข้าราชการ</option>
+            <option value="พนักงานจ้าง">พนักงานจ้าง</option>
+            <option value="ลูกจ้างประจำ">ลูกจ้างประจำ</option>
+          </select>  
+        </div>
+        <div class="col-lg-4">
+          <label for="hrmfilter2" class="col-label-form">ค้นหา</label>
+          <div class="input-group z-index-0">
+            <input type="text" id="hrmfilter2" style="font-size: 14px;" class="form-control rounded-4 rounded-end-0" placeholder="คำค้นหา">
+            <button type="button" class="btn btn-primary rounded-4 rounded-start-0 btn-sm">ค้นหา</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="loadContianer d-flex justify-content-center align-items-center p-5 my-3 d-none">
+      <div class="loaderContainer"></div>
+    </div>
+    <div class="row row-cols-md-4 g-3 mt-3" id="hrm-Cardemployee"></div>
+  </div>
+</div>
+
+<div class="data-contianer" id="hrmPage2" style="display: none;">
+  <div class="databox">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-keyboard"></i>&nbsp;ค้นหาด้วยหมายเลขบัตรประจำตัวประชาชน 13 หลัก</h5>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-12">
+        <div class="d-flex flex-column justify-content-center align-items-center">
+          <form id="cardSearchHrmForm" onsubmit="searchDataHrmCard()">
+            <div class="field-input">
+              <i class="fa-solid fa-magnifying-glass input-icon"></i>
+              <input type="text" id="cardSearchHrm" name="cardSearchHrm" class="input-field text-center" maxlength="17" minlength="17" placeholder="x-xxxx-xxxxx-xx-x" required>
+            </div>
+            <div class="text-center">
+              <button type="submit" id="cardSearchHrmBtn" class="btn btn-outline-blue rounded-4 btn-sm px-5 my-3">ค้นหา</button>
+            </div>
+          </form>
+        </div>            
+      </div>
+    </div>
+  </div>
+
+  <div class="datarespone" style="display: none" id="detail_CardHrm">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-id-card-clip"></i> ข้อมูลส่วนตัวเจ้าหน้าที่</h5>
+    </div>
+
+    <form onchange="edit_CardEmployee()">
+      <input type="hidden" id="editCardDatakey">
+      <div class="row mb-2">
+        <div class="col-md-3">
+          <label for="editCardData1" class="col-form-label">คำนำหน้า :</label>
+          <div class="field-input">
+            <select id="editCardData1" name="editCardData1" class="input-field">
+              <option selected value="">โปรดเลือก</option>
+              <option value="นาย">นาย</option>
+              <option value="นาง">นาง</option>
+              <option value="นางสาว">นางสาว</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <label for="editCardData2" class="col-form-label">ชื่อจริง :</label>
+          <div class="field-input">
+            <input type="text" id="editCardData2" name="editCardData2" class="input-field">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="editCardData3" class="col-form-label">นามสกุล :</label>
+          <div class="field-input">
+            <input type="text" id="editCardData3" name="editCardData3" class="input-field">
+          </div>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-12">
+          <label for="editCardData4" class="col-form-label">ตำแหน่ง :</label>
+          <div class="field-input">
+            <input type="text" id="editCardData4" name="editCardData4" class="input-field">
+          </div>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-6">
+          <label for="editCardData5" class="col-form-label">หมู่โลหิต :</label>
+          <div class="field-input">
+            <select id="editCardData5" name="editCardData5" class="input-field">
+              <option value="" selected>โปรดเลือก</option>
+              <option value="เอ">A</option>
+              <option value="บี">B</option>
+              <option value="เอบี">AB</option>
+              <option value="โอ">O</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <p class="col-form-label">รูปติดบัตร :</p>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="editCardData6" id="editCardData6-1" value="0" onchange="editimageCard(this.value)" checked>
+            <label class="col-form-label" for="editCardData6-1">ใช้รูปเก่า</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="editCardData6" id="editCardData6-2" value="1" onchange="editimageCard(this.value)">
+            <label class="col-form-label" for="editCardData6-2">เปลี่ยนรูปใหม่</label>
+          </div>        
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md text-center" id="editCardData7Div" style="display: none">
+          <label for="editCardData7" class="btn btn-blue btn-sm rounded-4 my-2">
+            อัพโหลดรูป
+          </label>
+          <img src="https://placehold.co/150x200" id="editCardData7Img" width="150" class="rounded-4">
+          <input type="file" id="editCardData7" name="editCardData7" class="d-none" accept="image/*" onchange="upload_image_EditCard(this)">
+        </div>
+        <div class="col-md">
+          <div class="row">
+            <div class="col-md-12">
+              <label for="editCardData8" class="col-form-label">เลขที่บัตรประจำตัวเจ้าหน้าที่ :</label>
+              <div class="field-input">
+                <input type="text" id="editCardData8" name="editCardData8" class="input-field">
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label for="editCardData9" class="col-form-label">วันที่ออกบัตร :</label>
+              <div class="field-input">
+                <input type="text" id="editCardData9" name="editCardData9" class="input-field">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-3 d-flex justify-content-end">
+        <button type="reset" class="btn btn-danger rounded-4 btn-sm px-4">ยกเลิก</button>
+        <button type="button" class="btn btn-green rounded-4 btn-sm px-4 ms-2" onclick="save_EditCardEmployee()">บันทึกข้อมูล</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="datarespone">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-id-card"></i> บัตรประจำตัวเจ้าหน้าที่</h5>
+    </div>
+
+    <div class="row p-2">
+      <div class="col-md-12" style="margin-bottom: 380px;">
+        <h4 class="text-center text-primary">บัตรเก่า</h4>
+        <div class="myCard" id="oldCard" onclick="flipCardOle()">
+          <div class="frontSide">
+            <div class="employee-card">
+              <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/seal_agency.png" alt="seal" class="seal-agency">
+              <div class="card-header">
+                <img src="https://lh3.googleusercontent.com/d/1Zbx8KeFawrNt6RnYvFKwT0OSACj2oUfp" alt="Employee Picture" class="card-picture" id="oldCardData1">
+                <div class="card-details">
+                  <p class="card-id text-center fw-medium mt-4">หมายเลขบัตรประจำตัวประชาชน</p>
+                  <p class="card-id text-center fw-medium" id="oldCardData2">x-xxxx-xxxxx-xx-x</p>
+                  <p class="card-name fw-medium">ชื่อ <span id="oldCardData3"></span></p>
+                  <p class="card-info fw-medium">ตำแหน่ง <span id="oldCardData4"></span></p>
+                  <p class="card-info fw-medium">สังกัด <span id="oldCardData5"></span></p>
+                </div>
+              </div>
+              <div class="card-employee-body">
+                <div class="grid-item">
+                  <img src="https://lh3.googleusercontent.com/d/1pqeyn763JNn9H59hxzYhOhkJHIraR2pD" alt="Employee Signature" class="card-signature inverted-color" id="oldCardData6">
+                  <p class="card-info-boss">ลายมือชื่อ</p>           
+                  <p class="card-info">หมู่โลหิต &nbsp;<span class="fw-medium" id="oldCardData7">บี</span></p>    
+                </div>
+                <div class="grid-item">
+                  <img src="https://lh3.googleusercontent.com/d/1pqeyn763JNn9H59hxzYhOhkJHIraR2pD" alt="Employee Signature" class="card-signature-boss inverted-color" id="oldCardData8">
+                  <span class="card-info text-center fw-medium" id="oldCardData9">(นายประภัสร์  อ่อนฤทธิ์)</span>
+                  <span class="card-info-boss text-center fw-medium" id="oldCardData10">รองนายกองค์การบริหารส่วนตำบลโค้งไผ่</span>
+                  <span class="card-info-boss text-center fw-medium">ผู้ออกบัตร</span>
+                </div>       
+              </div>
+            </div>           
+          </div>
+          <div class="backSide">
+            <div class="employee-card">
+              <div class="card-header">
+                <div class="card-details">
+                  <p class="card-id text-center mt-3"><b>บัตรประจำตัวเจ้าหน้าที่ของรัฐ</b></p>
+                  <div style="display: flex; justify-content: center;" class="mt-3">
+                    <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/Rajchakan.png" style="width:100px;" class="inverted-color">
+                  </div>
+                  <p class="card-info text-center mt-2 fw-medium" id="oldCardData11">ตำแหน่ง</p>
+                  <p class="card-info text-center mt-2 fw-medium" >เลขที่ <span id="oldCardData12"></span></p>
+                  <p class="card-info text-center mt-2 fw-medium" id="oldCardData13"></p>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info text-center mt-2 fw-medium">วันที่ออกบัตร <span id="oldCardData14"></span></p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info text-center mt-2 fw-medium">บัตรหมดอายุ <span id="oldCardData15"></span></p>
+                    </div>
+                  </div>
+                </div>
+              </div>                         
+            </div>
+          </div>
+        </div>                           
+      </div>
+      <div class="col-md-12" style="margin-bottom: 420px;">
+        <h4 class="text-center text-primary">บัตรใหม่</h4>
+        <div class="myCard" id="newCard" onclick="flipCardNew()">
+          <div class="frontSide">
+            <div class="employee-card">
+              <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/seal_agency.png" alt="seal" class="seal-agency">
+              <div class="card-header">
+                <img src="https://lh3.googleusercontent.com/d/1Zbx8KeFawrNt6RnYvFKwT0OSACj2oUfp" alt="Employee Picture" class="card-picture" id="newCardData1">
+                <div class="card-details">
+                  <p class="card-id text-center fw-medium mt-4">หมายเลขบัตรประจำตัวประชาชน</p>
+                  <p class="card-id text-center fw-medium" id="newCardData2">x-xxxx-xxxxx-xx-x</p>
+                  <p class="card-name fw-medium">ชื่อ <span id="newCardData3"></span></p>
+                  <p class="card-info fw-medium">ตำแหน่ง <span id="newCardData4"></span></p>
+                  <p class="card-info fw-medium">สังกัด <span id="newCardData5"></span></p>
+                </div>
+              </div>
+              <div class="card-employee-body">
+                <div class="grid-item">
+                  <img src="https://lh3.googleusercontent.com/d/1pqeyn763JNn9H59hxzYhOhkJHIraR2pD" alt="Employee Signature" class="card-signature inverted-color" id="newCardData6">
+                  <p class="card-info-boss">ลายมือชื่อ</p>           
+                  <p class="card-info">หมู่โลหิต &nbsp;<span class="fw-medium" id="newCardData7">บี</span></p>    
+                </div>
+                <div class="grid-item">
+                  <img src="https://lh3.googleusercontent.com/d/1pqeyn763JNn9H59hxzYhOhkJHIraR2pD" alt="Employee Signature" class="card-signature-boss inverted-color" id="newCardData8">
+                  <span class="card-info text-center fw-medium" id="newCardData9">(นายประภัสร์  อ่อนฤทธิ์)</span>
+                  <span class="card-info-boss text-center fw-medium" id="newCardData10">รองนายกองค์การบริหารส่วนตำบลโค้งไผ่</span>
+                  <span class="card-info-boss text-center fw-medium">ผู้ออกบัตร</span>
+                </div>       
+              </div>
+            </div>           
+          </div>
+          <div class="backSide">
+            <div class="employee-card">
+              <div class="card-header">
+                <div class="card-details">
+                  <p class="card-id text-center mt-3"><b>บัตรประจำตัวเจ้าหน้าที่ของรัฐ</b></p>
+                  <div style="display: flex; justify-content: center;" class="mt-3">
+                    <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/Rajchakan.png" style="width:100px;" class="inverted-color">
+                  </div>
+                  <p class="card-info text-center mt-2 fw-medium" id="newCardData11">ตำแหน่ง</p>
+                  <p class="card-info text-center mt-2 fw-medium" >เลขที่ <span id="newCardData12"></span></p>
+                  <p class="card-info text-center mt-2 fw-medium" id="newCardData13"></p>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info text-center mt-2 fw-medium">วันที่ออกบัตร <span id="newCardData14"></span></p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info text-center mt-2 fw-medium">บัตรหมดอายุ <span id="newCardData15"></span></p>
+                    </div>
+                  </div>
+                </div>
+              </div>                         
+            </div>
+          </div>
+        </div>  
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="hrmPage3" style="display: none;">
+  <div class="datacontent">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-hourglass-start"></i> สถานะการทำงานของบุคลากรในหน่วยงาน</h5>
+    </div>
+    <div class="container-fluid">
+      <div class="row" style="font-size: 14px;">
+        <div class="col-lg-3">
+          <label for="hrmstatusfilter1" class="col-label-form">ประเภทตำแหน่ง</label>
+          <select id="hrmstatusfilter1" style="font-size: 14px;" class="form-select rounded-4">
+            <option selected value="">บุคลากรทั้งหมด</option>
+            <option value="ข้าราชการ">ข้าราชการ</option>
+            <option value="พนักงานจ้าง">พนักงานจ้าง</option>
+            <option value="ลูกจ้างประจำ">ลูกจ้างประจำ</option>
+          </select>  
+        </div>
+        <div class="col-lg-3">
+          <label for="hrmstatusfilter2" class="col-label-form">สถานะ</label>
+          <select id="hrmstatusfilter2" style="font-size: 14px;" class="form-select rounded-4">
+            <option selected value="">สถานะทั้งหมด</option>
+            <option value="ปฏิบัติราชการอยู่">ปฏิบัติราชการอยู่</option>
+            <option value="ย้าย">ย้าย</option>
+            <option value="หมดสัญญา">หมดสัญญา</option>
+            <option value="ลาออก">ลาออก</option>
+          </select>  
+        </div>
+        <div class="col-lg-4">
+          <label for="hrmstatusfilter3" class="col-label-form">ค้นหา</label>
+          <div class="input-group z-index-0">
+            <input type="text" id="hrmstatusfilter3" style="font-size: 14px;" class="form-control rounded-4 rounded-end-0" placeholder="คำค้นหา">
+            <button type="button" class="btn btn-primary rounded-4 rounded-start-0 btn-sm">ค้นหา</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-4">
+      <table id="statusHrmTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" colspan="3">ข้อมูส่วนตัว</th>
+            <th scope="col" rowspan="2">ประเภทตำแหน่ง</th>
+            <th scope="col" rowspan="2">ตำแหน่งงาน</th>
+            <th scope="col" rowspan="2">สถานะ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">เลขบัตรประชาชน</th>
+            <th scope="col">ชื่อ - นามสกุล</th>
+          </tr>
+        </thead>
+        <tbody id="statusHrmTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="7"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+</div>

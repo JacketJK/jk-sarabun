@@ -1,0 +1,360 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-gear"></i> การตั้งค่าหน่วยงาน</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>การตั้งค่า</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="setagencybreadcrumb1"></a>
+      </li>
+      <li style="display:none" id="setagencybreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="setagencybreadcrumb3"></a>
+      </li>
+      <li style="display:none" id="setagencybreadcrumb4"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="setagencybreadcrumb5"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+<div class="data-contianer" id="agencySetPage1" style="display: none;">
+  <div class="datacontent" id="agencySetPage1_1">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-gear-complex"></i> การตั้งค่าหน่วยงาน</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3 ms-2" onclick="switchAgencySetPage2()" id="switchAgencySetPageBtn"><i class="fa-regular fa-pen-to-square"></i> แก้ไขการตั้งค่า</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-2"></div>
+      <div class="col-lg-8">
+        <div class="row">
+          <div class="col-lg-12 d-flex justify-content-center align-items-center p-5 rounded-bottom-0 rounded-4" id="showDataSetbg" style="background-size: cover;">
+            <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/logo-Project.png" id="showDataSetlg" width="250">
+          </div>
+        </div>
+        <div class="row mt-4">
+          <p class="col-lg-5 col-form-label">รหัสหน่วยงาน :</p>
+          <p class="col-lg-7 border-bottom col-form-label" id="showDataSet1"></p>
+        </div>
+        <div class="row mt-2">
+          <p class="col-lg-5 col-form-label">ชื่อหน่วยงาน :</p>
+          <p class="col-lg-7 border-bottom col-form-label" id="showDataSet2"></p>
+        </div>
+        <div class="row mt-2">
+          <p class="col-lg-5 col-form-label">เบอร์โทรหน่วยงาน :</p>
+          <p class="col-lg-7 border-bottom col-form-label" id="showDataSet3"></p>
+        </div>
+        <div class="row mt-2">
+          <p class="col-lg-5 col-form-label">สถานะที่ตั้งหน่วยงาน :</p>
+          <p class="col-lg-7 border-bottom col-form-label" id="showDataSet4"></p>
+        </div>
+        <div class="row mt-2">
+          <p class="col-lg-5 col-form-label">รายละเอียดหน่วยงาน :</p>
+          <p class="col-lg-7 border-bottom col-form-label" id="showDataSet5"></p>
+        </div>
+        <div class="row mt-2">
+          <p class="col-lg-5 col-form-label">รหัสนำหน้าหนังสือส่งออกภายใน :</p>
+          <p class="col-lg-7 border-bottom col-form-label" id="showDataSet6"></p>
+        </div>
+        <div class="row mt-2">
+          <p class="col-lg-5 col-form-label">รหัสนำหน้าหนังสือส่งออกภายนอก :</p>
+          <p class="col-lg-7 border-bottom col-form-label" id="showDataSet7"></p>
+        </div>
+        <div class="row mt-2">
+          <p class="col-lg-5 col-form-label">สถานะหน่วยงาน :</p>
+          <p class="col-lg-7 border-bottom col-form-label" id="showDataSet8"></p>
+        </div>
+      </div>
+      <div class="col-lg-2"></div>
+    </div>    
+  </div>
+
+  <div class="databox" id="agencySetPage1_2" style="display: none">
+    <div class="head mb-3">
+      <h5><i class="fa-regular fa-pen-to-square"></i> แก้ไขการตั้งค่าหน่วยงาน</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-danger btn-sm rounded-4 px-3 ms-2" onclick="switchAgencySetPage2()"><i class="fa-regular fa-power-off"></i> ปิด</button>
+      </div>
+    </div>
+    
+    <form id="dataSetAgencyForm" onsubmit="setEditSetAgency(this)">
+      <div class="row mb-2 px-3">
+        <p class="col-lg-12 col-form-label">รหัสหน่วยงาน :</p>
+        <div class="field-input col-lg-12">
+          <i class="fa-duotone fa-webhook input-icon fs-5"></i>
+          <input type="text" id="dataSetAgency1" name="dataSetAgency1" class="input-field ms-3" required>
+        </div>
+      </div>
+      <div class="row mb-2 px-3">
+        <p class="col-lg-12 col-form-label">ชื่อหน่วยงาน :</p>
+        <div class="field-input col-lg-12">
+          <i class="fa-duotone fa-window input-icon fs-5"></i>
+          <input type="text" id="dataSetAgency2" name="dataSetAgency2" class="input-field ms-3" required>
+        </div>
+      </div>
+      <div class="row mb-2 px-3">
+        <p class="col-lg-12 col-form-label">เบอร์โทรหน่วยงาน :</p>
+        <div class="field-input col-lg-12">
+          <i class="fa-duotone fa-phone-office input-icon fs-5"></i>
+          <input type="text" id="dataSetAgency3" name="dataSetAgency3" class="input-field ms-3" required>
+        </div>
+      </div>
+      <div class="row mb-2 px-3">
+        <p class="col-lg-12 col-form-label">สถานะที่ตั้งหน่วยงาน :</p>
+        <div class="field-input col-lg-12">
+          <i class="fa-duotone fa-hotel input-icon fs-5"></i>
+          <textarea id="dataSetAgency4" name="dataSetAgency4" class="input-field ms-3" rows="2" required></textarea>
+        </div>
+      </div>
+      <div class="row mb-2 px-3">
+        <p class="col-lg-12 col-form-label">รายละเอียดหน่วยงาน :</p>
+        <div class="field-input col-lg-12">
+          <i class="fa-duotone fa-file-contract input-icon fs-5"></i>
+          <textarea id="dataSetAgency5" name="dataSetAgency5" class="input-field ms-3" rows="2" required></textarea>
+        </div>
+      </div>
+      <div class="row mb-2 px-3">
+        <p class="col-lg-12 col-form-label">โลโก้หน่วยงาน :</p>
+        <div class="field-input col-lg-12">
+          <i class="fa-duotone fa-hexagon-image input-icon fs-5"></i>
+          <input type="url" id="dataSetAgency9" name="dataSetAgency9" class="input-field ms-3" required>
+        </div>
+      </div>
+      <div class="row mb-2 px-3">
+        <p class="col-lg-12 col-form-label">รูปพื้นหลังหน่วยงาน :</p>
+        <div class="field-input col-lg-12">
+          <i class="fa-duotone fa-image input-icon fs-5"></i>
+          <input type="url" id="dataSetAgency10" name="dataSetAgency10" class="input-field ms-3" required>
+        </div>
+      </div>
+      <div class="row mb-2 px-3">
+        <p class="col-lg-12 col-form-label">รหัสนำหน้าหนังสือส่งออกภายใน :</p>
+        <div class="field-input col-lg-12">
+          <i class="fa-duotone fa-lock-hashtag input-icon fs-5"></i>
+          <input type="text" id="dataSetAgency6" name="dataSetAgency6" class="input-field ms-3" readonly>
+          <i class="fa-solid text-danger fa-ban"></i>
+        </div>
+      </div>
+      <div class="row mb-2 px-3">
+        <p class="col-lg-12 col-form-label">รหัสนำหน้าหนังสือส่งออกภายนอก :</p>
+        <div class="field-input col-lg-12">
+          <i class="fa-duotone fa-inbox-out input-icon fs-5"></i>
+          <input type="text" id="dataSetAgency7" name="dataSetAgency7" class="input-field ms-3" readonly>
+          <i class="fa-solid text-danger fa-ban"></i>
+        </div>
+      </div>
+      <div class="row mb-2 px-3">
+        <p class="col-lg-12 col-form-label">สถานะของหน่วยงาน :</p>
+        <div class="field-input col-lg-12">
+          <i class="fa-duotone fa-router input-icon fs-5"></i>
+          <input type="text" id="dataSetAgency8" name="dataSetAgency8" class="input-field ms-3" readonly>
+          <i class="fa-solid text-danger fa-ban"></i>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-center mt-3">
+        <button type="submit" class="btn btn-green w-100 rounded-4"><i class="fa-duotone fa-cloud-arrow-up"></i> บันทึกการแก้ไข</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="data-contianer" id="agencySetPage2" style="display: none;">
+  <div class="datarespone" id="agencySetPage2_1">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-toolbox"></i> การตั้งค่าแผนกในหน่วยงาน</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDepartMentSet('add')"><i class="fa-solid fa-plus"></i> เพิ่มแผนกในหน่วยงาน</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageAgency(2, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงแผนก</button>
+      </div>
+    </div>
+    
+    <div class="table-responsive mt-4">
+      <table id="departMentDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" rowspan="2">รหัส</th>
+            <th scope="col" colspan="3">รายการ</th>
+            <th scope="col" rowspan="2">เลขทะเบียนรับ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">แผนก</th>
+            <th scope="col">หนวดหนังสือ</th>
+            <th scope="col">สีประจำแผนก</th>
+          </tr>
+        </thead>
+        <tbody id="departMentDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="6"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+  <div class="datacontent" id="agencySetPage2_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงแผนก</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageAgency(2, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-4"></div>
+      <div class="col-lg-4">
+        <ul id="sortableDepartMent-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-4"></div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="agencySetPage3" style="display: none;">
+  <div class="datarespone" id="agencySetPage3_1">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-head-side-gear"></i> การตั้งค่าตำแหน่ง</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'Position')"><i class="fa-solid fa-plus"></i> เพิ่มตำแหน่ง</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageAgency(3, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงตำแหน่ง</button>
+      </div>
+    </div>
+    
+    <div class="table-responsive mt-4">
+      <table id="positionDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">ตำแหน่ง</th>
+          </tr>
+        </thead>
+        <tbody id="positionDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="4"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+  <div class="datacontent" id="agencySetPage3_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงตำแหน่ง</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageAgency(3, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-4"></div>
+      <div class="col-lg-4">
+        <ul id="sortablePosition-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-4"></div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="agencySetPage9" style="display: none;">
+  <div class="datacontent">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-id-card-clip"></i> การตั้งค่าบัตรประจำตัวพนักงาน</h5>
+    </div>
+
+    <div class="myCard" style="height: 350px;">
+      <div class="frontSide">
+        <div class="employee-card">
+          <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/seal_agency.png" alt="seal" class="seal-agency" id="showCardData11">
+          <div class="card-header">
+            <img src="https://lh3.googleusercontent.com/d/1Zbx8KeFawrNt6RnYvFKwT0OSACj2oUfp" alt="Employee Picture" class="card-picture" id="showCardData1">
+            <div class="card-details">
+              <p class="card-id text-center fw-medium mt-4">หมายเลขบัตรประจำตัวประชาชน</p>
+              <p class="card-id text-center fw-medium" id="showCardData2">1-6204-00251-10-1</p>
+              <p class="card-name fw-medium">ชื่อ <span id="showCardData3">นายจักรกฤษณ์ หวังสุข</span></p>
+              <p class="card-info fw-medium">ตำแหน่ง <span id="showCardData4">เจ้าพนักงานปกครองชำนาญการ</span></p>
+              <p class="card-info fw-medium">สังกัด <span id="showCardData5"></span></p>
+            </div>
+          </div>
+          <div class="card-employee-body">
+            <div class="grid-item">
+              <img src="https://lh3.googleusercontent.com/d/1pqeyn763JNn9H59hxzYhOhkJHIraR2pD" alt="Employee Signature" class="card-signature inverted-color" id="showCardData6">
+              <p class="card-info-boss">ลายมือชื่อ</p>           
+              <p class="card-info">หมู่โลหิต &nbsp;<span class="fw-medium" id="showCardData7">บี</span></p>    
+            </div>
+            <div class="grid-item">
+              <img src="https://lh3.googleusercontent.com/d/1pqeyn763JNn9H59hxzYhOhkJHIraR2pD" alt="Employee Signature" class="card-signature-boss inverted-color" id="showCardData8">
+              <span class="card-info text-center fw-medium" id="showCardData9">(นายประภัสร์  อ่อนฤทธิ์)</span>
+              <span class="card-info-boss text-center fw-medium" id="showCardData10">รองนายกองค์การบริหารส่วนตำบลโค้งไผ่</span>
+              <span class="card-info-boss text-center fw-medium">ผู้ออกบัตร</span>
+            </div>       
+          </div>
+        </div>           
+      </div>
+    </div>
+
+    <form id="setCard_Employee_form" onsubmit="updataSetCardSave(this, event)">
+      <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-md-6 mt-3">
+          <div class="mb-2">
+            <label class="col-form-label" for="setCard_data1">ผู้ออกบัตร</label>
+            <div class="field-input">
+              <i class="fa-regular fa-user-tie input-icon"></i>
+              <input type="text" id="setCard_data1" name="setCard_data1" class="form-field" oninput="updateSetCard()">
+            </div>
+          </div>
+          <div class="mb-2">
+            <label class="col-form-label" for="setCard_data2">ตำแหน่งผู้ออกบัตร</label>
+            <div class="field-input">
+              <i class="fa-regular fa-crosshairs input-icon"></i>
+              <input type="text" id="setCard_data2" name="setCard_data2" class="form-field" oninput="updateSetCard()">
+            </div>
+          </div>
+          <div class="mb-2">
+            <label class="col-form-label" for="setCard_data4">เลขทะเบียนบัตร</label>
+            <div class="field-input">
+              <i class="fa-sharp fa-regular fa-list-ol input-icon"></i>
+              <input type="number" id="setCard_data4" name="setCard_data4" class="form-field">
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ลายเซ็นต์</p>
+            <label for="setCard_data3" class="d-flex justify-content-center overflow-hidden rounded-4" role="button">
+              <img src="https://placehold.co/600x150" style="width:500px; height:150px;" id="setCard_data3_img" class="rounded-4 object-fit-cover">
+            </label>
+            <input type="file" id="setCard_data3" name="setCard_data3" class="d-none" accept="image/png" onchange="updateSetCard()">
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ตราประทับบัตร</p>
+            <label for="setCard_data5" class="d-flex justify-content-center overflow-hidden rounded-4" role="button">
+              <img src="https://placehold.co/500x500" style="width:500px; height:500px;" id="setCard_data5_img" class="rounded-4 object-fit-cover">
+            </label>
+            <input type="file" id="setCard_data5" name="setCard_data5" class="d-none" accept="image/png" onchange="updateSetCard()">
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-center align-items-center mt-3">
+        <button type="reset" class="btn btn-danger btn-sm rounded-4 me-3 px-4">รีเซ็ตข้อมูล</button>
+        <button type="submit" class="btn btn-warning btn-sm rounded-4 me-3 px-4">แก้ไขข้อมูล</button>
+      </div>
+    </form>
+  </div>
+</div>

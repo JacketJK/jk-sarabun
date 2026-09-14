@@ -1,0 +1,257 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-inboxes"></i> หนังสือส่ง/คำสั่ง/ประกาศ</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>หนังสือภายนอก</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="docAnnoncebreadcrumb1"></a>
+      </li>
+      <li style="display:none" id="docAnnoncebreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="docAnnoncebreadcrumb3"></a>
+      </li>
+      <li style="display:none" id="docAnnoncebreadcrumb4"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="docAnnoncebreadcrumb5"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+<div class="data-contianer" style="display:none" id="menupage3_1">
+  <div class="datacontent">
+    <div class="head mb-4">
+      <h5><i class="fa-duotone fa-bookmark"></i> หนังสือส่ง/คำสั่ง/ประกาศ</h5>
+    </div>
+    <hr class="opacity-25">
+      <form id="addNewDocumentForm" onsubmit="saveAddnewDocument(this)">
+        <div class="row">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-5">                   
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >ประเภทหนังสือ :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-file input-icon fs-5"></i>
+                <select class="form-field" id="addNewDocument1" name="addNewDocument1">
+                  <option selected value="หนังสือส่ง">หนังสือส่ง</option>
+                  <option value="คำสั่ง">คำสั่ง</option>
+                  <option value="ประกาศ">ประกาศ</option>
+                  <option value="หนังสือรับรอง">หนังสือรับรอง</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-3 row" id="circular_notification_new_div" style="margin-top: -10px;">
+              <div class="col-sm-5"></div>
+              <div class="form-check col-sm-6">
+                <input class="form-check-input" type="checkbox" value="แจ้งเวียน" id="circular_notification_out">
+                <label class="form-check-label font-size-14 d-flex align-items-center" style="color: var(--blue);" for="circular_notification_out">
+                  แจ้งเวียน
+                </label>
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >เลขที่หนังสือ :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-folder-open input-icon fs-5"></i>
+                <input type="text" class="form-field" id="addNewDocument2" name="addNewDocument2" required>
+                <i style="font-weight: bold; font-size: 16px" class="fa fa-question-circle text-danger input-icon" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เลขรันเพื่อไม่ให้เลขหนังสือซ้ำ"></i>
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >จาก (หน่วยงาน) :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-building input-icon fs-5"></i>
+                <input type="text" class="form-field" id="addNewDocument3" name="addNewDocument3" required>
+                <i onclick="departmentSel(3)" class="fa-solid fa-magnifying-glass-plus" style="color: var(--box1)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เลือกหน่วยงาน"></i>
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >ถึง (หน่วยงาน) :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-buildings input-icon fs-5"></i>
+                <input type="text" class="form-field" id="addNewDocument4" name="addNewDocument4" required>
+                <i onclick="departmentSel(4)" class="fa-solid fa-magnifying-glass-plus" style="color: var(--box3)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เลือกหน่วยงาน"></i>
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >เรื่อง :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-book input-icon fs-5"></i>
+                <textarea type="text" class="form-field" id="addNewDocument5" name="addNewDocument5" rows="3" required></textarea>
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >รายละเอียด :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-file-lines input-icon fs-5"></i>
+                <textarea type="text" class="form-field" rows="5" id="addNewDocument6" name="addNewDocument6"></textarea>
+              </div>
+            </div>                
+          </div>
+          <div class="col-sm-1"></div>
+          <div class="col-sm-5">
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >ลงวันที่ :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-calendar-star input-icon fs-5"></i>
+                <input type="date" class="form-field" id="addNewDocument7" name="addNewDocument7" required>
+              </div>
+            </div>
+            <div class="mb-3 form-group row">
+              <p class="col-sm-4 col-form-label" >ชั้นความเร็ว :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-person-running-fast input-icon fs-5"></i>
+                <select class="form-field" id="addNewDocument8" name="addNewDocument8" required></select>
+              </div>
+            </div>
+            <div class="mb-3 form-group row">
+              <p class="col-sm-4 col-form-label" >ชั้นความลับ :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-user-secret input-icon fs-5"></i>
+                <select class="form-field" id="addNewDocument9" name="addNewDocument9" required></select>
+              </div>
+            </div>
+            <div class="mb-3 form-group row">
+              <p class="col-sm-4 col-form-label" >หมวดหนังสือ :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-layer-group input-icon fs-5"></i>
+                <select class="form-field" id="addNewDocument10" name="addNewDocument10" required></select>
+              </div>
+            </div>
+            <div class="mb-3 form-group row">
+              <p class="col-sm-4 col-form-label" >วัตถุประสงค์ :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-bullseye-arrow input-icon fs-5"></i>
+                <select class="form-field" id="addNewDocument11" name="addNewDocument11" required></select>
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >หมายเหตุ :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-note-sticky input-icon fs-5"></i>
+                <textarea type="text" class="form-field" rows="3" id="addNewDocument12" name="addNewDocument12"></textarea>
+              </div>
+            </div>
+            <div class="form-group row mb-3">
+              <p class="col-sm-4 col-form-label" ></p>
+              <div class="col-sm-7">
+                  <input class="form-check-input" type="checkbox" value="1" id="addNewDocument13" name="addNewDocument13">
+                  <label class="form-check-label" for="addNewDocument13">
+                    ติดตามผลการทำงาน
+                  </label>
+              </div>
+            </div>
+            <div class="form-group row mb-3">
+              <p class="col-sm-4 col-form-label" >ต้นฉบับ :</p>
+              <div class="col-sm-7">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="addNewDocument14" id="addNewDocument14_1" value="0">
+                  <label class="form-check-label" for="addNewDocument14_1">
+                  ไม่ส่งต้นฉบับ
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="addNewDocument14" id="addNewDocument14_2" value="1">
+                  <label class="form-check-label" for="addNewDocument14_2">
+                    ส่งต้นฉบับ
+                  </label>
+                </div>
+              </div>
+          </div>                 
+          </div>                                            
+        </div>
+        <hr class="opacity-25">
+        <div class="text-end">
+          <button type="submit" class="btn btn-primary rounded-pill px-5" id="saveaddNewDocument1"><i class="fa-regular fa-floppy-disk"></i> บันทึก</button>
+          <button type="reset" class="btn btn-danger rounded-pill px-5"><i class="fa-solid fa-xmark"></i> ยกเลิก</button>
+        </div>
+      </form>
+    
+  </div>
+</div>
+
+<div class="data-contianer" style="display:none" id="menupage3_2">
+  <div class="datacontent">
+    <div class="head mb-4">
+      <h5><i class="fa-duotone fa-book-open-cover"></i> รายงานหนังสือส่ง/คำสั่ง/ประกาศ</h5>
+    </div>
+  
+    <div class="container-fluid my-4">
+      <div class="row">
+        <div class="col-lg-2">
+          <label for="documentilter1" class="label-form">ปีสารบรรณ</label>
+          <select id="documentilter1" class="form-select rounded-4 year-filter">
+            <option selected value="2567">2567</option>
+            <option value="2566">2566</option>
+            <option value="2565">2565</option>
+            <option value="2564">2564</option>
+          </select>  
+        </div>
+        <div class="col-lg-2">
+          <label for="documentilter2" class="label-form">สถานะ</label>
+          <select id="documentilter2" class="form-select rounded-4">
+            <option selected value="">สถานะทั้งหมด</option>
+            <option value="3">กำลังดำเนินการ</option>
+            <option value="4">เสร็จแล้ว</option>
+            <option value="5">ปิดงานแล้ว</option>
+            <option value="0">ดึงกลับ</option>
+            <option value="1">ลงทะเบียน</option>
+            <option value="2">เตรียมส่ง</option>
+            <option value="-1">ยกเลิก</option>
+          </select>
+        </div>
+        <div class="col-lg-2">
+          <label for="documentilter3" class="label-form">ประเภทหนังสือ</label>
+          <select id="documentilter3" class="form-select rounded-4">
+            <option selected value="">ประเภทหนังสือทั้งหมด</option>
+            <option value="หนังสือส่ง">หนังสือส่ง</option>
+            <option value="คำสั่ง">คำสั่ง</option>
+            <option value="ประกาศ">ประกาศ</option>
+            <option value="หนังสือรับรอง">หนังสือรับรอง</option>
+          </select>
+        </div>
+        <div class="col-lg-2">
+          <label for="documentilter4" class="label-form">หมวดเอกสาร</label>
+          <select id="documentilter4" class="form-select rounded-4"></select>
+        </div>
+        <div class="col-lg-4">
+          <label for="documentilter5" class="label-form">ค้นหา</label>
+          <div class="input-group z-index-0">
+            <input type="text" id="documentilter5" class="form-control rounded-4 rounded-end-0" placeholder="คำค้นหา">
+            <button type="button" class="btn btn-primary rounded-4 rounded-start-0 ">ค้นหา</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive mt-3" style="padding-bottom: 80px;">
+      <table id="tableDocument" class="table table-sm">
+        <thead>
+          <tr class="text-center">
+            <th scope="col" class="text-center">#</th>
+            <th scope="col" class="text-center">เลขที่หนังสือ</th>
+            <th scope="col" class="text-center">ลงวันที่</th>
+            <th scope="col" class="text-center">ประเภทเอกสาร</th>
+            <th scope="col" class="text-center">เรื่อง</th>
+            <th scope="col" class="text-center">แนบไฟล์</th>
+            <th scope="col" class="text-center">แนบลิงก์</th>
+            <th scope="col" class="text-center">หมวดเอกสาร</th>
+            <th scope="col" class="text-center">สถานะ</th>
+            <th scope="col" class="text-center">ตัวเลือก</th>
+          </tr>
+        </thead>
+        <tbody id="tableDocument-body" class="table-group-divider">
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+          <tr>
+            <td class="text-center py-4" colspan="10"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> 
+  </div>
+</div>

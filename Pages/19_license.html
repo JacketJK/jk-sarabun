@@ -1,0 +1,61 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-file-certificate"></i> สิทธิการใช้งาน</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>การตั้งค่า</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="licensebreadcrumb1">การตั้งค่าสิทธิ์ผู้ใช้งาน</a>
+      </li>
+      <li style="display:none" id="licensebreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="licensebreadcrumb3"></a>
+      </li>
+      <li style="display:none" id="licensebreadcrumb4"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="licensebreadcrumb5"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+<div class="row row-cols-lg-3 g-4 mt-2" id="userLicenseSet1"></div>
+
+<div class="data-contianer" id="userLicenseSet2" style="display: none;">
+  <div class="container-fluid">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-cassette-tape"></i> การกำหนดสิทธิผู้ใช้งานระบบ</h5>
+      <div class="text-end">
+        <button class="btn btn-yellow rounded-4 px-3 btn-sm" onclick="changePageLicense(1)"><i class="fa-regular fa-arrow-rotate-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-4">
+      <table id="licenseSetTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">เมนู</th>
+            <th scope="col" rowspan="2">สถานะ</th>
+            <th scope="col" rowspan="2">จำกัดสิทธิ</th>
+          </tr>
+          <tr>
+            <th scope="col">กลุ่มเมนู</th>
+            <th scope="col">เมนูย่อย</th>
+          </tr>
+        </thead>
+        <tbody id="licenseSetTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="8"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+</div>

@@ -1,0 +1,550 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-computer-classic"></i> ฐานข้อมูลครุภัณฑ์สำนักงาน</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>ระบบเพิ่มเติม</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a id="equipmentbreadcrumb1">ข้อมูลครุภัณฑ์</a>
+      </li>
+      <li id="equipmentbreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="equipmentbreadcrumb3"></a>
+      </li>
+      <li style="display:none" id="equipmentbreadcrumb4"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="equipmentbreadcrumb5"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+<ul class="box-info" id="dashboard_Equipment_1">
+  <li style="background-color: var(--box3)">
+    <i style="background-color: var(--box3)" class="fa-duotone fa-computer"></i>
+    <span class="text">
+      <p>ครุภัณฑ์ <span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingEquipment1">0</h3>                
+    </span>
+  </li>
+  <li style="background-color: var(--yellow)">
+    <i style="background-color: var(--yellow)" class="fa-duotone fa-pencil"></i>
+    <span class="text">
+      <p>วัสดุสำนักงาน <span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingEquipment2">0</h3>                
+    </span>
+  </li>
+  <li style="background-color: var(--box2)">
+    <i style="background-color: var(--box2)" class="fa-duotone fa-coin"></i>
+    <span class="text">
+      <p>มูลค่ารวม <span style="font-size: 12px">(บาท)</span></p>
+      <h3 id="countingEquipment3">0</h3>        
+    </span>
+  </li>
+  <li>
+    <i class="fa-duotone fa-piggy-bank"></i>
+    <span class="text">
+      <p>มูลค่าตัดจำหน่าย <span style="font-size: 12px">(บาท)</span></p>
+      <h3 id="countingEquipment4">0</h3>               
+    </span>
+  </li>
+</ul>
+
+<div class="data-contianer" id="equipPage1" style="display: none;">
+  <div class="datarespone">
+    <div class="head mb-3">
+      <h5>
+        <i class="fa-duotone fa-computer"></i> วัสดุและครุภัณฑ์ในหน่วยงาน
+      </h5>
+    </div>
+
+    <div class="swiper ms-5">
+      <div class="swiper-wrapper" id="swiper-wrapper-container"></div>
+    </div>
+    
+    <div class="row mt-5">
+      <div class="col-lg-6 d-flex justify-content-center align-items-center flex-column">
+        <div class="head mb-3">
+          <h5>
+            <i class="fa-duotone fa-box-open-full"></i> วัสดุ
+          </h5>
+        </div>
+        <div id="chart-Material"></div>
+      </div>
+      <div class="col-lg-6 d-flex justify-content-center align-items-center flex-column">
+        <div class="head mb-3">
+          <h5>
+            <i class="fa-duotone fa-drone"></i> ครุภัณฑ์
+          </h5>
+        </div>
+        <div id="chart-Durable"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="equipPage2" style="display: none;">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="head col-lg-6 text-center">
+
+      </div>
+      <div class="head col-lg-6 text-center">
+
+      </div>
+    </div>
+
+
+
+  </div>
+
+
+  <div class="container-fluid">
+    <div class="head mb-3">
+      <h5>
+        <i class="fa-duotone fa-computer"></i> ข้อมูลครุภัณฑ์
+      </h5>
+    </div>
+
+    <div class="row w-100">
+      <div class="col"></div>
+      <div class="col-lg-4">  
+        <div class="mb-2">
+          <p class="col-form-label">หมายเลขครุภัณฑ์</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData1" id="equipAddData1" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">หน่วยงาน</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <select class="form-field" name="equipAddData3" id="equipAddData3" required></select>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">ประเภทครุภัณฑ์</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <select class="form-field" name="equipAddData5" id="equipAddData5" required></select>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">รหัสที่ตั้งทรัพย์สิน</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData7" id="equipAddData7" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">หมายเหตุ</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <textarea class="form-field" name="equipAddData9" id="equipAddData9" required></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="col"></div>
+      <div class="col-lg-4">
+        <div class="mb-2">
+          <p class="col-form-label">รหัสทรัพย์สิน GFMIS</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData2" id="equipAddData2" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">หมวดหมู่ครุภัณฑ์</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <select class="form-field" name="equipAddData4" id="equipAddData4" required></select>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">สถานที่ตั้ง/หน่วยงานที่รับผิดชอบ</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData6" id="equipAddData6" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">สถานะ</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <select class="form-field" name="equipAddData8" id="equipAddData8" required></select>
+          </div>
+        </div>
+      </div>
+      <div class="col"></div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="head mb-3">
+      <h5>
+        <i class="fa-duotone fa-computer"></i> วิธีการได้มา
+      </h5>
+    </div>
+
+    <div class="row w-100">
+      <div class="col"></div>
+      <div class="col-lg-4">  
+        <div class="mb-2">
+          <p class="col-form-label">ปีงบประมาณ</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <select class="form-field" name="equipAddData10" id="equipAddData10 year-filter" required></select>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">โครงการ</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData12" id="equipAddData12" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">จัดซื้อ-จัดจ้าง</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData14" id="equipAddData14" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">รหัส PO CODE</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData16" id="equipAddData16" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">แหล่งของเงิน</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData18" id="equipAddData18" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">ผู้ขาย/ผู้รับจ้าง/ผู้บริจาค</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <select class="form-field" name="equipAddData20" id="equipAddData20" required></select>
+          </div>
+        </div>
+      </div>
+      <div class="col"></div>
+      <div class="col-lg-4">
+        <div class="mb-2">
+          <p class="col-form-label">วิธีได้มา</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <select class="form-field" name="equipAddData11" id="equipAddData11" required></select>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">กิจกรรม</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData13" id="equipAddData13" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">เลขที่สัญญา</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData15" id="equipAddData15" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">วันที่ตรวจรับ</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData17" id="equipAddData17" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">ประเภทรายจ่าย</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <select class="form-field" name="equipAddData19" id="equipAddData19" required></select>
+          </div>
+        </div>
+      </div>
+      <div class="col"></div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="head mb-3">
+      <h5>
+        <i class="fa-duotone fa-computer"></i> รายละเอียดครุภัณฑ์
+      </h5>
+    </div>
+
+    <div class="row w-100">
+      <div class="col"></div>
+      <div class="col-lg-4">  
+        <div class="mb-2">
+          <p class="col-form-label">รายการ</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData21" id="equipAddData21" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">รุ่น</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData23" id="equipAddData23" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">มูลค่า (บาท)</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="number" class="form-field" name="equipAddData25" id="equipAddData25" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">หน่วยนับ</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData27" id="equipAddData27" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">รายละเอียดเพิ่มเติม</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <textarea class="form-field" name="equipAddData29" id="equipAddData29" required></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="col"></div>
+      <div class="col-lg-4">
+        <div class="mb-2">
+          <p class="col-form-label">หมายเลขเครื่อง S/N</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData22" id="equipAddData22" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">ยี่ห้อ</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData24" id="equipAddData24" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">อายุการใช้งาน (ปี)</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <select class="form-field" name="equipAddData26" id="equipAddData26" required></select>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">ทะเบียนรถ</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData28" id="equipAddData28" required>
+          </div>
+        </div>
+        <div class="mb-2">
+          <p class="col-form-label">อายุการใช้งานจริง</p>
+          <div class="field-input">
+            <i class="fa-duotone fa-file-arrow-down input-icon fs-5"></i>
+            <input type="text" class="form-field" name="equipAddData30" id="equipAddData30" required>
+          </div>
+        </div>
+      </div>
+      <div class="col"></div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="head mb-3">
+      <h5>
+        <i class="fa-duotone fa-computer"></i> ข้อมูลองค์ประกอบครุภัณฑ์
+      </h5>
+    </div>
+    <button type="button" class="btn btn-outline-green rounded-4 shadow btn-sm px-3"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
+
+  </div>
+
+  <div class="container-fluid">
+    <div class="head mb-3">
+      <h5>
+        <i class="fa-duotone fa-computer"></i> ข้อมูลทรัพย์สินย่อย
+      </h5>
+    </div>
+    <button type="button" class="btn btn-outline-green rounded-4 shadow btn-sm px-3"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
+
+    <div class="table-responsive mt-4">
+      <table id="subEquipmentTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" >หมายเลขครุภัณฑ์ GFMIS</th>
+            <th scope="col" >หมายเลขครุภัณฑ์</th>
+            <th scope="col" >รายการ</th>
+            <th scope="col" >มูลค่าสุทธิ</th>
+          </tr>
+        </thead>
+        <tbody id="subEquipmentTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="4"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div class="mt-2 d-flex justify-content-center align-items-center w-100" style="background-color: var(--grey)">
+    <button type="submit" class="btn btn-blue rounded-3 me-2 px-4">บันทึก</button>
+    <button type="reset" class="btn btn-red rounded-3 px-4">ยกเลิก</button>
+  </div>
+
+</div>
+
+<div class="data-contianer" id="equipPage3" style="display: none;">
+  <div class="container-fluid">
+    <div class="container-fluid">
+      <div class="row" style="font-size: 14px;">
+        <div class="col-lg-3">
+          <label for="equipfilter1" class="col-label-form">หน่วยงาน</label>
+          <select id="equipfilter1" style="font-size: 14px;" class="form-select rounded-4"></select>  
+        </div>
+        <div class="col-lg-3">
+          <label for="equipfilter2" class="col-label-form">หมวดหมู่ครุภัณฑ์</label>
+          <select id="equipfilter2" style="font-size: 14px;" class="form-select rounded-4"></select> 
+        </div>
+        <div class="col-lg-3">
+          <label for="equipfilter3" class="col-label-form">ประเภทครุภัณฑ์</label>
+          <select id="equipfilter3" style="font-size: 14px;" class="form-select rounded-4"></select> 
+        </div>
+        <div class="col-lg-3">
+          <label for="equipfilter4" class="col-label-form">สถานะ</label>
+          <select id="equipfilter4" style="font-size: 14px;" class="form-select rounded-4"></select> 
+        </div>
+        <div class="col-lg-3 mt-2">
+          <label for="equipfilter5" class="col-label-form">รหัสทรัพย์สิน GFMIS</label>
+          <input type="text" id="equipfilter5" style="font-size: 14px;" class="form-control rounded-4">
+        </div>
+        <div class="col-lg-3 mt-2">
+          <label for="equipfilter6" class="col-label-form">หมายเลขครุภัณฑ์</label>
+          <input type="text" id="equipfilter6" style="font-size: 14px;" class="form-control rounded-4">
+        </div>
+        <div class="col-lg-6 d-flex justify-content-end align-items-end">
+          <button class="btn btn-violet rounded-4 btn-sm px-5"><i class="fa-solid fa-magnifying-glass"></i> ค้นหา</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="d-flex justify-content-start align-items-center">
+      <button class="btn btn-green btn-sm rounded-4 px-4"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
+      <button class="btn btn-orange btn-sm rounded-4 px-4 ms-2"><i class="fa-solid fa-marker"></i> Update GFMIS</button>
+    </div>
+
+    <div class="table-responsive mt-4">
+      <table id="equipmentTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" >หมายเลขวัสดุครุภัณฑ์</th>
+            <th scope="col" >รหัสทรัพย์สิน GFMIS</th>
+            <th scope="col" >รายการ</th>
+            <th scope="col" >หมวดหมู่ครุภัณฑ์</th>
+            <th scope="col" >ประเภทครุภัณฑ์</th>
+            <th scope="col" >หน่วยงาน</th>
+            <th scope="col" >สถานะ</th>
+            <th scope="col" >จัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="equipmentTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="8"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+</div>
+
+<div class="data-contianer" id="equipPage4" style="display: none;">
+  <div class="container-fluid">
+    <div class="container-fluid">
+      <div class="row" style="font-size: 14px;">
+        <div class="col-lg-3">
+          <label for="parcelfilter1" class="col-label-form">หน่วยงาน</label>
+          <select id="parcelfilter1" style="font-size: 14px;" class="form-select rounded-4"></select>  
+        </div>
+        <div class="col-lg-3">
+          <label for="parcelfilter2" class="col-label-form">หมวดหมู่วัสดุ</label>
+          <select id="parcelfilter2" style="font-size: 14px;" class="form-select rounded-4"></select> 
+        </div>
+        <div class="col-lg-3">
+          <label for="parcelfilter3" class="col-label-form">ประเภทวัสดุ</label>
+          <select id="parcelfilter3" style="font-size: 14px;" class="form-select rounded-4"></select> 
+        </div>
+        <div class="col-lg-3">
+          <label for="parcelfilter4" class="col-label-form">หมายเลขวัสดุ</label>
+          <select id="parcelfilter4" style="font-size: 14px;" class="form-select rounded-4"></select> 
+        </div>
+        <div class="col-lg-9 mt-2">
+          <label for="parcelfilter6" class="col-label-form">ชื่อวัสดุ</label>
+          <input type="text" id="parcelfilter6" style="font-size: 14px;" class="form-control rounded-4">
+        </div>
+        <div class="col-lg-3 d-flex justify-content-end align-items-end">
+          <button class="btn btn-violet rounded-4 btn-sm px-5"><i class="fa-solid fa-magnifying-glass"></i> ค้นหา</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="d-flex justify-content-start align-items-center">
+      <button class="btn btn-green btn-sm rounded-4 px-4"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
+    </div>
+
+    <div class="table-responsive mt-4">
+      <table id="parcelmentTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" >หมายเลขวัสดุ</th>
+            <th scope="col" >รายการ</th>
+            <th scope="col" >หมวดหมู่วัสดุ</th>
+            <th scope="col" >ประเภทวัสดุ</th>
+            <th scope="col" >หน่วยงาน</th>
+            <th scope="col" >คงเหลือ</th>
+            <th scope="col" >จัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="parcelmentTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="7"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+</div>
+
+<div class="data-contianer" id="equipPage5" style="display: none;">
+  <div class="datarespone">
+    <div class="head mb-3">
+      <h5>
+        <i class="fa-duotone fa-swap-arrows"></i> การยืม/คืนวัสดุและครุภัณฑ์
+      </h5>
+    </div>
+
+    
+  </div>
+</div>

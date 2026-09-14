@@ -1,0 +1,1591 @@
+<script>
+const setEditSetAgency = (obj) => {
+  $('#saveNewActivityModal').modal('show');
+
+  const confirmBtn = document.getElementById("confirmSaveNewActivityBtn");
+
+  confirmBtn.onclick = function() {
+    $('#loader').show();
+    google.script.run.withSuccessHandler((res) => {
+      $('#xsaveNewActivityBtn').click();
+      toastAlert(2, '🎉 แก้ไขข้อมูลสำเร็จ');
+      getAgencyData();
+    }).setEditSetAgency(obj)
+  };
+} 
+
+const switchPageSet = (page, num) => {
+  $("#loader").show();
+
+  setTimeout(() => {
+    for (let i = 1; i < 10; i++) {
+      $("#datasetPage" + page + "_" + i).toggle(num == i);
+    }
+    $("#loader").hide();
+  }, 500); 
+}
+
+let dataAgencySet;
+google.script.run.withSuccessHandler((data) => {
+  dataAgencySet = data;
+  populateListAgency(data);
+  insertAgencySet(data);
+}).getAngecySet();
+
+const modalAgencyPageSet = (...data) => {
+  $('#agencySetModal').modal('show');
+
+  if (data[0] === 'add') {
+    $('#confirmAgencySetBtn').html('<i class="fa-regular fa-layer-plus"></i> เพิ่มข้อมูล');
+    $('#agencySetHead').html('เพิ่มหน่วยงานที่เกี่ยวข้อง');
+    $('#addDivAgency').show();
+    $('#editDivAgency').hide();
+
+    $('#confirmAgencySetBtn')[0].onclick = function() {
+      $('#loader').show();
+      if ($('#addSetAgncy1').val() === '' && $('#addSetAgncy2').val() === '' && $('#addSetAgncy3').val() === '') {
+        toastAlert(0, '⚠️ โปรดกรอกข้อมูลให้ครบถ้วน');
+        return;
+      }
+      var obj = {
+        key : $('#addSetAgncy1').val(),
+        name : $('#addSetAgncy2').val(),
+        boss : $('#addSetAgncy3').val(),
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 เพิ่มข้อมูลสำเร็จ');
+        $('#agencySetModal').modal('hide');
+        dataAgencySet = res;
+        populateListAgency(res);
+        insertAgencySet(res);
+      }).addAgencySet(obj)
+    };
+  } else if (data[0] === 'edit') {
+    $('#confirmAgencySetBtn').html('<i class="fa-regular fa-pen-to-square"></i> แก้ไขข้อมูล');
+    $('#agencySetHead').html('แก้ไขข้อมูลหน่วยงานที่เกี่ยวข้อง');
+    $('#addDivAgency').hide();
+    $('#editDivAgency').show();
+
+    let dataArray = dataAgencySet.filter(r => r[0] == data[1]);
+    if (dataArray.length > 0) {
+      $('#editSetAgncy1').val(dataArray[0][0]);
+      $('#editSetAgncy2').val(dataArray[0][1]);
+      $('#editSetAgncy3').val(dataArray[0][2]);
+    }
+    $('#confirmAgencySetBtn')[0].onclick = function() {
+      $('#loader').show();
+      if ($('#editSetAgncy1').val() === '' && $('#editSetAgncy2').val() === '' && $('#editSetAgncy3').val() === '') {
+        toastAlert(0, '⚠️ โปรดกรอกข้อมูลให้ครบถ้วน');
+        return;
+      }
+      var obj = {
+        key : $('#editSetAgncy1').val(),
+        name : $('#editSetAgncy2').val(),
+        boss : $('#editSetAgncy3').val(),
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 แก้ไขข้อมูลสำเร็จ');
+        $('#agencySetModal').modal('hide');
+        dataAgencySet = res;
+        populateListAgency(res);
+        insertAgencySet(res);
+      }).editAgencySet(obj)
+    };
+  } else if (data[0] === 'delete') {
+    let dataArray = dataAgencySet.filter(r => r[0] == data[1]);
+    $('#confirmAgencySetBtn').html('<i class="fa-regular fa-trash"></i> ลบข้อมูล');
+    $('#agencySetHead').html('คุณต้องการลบหน่วยงาน' + dataArray[0][1] + ' หรือไม่?');
+    $('#deleteSetAgncy1').val(dataArray[0][0]);
+    $('#addDivAgency').hide();
+    $('#editDivAgency').hide();
+
+    $('#confirmAgencySetBtn')[0].onclick = function() {
+      $('#loader').show();
+      var obj = {
+        key : $('#deleteSetAgncy1').val(),
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 ลบข้อมูลสำเร็จ');
+        $('#agencySetModal').modal('hide');
+        dataAgencySet = res;
+        populateListAgency(res);
+        insertAgencySet(res);
+      }).deleteAgencySet(obj)
+    };
+  }
+}
+
+const populateListAgency = (data) => {
+  var list = document.getElementById('sortableAgency-list');
+  list.innerHTML = '';
+
+  data.forEach(function(row) {
+    var li = document.createElement('li');
+    li.className = 'p-2';
+    li.innerHTML = `<i class='fa-solid fa-bars fa-lg me-3'></i>  ${row[1]}`;
+    li.setAttribute('data-id', row[0]);
+
+    list.appendChild(li);
+  });
+
+  makeListSortableAgency();
+}
+
+const makeListSortableAgency = () => {
+  var list = document.getElementById('sortableAgency-list');
+  new Sortable(list, {
+    onEnd: function(evt) {
+      saveOrderAgency();
+    }
+  });
+}
+
+const saveOrderAgency = () => {
+  var list = document.getElementById('sortableAgency-list');
+  var items = list.getElementsByTagName('li');
+  var order = [];
+
+  for (var i = 0; i < items.length; i++) {
+    order.push(items[i].getAttribute('data-id'));
+  }
+
+  google.script.run.saveOrderAgency(order);
+}
+</script>
+<script>
+let dataDocCategorySet;
+const getCategorySet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataDocCategorySet = data;
+    populateListDocCategory(data);
+    insertDocCategorySet(data);
+  }).getCategorySet();
+}
+
+const populateListDocCategory = (data) => {
+  var list = document.getElementById('sortableCategory-list');
+  list.innerHTML = '';
+
+  data.forEach(function(row) {
+    var li = document.createElement('li');
+    li.className = 'p-2';
+    li.innerHTML = `<i class='fa-solid fa-bars fa-lg me-3'></i>  ${row[1]}`;
+    li.setAttribute('data-id', row[0]);
+
+    list.appendChild(li);
+  });
+
+  makeListSortableCategory();
+}
+
+const makeListSortableCategory = () => {
+  var list = document.getElementById('sortableCategory-list');
+  new Sortable(list, {
+    onEnd: function(evt) {
+      saveOrderCategory();
+    }
+  });
+}
+
+const saveOrderCategory = () => {
+  var list = document.getElementById('sortableCategory-list');
+  var items = list.getElementsByTagName('li');
+  var order = [];
+
+  for (var i = 0; i < items.length; i++) {
+    order.push(items[i].getAttribute('data-id'));
+  }
+
+  google.script.run.saveOrderCategory(order);
+}
+
+let dataObjectiveSet;
+const getObjectiveSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataObjectiveSet = data;
+    populateListObjective(data);
+    insertObjectiveSet(data);
+  }).getObjectiveSet();
+};
+
+const populateListObjective = (data) => {
+  var list = document.getElementById('sortableObjective-list');
+  list.innerHTML = '';
+
+  data.forEach(function(row) {
+    var li = document.createElement('li');
+    li.className = 'p-2';
+    li.innerHTML = `<i class='fa-solid fa-bars fa-lg me-3'></i>  ${row[1]}`;
+    li.setAttribute('data-id', row[0]);
+
+    list.appendChild(li);
+  });
+
+  makeListSortableObjective();
+}
+
+const makeListSortableObjective = () => {
+  var list = document.getElementById('sortableObjective-list');
+  new Sortable(list, {
+    onEnd: function(evt) {
+      saveOrderObjective();
+    }
+  });
+}
+
+const saveOrderObjective = () => {
+  var list = document.getElementById('sortableObjective-list');
+  var items = list.getElementsByTagName('li');
+  var order = [];
+
+  for (var i = 0; i < items.length; i++) {
+    order.push(items[i].getAttribute('data-id'));
+  }
+
+  google.script.run.saveOrderObjective(order);
+}
+
+let dataClassSpeedSet;
+const getClassSpeedSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataClassSpeedSet = data;
+    populateListClassSpeed(data);
+    insertClassSpeedSet(data);
+  }).getClassSpeedSet();
+};
+
+const populateListClassSpeed = (data) => {
+  var list = document.getElementById('sortableClassSpeed-list');
+  list.innerHTML = '';
+
+  data.forEach(function(row) {
+    var li = document.createElement('li');
+    li.className = 'p-2';
+    li.innerHTML = `<i class='fa-solid fa-bars fa-lg me-3'></i>  ${row[1]}`;
+    li.setAttribute('data-id', row[0]);
+
+    list.appendChild(li);
+  });
+
+  makeListSortableClassSpeed();
+}
+
+const makeListSortableClassSpeed = () => {
+  var list = document.getElementById('sortableClassSpeed-list');
+  new Sortable(list, {
+    onEnd: function(evt) {
+      saveOrderClassSpeed();
+    }
+  });
+}
+
+const saveOrderClassSpeed = () => {
+  var list = document.getElementById('sortableClassSpeed-list');
+  var items = list.getElementsByTagName('li');
+  var order = [];
+
+  for (var i = 0; i < items.length; i++) {
+    order.push(items[i].getAttribute('data-id'));
+  }
+
+  google.script.run.saveOrderClassSpeed(order);
+}
+
+let dataClassSecretSet;
+const getClassSecretSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataClassSecretSet = data;
+    populateListClassSecret(data);
+    insertClassSecretSet(data);
+  }).getClassSecretSet();
+};
+
+const populateListClassSecret = (data) => {
+  var list = document.getElementById('sortableClassSecret-list');
+  list.innerHTML = '';
+
+  data.forEach(function(row) {
+    var li = document.createElement('li');
+    li.className = 'p-2';
+    li.innerHTML = `<i class='fa-solid fa-bars fa-lg me-3'></i>  ${row[1]}`;
+    li.setAttribute('data-id', row[0]);
+
+    list.appendChild(li);
+  });
+
+  makeListSortableClassSecret();
+}
+
+const makeListSortableClassSecret = () => {
+  var list = document.getElementById('sortableClassSecret-list');
+  new Sortable(list, {
+    onEnd: function(evt) {
+      saveOrderClassSecret();
+    }
+  });
+}
+
+const saveOrderClassSecret = () => {
+  var list = document.getElementById('sortableClassSecret-list');
+  var items = list.getElementsByTagName('li');
+  var order = [];
+
+  for (var i = 0; i < items.length; i++) {
+    order.push(items[i].getAttribute('data-id'));
+  }
+
+  google.script.run.saveOrderClassSecret(order);
+}
+
+let dataResponseSet;
+const getResponseSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataResponseSet = data;
+    populateListResponse(data);
+    insertResponseSet(data);
+  }).getResponseSet();
+};
+
+const populateListResponse = (data) => {
+  var list = document.getElementById('sortableResponse-list');
+  list.innerHTML = '';
+
+  data.forEach(function(row) {
+    var li = document.createElement('li');
+    li.className = 'p-2';
+    li.innerHTML = `<i class='fa-solid fa-bars fa-lg me-3'></i>  ${row[1]}`;
+    li.setAttribute('data-id', row[0]);
+
+    list.appendChild(li);
+  });
+
+  makeListSortableResponse();
+}
+
+const makeListSortableResponse = () => {
+  var list = document.getElementById('sortableResponse-list');
+  new Sortable(list, {
+    onEnd: function(evt) {
+      saveOrderResponse();
+    }
+  });
+}
+
+const saveOrderResponse = () => {
+  var list = document.getElementById('sortableResponse-list');
+  var items = list.getElementsByTagName('li');
+  var order = [];
+
+  for (var i = 0; i < items.length; i++) {
+    order.push(items[i].getAttribute('data-id'));
+  }
+
+  google.script.run.saveOrderResponse(order);
+}
+
+let dataJobWordSet;
+const getJobWordSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataJobWordSet = data;
+    populateListJobWord(data);
+    insertJobWordSet(data);
+  }).getJobWordSet();
+};
+
+const populateListJobWord = (data) => {
+  var list = document.getElementById('sortableJobWord-list');
+  list.innerHTML = '';
+
+  data.forEach(function(row) {
+    var li = document.createElement('li');
+    li.className = 'p-2';
+    li.innerHTML = `<i class='fa-solid fa-bars fa-lg me-3'></i>  ${row[1]}`;
+    li.setAttribute('data-id', row[0]);
+
+    list.appendChild(li);
+  });
+
+  makeListSortableJobWord();
+}
+
+const makeListSortableJobWord = () => {
+  var list = document.getElementById('sortableJobWord-list');
+  new Sortable(list, {
+    onEnd: function(evt) {
+      saveOrderJobWord();
+    }
+  });
+}
+
+const saveOrderJobWord = () => {
+  var list = document.getElementById('sortableJobWord-list');
+  var items = list.getElementsByTagName('li');
+  var order = [];
+
+  for (var i = 0; i < items.length; i++) {
+    order.push(items[i].getAttribute('data-id'));
+  }
+
+  google.script.run.saveOrderJobWord(order);
+}
+
+let dataTypeEmployeeSet;
+const getTypeEmployeeSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataTypeEmployeeSet = data;
+    populateListTypeEmployee(data);
+    insertTypeEmployeeSet(data);
+  }).getTypeEmployeeSet();
+};
+
+const populateListTypeEmployee = (data) => {
+  var list = document.getElementById('sortableTypeEmployee-list');
+  list.innerHTML = '';
+
+  data.forEach(function(row) {
+    var li = document.createElement('li');
+    li.className = 'p-2';
+    li.innerHTML = `<i class='fa-solid fa-bars fa-lg me-3'></i>  ${row[1]}`;
+    li.setAttribute('data-id', row[0]);
+
+    list.appendChild(li);
+  });
+
+  makeListSortableTypeEmployee();
+}
+
+const makeListSortableTypeEmployee = () => {
+  var list = document.getElementById('sortableTypeEmployee-list');
+  new Sortable(list, {
+    onEnd: function(evt) {
+      saveOrderTypeEmployee();
+    }
+  });
+}
+
+const saveOrderTypeEmployee = () => {
+  var list = document.getElementById('sortableTypeEmployee-list');
+  var items = list.getElementsByTagName('li');
+  var order = [];
+
+  for (var i = 0; i < items.length; i++) {
+    order.push(items[i].getAttribute('data-id'));
+  }
+
+  google.script.run.saveOrderTypeEmployee(order);
+}
+
+let dataRevenueSet;
+const getRevenueSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataRevenueSet = data;
+    populateListRevenue(data);
+    insertRevenueSet(data);
+  }).getRevenueSet();
+};
+
+const populateListRevenue = (data) => {
+  var list = document.getElementById('sortableRevenue-list');
+  list.innerHTML = '';
+
+  data.forEach(function(row) {
+    var li = document.createElement('li');
+    li.className = 'p-2';
+    li.innerHTML = `<i class='fa-solid fa-bars fa-lg me-3'></i>  ${row[1]}`;
+    li.setAttribute('data-id', row[0]);
+
+    list.appendChild(li);
+  });
+
+  makeListSortableRevenue();
+}
+
+const makeListSortableRevenue = () => {
+  var list = document.getElementById('sortableRevenue-list');
+  new Sortable(list, {
+    onEnd: function(evt) {
+      saveOrderRevenue();
+    }
+  });
+}
+
+const saveOrderRevenue = () => {
+  var list = document.getElementById('sortableRevenue-list');
+  var items = list.getElementsByTagName('li');
+  var order = [];
+
+  for (var i = 0; i < items.length; i++) {
+    order.push(items[i].getAttribute('data-id'));
+  }
+
+  google.script.run.saveOrderRevenue(order);
+}
+
+let dataExpensesSet;
+const getExpensesSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataExpensesSet = data;
+    populateListExpenses(data);
+    insertExpensesSet(data);
+  }).getExpensesSet();
+};
+
+const populateListExpenses = (data) => {
+  var list = document.getElementById('sortableExpenses-list');
+  list.innerHTML = '';
+
+  data.forEach(function(row) {
+    var li = document.createElement('li');
+    li.className = 'p-2';
+    li.innerHTML = `<i class='fa-solid fa-bars fa-lg me-3'></i>  ${row[1]}`;
+    li.setAttribute('data-id', row[0]);
+
+    list.appendChild(li);
+  });
+
+  makeListSortableExpenses();
+}
+
+const makeListSortableExpenses = () => {
+  var list = document.getElementById('sortableExpenses-list');
+  new Sortable(list, {
+    onEnd: function(evt) {
+      saveOrderExpenses();
+    }
+  });
+}
+
+const saveOrderExpenses = () => {
+  var list = document.getElementById('sortableExpenses-list');
+  var items = list.getElementsByTagName('li');
+  var order = [];
+
+  for (var i = 0; i < items.length; i++) {
+    order.push(items[i].getAttribute('data-id'));
+  }
+
+  google.script.run.saveOrderExpenses(order);
+}
+
+let dataMooBanSet;
+const getMooBanSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataMooBanSet = data;
+    populateListMooBan(data);
+    insertMooBanSet(data);
+  }).getMooBanSet();
+};
+
+const populateListMooBan = (data) => {
+  var list = document.getElementById('sortableMooBan-list');
+  list.innerHTML = '';
+
+  data.forEach(function(row) {
+    var li = document.createElement('li');
+    li.className = 'p-2';
+    li.innerHTML = `<i class='fa-solid fa-bars fa-lg me-3'></i>  ${row[2]}`;
+    li.setAttribute('data-id', row[0]);
+
+    list.appendChild(li);
+  });
+
+  makeListSortableMooBan();
+}
+
+const makeListSortableMooBan = () => {
+  var list = document.getElementById('sortableMooBan-list');
+  new Sortable(list, {
+    onEnd: function(evt) {
+      saveOrderMooBan();
+    }
+  });
+}
+
+const saveOrderMooBan = () => {
+  var list = document.getElementById('sortableMooBan-list');
+  var items = list.getElementsByTagName('li');
+  var order = [];
+
+  for (var i = 0; i < items.length; i++) {
+    order.push(items[i].getAttribute('data-id'));
+  }
+
+  google.script.run.saveOrderMooBan(order);
+}
+const modalMoobanPageSet = (...data) => {
+  $('#moobanSetModal').modal('show');
+
+  if (data[0] === 'add') {
+    $('#confirmMoobanSetBtn').html('<i class="fa-regular fa-layer-plus"></i> เพิ่มข้อมูล');
+    $('#moobanSetHead').html('เพิ่มข้อมูลหมู่บ้านในพื้นที่');
+    $('#dataMoobanInputKey').val('');
+    $('#dataMoobanInput1').val('');
+    $('#dataMoobanInput2').val('');
+
+    $('#confirmMoobanSetBtn')[0].onclick = function() {
+      $('#loader').show();
+      if ($('#dataMoobanInput1').val() === '' && $('#dataMoobanInput2').val() === '') {
+        toastAlert(0, '⚠️ โปรดกรอกข้อมูลให้ครบถ้วน');
+        return;
+      }
+      var obj = {
+        key : $('#dataMoobanInputKey').val(),
+        number : $('#dataMoobanInput1').val(),
+        ban : $('#dataMoobanInput2').val(),
+        sheetname : 'MooBan',
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 เพิ่มข้อมูลสำเร็จ');
+        $('#moobanSetModal').modal('hide');
+        dataMooBanSet = res;
+        populateListMooBan(res);
+        insertMooBanSet(res);
+      }).addMooBanSet(obj)
+    };
+  } else if (data[0] === 'edit') {
+    let dataArray = dataMooBanSet.filter(r => r[0] == data[1]);
+    $('#confirmMoobanSetBtn').html('<i class="fa-regular fa-pen-to-square"></i> แก้ไขข้อมูล');
+    $('#moobanSetHead').html('แก้ไขข้อมูล ' + dataArray[0][2]);
+    $('#dataMoobanInputKey').val(dataArray[0][0]);
+    $('#dataMoobanInput1').val(dataArray[0][1]);
+    $('#dataMoobanInput2').val(dataArray[0][2]);
+
+    $('#confirmMoobanSetBtn')[0].onclick = function() {
+      $('#loader').show();
+      if ($('#dataMoobanInput1').val() === '' && $('#dataMoobanInput2').val() === '') {
+        toastAlert(0, '⚠️ โปรดกรอกข้อมูลให้ครบถ้วน');
+        return;
+      }
+      var obj = {
+        key : $('#dataMoobanInputKey').val(),
+        number : $('#dataMoobanInput1').val(),
+        ban : $('#dataMoobanInput2').val(),
+        sheetname : 'MooBan',
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 แก้ไขข้อมูลสำเร็จ');
+        $('#moobanSetModal').modal('hide');
+        dataMooBanSet = res;
+        populateListMooBan(res);
+        insertMooBanSet(res);
+      }).editMooBanSet(obj)
+    };
+  } else if (data[0] === 'delete') {
+    let dataArray = dataMooBanSet.filter(r => r[0] == data[1]);
+    $('#confirmMoobanSetBtn').html('<i class="fa-regular fa-trash"></i> ลบข้อมูล');
+    $('#moobanSetHead').html('คุณต้องการลบ' + dataArray[0][2] + ' หรือไม่?');
+    $('#dataMoobanInputKey').val(dataArray[0][0]);
+    $('#dataMoobanInput1').val(dataArray[0][1]);
+    $('#dataMoobanInput2').val(dataArray[0][2]);
+
+    $('#confirmMoobanSetBtn')[0].onclick = function() {
+      $('#loader').show();
+      var obj = {
+        key : $('#dataMoobanInputKey').val(),
+        number : $('#dataMoobanInput1').val(),
+        ban : $('#dataMoobanInput2').val(),
+        sheetname : 'MooBan',
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 ลบข้อมูลสำเร็จ');
+        $('#moobanSetModal').modal('hide');
+        dataMooBanSet = res;
+        populateListMooBan(res);
+        insertMooBanSet(res);
+      }).deleteMooBanSet(obj)
+    };
+  } 
+}
+</script>  
+<script>
+const modalDataPageSet = (...data) => {
+  $('#dataSetModal').modal('show');
+  var dataset = '';
+  if (data[1] === 'DocCategory') {
+    dataset = dataDocCategorySet;
+  } else if (data[1] === 'Objective') {
+    dataset = dataObjectiveSet;
+  } else if (data[1] === 'ClassSpeed') {
+    dataset = dataClassSpeedSet;
+  } else if (data[1] === 'ClassSecret') {
+    dataset = dataClassSecretSet;
+  } else if (data[1] === 'Response') {
+    dataset = dataResponseSet;
+  } else if (data[1] === 'JobWord') {
+    dataset = dataJobWordSet;
+  } else if (data[1] === 'Position') {
+    dataset = dataPositionSet;
+  } else if (data[1] === 'TypeEmployee') {
+    dataset = dataTypeEmployeeSet;
+  } else if (data[1] === 'Revenue') {
+    dataset = dataRevenueSet;
+  } else if (data[1] === 'Expenses') {
+    dataset = dataExpensesSet;
+  }
+  
+  if (data[0] === 'add') {
+    $('#confirmDataSetBtn').html('<i class="fa-regular fa-layer-plus"></i> เพิ่มข้อมูล');
+    $('#dataSetHead').html('เพิ่มข้อมูล');
+    $('#dataSetInput1').val('');
+
+    $('#confirmDataSetBtn')[0].onclick = function() {
+      $('#loader').show();
+      if ($('#dataSetInput1').val() === '') {
+        toastAlert(0, '⚠️ โปรดกรอกข้อมูลให้ครบถ้วน');
+        return;
+      }
+      var obj = {
+        sheetname : data[1],
+        list : $('#dataSetInput1').val(),
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 เพิ่มข้อมูลสำเร็จ');
+        $('#dataSetModal').modal('hide');
+        runSuccessSet(obj.sheetname, res);
+      }).addDataSet(obj)
+    };
+  } else if (data[0] === 'edit') {
+    $('#confirmDataSetBtn').html('<i class="fa-regular fa-pen-to-square"></i> แก้ไขข้อมูล');
+    $('#dataSetHead').html('แก้ไขข้อมูล');
+
+    let dataArray = dataset.filter(r => r[0] == data[2]);
+    if (dataArray.length > 0) {
+      $('#dataSetInputKey').val(dataArray[0][0]);
+      $('#dataSetInput1').val(dataArray[0][1]);
+    }
+
+    $('#confirmDataSetBtn')[0].onclick = function() {
+      $('#loader').show();
+      if ($('#dataSetInput1').val() === '') {
+        toastAlert(0, '⚠️ โปรดกรอกข้อมูลให้ครบถ้วน');
+        return;
+      }
+      var obj = {
+        sheetname : data[1],
+        key : $('#dataSetInputKey').val(),
+        list : $('#dataSetInput1').val(),
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 แก้ไขข้อมูลสำเร็จ');
+        $('#dataSetModal').modal('hide');
+        runSuccessSet(obj.sheetname, res);
+      }).editDataSet(obj)
+    };
+  } else if (data[0] === 'delete') {
+    let dataArray = dataset.filter(r => r[0] == data[2]);
+    $('#confirmDataSetBtn').html('<i class="fa-regular fa-trash"></i> ลบข้อมูล');
+    $('#dataSetHead').html('คุณต้องการลบ' + dataArray[0][1] + ' หรือไม่?');
+    $('#dataSetInputKey').val(dataArray[0][0]);
+    $('#dataSetInput1').val(dataArray[0][1]);
+
+    $('#confirmDataSetBtn')[0].onclick = function() {
+      $('#loader').show();
+      var obj = {
+        sheetname : data[1],
+        key : $('#dataSetInputKey').val(),
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 ลบข้อมูลสำเร็จ');
+        $('#dataSetModal').modal('hide');
+        runSuccessSet(obj.sheetname, res);
+      }).deleteDataSet(obj)
+    };
+  }
+}  
+</script>  
+<script>
+const runSuccessSet = (...data) => {
+  const [sheetName, dataSet] = data;
+  
+  if (sheetName === 'DocCategory') {
+    dataDocCategorySet = dataSet;
+    populateListDocCategory(dataSet);
+    insertDocCategorySet(dataSet);
+  } else if (sheetName === 'Objective') {
+    dataObjectiveSet = dataSet;
+    populateListObjective(dataSet);
+    insertObjectiveSet(dataSet);
+  } else if (sheetName === 'ClassSpeed') {
+    dataClassSpeedSet = dataSet;
+    populateListClassSpeed(dataSet);
+    insertClassSpeedSet(dataSet);
+  } else if (sheetName === 'ClassSecret') {
+    dataClassSecretSet = dataSet;
+    populateListClassSecret(dataSet);
+    insertClassSecretSet(dataSet);
+  } else if (sheetName === 'Response') {
+    dataResponseSet = dataSet;
+    populateListResponse(dataSet);
+    insertResponseSet(dataSet);
+  } else if (sheetName === 'JobWord') {
+    dataJobWordSet = dataSet;
+    populateListJobWord(dataSet);
+    insertJobWordSet(dataSet);
+  } else if (sheetName === 'Position') {
+    dataPositionSet = dataSet;
+    populateListPosition(dataSet);
+    insertPositionSet(dataSet);
+  } else if (sheetName === 'TypeEmployee') {
+    dataTypeEmployeeSet = dataSet;
+    populateListTypeEmployee(dataSet);
+    insertTypeEmployeeSet(dataSet);
+  } else if (sheetName === 'Revenue') {
+    dataRevenueSet = dataSet;
+    populateListRevenue(dataSet);
+    insertRevenueSet(dataSet);
+  } else if (sheetName === 'Expenses') {
+    dataExpensesSet = dataSet;
+    populateListExpenses(dataSet);
+    insertExpensesSet(dataSet);
+  }
+}
+</script> 
+
+<!--------------------------- setAgencypage ------------------------->
+
+<script>
+const switchAgencySetPage2 = () => {
+  const agencySetPage2 = $("#agencySetPage1_2");
+  const agencySetPageBtn = $("#switchAgencySetPageBtn");
+
+  if (agencySetPage2.css("display") === "none") {
+    agencySetPage2.css("display", "block");
+    agencySetPageBtn.css("display", "none");
+  } else {
+    agencySetPage2.css("display", "none");
+    agencySetPageBtn.css("display", "block");
+  }
+};
+
+const switchPageAgency = (page, num) => {
+  $("#loader").show();
+
+  setTimeout(() => {
+    for (let i = 1; i < 10; i++) {
+      $("#agencySetPage" + page + "_" + i).toggle(num == i);
+    }
+    $("#loader").hide();
+  }, 500); 
+}
+
+let dataDepartMentSet;
+const getDepartMentSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataDepartMentSet = data;
+    populateListDepartMent(data);
+    insertDepartMentSet(data);
+  }).getDepartMentSet();
+};
+
+const populateListDepartMent = (data) => {
+  var list = document.getElementById('sortableDepartMent-list');
+  list.innerHTML = '';
+
+  data.forEach(function(row) {
+    var li = document.createElement('li');
+    li.className = 'p-2';
+    li.innerHTML = `<i class='fa-solid fa-bars fa-lg me-3'></i>  ${row[1]}`;
+    li.setAttribute('data-id', row[0]);
+
+    list.appendChild(li);
+  });
+
+  makeListSortableDepartMent();
+}
+
+const makeListSortableDepartMent = () => {
+  var list = document.getElementById('sortableDepartMent-list');
+  new Sortable(list, {
+    onEnd: function(evt) {
+      saveOrderDepartMent();
+    }
+  });
+}
+
+const saveOrderDepartMent = () => {
+  var list = document.getElementById('sortableDepartMent-list');
+  var items = list.getElementsByTagName('li');
+  var order = [];
+
+  for (var i = 0; i < items.length; i++) {
+    order.push(items[i].getAttribute('data-id'));
+  }
+
+  google.script.run.saveOrderDepartMent(order);
+}
+
+let dataPositionSet;
+const getPositionSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataPositionSet = data;
+    populateListPosition(data);
+    insertPositionSet(data);
+  }).getPositionSet();
+};
+
+const populateListPosition = (data) => {
+  var list = document.getElementById('sortablePosition-list');
+  list.innerHTML = '';
+
+  data.forEach(function(row) {
+    var li = document.createElement('li');
+    li.className = 'p-2';
+    li.innerHTML = `<i class='fa-solid fa-bars fa-lg me-3'></i>  ${row[1]}`;
+    li.setAttribute('data-id', row[0]);
+
+    list.appendChild(li);
+  });
+
+  makeListSortablePosition();
+}
+
+const makeListSortablePosition = () => {
+  var list = document.getElementById('sortablePosition-list');
+  new Sortable(list, {
+    onEnd: function(evt) {
+      saveOrderPosition();
+    }
+  });
+}
+
+const saveOrderPosition = () => {
+  var list = document.getElementById('sortablePosition-list');
+  var items = list.getElementsByTagName('li');
+  var order = [];
+
+  for (var i = 0; i < items.length; i++) {
+    order.push(items[i].getAttribute('data-id'));
+  }
+
+  google.script.run.saveOrderPosition(order);
+}
+
+let dataCarSet;
+const getCarSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataCarSet = data;
+    populateListCar(data);
+    insertCarSet(data);
+  }).getCarSet();
+};
+
+const populateListCar = (data) => {
+  var list = document.getElementById('sortableCar-list');
+  list.innerHTML = '';
+
+  data.forEach(function(row) {
+    var li = document.createElement('li');
+    li.className = 'p-2 d-flex align-items-center'; 
+    li.setAttribute('data-id', row[0]);
+
+    var image = document.createElement('img');
+    image.src = row[1];
+    image.style.width = "80px";
+
+    var div = document.createElement('div'); 
+    div.className = "d-flex flex-column ms-2";
+
+    var text = document.createElement('span');
+    text.className = "col-label-form";
+    text.innerHTML = "หมายเลขทะเบียน " + row[2];
+
+    var text2 = document.createElement('span');
+    text2.className = "col-label-form";
+    text2.innerHTML = row[3];
+
+    div.appendChild(text);
+    div.appendChild(text2);
+
+    li.appendChild(image);
+    li.appendChild(div);
+
+    list.appendChild(li);
+  });
+
+  makeListSortableCar();
+}
+
+const makeListSortableCar = () => {
+  var list = document.getElementById('sortableCar-list');
+  new Sortable(list, {
+    onEnd: function(evt) {
+      saveOrderCar();
+    }
+  });
+}
+
+const saveOrderCar = () => {
+  var list = document.getElementById('sortableCar-list');
+  var items = list.getElementsByTagName('li');
+  var order = [];
+
+  for (var i = 0; i < items.length; i++) {
+    order.push(items[i].getAttribute('data-id'));
+  }
+
+  google.script.run.saveOrderCar(order);
+}
+
+const modalDepartMentSet = (...data) => {
+  $('#DepartMentSetModal').modal('show');
+
+  if (data[0] === 'add') {
+    $('#confirmDepartMentSetBtn').html('<i class="fa-regular fa-layer-plus"></i> เพิ่มข้อมูล');
+    $('#DepartMentSetHead').html('เพิ่มข้อมูลแผนกในหน่วยงาน');
+    $('#dataDepartMentInputKey').val('');
+    $('#dataDepartMentInput1').val('');
+    $('#dataDepartMentInput2').val('');
+    $('#dataDepartMentInput3').val('');
+    $('#dataDepartMentInput4').val('');
+
+    $('#confirmDepartMentSetBtn')[0].onclick = function() {
+      $('#loader').show();
+      if ($('#dataDepartMentInput1').val() === '' && $('#dataDepartMentInput2').val() === ''  && $('#dataDepartMentInput3').val() === ''&& $('#dataDepartMentInput4').val() === '') {
+        toastAlert(0, '⚠️ โปรดกรอกข้อมูลให้ครบถ้วน');
+        return;
+      }
+      var obj = {
+        key : $('#dataDepartMentInputKey').val(),
+        depart : $('#dataDepartMentInput1').val(),
+        doccer : $('#dataDepartMentInput2').val(),
+        color : $('#dataDepartMentInput3').val(),
+        number : $('#dataDepartMentInput4').val(),
+        sheetname : 'DepartMent',
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 เพิ่มข้อมูลสำเร็จ');
+        $('#DepartMentSetModal').modal('hide');
+        dataDepartMentSet = res;
+        populateListDepartMent(res);
+        insertDepartMentSet(res);
+      }).addDepartMentSet(obj)
+    };
+  } else if (data[0] === 'edit') {
+    let dataArray = dataDepartMentSet.filter(r => r[0] == data[1]);
+    $('#confirmDepartMentSetBtn').html('<i class="fa-regular fa-pen-to-square"></i> แก้ไขข้อมูล');
+    $('#DepartMentSetHead').html('แก้ไขข้อมูล ' + dataArray[0][2]);
+    $('#dataDepartMentInputKey').val(dataArray[0][0]);
+    $('#dataDepartMentInput1').val(dataArray[0][1]);
+    $('#dataDepartMentInput2').val(dataArray[0][2]);
+    $('#dataDepartMentInput3').val(dataArray[0][3]);
+    $('#dataDepartMentInput4').val(dataArray[0][4]);
+
+    $('#confirmDepartMentSetBtn')[0].onclick = function() {
+      $('#loader').show();
+      if ($('#dataDepartMentInput1').val() === '' && $('#dataDepartMentInput2').val() === ''  && $('#dataDepartMentInput3').val() === '') {
+        toastAlert(0, '⚠️ โปรดกรอกข้อมูลให้ครบถ้วน');
+        return;
+      }
+      var obj = {
+        key : $('#dataDepartMentInputKey').val(),
+        depart : $('#dataDepartMentInput1').val(),
+        doccer : $('#dataDepartMentInput2').val(),
+        color : $('#dataDepartMentInput3').val(),
+        number : $('#dataDepartMentInput4').val(),
+        sheetname : 'DepartMent',
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 แก้ไขข้อมูลสำเร็จ');
+        $('#DepartMentSetModal').modal('hide');
+        dataDepartMentSet = res;
+        populateListDepartMent(res);
+        insertDepartMentSet(res);
+      }).editDepartMentSet(obj)
+    };
+  } else if (data[0] === 'delete') {
+    let dataArray = dataDepartMentSet.filter(r => r[0] == data[1]);
+    $('#confirmDepartMentSetBtn').html('<i class="fa-regular fa-trash"></i> ลบข้อมูล');
+    $('#DepartMentSetHead').html('คุณต้องการลบ' + dataArray[0][1] + ' หรือไม่?');
+    $('#dataDepartMentInputKey').val(dataArray[0][0]);
+    $('#dataDepartMentInput1').val(dataArray[0][1]);
+    $('#dataDepartMentInput2').val(dataArray[0][2]);
+    $('#dataDepartMentInput3').val(dataArray[0][3]);
+    $('#dataDepartMentInput4').val(dataArray[0][4]);
+
+    $('#confirmDepartMentSetBtn')[0].onclick = function() {
+      $('#loader').show();
+      var obj = {
+        key : $('#dataDepartMentInputKey').val(),
+        depart : $('#dataDepartMentInput1').val(),
+        doccer : $('#dataDepartMentInput2').val(),
+        color : $('#dataDepartMentInput3').val(),
+        number : $('#dataDepartMentInput4').val(),
+        sheetname : 'DepartMent',
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 ลบข้อมูลสำเร็จ');
+        $('#DepartMentSetModal').modal('hide');
+        dataDepartMentSet = res;
+        populateListDepartMent(res);
+        insertDepartMentSet(res);
+      }).deleteDepartMentSet(obj)
+    };
+  } 
+}
+const modalCarSet = (...data) => {
+  $('#CarSetModal').modal('show');
+  $('#switch-carDiv').toggle(data[0] === 'delete');
+
+  if (data[0] === 'add') {
+    $('#confirmCarSetBtn').html('<i class="fa-regular fa-layer-plus"></i> เพิ่มข้อมูล');
+    $('#CarSetHead').html('เพิ่มข้อมูลรถส่วนกลางในหน่วยงาน');
+    $('#dataCarInputKey').val('');
+    $('#dataCarInput1').val('');
+    $('#dataCarInput2').val('');
+    $('#dataCarInput3').val('');
+    $('#uploadimagecarNew').attr('src', 'https://cdn.jsdelivr.net/gh/JacketJK/image/racing-car.png');
+
+    $('#confirmCarSetBtn')[0].onclick = function() {
+      $('#loader').show();
+      if ($('#dataCarInput1').val() === '' && $('#dataCarInput2').val() === ''  && $('#dataCarInput3').val() === '') {
+        toastAlert(0, '⚠️ โปรดกรอกข้อมูลให้ครบถ้วน');
+        return;
+      } else if ($('#uploadimagecar_input').val() === '') {
+        toastAlert(0, '⚠️ โปรดอัพโหลดรูปภาพของรถ');
+        return;
+      }
+      if ($("#uploadimagecar_input").val() !== "") {
+        var imgElement = document.getElementById("uploadimagecarNew");
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        var targetWidth = imgElement.naturalWidth;
+        var targetHeight = imgElement.naturalHeight;
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        context.drawImage(imgElement, 0, 0, imgElement.naturalWidth, imgElement.naturalHeight, 0, 0, targetWidth, targetHeight);
+        var imageDataUrl = canvas.toDataURL("image/png");
+      }
+      var obj = {
+        key : $('#dataCarInputKey').val(),
+        depart : $('#dataCarInput1').val(),
+        car : $('#dataCarInput2').val(),
+        mile : $('#dataCarInput3').val(),
+        filetype : "image/png",
+        imageDataUrl : imageDataUrl,
+        sheetname : data[1],
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 เพิ่มข้อมูลสำเร็จ');
+        $('#CarSetModal').modal('hide');
+        dataCarSet = res;
+        populateListCar(res);
+        insertCarSet(res);
+      }).addCarSet(obj)
+    };
+  } else if (data[0] === 'edit') {
+    let dataArray = dataCarSet.filter(r => r[0] == data[2]);
+    $('#confirmCarSetBtn').html('<i class="fa-regular fa-pen-to-square"></i> แก้ไขข้อมูล');
+    $('#CarSetHead').html('แก้ไขข้อมูล ' + dataArray[0][2]);
+    $('#dataCarInputKey').val(dataArray[0][0]);
+    $('#dataCarInput1').val(dataArray[0][3]);
+    $('#dataCarInput2').val(dataArray[0][2]);
+    $('#dataCarInput3').val(dataArray[0][4]);
+    $('#uploadimagecarNew').attr('src', dataArray[0][1]);
+      
+    $('#confirmCarSetBtn')[0].onclick = function() {
+      $('#loader').show();
+      if ($('#dataCarInput1').val() === '' && $('#dataCarInput2').val() === ''  && $('#dataCarInput3').val() === '') {
+        toastAlert(0, '⚠️ โปรดกรอกข้อมูลให้ครบถ้วน');
+        return;
+      }
+      if ($("#uploadimagecar_input").val() !== "") {
+        var imgElement = document.getElementById("uploadimagecarNew");
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        var targetWidth = imgElement.naturalWidth;
+        var targetHeight = imgElement.naturalHeight;
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        context.drawImage(imgElement, 0, 0, imgElement.naturalWidth, imgElement.naturalHeight, 0, 0, targetWidth, targetHeight);
+        var imageDataUrl = canvas.toDataURL("image/png");
+      }
+      var obj = {
+        key : $('#dataCarInputKey').val(),
+        depart : $('#dataCarInput1').val(),
+        car : $('#dataCarInput2').val(),
+        mile : $('#dataCarInput3').val(),
+        check : $('#uploadimagecar_input').val(),
+        filetype : "image/png",
+        imageDataUrl : imageDataUrl,
+        sheetname : data[1],
+      }
+
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 แก้ไขข้อมูลสำเร็จ');
+        $('#CarSetModal').modal('hide');
+        dataCarSet = res;
+        populateListCar(res);
+        insertCarSet(res);
+      }).editCarSet(obj)
+    };
+  } else if (data[0] === 'delete') {
+    let dataArray = dataCarSet.filter(r => r[0] == data[2]);
+    $('#CarSetHead').html('คุณต้องการหยุดใช้งานรถ ' + dataArray[0][2] + ' หรือไม่?');
+    $('#dataCarInputKey').val(dataArray[0][0]);
+    $('#dataCarInput1').val(dataArray[0][3]);
+    $('#dataCarInput2').val(dataArray[0][2]);
+    $('#dataCarInput3').val(dataArray[0][4]);
+    $('#uploadimagecarNew').attr('src', dataArray[0][1]);
+    if (data[3] === "true") {
+      $("#statusCar").prop('checked', true); 
+      $('#confirmCarSetBtn').html('<i class="fa-regular fa-car-side"></i> หยุดใช้รถชั่วคราว');
+    } else {
+      $("#statusCar").prop('checked', false); 
+      $('#confirmCarSetBtn').html('<i class="fa-regular fa-car-side"></i> เปิดใช้งานรถ');
+    }
+
+    $('#confirmCarSetBtn')[0].onclick = function() {
+      $('#loader').show();
+      var obj = {
+        key : $('#dataCarInputKey').val(),
+        sheetname : data[1],
+        status: $('#statusCar').prop('checked') ? "true" : "false"
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 ลบข้อมูลสำเร็จ');
+        $('#CarSetModal').modal('hide');
+        dataCarSet = res;
+        populateListCar(res);
+        insertCarSet(res);
+      }).statusCarSet(obj)
+    };
+  } 
+}
+const carImageUpload = () => {
+  var input = document.getElementById('uploadimagecar_input');
+  var img = document.getElementById('uploadimagecarNew');
+
+  if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+          img.src = e.target.result;
+      };
+      reader.readAsDataURL(input.files[0]);
+  }
+}
+
+const modalMeetingRoomSet = (...data) => {
+  $('#meetingRoomSetModal').modal('show');
+  $('#switch-MeetingRoomDiv').toggle(data[0] === 'delete');
+
+  if (data[0] === 'add') {
+    $('#confirmMeetingroomSetBtn').html('<i class="fa-regular fa-layer-plus"></i> เพิ่มข้อมูล');
+    $('#meetingroomSetHead').html('เพิ่มข้อมูลห้องประชุมในหน่วยงาน');
+    $('#datameetingroomInputKey').val('');
+    $('#datameetingroomInput1').val('');
+    $('#datameetingroomInput2').val('');
+    $('#datameetingroomInput3').val('');
+    $('#uploadimageMeetingRoomNew').attr('src', 'https://cdn.jsdelivr.net/gh/JacketJK/image/meeting-room.png');
+
+    $('#confirmMeetingroomSetBtn')[0].onclick = function() {
+      $('#loader').show();
+      if ($('#datameetingroomInput1').val() === '' && $('#datameetingroomInput2').val() === ''  && $('#datameetingroomInput3').val() === '') {
+        toastAlert(0, '⚠️ โปรดกรอกข้อมูลให้ครบถ้วน');
+        return;
+      } else if ($('#uploadimageMeetingroom_input').val() === '') {
+        toastAlert(0, '⚠️ โปรดอัพโหลดรูปภาพของห้องประชุม');
+        return;
+      }
+      if ($("#uploadimageMeetingroom_input").val() !== "") {
+        var imgElement = document.getElementById("uploadimageMeetingRoomNew");
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        var targetWidth = imgElement.naturalWidth;
+        var targetHeight = imgElement.naturalHeight;
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        context.drawImage(imgElement, 0, 0, imgElement.naturalWidth, imgElement.naturalHeight, 0, 0, targetWidth, targetHeight);
+        var imageDataUrl = canvas.toDataURL("image/png");
+      }
+      var obj = {
+        key : $('#datameetingroomInputKey').val(),
+        nameroom : $('#datameetingroomInput1').val(),
+        address : $('#datameetingroomInput2').val(),
+        number : $('#datameetingroomInput3').val(),
+        filetype : "image/png",
+        imageDataUrl : imageDataUrl,
+        sheetname : data[1],
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 เพิ่มข้อมูลสำเร็จ');
+        $('#meetingRoomSetModal').modal('hide');
+        dataMeetingRoomSet = res;
+        populateListMeetingRoom(res);
+        insertMeetingRoomSet(res);
+      }).addMeetingRoomSet(obj)
+    };
+  } else if (data[0] === 'edit') {
+    let dataArray = dataMeetingRoomSet.filter(r => r[0] == data[2]);
+    $('#confirmMeetingroomSetBtn').html('<i class="fa-regular fa-pen-to-square"></i> แก้ไขข้อมูล');
+    $('#meetingroomSetHead').html('แก้ไขข้อมูล ' + dataArray[0][2])
+    $('#datameetingroomInputKey').val(dataArray[0][0]);
+    $('#datameetingroomInput1').val(dataArray[0][1]);
+    $('#datameetingroomInput2').val(dataArray[0][2]);
+    $('#datameetingroomInput3').val(dataArray[0][3]);
+    $('#uploadimageMeetingRoomNew').attr('src', dataArray[0][4]);
+
+    $('#confirmMeetingroomSetBtn')[0].onclick = function() {
+      $('#loader').show();
+      if ($('#datameetingroomInput1').val() === '' && $('#datameetingroomInput2').val() === ''  && $('#datameetingroomInput3').val() === '') {
+        toastAlert(0, '⚠️ โปรดกรอกข้อมูลให้ครบถ้วน');
+        return;
+      }
+      if ($("#uploadimageMeetingroom_input").val() !== "") {
+        var imgElement = document.getElementById("uploadimageMeetingRoomNew");
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        var targetWidth = imgElement.naturalWidth;
+        var targetHeight = imgElement.naturalHeight;
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        context.drawImage(imgElement, 0, 0, imgElement.naturalWidth, imgElement.naturalHeight, 0, 0, targetWidth, targetHeight);
+        var imageDataUrl = canvas.toDataURL("image/png");
+      }
+      var obj = {
+        key : $('#datameetingroomInputKey').val(),
+        nameroom : $('#datameetingroomInput1').val(),
+        address : $('#datameetingroomInput2').val(),
+        number : $('#datameetingroomInput3').val(),
+        check : $('#uploadimageMeetingroom_input').val(),
+        filetype : "image/png",
+        imageDataUrl : imageDataUrl,
+        sheetname : data[1],
+      }
+
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 แก้ไขข้อมูลสำเร็จ');
+        $('#meetingRoomSetModal').modal('hide');
+        dataMeetingRoomSet = res;
+        populateListMeetingRoom(res);
+        insertMeetingRoomSet(res);
+      }).editMeetingRoomSet(obj)
+    };
+  } else if (data[0] === 'delete') {
+    let dataArray = dataMeetingRoomSet.filter(r => r[0] == data[2]);
+    $('#meetingroomSetHead').html('คุณต้องการหยุดใช้งานรถ ' + dataArray[0][2] + ' หรือไม่?');
+    $('#datameetingroomInputKey').val(dataArray[0][0]);
+    $('#datameetingroomInput1').val(dataArray[0][1]);
+    $('#datameetingroomInput2').val(dataArray[0][2]);
+    $('#datameetingroomInput3').val(dataArray[0][3]);
+    $('#uploadimageMeetingRoomNew').attr('src', dataArray[0][4]);
+    if (data[3] === "true") {
+      $("#statusMeetingRoom").prop('checked', true); 
+      $('#confirmMeetingroomSetBtn').html('<i class="fa-regular fa-car-side"></i> หยุดใช้รถชั่วคราว');
+    } else {
+      $("#statusMeetingRoom").prop('checked', false); 
+      $('#confirmMeetingroomSetBtn').html('<i class="fa-regular fa-car-side"></i> เปิดใช้งานรถ');
+    }
+
+    $('#confirmMeetingroomSetBtn')[0].onclick = function() {
+      $('#loader').show();
+      var obj = {
+        key : $('#datameetingroomInputKey').val(),
+        sheetname : data[1],
+        status: $('#statusMeetingRoom').prop('checked') ? "true" : "false"
+      }
+      google.script.run.withSuccessHandler((res) => {
+        toastAlert(1, '🎊 ลบข้อมูลสำเร็จ');
+        $('#meetingRoomSetModal').modal('hide');
+        dataMeetingRoomSet = res;
+        populateListMeetingRoom(res);
+        insertMeetingRoomSet(res);
+      }).statusMeetingRoomSet(obj)
+    };
+  }
+}
+const meetingRoomImageUpload = () => {
+  var input = document.getElementById('uploadimageMeetingroom_input');
+  var img = document.getElementById('uploadimageMeetingRoomNew');
+
+  if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+          img.src = e.target.result;
+      };
+      reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>  
+<script>
+const getSetting = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    const indices = [6, 7, 8, 15, 16, 17, 18, 19, 0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14, 20, 21, 22, 24, 26, 28, 30, 23, 25, 27, 29, 31, 32];
+    for (let i = 0; i <= indices.length; i++) {
+      $(`#settingData${i+1}`).val(data[indices[i]]);
+    }
+    $("#setting_system_7").val(data[33]);
+    $("#setting_system_8").val(data[34]);
+    $("#setting_system_9").val(data[35]);
+    $('#seesheetData1').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[6];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData2').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[7];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData3').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[8];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData4').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[15];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData5').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[16];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData6').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[17];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData7').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[18];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData8').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[19];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData21').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[20];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData22').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[21];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData28').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[23];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData29').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[25];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData30').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[27];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData31').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[29];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData32').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[31];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData33').on('click', ()=>{
+        const spreadsheetURL = 'https://docs.google.com/spreadsheets/d/' + data[32];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData11').on('click', ()=>{
+        const spreadsheetURL = 'https://drive.google.com/drive/u/0/folders/' + data[2];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData12').on('click', ()=>{
+        const spreadsheetURL = 'https://drive.google.com/drive/u/0/folders/' + data[3];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData13').on('click', ()=>{
+        const spreadsheetURL = 'https://drive.google.com/drive/u/0/folders/' + data[4];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData14').on('click', ()=>{
+        const spreadsheetURL = 'https://drive.google.com/drive/u/0/folders/' + data[5];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData23').on('click', ()=>{
+        const spreadsheetURL = 'https://drive.google.com/drive/u/0/folders/' + data[22];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData24').on('click', ()=>{
+        const spreadsheetURL = 'https://drive.google.com/drive/u/0/folders/' + data[24];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData25').on('click', ()=>{
+        const spreadsheetURL = 'https://drive.google.com/drive/u/0/folders/' + data[26];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData26').on('click', ()=>{
+        const spreadsheetURL = 'https://drive.google.com/drive/u/0/folders/' + data[28];
+        window.open(spreadsheetURL);
+    });
+    $('#seesheetData27').on('click', ()=>{
+        const spreadsheetURL = 'https://drive.google.com/drive/u/0/folders/' + data[30];
+        window.open(spreadsheetURL);
+    });
+  }).getSettingShow();
+}
+
+const settingFormData1 = (obj) => {
+  $('#saveNewActivityModal').modal('show');
+  const confirmBtn = document.getElementById("confirmSaveNewActivityBtn");
+
+  confirmBtn.onclick = function() {
+    $('#loader').show();
+    google.script.run.withSuccessHandler((res) => {
+      $('#xsaveNewActivityBtn').click();
+      toastAlert(2, '🎉 แก้ไขข้อมูลสำเร็จ');
+      getAgencyData();
+      settingSuccess();
+    }).setEditSetting1(obj)
+  };
+}  
+const settingFormData2 = (obj) => {
+  $('#saveNewActivityModal').modal('show');
+  const confirmBtn = document.getElementById("confirmSaveNewActivityBtn");
+
+  confirmBtn.onclick = function() {
+    $('#loader').show();
+    google.script.run.withSuccessHandler((res) => {
+      $('#xsaveNewActivityBtn').click();
+      toastAlert(2, '🎉 แก้ไขข้อมูลสำเร็จ');
+      getAgencyData();
+      settingSuccess();
+    }).setEditSetting2(obj)
+  };
+}  
+const settingFormData3 = (obj) => {
+  $('#saveNewActivityModal').modal('show');
+  const confirmBtn = document.getElementById("confirmSaveNewActivityBtn");
+
+  confirmBtn.onclick = function() {
+    $('#loader').show();
+    google.script.run.withSuccessHandler((res) => {
+      $('#xsaveNewActivityBtn').click();
+      toastAlert(2, '🎉 แก้ไขข้อมูลสำเร็จ');
+      getAgencyData();
+      settingSuccess();
+    }).setEditSetting3(obj)
+  };
+}  
+const settingFormData4 = (obj) => {
+  $('#saveNewActivityModal').modal('show');
+  const confirmBtn = document.getElementById("confirmSaveNewActivityBtn");
+
+  confirmBtn.onclick = function() {
+    $('#loader').show();
+    google.script.run.withSuccessHandler((res) => {
+      $('#xsaveNewActivityBtn').click();
+      toastAlert(2, '🎉 แก้ไขข้อมูลสำเร็จ');
+      getAgencyData();
+      settingSuccess();
+    }).setEditSetting4(obj)
+  };
+} 
+const settingSuccess = () => {
+  google.script.run.withSuccessHandler((res) => {
+    $("#addNewDoc2").val(parseFloat(res[10]) + 1);
+    $('#dataAgency10').val(res[10]);
+    $('#dataAgency11').val(res[11]);
+    numberDocRevice = parseFloat(res[9]) + 1;
+    numberDocIn = parseFloat(res[10]) + 1;
+    numberDocSend = parseFloat(res[11]) + 1;
+    numberDocCommand = parseFloat(res[12]) + 1;
+    numberDocAnnounce = parseFloat(res[13]) + 1;
+    numberDocCertify = parseFloat(res[14]) + 1;
+  }).getSetting();
+}
+</script>  

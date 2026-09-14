@@ -1,0 +1,207 @@
+<div id="main-wrapper" class="px-3" >
+  <div class="position-relative radial-gradient w-100">
+    <div class="position-relative z-index-5">
+      <div class="row">
+        <div class="col-md-7 col-lg-8" id="loginpage_container">
+          <a class="text-nowrap logo-img d-flex align-items-center px-2 w-100 my-3">
+            <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/logo-Project.png" width="60" id="loginpage_image">
+            <span class="fs-3" id="loginpage_text">&nbsp;I-OFFICE | ระบบสำนักงานอัจฉริยะ</span>
+          </a>
+          <div class="d-flex justify-content-center align-items-center h-100">
+            <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/logo-Project.png" alt="" id="loginpage_logo" class="img-fluid logo-bg" width="500">
+          </div>
+        </div>
+        <div class="col-md-5 col-lg-4">
+          <div class="authentication-login min-vh-100 row justify-content-center align-items-center p-2">
+            <div class="auth-max-width col-sm-10 px-1">
+              <h2 class="mb-1 fs-4">ยินดีต้อนรับเข้าสู่ระบบ</h2>
+              <p class="mb-4" id="loginpage_agency">หน่วยงานองค์กร</p>
+
+              <div class="row">
+                  <div class="col-6 mb-2 mb-sm-0">
+                    <a class="btn border fw-normal d-flex align-items-center justify-content-center rounded-3 py-3" role="button">
+                      <img src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/images/svgs/google-icon.svg" alt="" class="img-fluid me-2" width="18" height="18">
+                      <span class="flex-shrink-0">with Google</span>
+                    </a>
+                  </div>
+                  <div class="col-6">
+                    <a class="btn border fw-normal d-flex align-items-center justify-content-center rounded-3 py-3" role="button">
+                      <img src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/images/svgs/facebook-icon.svg" alt="" class="img-fluid me-2" width="18" height="18">
+                      <span class="flex-shrink-0">with FB</span>
+                    </a>
+                  </div>
+                </div>
+
+              <div class="position-relative text-center my-4">
+                <p class="mb-0 fs-6 px-3 d-inline-block bg-body text-dark z-index-5 position-relative">หรือเข้าสู่ระบบด้วย</p>
+                <span class="border-top w-100 position-absolute top-50 start-50 translate-middle"></span>
+              </div>
+
+              <form id="loginPassSystem">
+                <div class="mb-2">
+                  <label for="loginUser" class="form-label">ไอดีผู้ใช้งาน</label>
+                  <div class="field-input">
+                    <i class="fa-solid fa-user input-icon fs-5"></i>
+                    <input type="text" class="form-field" id="loginUser" placeholder="Username">    
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <label for="loginPass" class="form-label">รหัสผ่านผู้ใช้งาน</label>
+                  <div class="field-input">
+                    <i class="fa-solid fa-lock input-icon fs-5"></i>
+                    <input type="password" class="form-field" id="loginPass" placeholder="Password" autocomplete="password">    
+                    <i class="fa-duotone fa-eye input-icon" id="seePassword"></i>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between mb-4 ms-2">
+                  <div class="form-check">
+                    <input class="form-check-input primary" type="checkbox" id="rememberMe" checked>
+                    <label class="form-check-label" for="rememberMe">
+                      จำรหัสผ่าน
+                    </label>
+                  </div>
+                  <a class="text-primary fw-medium fs-6" onclick="forgetPassword()">ลืมรหัสผ่าน ?</a>
+                </div>
+                <button type="submit" class="btn btn-blue w-100 mb-4 rounded-4"><i class="fa-solid fa-lock-hashtag"></i> เข้าสู่ระบบ</button>
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                  <p class="fs-6 mb-0 fw-normal">ผู้ใช้งานระบบใหม่?</p>
+                  <a class="text-primary fw-normal ms-2" onclick="newregistor()">สร้างบัญชีผู้ใช้งาน</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid mx-auto align-items-center row" style="height: 100vh; background-color: var(--grey);" id="regictor_container" style="display: none;">
+  <div class="container shadow" style="border-radius: 35px; background-color: var(--light); max-width: 700px;">
+    <div class="d-flex justify-content-between align-items-center mt-3 p-2">
+      <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/logo-Project.png" id="imageLogin" style="height: 50px">
+      <a style="font-size:10px" class="text-primary" onclick="backlogin()"><i class="fa-solid fa-arrow-left-long"></i> กลับ</a>
+    </div>
+    <h5 class="text-center text-primary mb-3 fw-medium"><i class="fa-solid fa-user-plus"></i> สมัครสมาชิก</h5>
+    <div id="stapregictor">
+      <div class="form-header d-flex mb-4">
+        <span class="stepIndicator" id="stepRegistor1">ข้อมูลผู้ใช้งาน</span>
+        <span class="stepIndicator" id="stepRegistor2">ที่อยู่</span>
+        <span class="stepIndicator" id="stepRegistor3">ยืนยันตัวตน</span>
+        <span class="stepIndicator" id="stepRegistor4">ตำแหน่งงาน</span>
+      </div>
+    </div>
+    
+    <div class="container mt-4">
+      <div id="step1" class="step">
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <label class="form-label text-primary" for="regictor_data1" style="font-size: 12px">Username <span class="text-danger fw-bold">*</span></label>
+            <input type="text" class="form-control rounded-pill" id="regictor_data1" placeholder="Username" oninput="checkDuplicate()">
+            <span id="resultMessage" style="font-size: 10px;" class="ms-3"></span>
+          </div>
+          <div class="col-md-12">
+            <label class="form-label text-primary" for="regictor_data2" style="font-size: 12px">Password <span class="text-danger fw-bold">*</span></label>
+            <input type="password" class="form-control rounded-pill" id="regictor_data2" placeholder="Password" minlength="8">
+            <span style="font-size:10px" class="text-primary ms-3">รหัสผ่านจำเป็นต้องมากกว่า 8 ตัวอักษร</span>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label text-primary" for="regictor_data3" style="font-size: 12px">คำนำหน้า</label>
+            <select class="form-select rounded-pill" id="regictor_data3">
+              <option selected value="">โปรดเลือก</option>
+              <option value="นาย">นาย</option>
+              <option value="นาง">นาง</option>
+              <option value="นางสาว">นางสาว</option>
+            </select>
+          </div>
+          <div class="col-md-5">
+            <label class="form-label text-primary" for="regictor_data4" style="font-size: 12px">ชื่อจริง <span class="text-danger fw-bold">*</span></label>
+            <input type="text" class="form-control rounded-pill" id="regictor_data4" placeholder="ชื่อ">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label text-primary" for="regictor_data5" style="font-size: 12px">นามสกุล <span class="text-danger fw-bold">*</span></label>
+            <input type="text" class="form-control rounded-pill" id="regictor_data5" placeholder="นามสกุล">
+          </div>
+          <div class="col-md-12">
+            <label class="form-label text-primary" for="regictor_data6" style="font-size: 12px">หมายเลขโทรศัพท์ <span class="text-danger fw-bold">*</span></label>
+            <input type="text" class="form-control rounded-pill" id="regictor_data6" placeholder="หมายเลขโทรศัพท์" maxlength="10" minlength="10">
+          </div>
+        </div>
+      </div>
+
+      <div id="step2" class="step">
+        <div class="row mb-3">
+          <div class="col-md-5">
+            <label class="form-label text-primary" for="regictor_data7" style="font-size: 12px">บ้านเลขที่</label>
+            <input type="number" class="form-control rounded-pill" id="regictor_data7" placeholder="บ้านเลขที่">
+          </div>
+          <div class="col-md-7">
+            <label class="form-label text-primary" for="regictor_data8" style="font-size: 12px">หมู่/ซอย </label>
+            <input type="text" class="form-control rounded-pill" id="regictor_data8" placeholder="หมู่/ซอย ">
+          </div>
+          <div class="col-md-12">
+            <label class="form-label text-primary" for="regictor_data9" style="font-size: 12px">ถนน</label>
+            <input type="text" class="form-control rounded-pill" id="regictor_data9" placeholder="ถนน">
+          </div>
+          <div class="col-md-12">
+            <label class="form-label text-primary" for="regictor_dataAddress" style="font-size: 12px">ค้นหาที่อยู่ <span class="text-danger fw-bold">โดยพิมพ์ตำบล, อำเภอ, จังหวัด, รหัสไปรษณีย์</span></label>
+            <input type="text" class="form-control rounded-pill" id="regictor_dataAddress">
+          </div>
+          <div class="col-md-12">
+            <label class="form-label text-primary" for="regictor_data10" style="font-size: 12px">ที่อยู่ <span class="text-danger fw-bold">*</span></label>
+            <textarea class="form-control rounded-4" id="regictor_data10" placeholder="ที่อยู่" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div id="step3" class="step">
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <label class="form-label text-primary" for="regictor_data11" style="font-size: 12px">อีเมลที่สามารถติดต่อได้ <span class="text-danger fw-bold">*</span></label>
+            <input type="email" class="form-control rounded-4" id="regictor_data11" placeholder="E-Mail" oninput="checkDuplicate_Email()">
+            <span style="font-size:10px" class="text-primary ms-3"><span class="text-danger fw-bold">* </span>กรณีไม่ได้รับอีเมล OTP ให้ท่านไปดูที่ E-Mail ขยะ</span>
+            <h6 id="resultMessageEmail" style="font-size: 10px;" class="ms-3"></h6>
+          </div>
+          <div class="col-md-12 text-end mt-2 mb-2">
+            <button class="btn btn-primary rounded-4 btn-sm px-3" onclick="send_otp_registor()"><i class="fa-duotone fa-mobile"></i> Send OTP</button>
+          </div>
+          <div class="col-md-12">
+            <label class="form-label text-primary" for="regictor_data12" style="font-size: 12px">OTP <span class="text-danger fw-bold">ตรวจสอบที่อีเมล</span></label>
+            <input type="text" minlength="6" maxlength="6" class="form-control rounded-4 form-control-lg fs-1 text-center" id="regictor_data12" placeholder="OTP 6 หลัก" oninput="check_otp_registor()">
+          </div>
+        </div>
+      </div>
+
+      <div id="step4" class="step">
+        <div class="row mb-3">
+          <div class="col-md-12 mb-2">
+            <label class="form-label text-primary" for="regictor_data13" style="font-size: 12px">ตำแหน่งงาน <span class="text-danger fw-bold">*</span></label>
+            <input type="text" class="form-control rounded-pill" id="regictor_data13" placeholder="ตำแหน่งงาน">
+          </div>
+          <div class="col-md-12 mb-2">
+            <label class="form-label text-primary" for="regictor_data15" style="font-size: 12px">ประเภทตำแหน่ง <span class="text-danger fw-bold">*</span></label>
+            <select class="form-select rounded-pill" id="regictor_data15"></select>
+          </div>
+          <div class="col-md-12 mb-2">
+            <label class="form-label text-primary" for="regictor_data14" style="font-size: 12px">สังกัดหน่วยงาน <span class="text-danger fw-bold">*</span></label>
+            <select class="form-select rounded-pill" id="regictor_data14"></select>
+          </div>
+        </div>
+        <div class="form-check mb-3 d-flex justify-content-start align-items-center">
+          <input class="form-check-input" type="checkbox" id="condition" onclick="completeRegictor()">
+            <label class="form-check-label text-primary" for="condition" style="font-size:14px; margin-left: 5px;">
+              ยืนยันข้อมูลถูกต้อง
+            </label>
+        </div>
+
+      </div>
+    </div>
+    
+    <div class="modal-footer flex-nowrap p-0" style="border-color:var(--grey)">
+      <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" id="prevRegisBtn" onclick="nextPrev(-1)"><strong>ย้อนกลับ</strong></button>
+      <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" onclick="backlogin()" id="cancelregictor">ยกเลิก</button>
+      <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" id="nextRegisBtn" onclick="nextPrev(1)"><strong>ถัดไป</strong></button>
+      <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" id="saveregictor" onclick="addNewRegictor()" style="display:none" disabled><strong>สมัครสมาชิก</strong></button>
+    </div>
+  </div>
+</div>

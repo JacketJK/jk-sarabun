@@ -1,0 +1,597 @@
+<script>
+const createNotificationElement = (item, data, index, clickHandler) => {
+  const isRead = item[7] === 0;
+  const profilePic = data[1][index][13];
+  const title = item[3];
+  const message = item[4];
+  const notifyFunction = item[5];
+  const notifyParam = item[6];
+
+  const container = document.createElement('a');
+  container.className = "py-2 px-3 d-flex align-items-center dropdown-item notify-container";
+  container.innerHTML = `
+    <span class="me-3">
+      <img src="${profilePic}" alt="user" class="rounded-circle" width="48" height="48">
+    </span>
+    <div class="w-75 d-inline-block v-middle ${isRead ? '' : 'opacity-25'}" onclick="${notifyFunction}('${notifyParam}')">
+      <h6 class="mb-0 fw-semibold lh-base limited-text">${title}</h6>
+      <span class="d-block limited-text">${message}</span>
+    </div>
+  `;
+
+  if (!isRead) {
+    container.classList.add('hide', 'd-none');
+  }
+
+  container.addEventListener('click', clickHandler);
+
+  return container;
+};
+
+const displayNotifications = async (key) => {
+  const dataContainer = document.getElementById('notificationDiv');
+  dataContainer.innerHTML = '';
+  let counting = 0;
+
+  google.script.run.withSuccessHandler((data) => {
+    if (data[0].length === 0) {
+      const noDataText = document.createElement("p");
+      noDataText.textContent = "ไม่มีการแจ้งเตือน !";
+      noDataText.className = "fw-medium text-danger fs-6 text-center p-5";
+      dataContainer.appendChild(noDataText);
+      return;
+    }
+
+    data[0].forEach((item, index) => {
+      const notificationElement = createNotificationElement(item, data, index, () => openNotify(item[0]));
+      dataContainer.appendChild(notificationElement);
+
+      if (item[7] === 0) {
+        counting++;
+      }
+    });
+
+    $('#showAllNotify').on('click', function(event) {
+      event.stopPropagation();
+
+      const $container = $('.notify-container.hide');
+      const $btn = $(this);
+      $container.toggleClass("d-none");
+      $btn.html($container.hasClass('d-none') ? 'ดูการแจ้งเตือนทั้งหมด' : 'ซ่อนการแจ้งเตือน');
+    });
+
+    if (counting !== 0) {
+      $('#countingNotify').removeClass('d-none').html(counting);
+      $('#countingNotification').removeClass('d-none').html(`ใหม่ ${counting}`);
+    } else {
+      $('#countingNotify').addClass('d-none');
+      $('#countingNotification').addClass('d-none');
+    }
+  }).noticationShow(key);
+};
+
+const openNotify = (key) => {
+  google.script.run.withSuccessHandler((user) => {
+  }).openNotify(key);
+};
+</script>  
+<!-------------------- Meeting -------------------------->
+<script>
+let dataAllMeetRoom;  
+const displayMeetingRoom = () => {
+  const dataContainer = document.getElementById('meetingRoomDiv');
+  dataContainer.innerHTML = '';
+
+  google.script.run.withSuccessHandler((data) => {  
+    if (data[0].length === 0) {
+      var noDataText = document.createElement("p");
+      noDataText.textContent = "ไม่มีห้องประชุม !";
+      noDataText.className = "fw-medium text-danger fs-6 text-center p-5";
+      dataContainer.appendChild(noDataText);
+      return;
+    }
+
+    data[0].forEach((item, index) => {
+      const contain = document.createElement('div');
+      contain.className = "d-flex position-relative";
+      contain.innerHTML = `
+        <div style="width: 250px; height: 250px;" class="z-index-5 rounded-circle border border-5 border-light bg-light shadow">
+          <img src="${item[4]}" class="w-100 h-100 object-fit-cover rounded-circle">
+        </div>
+        <div class="position-absolute z-index-0 ms-5 mt-3 d-flex flex-column" style="width: 97%;">
+          <div class="p-2 ps-4 rounded-pill bg-opacity-25 ms-5 border border-5 border-light shadow" style="background-color: var(--blue);color: var(--light);">
+            <h5 class="text-center">${item[1]}</h5>
+            <div class="row ms-5 ps-3">
+              <div class="col-lg-2"></div><span class="col-lg-10">สถานที่ตั้ง : ${item[2]}</span>
+              <div class="col-lg-2"></div><span class="col-lg-10">ความจุ : ${item[3]} ท่าน</span>
+            </div>
+          </div>
+          <div class="progress-contain">
+            <div class="progress-stacked" style="height: 50px;background-color: var(--box2)">
+              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
+                <div class="progress-bar bg-green"></div>
+              </div>
+              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
+                <div class="progress-bar progress-bar-striped bg-danger"></div>
+              </div>
+              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
+                <div class="progress-bar bg-green"></div>
+              </div>
+              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
+                <div class="progress-bar bg-green"></div>
+              </div>
+              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
+                <div class="progress-bar bg-green"></div>
+              </div>
+              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
+                <div class="progress-bar bg-green"></div>
+              </div>
+              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
+                <div class="progress-bar bg-green"></div>
+              </div>
+              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
+                <div class="progress-bar bg-green"></div>
+              </div>
+              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
+                <div class="progress-bar bg-green"></div>
+              </div>
+              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
+                <div class="progress-bar bg-green"></div>
+              </div>
+              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
+                <div class="progress-bar bg-green"></div>
+              </div>
+              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
+                <div class="progress-bar bg-green"></div>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center progress-time">
+            <span class="time-span">07:00</span>
+            <span class="time-span">08:00</span>
+            <span class="time-span">09:00</span>
+            <span class="time-span">10:00</span>
+            <span class="time-span">11:00</span>
+            <span class="time-span">12:00</span>
+            <span class="time-span">13:00</span>
+            <span class="time-span">14:00</span>
+            <span class="time-span">15:00</span>
+            <span class="time-span">16:00</span>
+            <span class="time-span">17:00</span>
+            <span class="time-span">18:00</span>
+            <span class="time-span">19:00</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-end progress-tick">
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+            <span class="tick-time"></span>
+          </div>
+        </div>
+        <div class="d-flex justify-content-start align-items-end mt-5 pt-5">
+          <button class="btn btn-yellow btn-sm rounded-4 ms-2" style="width: 150px;" onclick="setValueOnMeet('${item[1]}', '${item[4]}')">ขอจองห้องประชุมนี้</button>
+          <button class="btn btn-violet btn-sm rounded-4 ms-3" style="width: 150px;">รายละเอียด</button>
+        </div>
+      `;
+
+      var hr = document.createElement('hr');
+      hr.className = "opacity-10 my-3";
+
+      dataContainer.appendChild(contain);  
+      dataContainer.appendChild(hr); 
+      $('.loadContianer').addClass('d-none'); 
+    });    
+  }).getMeetingRoom();
+}
+const setValueOnMeet = (...data) => {
+  changePageMeeting(2);
+  $("#addMeetingData1").val(data[0]);
+  $("#imageMeetingData").prop('src', data[1]);
+}
+$('#addMeetingData3').on('change', function() {
+  updateMeetingData4($(this).val());
+});
+
+$('#addMeetingData4').on('input', function() {
+  updateMeetingData4($('#addMeetingData3').val(), $(this).val());
+});
+
+function updateMeetingData4(value3, value4 = '') {
+  const max = 12 - parseInt(value3);
+  $('#addMeetingData4').prop('max', max);
+
+  const time = (parseInt(value3) + 6) + parseInt(value4);
+  $('#spanMeetingData4').text(value4);
+  $('#spanMeetingData3').html(`ถึงเวลา ${time}:00 น.`);
+}
+
+google.script.run.withSuccessHandler((res)=>{
+  dataAllMeetRoom = res[0];
+  selectMeetingRoom(res[0]);
+}).getMeetingRoomAll();
+
+const selectMeetingRoom = (data) => {
+  data.sort((a, b) => a[0] - b[0]);
+  const selectElements = [
+    'addMeetingData1',
+  ];
+
+  selectElements.forEach(id => {
+    const select = document.getElementById(id);
+    const defaultOption = createOption('', 'โปรดเลือก', true);
+    select.appendChild(defaultOption);
+
+    data.forEach(row => {
+      const option = createOption(row[1], row[1]);
+      select.appendChild(option.cloneNode(true));
+    });
+  });
+};
+
+$('#addMeetingData1').on('change', function() {
+  let selectedValue = $(this).val();
+  let dataArray = dataAllMeetRoom.filter(r => r[1] === selectedValue);
+
+  if (dataArray.length > 0) {
+    let imageSrc = dataArray[0][4];
+    $('#imageMeetingData').prop('src', imageSrc);
+  } else {
+    toastAlert(0,'ไม่พบข้อมูลห้องประชุม');
+    $('#imageMeetingData').prop('src', 'https://placehold.co/250x250'); 
+  }
+});
+
+const checkboxMeetingRoom = (data) => { 
+  var checkboxContainer = document.getElementById("addMeetingData5");
+  checkboxContainer.innerHTML = "";
+
+  data.forEach(function(row) {
+    var optionForm = document.createElement('option');
+    optionForm.value = row[0] + ', ' + row[14]; 
+    optionForm.text = row[3] + row[4] + ' ' + row[5]; 
+    optionForm.setAttribute("data-section", row[7]);
+    optionForm.setAttribute("data-index", "1");
+    checkboxContainer.appendChild(optionForm);
+  });
+  $("#addMeetingData5").treeMultiselect({
+    allowBatchSelection: true,
+    searchable: true, 
+    enableSelectAll: true,
+    enableSelectAll: true,
+    searchParams: ['text', 'description', 'section'],
+    startCollapsed: true,
+    selectAllText: 'เลือกทั้งหมด', 
+    unselectAllText: 'ยกเลิกทั้งหมด',
+  });
+}
+$("#addMeetingData5").on('change', function() {
+  $(".remove-selected").html('<i class="fa-solid fa-circle-xmark"></i>');
+});
+
+const addMeetingSubmit = (obj) => {
+  $('#registorUserModal').modal('show');
+  $('#confirmRegicBtn').off('click').on('click', function() {
+    $('#loader').show();
+    google.script.run.withSuccessHandler((res) => {
+      addUserCreate(res);
+      changePageMeeting(1);
+      $('.unselect-all').click();
+      $('.section').addClass('collapsed');
+      $('#addMeetingForm')[0].reset();
+      $('#imageMeetingData').prop('src', 'https://placehold.co/250x250'); 
+      $('#registorUserModal').modal('hide');
+    }).addMeetingSubmit(obj);
+  });
+}
+const addUserCreate = (key) => {
+  var obj = {
+    booking : key,
+    image : $('#imageMeetingData').prop('src'),
+    publicKey : localStorage.getItem('publicKey'),
+    fullname : localStorage.getItem('name_1') + localStorage.getItem('name_2') + ' ' + localStorage.getItem('name_3'),
+    token : localStorage.getItem('token')
+  }
+  google.script.run.withSuccessHandler((res) => {
+    toastAlert(1, '🎉 บันทึกข้อมูลสำเร็จ');
+  }).addUserMeeting(obj);
+}
+
+const allowMeeting = (data) => {
+  const dataContainer = document.getElementById('meetingAllowDiv');
+  dataContainer.innerHTML = '';
+
+  if (data.length === 0) {
+    var noDataText = document.createElement("p");
+    noDataText.innerHTML = "<i class='fa-regular fa-circle-info'></i> ไม่ข้อมูล !";
+    noDataText.className = "fw-medium text-danger fs-4 text-center p-5";
+    dataContainer.appendChild(noDataText);
+    return;
+  }
+
+  data.forEach((item, index) => {
+    const timeMap = {
+      1: '07:00 น.', 2: '08:00 น.', 3: '09:00 น.', 4: '10:00 น.', 5: '11:00 น.', 6: '12:00 น.',
+      7: '13:00 น.', 8: '14:00 น.', 9: '15:00 น.', 10: '16:00 น.', 11: '17:00 น.', 12: '18:00 น.',
+    }
+    var startTime = timeMap[item[3]] || '';
+    var endTime = timeMap[parseInt(item[3]) + parseInt(item[4])] || '';
+
+    const statusMap = {
+        1: "<span style='color: var(--box2);'><i class='fa-duotone fa-typewriter' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='อนุมัติแล้ว'></i> อนุมัติแล้ว</span>",
+        2: "<span style='color: var(--box4);'><i class='fa-duotone fa-typewriter' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ไม่อนุญาต'></i> ไม่อนุญาต</span>",
+        0: "<span style='color: var(--yellow);'><i class='fa-duotone fa-share-all' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ลงทะเบียน'></i> ลงทะเบียน</span>",
+      };
+    var status = statusMap[item[10]] || '';
+
+    const contain = document.createElement('div');
+    contain.className = "row";
+    contain.innerHTML = `
+    <div class="col-lg-8 d-flex flex-column">
+      <h5 class="my-3" style="color: var(--dark);">รหัสคำร้อง : <span style="color: var(--box4);">${item[0]}</span></h5>
+      <div class="mb-2">ห้องประชุม : <span style="color: var(--box2);">${item[1]}</span></div>
+      <div class="row mb-2">
+        <span class="col-auto">วันที่จอง : <span>${formatThaiDateTime(new Date(item[2]))}</span></span>
+        <span class="col-auto">เวลา : <span>${startTime} ถึงเวลา ${endTime}</span></span>
+      </div>
+      <div class="mb-2">ผู้จอง : <span>${item[8]}</span></div>
+      <div class="mb-2">สถานะ : <span>${status}</span></div>
+    </div>
+    <div class="col-lg-4">
+      <div class="mb-3 d-flex justify-content-center align-items-start">
+        <div style="width: 150px; height: 150px;background-color: var(--grey);" class="z-index-5 rounded-circle border border-5 border-light shadow">
+          <img src="${item[11]}" class="w-100 h-100 object-fit-cover rounded-circle">
+        </div>
+      </div>
+      <div class="d-flex justify-content-center align-items-center">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-4" onclick="allowMeetChoose('${item[0]}')">เลือกข้อมูล</button>
+      </div>
+    </div>
+    `;
+
+    var hr = document.createElement('hr');
+    hr.className = "opacity-10 my-3";
+
+    dataContainer.appendChild(contain);
+    dataContainer.appendChild(hr);
+  });
+}
+const allowMeetChoose = (code) => {
+  $('.loadContianer').removeClass('d-none'); 
+  $('#dataMeetingroom1').val(code).removeClass('is-invalid').addClass('is-valid');
+  $('.loadContianer').addClass('d-none'); 
+}
+
+const allowMeetingData = (obj) => {
+  $('#registorUserModal').modal('show');
+  $('#confirmRegicBtn').off('click').on('click', function() {
+  $('#loader').show();
+    google.script.run.withSuccessHandler((data) => {
+      $('#registorUserModal').modal('hide');
+      toastAlert(1, '🎉 พิจารณาสำเร็จ');
+      google.script.run.withSuccessHandler((res) => {
+        allowMeeting(res);
+      }).getMeetingDataAll();
+    }).allowMeetChoose(obj);
+  })
+}
+
+let dataMeetingRoomSet;
+google.script.run.withSuccessHandler((data) => {
+  dataMeetingRoomSet = data;
+  populateListMeetingRoom(data);
+  insertMeetingRoomSet(data);
+}).getMeetingRoomSet();
+
+const populateListMeetingRoom = (data) => {
+  var list = document.getElementById('sortableMeetingRoom-list');
+  list.classList.add("rounded-pill");
+  list.innerHTML = '';
+
+  data.forEach(function(row) {
+    var li = document.createElement('li');
+    li.className = 'p-2 d-flex align-items-center'; 
+    li.setAttribute('data-id', row[0]);
+
+    var image = document.createElement('img');
+    image.src = row[4];
+    image.className = "rounded-3";
+    image.style.width = "80px";
+    image.style.height = "80px";
+
+    var div = document.createElement('div'); 
+    div.className = "d-flex flex-column ms-2";
+
+    var text = document.createElement('span');
+    text.className = "col-label-form";
+    text.innerHTML = "ชื่อห้อง " + row[1];
+
+    var text2 = document.createElement('span');
+    text2.className = "col-label-form";
+    text2.innerHTML = "สถานที่ตั้ง " + row[2];
+
+    div.appendChild(text);
+    div.appendChild(text2);
+
+    li.appendChild(image);
+    li.appendChild(div);
+
+    list.appendChild(li);
+  });
+
+  makeListSortableMeetingRoom();
+}
+
+const makeListSortableMeetingRoom = () => {
+  var list = document.getElementById('sortableMeetingRoom-list');
+  new Sortable(list, {
+    onEnd: function(evt) {
+      saveOrderMeetingRoom();
+    }
+  });
+}
+
+const saveOrderMeetingRoom = () => {
+  var list = document.getElementById('sortableMeetingRoom-list');
+  var items = list.getElementsByTagName('li');
+  var order = [];
+
+  for (var i = 0; i < items.length; i++) {
+    order.push(items[i].getAttribute('data-id'));
+  }
+
+  google.script.run.saveOrderMeetingRoom(order);
+}
+
+</script>  
+
+<!---------------------License----------------------------->
+<script>
+let dataLicenseAll;  
+google.script.run.withSuccessHandler((res) => {
+  dataLicenseAll = res;
+  displayUserlicense(res);
+}).getDataLicense();
+
+const displayUserlicense = (data) => {
+  const dataContainer = document.getElementById('userLicenseSet1');
+  dataContainer.innerHTML = '';
+
+  if (data[0].length === 0) {
+    const noDataText = document.createElement("p");
+    noDataText.textContent = "ไม่มีการกำหนดสิทธิ !";
+    noDataText.className = "fw-medium text-danger fs-6 text-center p-5";
+    dataContainer.appendChild(noDataText);
+    return;
+  }
+
+  data.forEach(function(item) {
+    const card = document.createElement('col');
+    card.innerHTML = `
+      <div class="card__custom">
+        <div class="card__img">
+          <img src="${item[5]}">
+        </div>
+        <div class="card__avatar">
+          <img src="${item[4]}">
+        </div>
+        <div class="card__title">${item[2]}</div>
+        <div class="card__subtitle">${item[3]}</div>
+        <div class="card__wrapper mt-4">
+          <button class="btn btn-outline-blue btn-sm rounded-3" onclick="licenseSetting('${item[1]}')"><i class="fa-duotone fa-gears"></i> กำหนดสิทธิ</button>
+          <button class="btn btn-outline-warning btn-sm rounded-3" onclick="licenseEdit('${item[0]}')"><i class="fa-duotone fa-pen-to-square"></i> แก้ไขข้อมูล</button>
+        </div>
+      </div>
+    `;
+
+    dataContainer.appendChild(card);
+  });
+}
+const licenseSetting = (data) => {
+  changePageLicense(2);
+  insertLicenseSet(data);
+}
+const licenseCheck = (...data) => {
+  const value = $('#licenseCheckSwitch' + data[2]).prop('checked') ? "true" : "false"
+  var obj = {
+    key : data[0],
+    column : data[1],
+    status : value,
+  }
+
+  google.script.run.withSuccessHandler((data) => {
+    toastAlert(1, '🎊 บันทึกการเปลี่ยนแปลงสิทธิสำเร็จ');
+    insertLicenseSet(obj.column);
+  }).saveLicenseStatus(obj);
+}
+const licenseEdit = (...data) => {
+  $('#editAvatarModal').modal('show');
+  let dataArray = dataLicenseAll.filter(r => r[0] == data[0]);
+
+  if (dataArray.length > 0) {
+    $('#dataLicenseInputKey').val(dataArray[0][0]);
+    $('#dataLicenseInput1').val(dataArray[0][2]);
+    $('#dataLicenseInput2').val(dataArray[0][3]);
+    $('#dataLicenseInput5').prop('src', dataArray[0][4]);
+    $('#dataLicenseInput6').prop('src', dataArray[0][5]);
+  }
+$('#confirmeditAvatarBtn').on('click', function() {
+  $('#loader').show();
+  var obj = {
+    key: $('#dataLicenseInputKey').val(),
+    namePosition: $('#dataLicenseInput1').val(),
+    workPosition: $('#dataLicenseInput2').val(),
+  }
+  google.script.run.withSuccessHandler((res) => {
+    toastAlert(1, '🎉 แก้ไขข้อมูลสำเร็จ');
+    $('#editAvatarModal').modal('hide');
+    google.script.run.withSuccessHandler((res) => {
+      dataLicenseAll = res;
+      displayUserlicense(res);
+    }).getDataLicense();
+  }).licenseEdit(obj);
+});
+}
+const licenseAvatarImageUpload = () => {
+  var input = document.getElementById('dataLicenseInput3_input');
+  var img = document.getElementById('dataLicenseInput5');
+
+  if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+          img.src = e.target.result;
+      };
+      reader.readAsDataURL(input.files[0]);
+  }
+  saveFile_License(input, 5);
+}
+const licenseCoverImageUpload = () => {
+  var input = document.getElementById('dataLicenseInput4_input');
+  var img = document.getElementById('dataLicenseInput6');
+
+  if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+          img.src = e.target.result;
+      };
+      reader.readAsDataURL(input.files[0]);
+  }
+  saveFile_License(input, 6);
+}
+const saveFile_License = (f, runnumber) => {
+  $('#loader').show();
+  const codes = $("#dataLicenseInputKey").val();
+  const file = f.files[0];
+  const fr = new FileReader();
+  fr.onload = function (e) {
+    const obj = {
+      code: codes,
+      filename: codes,
+      mimeType: file.type,
+      bytes: [...new Int8Array(e.target.result)]
+    };
+    google.script.run.withSuccessHandler(e => toastAlert(1, e)).saveFileLicense(obj, runnumber);
+  };
+  fr.readAsArrayBuffer(file);
+}
+</script>  

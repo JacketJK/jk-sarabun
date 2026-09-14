@@ -1,0 +1,3576 @@
+<script>
+const updateUploadedFiles = (count) => {
+  const uploadedFilesDiv = document.getElementById('uploadedFiles');
+  uploadedFilesDiv.innerHTML = '';
+
+  const documentKey = $("#docViewKey").text();
+
+  if (count === 0) {
+    uploadedFilesDiv.innerHTML = '<i class="fa-solid fa-circle-info"></i>   ไม่มีไฟล์แนบ';
+  } else {
+    const files = Array.from({ length: count }, (_, i) => document.getElementById(`addFileDataDoc${i + 1}`).files[0]);
+
+    files.forEach((file, i) => {
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+
+      const fileTypeImg = document.createElement('img');
+      fileTypeImg.className = "ms-5";
+      fileTypeImg.width = 100;
+      fileTypeImg.height = 100;
+
+      switch (fileExtension) {
+        case 'pdf':
+          fileTypeImg.src = 'https://lh3.googleusercontent.com/d/1jMKlm296bpHkQuoKec6fTFjOLIWKpFba';
+          break;
+        case 'doc':
+        case 'docx':
+          fileTypeImg.src = 'https://lh3.googleusercontent.com/d/1qiu8MGW7b1-7Y7PP12Sbo_m3lAmoQlig'; 
+          break;
+        case 'xlsx':
+        case 'xls':
+        case 'csv':
+          fileTypeImg.src = 'https://lh3.googleusercontent.com/d/1U5WgQpYsjp1ECNR-vyPXkpUGZgHFvnRo';
+          break; 
+        case 'pptx':
+        case 'ppt':
+          fileTypeImg.src = 'https://lh3.googleusercontent.com/d/1qOkSfLmXYK2C1YltQKYVvrulRTy-wsAY'; 
+          break; 
+        case 'zip':
+        case 'rar':
+          fileTypeImg.src = 'https://lh3.googleusercontent.com/d/1oi8CRjDrw4kBllOq0pdU-KBCssgcbCc2'; 
+          break;
+        case 'txt':
+          fileTypeImg.src = 'https://lh3.googleusercontent.com/d/1UlBfbL8hIARJOut90xEaMzEhfWMxVj9l'; 
+        case 'jpg':
+        case 'png':
+        case 'jpeg':
+        case 'gif':
+          fileTypeImg.src = 'https://lh3.googleusercontent.com/d/138DFq6UWBcD4tFHGbVIysaqJbHodQkB-';
+          break;
+        default:
+          fileTypeImg.src = 'https://lh3.googleusercontent.com/d/1lB3tznB-9AtlKWuKiJ6eW5sXDAgNHOZp'; 
+          break;
+      }
+
+      fileTypeImg.setAttribute('data-bs-toggle', 'tooltip');
+      fileTypeImg.setAttribute('data-bs-placement', 'top');
+      fileTypeImg.setAttribute('data-bs-custom-class', 'custom-tooltip');
+      fileTypeImg.setAttribute('data-bs-title', 'คลิกเพื่อดูรายละเอียด');
+      fileTypeImg.style.cursor = 'pointer'; 
+      fileTypeImg.addEventListener('click', function() {
+        window.open(URL.createObjectURL(file), '_blank');
+      });
+      var colRow = document.createElement("div");
+      colRow.style.position = "relative";
+
+      var cancle = document.createElement("img");
+      cancle.src = 'https://lh3.googleusercontent.com/d/1vVQxKIeOypyPRcJDsDDMP4b6l6XMknsX'; 
+      cancle.setAttribute('data-bs-toggle', 'tooltip');
+      cancle.setAttribute('data-bs-placement', 'top');
+      cancle.setAttribute('data-bs-custom-class', 'custom-tooltip');
+      cancle.setAttribute('data-bs-title', 'ลบผลการรักษานี้');
+      cancle.style.width = '20px';
+      cancle.style.position = 'absolute';
+      cancle.style.right = '0px';
+      cancle.style.top = '0px'; 
+      cancle.style.cursor = 'pointer'; 
+      cancle.style.zIndex = '1';
+      cancle.addEventListener('click', function() {
+        deleteFile(documentKey, i + 1, colRow);
+      }); 
+
+      colRow.appendChild(cancle);
+      colRow.appendChild(fileTypeImg);
+      uploadedFilesDiv.appendChild(colRow);
+    });
+    $('#sendResultToUserBtn').show();
+  }
+  function deleteFile(code, number, elementToRemove) {
+    google.script.run.withSuccessHandler(function(response) {
+      toastAlert(1, response);
+      elementToRemove.remove(); 
+    }).deleteFileAtDrive(code, number);
+  }
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+}
+
+const isValidURL = (str) => {
+  const pattern = new RegExp('^(https?:\\/\\/)?'+ 
+    '((([a-zA-Z\\d]([a-zA-Z\\d-]*[a-zA-Z\\d])*)\\.)+[a-zA-Z]{2,}|'+ 
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ 
+    '(\\:\\d+)?(\\/[-a-zA-Z\\d%_.~+]*)*'+ 
+    '(\\?[;&a-zA-Z\\d%_.~+=-]*)?'+ 
+    '(\\#[-a-zA-Z\\d_]*)?$','i');
+
+  return !!pattern.test(str);
+}
+const loadedFiles = (lengths, links) => {
+  const uploadedFilesDiv = document.getElementById('uploadedFiles');
+  uploadedFilesDiv.innerHTML = ''; 
+
+  if (lengths === 0) {
+    uploadedFilesDiv.innerHTML = '<i class="fa-solid fa-circle-info"></i>  ไม่มีไฟล์แนบ';
+    return; 
+  }
+
+  const filesContainer = document.createElement('div');
+  filesContainer.className = 'd-flex justify-content-center align-items-center'; 
+  uploadedFilesDiv.appendChild(filesContainer);
+
+  for (let i = 0; i < lengths; i++) {
+    const fileLink = links[i];
+
+    const fileItem = document.createElement('div');
+    fileItem.classList.add('file-item', 'ms-5'); 
+
+    const fileImg = document.createElement('img');
+    fileImg.src = 'https://cdn.jsdelivr.net/gh/JacketJK/image/archive.png';
+    fileImg.setAttribute('data-bs-toggle', 'tooltip');
+    fileImg.setAttribute('data-bs-placement', 'top');
+    fileImg.setAttribute('data-bs-custom-class', 'custom-tooltip');
+    fileImg.setAttribute('data-bs-title', 'คลิกเพื่อดูรายละเอียด');
+    fileImg.addEventListener('click', () => window.open(fileLink, '_blank'));
+    fileImg.style.cursor = 'pointer';
+    fileImg.width = 80;
+    fileImg.height = 80;
+
+    fileItem.appendChild(fileImg); 
+    filesContainer.appendChild(fileItem); 
+  }
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+};
+
+
+const updateUploadedLinks = () => {
+  let linkCount = 0;
+
+  if (isValidURL($("#addFileDatalink1").val()) && $("#addFileDatalink2").val() === "" && $("#addFileDatalink3").val() === "") {
+    linkCount = 1;
+  } else if (isValidURL($("#addFileDatalink1").val()) && isValidURL($("#addFileDatalink2").val()) && $("#addFileDatalink3").val() === "") {
+    linkCount = 2;
+  } else if (isValidURL($("#addFileDatalink1").val()) && isValidURL($("#addFileDatalink2").val()) && isValidURL($("#addFileDatalink3").val())) {
+    linkCount = 3;
+  }
+
+  const uploadedLinksDiv = document.getElementById('uploadedLinks');
+  uploadedLinksDiv.innerHTML = '';
+
+  for (let i = 1; i <= linkCount; i++) {
+    const inputLink = document.getElementById(`addFileDatalink${i}`);
+    const link = inputLink.value;
+
+    if (isValidURL(link)) { 
+      const img = document.createElement('img');
+      img.src = 'https://cdn.jsdelivr.net/gh/JacketJK/image/img_link.png'; 
+      img.setAttribute('data-bs-toggle', 'tooltip');
+      img.setAttribute('data-bs-placement', 'top');
+      img.setAttribute('data-bs-custom-class', 'custom-tooltip');
+      img.setAttribute('data-bs-title', 'คลิกเพื่อดูรายละเอียด');
+      img.addEventListener('click', function() {
+        window.open(link, '_blank');
+      });
+
+      $("#sendResultToUserBtn").show();
+      img.style.cursor = 'pointer';
+      img.width = 80;
+      img.height = 80;
+      img.classList.add("ms-5");
+      uploadedLinksDiv.appendChild(img);
+      $("#xaddLinkModal").click();
+    } else {
+      toastAlert(0, '⚠️ รูปแบบผิดพลาด LINK ' + i,);
+    }
+  }
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+}
+
+const onResetFile = () => {
+  const uploadedLinksDiv = document.getElementById('uploadedLinks');
+  uploadedLinksDiv.innerHTML = '';
+  const uploadedFilesDiv = document.getElementById('uploadedFiles');
+  uploadedFilesDiv.innerHTML = '';
+
+  document.getElementById("docAddfileForm").reset();
+  document.getElementById("addFileDatalinkform").reset();
+  $("#sendResultToUserBtn").show();
+
+  $("#labeladdFileDataDoc1").show();
+  $("#labeladdFileDataDoc2").hide();
+  $("#labeladdFileDataDoc3").hide();
+  $("#labeladdFileDataDoc4").hide();
+  $("#labeladdFileDataDoc5").hide();
+}
+
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+
+<!-------------------------------- Car ------------------------------------->
+<script>
+var allConsider = null;   
+var allApprover = null; 
+var itemsPerPage = 5;
+var currentPage = 1;
+
+google.script.run.withSuccessHandler(function(data) {
+  allConsider = data;
+  considerDataShow(allConsider);
+}).getDataAllowCarGs();
+
+google.script.run.withSuccessHandler(function(data) {
+  allApprover = data;
+  approveDataShow(allApprover);
+}).getDataConsideCarGs()
+
+function considerDataShow(data) {
+  var dataContainer = document.getElementById("containerConsider");
+  dataContainer.innerHTML = "";
+
+  if (data.length === 0) {
+    var noDataText = document.createElement("p");
+    noDataText.innerHTML = "<i class='fa-regular fa-circle-info'></i>" + " ไม่พบข้อมูล !";
+    noDataText.className = "fw-medium text-danger fs-4 text-center p-5";
+    dataContainer.appendChild(noDataText);
+    return;
+  }
+
+  var startIndex = (currentPage - 1) * itemsPerPage;
+  var endIndex = startIndex + itemsPerPage;
+  var displayedItems = data.slice(startIndex, endIndex);
+
+  displayedItems.forEach(function(item) {
+    var containerRow = document.createElement("div");
+    containerRow.className = "container-fluid";
+
+    var rowContianer = document.createElement("div");
+    rowContianer.className = "row";
+
+    var colContianer = document.createElement("div");
+    colContianer.className = "col-md-9";
+
+    var titleRow1 = document.createElement("div");
+    titleRow1.className = "fs-5 fw-medium mt-1 mb-3 ";
+    titleRow1.textContent = item[0];
+    titleRow1.style.color = "var(--box1)";
+
+    var titleRow2 = document.createElement("div");
+    titleRow2.className = "mb-2";
+
+    var spanTitleRow2 = document.createElement("span");
+    spanTitleRow2.className = " fw-medium fs-6";
+    spanTitleRow2.innerHTML = "<i class='fa-duotone fa-car-rear'></i> รถหมายเลขทะเบียน : ";
+
+    var spanRow2 = document.createElement("span");
+    spanRow2.className = " fs-6";
+    spanRow2.textContent = item[2];
+    spanRow2.style.color = "var(--box3)";
+
+    var titleRow3 = document.createElement("div");
+    titleRow3.className = "row mb-2";
+
+    var titleRow3Col1 = document.createElement("div");
+    titleRow3Col1.className = "col-auto";
+
+    var spanTitleRow3 = document.createElement("span");
+    spanTitleRow3.className = " fw-medium fs-6";
+    spanTitleRow3.innerHTML = "<i class='fa-duotone fa-user-cowboy'></i> ผู้ขอใช้ : ";
+
+    var spanRow3 = document.createElement("span");
+    spanRow3.className = " fs-6 ";
+    spanRow3.textContent = item[3];
+
+    var titleRow3Col2 = document.createElement("div");
+    titleRow3Col2.className = "col-auto";
+
+    var spanTitleRow31 = document.createElement("span");
+    spanTitleRow31.className = " fw-medium fs-6";
+    spanTitleRow31.innerHTML = "<i class='fa-duotone fa-building-shield'></i> ตำแหน่ง : ";
+
+    var spanRow31 = document.createElement("span");
+    spanRow31.className = " fs-6 ";
+    spanRow31.textContent = item[4];
+
+    var titleRow4 = document.createElement("div");
+    titleRow4.className = "mb-2";
+
+    var spanTitleRow4 = document.createElement("span");
+    spanTitleRow4.className = " fw-medium fs-6";
+    spanTitleRow4.innerHTML = "<i class='fa-duotone fa-car-burst'></i> ไปที่ : ";
+
+    var spanRow4 = document.createElement("span");
+    spanRow4.className = " fs-6 ";
+    spanRow4.textContent = item[5] + ' เพื่อใช้' + item[6];
+
+    var titleRow5 = document.createElement("div");
+    titleRow5.className = "row mb-2";
+
+    var titleRow5Col1 = document.createElement("div");
+    titleRow5Col1.className = "col-auto";
+
+    var spanTitleRow5 = document.createElement("span");
+    spanTitleRow5.className = " fw-medium fs-6";
+    spanTitleRow5.innerHTML = "<i class='fa-duotone fa-calendar-xmark'></i> ใน : ";
+
+    var spanRow5 = document.createElement("span");
+    spanRow5.className = " fs-6 ";
+    spanRow5.textContent = item[9] + ' ถึง' + item[10];
+
+    var titleRow6 = document.createElement("div");
+    titleRow6.className = "row mb-2";
+
+    var titleRow6Col1 = document.createElement("div");
+    titleRow6Col1.className = "col-auto";
+
+    var spanTitleRow6 = document.createElement("span");
+    spanTitleRow6.className = " fw-medium fs-6";
+    spanTitleRow6.innerHTML = "<i class='fa-duotone fa-mountain-sun'></i> เขตพื้นที่ : ";
+
+    var spanRow6 = document.createElement("span");
+    spanRow6.className = "text-success fs-6 ";
+    spanRow6.textContent = item[7] ;
+
+    var titleRow6Col2 = document.createElement("div");
+    titleRow6Col2.className = "col-auto";
+
+    var spanTitleRow62 = document.createElement("span");
+    spanTitleRow62.className = " fw-medium fs-6";
+    spanTitleRow62.innerHTML = "<i class='fa-duotone fa-chair'></i> ผู้โดยสาร : ";
+
+    var spanRow62 = document.createElement("span");
+    spanRow62.className = "fs-6 ";
+    spanRow62.textContent = item[8] + ' คน';
+
+    var titleRow7 = document.createElement("div");
+    titleRow7.className = "row mb-2";
+
+    var titleRow7Col1 = document.createElement("div");
+    titleRow7Col1.className = "col-auto";
+
+    var spanTitleRow7 = document.createElement("span");
+    spanTitleRow7.className = " fw-medium fs-6";
+    spanTitleRow7.innerHTML = "<i class='fa-duotone fa-steering-wheel'></i> พลขับ : ";
+
+    var spanRow7 = document.createElement("span");
+    spanRow7.className = "fs-6 ";
+    spanRow7.textContent = item[11] ;
+
+    var colContianer2 = document.createElement("div");
+    colContianer2.className = "col-md-3 text-center";
+
+    var imgRow6 = document.createElement("img");
+    imgRow6.src = item[27];
+    imgRow6.style.width = '80%';
+
+    var btnRow7 = document.createElement("button");
+    btnRow7.className = "btn btn-green rounded-pill mt-2";
+    btnRow7.innerHTML = "<i class='fa-duotone fa-user-pen'></i> เสนอข้อพิจารณา";
+    
+    btnRow7.onclick = function() {
+      addConsider(item[0]);
+    };
+    
+    var hr = document.createElement("hr");
+    hr.className = "mt-3 md-1 opacity-25";
+
+    titleRow2.appendChild(spanTitleRow2);
+    titleRow2.appendChild(spanRow2);
+
+    titleRow3Col1.appendChild(spanTitleRow3);
+    titleRow3Col1.appendChild(spanRow3);
+
+    titleRow3Col2.appendChild(spanTitleRow31);
+    titleRow3Col2.appendChild(spanRow31);
+
+    titleRow3.appendChild(titleRow3Col1);
+    titleRow3.appendChild(titleRow3Col2);
+
+    titleRow4.appendChild(spanTitleRow4);
+    titleRow4.appendChild(spanRow4);
+   
+    titleRow5Col1.appendChild(spanTitleRow5);
+    titleRow5Col1.appendChild(spanRow5);
+
+    titleRow5.appendChild(titleRow5Col1);
+
+    titleRow6Col1.appendChild(spanTitleRow6);
+    titleRow6Col1.appendChild(spanRow6);
+    titleRow6Col2.appendChild(spanTitleRow62);
+    titleRow6Col2.appendChild(spanRow62);
+
+    titleRow6.appendChild(titleRow6Col1);
+    titleRow6.appendChild(titleRow6Col2);
+    
+    titleRow7Col1.appendChild(spanTitleRow7);
+    titleRow7Col1.appendChild(spanRow7);
+
+    titleRow7.appendChild(titleRow7Col1);
+
+    colContianer.appendChild(titleRow1);
+    colContianer.appendChild(titleRow2);
+    colContianer.appendChild(titleRow3);
+    colContianer.appendChild(titleRow4);
+    colContianer.appendChild(titleRow5);
+    colContianer.appendChild(titleRow6);
+    colContianer.appendChild(titleRow7);
+
+    colContianer2.appendChild(imgRow6);
+    colContianer2.appendChild(btnRow7);
+
+    rowContianer.appendChild(colContianer);      
+    rowContianer.appendChild(colContianer2);      
+
+    dataContainer.appendChild(rowContianer);
+    dataContainer.appendChild(hr);
+  });
+
+  var paginationContainer = document.createElement("div");
+  paginationContainer.className = "pagination-container";
+
+  var totalPages = Math.ceil(data.length / itemsPerPage);
+
+  var maxVisibleButtons = 5; 
+  var startPage = 1;
+  var endPage = totalPages;
+
+  if (totalPages > maxVisibleButtons) {
+    var middleButton = Math.floor(maxVisibleButtons / 2);
+    var farthestStart = currentPage - middleButton;
+    var farthestEnd = currentPage + middleButton - 1;
+
+    if (farthestStart > 1) {
+      startPage = farthestStart;
+      if (farthestEnd < totalPages) {
+        endPage = farthestEnd;
+      } else {
+        endPage = totalPages;
+        startPage = totalPages - maxVisibleButtons + 1;
+      }
+    } else {
+      startPage = 1;
+      endPage = maxVisibleButtons;
+    }
+  }
+
+  if (currentPage > 1) {
+    var firstButton = document.createElement("button");
+    firstButton.textContent = "1";
+    firstButton.className = "pagination-button fs-5";
+    firstButton.addEventListener("click", function () {
+      currentPage = 1;
+      considerDataShow(data);
+    });
+    paginationContainer.appendChild(firstButton);
+
+    var ellipsisButton1 = document.createElement("span");
+    ellipsisButton1.textContent = "...";
+    paginationContainer.appendChild(ellipsisButton1);
+  }
+
+  for (var i = startPage; i <= endPage; i++) {
+    var pageButton = document.createElement("button");
+    pageButton.textContent = i;
+    pageButton.className = "pagination-button fs-5";
+    if (i === currentPage) {
+      pageButton.disabled = true;
+      pageButton.classList.add("active");
+    } else {
+      pageButton.addEventListener("click", (function (page) {
+        return function () {
+          currentPage = page;
+          considerDataShow(data);
+        };
+      })(i));
+    }
+    paginationContainer.appendChild(pageButton);
+  }
+
+  if (currentPage < totalPages) {
+    var ellipsisButton2 = document.createElement("span");
+    ellipsisButton2.textContent = "...";
+    paginationContainer.appendChild(ellipsisButton2);
+
+    var lastButton = document.createElement("button");
+    lastButton.textContent = totalPages;
+    lastButton.className = "pagination-button fs-5";
+    lastButton.addEventListener("click", function () {
+      currentPage = totalPages;
+      considerDataShow(data);
+    });
+    paginationContainer.appendChild(lastButton);
+  }
+
+  dataContainer.appendChild(paginationContainer);
+}
+
+function approveDataShow(data) {
+  var dataContainer = document.getElementById("containerApprove");
+  dataContainer.innerHTML = "";
+
+  if (data.length === 0) {
+    var noDataText = document.createElement("p");
+    noDataText.innerHTML = "<i class='fa-regular fa-circle-info'></i>" + " ไม่พบข้อมูล !";
+    noDataText.className = "fw-medium text-danger fs-4 text-center p-5";
+    dataContainer.appendChild(noDataText);
+    return;
+  }
+
+  var startIndex = (currentPage - 1) * itemsPerPage;
+  var endIndex = startIndex + itemsPerPage;
+  var displayedItems = data.slice(startIndex, endIndex);
+
+  displayedItems.forEach(function(item) {
+    var containerRow = document.createElement("div");
+    containerRow.className = "container-fluid";
+
+    var rowContianer = document.createElement("div");
+    rowContianer.className = "row";
+
+    var colContianer = document.createElement("div");
+    colContianer.className = "col-md-8";
+
+    var titleRow1 = document.createElement("div");
+    titleRow1.className = "fs-5 fw-medium mt-1 mb-3 ";
+    titleRow1.textContent = item[0];
+    titleRow1.style.color = "var(--box4)";
+
+    var titleRow2 = document.createElement("div");
+    titleRow2.className = "mb-2";
+
+    var spanTitleRow2 = document.createElement("span");
+    spanTitleRow2.className = " fw-medium fs-6";
+    spanTitleRow2.innerHTML = "<i class='fa-regular fa-car-rear'></i> รถหมายเลขทะเบียน : ";
+
+    var spanRow2 = document.createElement("span");
+    spanRow2.className = " fs-6";
+    spanRow2.textContent = item[2];
+    spanRow2.style.color = "var(--box3)";
+
+    var titleRow3 = document.createElement("div");
+    titleRow3.className = "row mb-2";
+
+    var titleRow3Col1 = document.createElement("div");
+    titleRow3Col1.className = "col-auto";
+
+    var spanTitleRow3 = document.createElement("span");
+    spanTitleRow3.className = " fw-medium fs-6";
+    spanTitleRow3.innerHTML = "<i class='fa-regular fa-user-cowboy'></i> ผู้ขอใช้ : ";
+
+    var spanRow3 = document.createElement("span");
+    spanRow3.className = " fs-6 ";
+    spanRow3.textContent = item[3];
+
+    var titleRow3Col2 = document.createElement("div");
+    titleRow3Col2.className = "col-auto";
+
+    var spanTitleRow31 = document.createElement("span");
+    spanTitleRow31.className = " fw-medium fs-6";
+    spanTitleRow31.innerHTML = "<i class='fa-regular fa-building-shield'></i> ตำแหน่ง : ";
+
+    var spanRow31 = document.createElement("span");
+    spanRow31.className = " fs-6 ";
+    spanRow31.textContent = item[4];
+
+    var titleRow4 = document.createElement("div");
+    titleRow4.className = "mb-2";
+
+    var spanTitleRow4 = document.createElement("span");
+    spanTitleRow4.className = " fw-medium fs-6";
+    spanTitleRow4.innerHTML = "<i class='fa-regular fa-car-burst'></i> ไปที่ : ";
+
+    var spanRow4 = document.createElement("span");
+    spanRow4.className = " fs-6 ";
+    spanRow4.textContent = item[5] + ' เพื่อใช้' + item[6];
+
+    var titleRow5 = document.createElement("div");
+    titleRow5.className = "row mb-2";
+
+    var titleRow5Col1 = document.createElement("div");
+    titleRow5Col1.className = "col-auto";
+
+    var spanTitleRow5 = document.createElement("span");
+    spanTitleRow5.className = " fw-medium fs-6";
+    spanTitleRow5.innerHTML = "<i class='fa-regular fa-calendar-xmark'></i> ใน : ";
+
+    var spanRow5 = document.createElement("span");
+    spanRow5.className = " fs-6 ";
+    spanRow5.textContent = item[9] + ' ถึง' + item[10];
+
+    var titleRow6 = document.createElement("div");
+    titleRow6.className = "row mb-2";
+
+    var titleRow6Col1 = document.createElement("div");
+    titleRow6Col1.className = "col-auto";
+
+    var spanTitleRow6 = document.createElement("span");
+    spanTitleRow6.className = " fw-medium fs-6";
+    spanTitleRow6.innerHTML = "<i class='fa-regular fa-mountain-sun'></i> เขตพื้นที่ : ";
+
+    var spanRow6 = document.createElement("span");
+    spanRow6.className = "text-success fs-6 ";
+    spanRow6.textContent = item[7] ;
+
+    var titleRow6Col2 = document.createElement("div");
+    titleRow6Col2.className = "col-auto";
+
+    var spanTitleRow62 = document.createElement("span");
+    spanTitleRow62.className = " fw-medium fs-6";
+    spanTitleRow62.innerHTML = "<i class='fa-regular fa-chair'></i> ผู้โดยสาร : ";
+
+    var spanRow62 = document.createElement("span");
+    spanRow62.className = "fs-6 ";
+    spanRow62.textContent = item[8] + ' คน';
+
+    var titleRow7 = document.createElement("div");
+    titleRow7.className = "row mb-2";
+
+    var titleRow7Col1 = document.createElement("div");
+    titleRow7Col1.className = "col-auto";
+
+    var spanTitleRow7 = document.createElement("span");
+    spanTitleRow7.className = " fw-medium fs-6";
+    spanTitleRow7.innerHTML = "<i class='fa-regular fa-steering-wheel'></i> พลขับ : ";
+
+    var spanRow7 = document.createElement("span");
+    spanRow7.className = "fs-6 ";
+    spanRow7.textContent = item[11] ;
+
+    var colContianer2 = document.createElement("div");
+    colContianer2.className = "col-md-4 text-center";
+
+    var divrow9 = document.createElement("div");
+
+    var pTitleRow9 = document.createElement("span");
+    pTitleRow9.className = " fw-medium fs-6";
+    pTitleRow9.innerHTML = "<i class='fa-regular fa-circle-exclamation'></i> ข้อเสนอ : ";
+
+    var spanRow9 = document.createElement("span");
+    spanRow9.className = "text-success fs-6 ";
+    spanRow9.textContent = item[16];
+
+    var divrow10 = document.createElement("div");
+
+    var pTitleRow10 = document.createElement("span");
+    pTitleRow10.className = " fw-medium fs-6";
+    pTitleRow10.innerHTML = "<i class='fa-regular fa-user-astronaut'></i> ผู้เสนอ : ";
+
+    var spanRow10 = document.createElement("span");
+    spanRow10.className = "fs-6 ";
+    spanRow10.textContent = item[17];
+
+    var imgRow6 = document.createElement("img");
+    imgRow6.src = item[27];
+    imgRow6.style.width = '80%';
+
+    var btnRow7 = document.createElement("button");
+    btnRow7.className = "btn btn-outline-green rounded-pill mt-2";
+    btnRow7.innerHTML = "<i class='fa-regular fa-paper-plane'></i> พิจารณาการอนุญาต";
+    
+    btnRow7.onclick = function() {
+      addSendApprove(item[0]);
+    };
+    
+    var hr = document.createElement("hr");
+    hr.className = "mt-3 md-1 opacity-25";
+
+    titleRow2.appendChild(spanTitleRow2);
+    titleRow2.appendChild(spanRow2);
+
+    titleRow3Col1.appendChild(spanTitleRow3);
+    titleRow3Col1.appendChild(spanRow3);
+
+    titleRow3Col2.appendChild(spanTitleRow31);
+    titleRow3Col2.appendChild(spanRow31);
+
+    titleRow3.appendChild(titleRow3Col1);
+    titleRow3.appendChild(titleRow3Col2);
+
+    titleRow4.appendChild(spanTitleRow4);
+    titleRow4.appendChild(spanRow4);
+   
+    titleRow5Col1.appendChild(spanTitleRow5);
+    titleRow5Col1.appendChild(spanRow5);
+
+    titleRow5.appendChild(titleRow5Col1);
+
+    titleRow6Col1.appendChild(spanTitleRow6);
+    titleRow6Col1.appendChild(spanRow6);
+    titleRow6Col2.appendChild(spanTitleRow62);
+    titleRow6Col2.appendChild(spanRow62);
+
+    titleRow6.appendChild(titleRow6Col1);
+    titleRow6.appendChild(titleRow6Col2);
+    
+    titleRow7Col1.appendChild(spanTitleRow7);
+    titleRow7Col1.appendChild(spanRow7);
+
+    titleRow7.appendChild(titleRow7Col1);
+
+    colContianer.appendChild(titleRow1);
+    colContianer.appendChild(titleRow2);
+    colContianer.appendChild(titleRow3);
+    colContianer.appendChild(titleRow4);
+    colContianer.appendChild(titleRow5);
+    colContianer.appendChild(titleRow6);
+    colContianer.appendChild(titleRow7);
+
+    divrow9.appendChild(pTitleRow9);
+    divrow9.appendChild(spanRow9);
+    divrow10.appendChild(pTitleRow10);
+    divrow10.appendChild(spanRow10);
+
+    colContianer2.appendChild(divrow9);
+    colContianer2.appendChild(divrow10);
+    colContianer2.appendChild(imgRow6);
+    colContianer2.appendChild(btnRow7);
+
+    rowContianer.appendChild(colContianer);      
+    rowContianer.appendChild(colContianer2);      
+
+    dataContainer.appendChild(rowContianer);
+    dataContainer.appendChild(hr);
+  });
+
+  var paginationContainer = document.createElement("div");
+  paginationContainer.className = "pagination-container";
+
+  var totalPages = Math.ceil(data.length / itemsPerPage);
+
+  var maxVisibleButtons = 5; 
+  var startPage = 1;
+  var endPage = totalPages;
+
+  if (totalPages > maxVisibleButtons) {
+    var middleButton = Math.floor(maxVisibleButtons / 2);
+    var farthestStart = currentPage - middleButton;
+    var farthestEnd = currentPage + middleButton - 1;
+
+    if (farthestStart > 1) {
+      startPage = farthestStart;
+      if (farthestEnd < totalPages) {
+        endPage = farthestEnd;
+      } else {
+        endPage = totalPages;
+        startPage = totalPages - maxVisibleButtons + 1;
+      }
+    } else {
+      startPage = 1;
+      endPage = maxVisibleButtons;
+    }
+  }
+
+  if (currentPage > 1) {
+    var firstButton = document.createElement("button");
+    firstButton.textContent = "1";
+    firstButton.className = "pagination-button fs-5";
+    firstButton.addEventListener("click", function () {
+      currentPage = 1;
+      approveDataShow(data);
+    });
+    paginationContainer.appendChild(firstButton);
+
+    var ellipsisButton1 = document.createElement("span");
+    ellipsisButton1.textContent = "...";
+    paginationContainer.appendChild(ellipsisButton1);
+  }
+
+  for (var i = startPage; i <= endPage; i++) {
+    var pageButton = document.createElement("button");
+    pageButton.textContent = i;
+    pageButton.className = "pagination-button fs-5";
+    if (i === currentPage) {
+      pageButton.disabled = true;
+      pageButton.classList.add("active");
+    } else {
+      pageButton.addEventListener("click", (function (page) {
+        return function () {
+          currentPage = page;
+          approveDataShow(data);
+        };
+      })(i));
+    }
+    paginationContainer.appendChild(pageButton);
+  }
+
+  if (currentPage < totalPages) {
+    var ellipsisButton2 = document.createElement("span");
+    ellipsisButton2.textContent = "...";
+    paginationContainer.appendChild(ellipsisButton2);
+
+    var lastButton = document.createElement("button");
+    lastButton.textContent = totalPages;
+    lastButton.className = "pagination-button fs-5";
+    lastButton.addEventListener("click", function () {
+      currentPage = totalPages;
+      approveDataShow(data);
+    });
+    paginationContainer.appendChild(lastButton);
+  }
+
+  dataContainer.appendChild(paginationContainer);
+}
+
+function addConsider(code) {
+  $("#considerOne").addClass('show');
+  $("#codeConsider").val(code).removeClass("is-invalid");
+
+  toastAlert(2, "🚘 รหัสคำร้องที่ : " + code);
+}
+
+function addSendApprove(code) {
+  $("#codeApprover").val(code).removeClass("is-invalid");
+
+  toastAlert(2,"🚘 รหัสคำร้องที่ : " + code);
+}  
+
+google.script.run.withSuccessHandler(displayCards).getDataForCar();
+var cardContainer = document.getElementById("cardCar-container");
+
+function clearCardContainer() {
+  while (cardContainer.firstChild) {
+    cardContainer.removeChild(cardContainer.firstChild);
+  }
+}
+
+function displayCards(data) {
+  var cardContainer = document.getElementById("cardCar-container");
+
+  clearCardContainer();
+
+  if (data.length === 0) {
+    var noDataText = document.createElement("p");
+    noDataText.textContent = "ไม่พบข้อมูล !";
+    noDataText.className = "fw-medium text-danger fs-4 text-center p-5";
+    cardContainer.appendChild(noDataText);
+    return;
+  }
+
+  var cardRow = document.createElement("div");
+  cardRow.className = "row row-cols-md-4 g-3";
+
+  data.forEach(function (item) {
+    var col = document.createElement("div");
+    col.className = "col"; 
+
+    var card = document.createElement("div");
+    card.className = "card h-100 rounded-4 shadow";
+    card.style.overflow = "hidden";
+    card.style.backgroundColor = "var(--light)";
+    card.style.color = "var(--dark)";
+
+    if (item[9] === "พร้อมใช้งาน") {
+      card.style.border = "1px solid var(--box2)";
+    } else if (item[9] === "อยู่ระหว่างใช้งาน") {
+      card.style.border = "1px solid var(--box4)";
+    } else if (item[9] === "ยังไม่ได้รับการอนุญาต") {
+      card.style.border = "1px solid var(--orange)";
+    } 
+
+    var cardBody = document.createElement("div");
+    cardBody.className = "card-body";
+
+    var cardFoodter = document.createElement("div");
+    cardFoodter.className = "text-end";
+
+    var cardImage = document.createElement("img");
+    cardImage.className = "card-img-top";
+    cardImage.style.maxWidth = "100%";
+    cardImage.style.height = "80%";
+    cardImage.style.objectFit = "cover";
+    cardImage.style.marginLeft = "auto";
+    cardImage.style.marginRight = "auto";
+    cardImage.style.marginTop = "10px";
+    cardImage.src = item[1];
+
+    var cardTitle = document.createElement("h5");
+    cardTitle.className = "card-title";
+    cardTitle.textContent = 'รถ' + item[3];
+
+    var additionalData1 = document.createElement("h6");
+    additionalData1.className = "card-text fw-normal";
+    additionalData1.textContent = 'หมายเลขทะเบียน ' + item[2];
+
+    var status = '';
+    if (item[9] === "พร้อมใช้งาน") {
+      status = "<span style='color: var(--box2);'>พร้อมใช้งาน</span>";
+    } else if (item[9] === "อยู่ระหว่างใช้งาน") {
+      status = "<span style='color: var(--box4);'>อยู่ระหว่างใช้งาน</span>";
+    } else if (item[9] === "ยังไม่ได้รับการอนุญาต") {
+      status = "<span style='color: var(--orange);'>ยังไม่ได้รับการอนุญาต</span>";
+    }
+
+    var progress = document.createElement("div");
+    progress.innerHTML = `<div class="row mt-2">
+                            <div class="col-auto">
+                              <span class="text-danger"><i class="fa-solid fa-gas-pump"></i></span>
+                            </div>
+                            <div class="col-md">
+                              <div class="progress rounded-pill" role="progressbar" style="height: 25px;" aria-valuenow="${item[5]}" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: ${item[5]}%">${item[5]}%</div>
+                              </div>
+                            </div>
+                          </div>`;
+
+    var additionalData2 = document.createElement("p");
+    additionalData2.className = "card-text my-2";
+    additionalData2.innerHTML = `สถานะ : ${status}`;
+
+    card.addEventListener("click", function() {
+
+    });
+
+    var buttonWant = document.createElement("button");
+    buttonWant.className = "btn btn-green shadow rounded-3 btn-sm";
+    buttonWant.innerHTML = `<i class="fa-solid fa-car-rear"></i> ขอใช้รถคันนี้`;
+
+    if (item[9] === "พร้อมใช้งาน") {
+      buttonWant.classList.remove("d-none");
+    } else if (item[9] === "อยู่ระหว่างใช้งาน") {
+      buttonWant.classList.add("d-none");
+    } else if (item[9] === "ยังไม่ได้รับการอนุญาต") {
+      buttonWant.classList.add("d-none");
+    }
+
+    buttonWant.addEventListener("click", function() {
+      changePageCarReserve(5)
+      $("#addCarSuccess").show();
+      $("#userCar1").html(`<i class="fa-solid fa-car-on"></i> ขออนุญาตใช้รถ${item[3]}`);
+      $("#userCar2").attr('src', item[1]);
+      $("#dataCarAdd1").val(item[2]);
+      $("#dataCarAdd9").val(item[4]);
+      $("#dataCarAdd10").val(item[7]);
+      $("#dataCarAdd11").attr('aria-valuenow', item[5]);
+      $("#dataCarAdd12").css('width', item[5] + "%").html(item[5] + "%");
+      $("#carbreadcrumb1").removeClass("active");
+      $("#carbreadcrumb2").show();
+      $("#carbreadcrumb3").addClass("active").text("หมายเลขทะเบียนรถ " + item[2]).show();   
+    });
+
+    var buttonDetail = document.createElement("button");
+    buttonDetail.className = "btn btn-blue shadow rounded-3 btn-sm ms-2";
+    buttonDetail.innerHTML = `<i class="fa-solid fa-file-invoice"></i> รายละเอียด`;
+
+    buttonDetail.addEventListener("click", function() {
+      $("#detailCarbtn").click();
+      
+      $("#seeDetail1").attr('src', item[1]);
+      $("#seeDetail2").attr('aria-valuenow', item[5]);
+      $("#seeDetail3").css('width', item[5]+"%").html(item[5]+"%");
+      $("#seeDetail4").text(item[4] + " (เลขไมล์ปัจจุบัน)");
+      $("#seeDetail5").text(item[7] + " (ผู้ขอใช้รถคนล่าสุด)");
+      $("#seeDetail6").text(item[6] + " กิโลเมตร (ระยะทางล่าสุด)");
+      $("#seeDetail7").text(item[8] + " (สถานที่ขอใช้ล่าสุด)");
+      $("#seeDetail8").text("รถ" + item[3]);
+      $("#seeDetail9").text("หมายเลขทะเบียน " + item[2]);
+      if (item[9] === "พร้อมใช้งาน") {
+        $("#seeDetail10").text(item[9] + " (สถานะ)").css("color","var(--box2)");    
+      } else if (item[9] === "อยู่ระหว่างใช้งาน") {
+        $("#seeDetail10").text(item[9] + " (สถานะ)").css("color","var(--box4)");    
+      } else if (item[9] === "ยังไม่ได้รับการอนุญาต") {
+        $("#seeDetail10").text(item[9] + " (สถานะ)").css("color","var(--orange)");    
+      }
+      $("#seeDetail11").text(item[10] + " (รหัสคำร้องล่าสุด)");
+    });
+
+    var buttonReturn = document.createElement("button");
+    buttonReturn.className = "btn btn-danger shadow rounded-3 btn-sm ms-2";
+    buttonReturn.innerHTML = `<i class="fa-solid fa-arrows-rotate"></i> คืนรถ`;
+
+    if (item[9] === "พร้อมใช้งาน") {
+      buttonReturn.classList.add("d-none");
+    } else if (item[9] === "อยู่ระหว่างใช้งาน") {
+      buttonReturn.classList.remove("d-none");
+    } else if (item[9] === "ยังไม่ได้รับการอนุญาต") {
+      buttonReturn.classList.add("d-none");
+    }
+
+    buttonReturn.addEventListener("click", function() {
+      $("#returnCar").click();
+      $("#returnData1").val(item[10]);
+      $("#returnData2").val(item[4]);
+    });
+
+    cardFoodter.appendChild(buttonWant);
+    cardFoodter.appendChild(buttonReturn);
+    cardFoodter.appendChild(buttonDetail);
+
+    cardBody.appendChild(cardTitle);
+    cardBody.appendChild(additionalData1);
+    cardBody.appendChild(progress);
+    cardBody.appendChild(additionalData2);
+    cardBody.appendChild(cardFoodter);
+    
+    card.appendChild(cardImage);
+    card.appendChild(cardBody);
+    col.appendChild(card); 
+    cardRow.appendChild(col); 
+  });
+
+  cardContainer.appendChild(cardRow);
+}
+const checkboxSelectCar = (data) => { 
+  var checkboxContainer = document.getElementById("dataCarAdd13");
+  checkboxContainer.innerHTML = "";
+
+  data.forEach(function(row) {
+    var optionForm = document.createElement('option');
+    optionForm.value = row[0] + ', ' + row[14]; 
+    optionForm.text = row[3] + row[4] + ' ' + row[5]; 
+    optionForm.setAttribute("data-section", row[7]);
+    optionForm.setAttribute("data-index", "1");
+    checkboxContainer.appendChild(optionForm);
+  });
+  $("#dataCarAdd13").treeMultiselect({
+    allowBatchSelection: true,
+    searchable: true, 
+    enableSelectAll: true,
+    enableSelectAll: true,
+    searchParams: ['text', 'description', 'section'],
+    startCollapsed: true,
+    selectAllText: 'เลือกทั้งหมด', 
+    unselectAllText: 'ยกเลิกทั้งหมด',
+    single: true
+  });
+}
+$("#dataCarAdd13").on('change', function() {
+  $(".remove-selected").html('<i class="fa-solid fa-circle-xmark"></i>');
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  var fuelRange = document.getElementById("fuelRange");
+  var fuelValue = document.getElementById("fuelValue");
+
+  fuelRange.oninput = function() {
+    var value = fuelRange.value;
+    fuelValue.textContent = "ปริมาณน้ำมัน " + value + "%";
+  };
+});
+
+var allData = null; 
+google.script.run.withSuccessHandler(function(data) {
+  allData = data;
+  displayRadioButtons(allData)
+}).selectSender();
+
+function displayRadioButtons(data) {
+  var radioUser = document.getElementById("radioUser");
+  radioUser.innerHTML = ""; 
+  
+  data.forEach(function(user, index) {
+    radioUser.className = "mb-3";
+
+    var radioLabel = document.createElement("label");
+    radioLabel.className = "form-check-label"; 
+    radioLabel.htmlFor = user[0] + 'consider';
+    radioLabel.style.fontSize = "15px";
+    radioLabel.style.cursor = "pointer";
+
+    var radioButton = document.createElement("input");
+    radioButton.type = "radio";
+    radioButton.name = "userRadioConsider";
+    radioButton.className = "form-check-input fs-4";
+    radioButton.value = user[3] + "," + user[0]; 
+    radioButton.id = user[0] + 'consider';
+
+    var image = document.createElement('img');
+    image.src = user[2]; 
+    image.style.width = '35px'; 
+    image.style.height = '35px'; 
+    image.style.borderRadius = '50%';
+    image.style.marginLeft = '10px';
+    image.style.marginRight = '5px';
+
+    var containerDiv = document.createElement('div');
+    containerDiv.appendChild(image);
+    containerDiv.appendChild(document.createTextNode("คุณ" + user[1] + " (" + user[4] + ")")); 
+
+    radioLabel.appendChild(containerDiv);
+
+    radioUser.appendChild(radioButton);
+    radioUser.appendChild(radioLabel);
+    radioUser.appendChild(document.createElement("br"));
+  });
+}
+
+function filterData() {
+  $("#considerOne").addClass('show');
+  var keyWord = document.getElementById("searchUserConsider").value;
+  var searchTerm = searchInputConsider.value.toLowerCase();
+  var searchData = allData.filter(function(researchData) {
+    for (var i = 0; i < researchData.length; i++) {
+      if (researchData[i] !== null && researchData[i].toString().toLowerCase().includes(searchTerm)) {
+        return true;
+      }
+    }
+    return false;
+  });
+  displayRadioButtons(searchData);
+}
+
+var searchInputConsider = document.getElementById("searchUserConsider");
+searchInputConsider.addEventListener('input', filterData);
+</script>
+
+<script>
+function culatorKilo() {
+  var returnData3 = parseInt(document.getElementById('returnData3').value) || 0;
+  var returnData2 = parseInt(document.getElementById('returnData2').value) || 0;
+  var distance = returnData3 - returnData2;
+  document.getElementById('returnData4').value = distance + " กิโลเมตร";
+  document.getElementById('returnData5').value = distance;
+}  
+
+google.script.run.withSuccessHandler((res)=>{
+  selectNumberCar(res)
+}).selectNumberCar();
+
+const selectNumberCar = (data) => {
+  const selectCar = document.getElementById('carHistotyfilter1'); 
+
+  const defaultOption = createOption('', 'โปรดเลือก', true);
+  selectCar.appendChild(defaultOption.cloneNode(true));
+
+  data.forEach(row => {
+    const option = createOption(row[0], row[0]);
+    selectCar.appendChild(option.cloneNode(true));
+  });
+};
+
+let dataCarRequset
+const seeHistoryDetail = (data) => {
+  dataCarRequset = null;
+  $('#carDetailingBtn').click();
+
+  const dataArray = data.split(',');
+
+  $("#seeHistoryDetail1").attr('src', dataArray[27]);
+  $("#seeHistoryDetail2").text(dataArray[0]);
+  $("#seeHistoryDetail3").text(dataArray[13] + " (เลขไมล์ปัจจุบัน)");
+  $("#seeHistoryDetail4").text(dataArray[3] + " (ผู้ขอใช้รถคนล่าสุด)");
+  $("#seeHistoryDetail5").text(dataArray[15] + " กิโลเมตร (ระยะทางล่าสุด)");
+  $("#seeHistoryDetail6").text(dataArray[5] + " (สถานที่ขอใช้ล่าสุด)");
+  $("#seeHistoryDetail7").text("หมายเลขทะเบียน " + dataArray[2]);
+  $("#seeHistoryDetail8").text(dataArray[17] + " (ผู้อนุญาต)");
+  $("#seeHistoryDetail9").text(dataArray[19] + " (ผู้อนุมัติ)");
+  
+  dataCarRequset = dataArray;
+}
+</script>
+
+<script>
+const addCarRequrst = () => {
+  $("#loader").show();
+  if ($('#dataCarAdd1').val() === '') {
+    toastAlert(0, '⚠️ โปรดเลือกรถที่ต้องการใช้');
+    return; 
+  } else if ($('#dataCarAdd2').val() === '') {
+    toastAlert(0, '⚠️ โปรดระบุการขอใช้รถไปที่ไหน');
+    return; 
+  } else if ($('#dataCarAdd3').val() === '') {
+    toastAlert(0, '⚠️ โปรดระบุวัตถุประสงค์การของใช้รถ');
+    return; 
+  } else if ($('#dataCarAdd4').val() === '') {
+    toastAlert(0, '⚠️ โปรดระบุจำนวนผุ้ที่นั่งรถไปด้วย');
+    return; 
+  } else if ($('#dataCarAdd5').val() === '' && $('#dataCarAdd6').val() === '') {
+    toastAlert(0, '⚠️ โปรดระบุวันที่ขอใช้รถ');
+    return; 
+  } else if ($('#dataCarAdd7').val() === '') {
+    toastAlert(0, '⚠️ โปรดระบุพนักงานขับรถ');
+    return; 
+  } else if ($('input[name="dataCarAdd8"]:checked').length === 0) {
+    toastAlert(0, '⚠️ โปรดเลือกเขตพื้นที่');
+    return; 
+  } else if ($('#dataCarAdd13').val() === '') {
+    toastAlert(0, '⚠️ โปรดเลือกผู้ที่ต้องการส่งคำร้องขอใช้รถ');
+    return; 
+  }
+  var obj = {} 
+    obj.data1 = $("#dataCarAdd1").val(); 
+    obj.data2 = $("#dataCarAdd2").val(); 
+    obj.data3 = $("#dataCarAdd3").val(); 
+    obj.data4 = $("#dataCarAdd4").val(); 
+    obj.data5 = $("#dataCarAdd5").val(); 
+    obj.data6 = $("#dataCarAdd6").val(); 
+    obj.data7 = $("#dataCarAdd7").val(); 
+    obj.data8 = $('input[name="dataCarAdd8"]:checked').val(); 
+    obj.data9 = $("#dataCarAdd9").val(); 
+    obj.user = localStorage.getItem('name_1') + localStorage.getItem('name_2') + ' ' + localStorage.getItem('name_3')
+    obj.position = localStorage.getItem('position'); 
+    obj.key = localStorage.getItem('publicKey'); 
+    obj.sig = localStorage.getItem('sig'); 
+    obj.token = localStorage.getItem('token'); 
+    obj.image = $("#userCar2").prop('src');
+
+    var selectedValues = $('#dataCarAdd13').val();
+    var pairs = selectedValues.map(function(valueSet) {
+      var separatedArray = valueSet.split(", ");
+      var value1 = separatedArray[0].trim();
+      var value2 = separatedArray[1].trim();
+      return { keyuser: value1, token: value2 };
+    });
+
+    var keySender = [];
+      pairs.forEach(function(item) {
+        keySender.push(item.keyuser);
+      });
+
+    var userSender = [];
+      pairs.forEach(function(item) {
+        userSender.push(item.token);
+      });
+
+      obj.userSender = userSender;
+      obj.keySender = keySender;
+
+  google.script.run.withSuccessHandler(function(response) {
+    changePageCarReserve(1)
+    google.script.run.withSuccessHandler(function(data) {
+      allConsider = data;
+      considerDataShow(allConsider);
+    }).getDataAllowCarGs();
+    google.script.run.withSuccessHandler(function(data) {
+      allApprover = data;
+      approveDataShow(allApprover);
+    }).getDataConsideCarGs();
+    toastAlert(1,"📨 บันทึกการขอใช้รถสำเร็จ");
+    $('.unselect-all').click();
+    $('.section').addClass('collapsed');
+    $('#formAddDataCar')[0].reset();
+    google.script.run.withSuccessHandler(displayCards).getDataForCar();
+  }).addCarRequrst(obj);
+}
+
+const addSendConsider = () => {
+  $("#loader").show();
+  var radioConsider = document.querySelector('input[name="radioConsider"]:checked');
+  if ($("#codeConsider").val() === "") {
+    toastAlert(0, "⚠️ โปรดเลือกรายการที่ต้องการพิจารณา");
+    return;   
+  } else if (!radioConsider) {
+    toastAlert(0, "⚠️ โปรดเลือกข้อเสนอการพิจารณา");
+    return; 
+  } else if ($("input[name='userRadioConsider']:checked").length === 0) {
+    toastAlert(0, "⚠️ โปรดเลือกผู้ที่ต้องการส่งคำร้องขอใช้รถ");
+    return;   
+  }
+
+var obj = {}
+  obj.consider1 = localStorage.getItem('name_1') + localStorage.getItem('name_2') + " " + localStorage.getItem('name_3'); 
+  obj.consider2 = localStorage.getItem('sig'); 
+  obj.consider3 = localStorage.getItem('token'); 
+  obj.consider4 = $("#codeConsider").val();
+  obj.consider5 = $("input[name='radioConsider']:checked").val();
+  obj.consider6 = localStorage.getItem('position'); 
+
+
+  var selectedValues = $("input[name='userRadioConsider']:checked");
+  var pairs = [];
+  selectedValues.each(function() {
+    var valueSet = $(this).val();
+    var separatedArray = valueSet.split(",");
+    var value1 = separatedArray[0].trim();
+    var value2 = separatedArray[1].trim();
+    pairs.push({ token: value1, keyUser: value2 });
+  });
+
+  if (pairs.length > 0) {
+    obj.userSender = pairs[0].token;
+    obj.keySender = pairs[0].keyUser;
+  } else {
+    obj.userSender = '';
+    obj.keySender = '';
+  }
+
+  google.script.run.withSuccessHandler(function(response) {
+    google.script.run.withSuccessHandler(function(data) {
+      allConsider = data;
+      considerDataShow(allConsider);
+    }).getDataAllowCarGs();
+    google.script.run.withSuccessHandler(function(data) {
+      allApprover = data;
+      approveDataShow(allApprover);
+    }).getDataConsideCarGs();
+    toastAlert(1, "📨 ส่งข้อเสนอการพิจารณาขอใช้รถสำเร็จ");
+    google.script.run.withSuccessHandler(displayCards).getDataForCar();
+  }).considerCarRequrst(obj);
+}   
+
+const addApprove = () => {
+  $("#loader").show();
+  if ($("#codeApprover").val() == "") {
+    toastAlert(0, "⚠️ โปรดเลือกรายการที่ต้องการพิจารณา");
+    return;   
+  } else if ($("input[name='radioApprover']:checked").length === 0) {
+    toastAlert(0, "⚠️ โปรดเลือกการพิจารณา");
+    return;   
+  }
+
+var obj = {}
+  obj.approve1 = localStorage.getItem('name_1') + localStorage.getItem('name_2') + " " + localStorage.getItem('name_3'); 
+  obj.approve2 = localStorage.getItem('sig'); 
+  obj.approve3 = localStorage.getItem('token'); 
+  obj.approve4 = $("#codeApprover").val(); 
+  obj.approve5 = $("input[name='radioApprover']:checked").val();
+  obj.approve6 = localStorage.getItem('position'); 
+
+  google.script.run.withSuccessHandler(function(response) {
+    google.script.run.withSuccessHandler(function(data) {
+      allConsider = data;
+      considerDataShow(allConsider);
+    }).getDataAllowCarGs();
+    google.script.run.withSuccessHandler(function(data) {
+      allApprover = data;
+      approveDataShow(allApprover);
+    }).getDataConsideCarGs()
+    toastAlert(1, "✨ บันทึกผลพิจารณาขอใช้รถสำเร็จ");
+    google.script.run.withSuccessHandler(displayCards).getDataForCar();
+  }).approveCarRequrst(obj);  
+}
+
+const addReturnCar = () => {
+  $("#loader").show();
+  if ($("#returnData3").val() === "") {
+    toastAlert(0, "⚠️ โปรดระบุเลขไมล์รปัจจุบัน");
+    return;   
+  }
+
+var obj = {}
+  obj.returnData1 = $("#returnData1").val();;
+  obj.returnData2 = $("#returnData3").val();
+  obj.returnData3 = $("#fuelRange").val();
+  obj.returnData4 = $("#returnData5").val();
+
+  toastAlert(1, "🚘 การคืนรถรถสำเร็จ");
+  $("#xaddReturnCar").click();
+  google.script.run.withSuccessHandler(function(response) {
+    insertAllHistoryCar();
+    google.script.run.withSuccessHandler(displayCards).getDataForCar();
+  }).returnCarRequrst(obj);  
+}
+</script>
+
+<script> 
+let getDataAllCalendar;  
+
+const checkboxSelectCalendar = (data) => { 
+  var checkboxContainer = document.getElementById("addNewAcivety8");
+  checkboxContainer.innerHTML = "";
+
+  data.forEach(function(row) {
+    var optionForm = document.createElement('option');
+    optionForm.value = row[0] + ', ' + row[14]; 
+    optionForm.text = row[3] + row[4] + ' ' + row[5]; 
+    optionForm.setAttribute("data-section", row[7]);
+    optionForm.setAttribute("data-index", "1");
+    checkboxContainer.appendChild(optionForm);
+  });
+  $("#addNewAcivety8").treeMultiselect({
+    allowBatchSelection: true,
+    searchable: true, 
+    enableSelectAll: true,
+    enableSelectAll: true,
+    searchParams: ['text', 'description', 'section'],
+    startCollapsed: true,
+    selectAllText: 'เลือกทั้งหมด', 
+    unselectAllText: 'ยกเลิกทั้งหมด',
+  });
+}
+$("#addNewAcivety8").on('change', function() {
+  $(".remove-selected").html('<i class="fa-solid fa-circle-xmark"></i>');
+});
+
+const addActivityNew = () => {
+  if ($("#addNewAcivety1").val() === "") {
+    toastAlert(0, '⚠️ โปรดเลือกกอง/ฝ่าย ที่รับผิดชอบ');
+    return;
+  } else if ($("#addNewAcivety2").val() === "") {
+    toastAlert(0, '⚠️ โปรดระบุหัวข้อของกิจกรรม');
+    return;
+  } else if ($("#addNewAcivety3").val() === "" && $("#addNewAcivety4").val() === "") {
+    toastAlert(0, '⚠️ โปรดเลือกวันที่กิจกรรม');
+    return;
+  } else if ($("#addNewAcivety5").val() === "") {
+    toastAlert(0, '⚠️ โปรดระบุสถานที่');
+    return;
+  } else if ($("#addNewAcivety6").val() === "") {
+    toastAlert(0, '⚠️ โปรดระบุรายละเอียดกิจกรรม');
+    return;
+  } else if ($("#addNewAcivety8").val() === "") {
+    toastAlert(0, '⚠️ โปรดระบุเป้าหมายกิจกรรม');
+    return;
+  }
+
+  $('#saveNewActivityBtn').click();  
+  var obj = {};
+  var selectedValues = $('#addNewAcivety8').val();
+  var pairs = selectedValues.map(function(valueSet) {
+    var separatedArray = valueSet.split(", ");
+    var value1 = separatedArray[0].trim();
+    var value2 = separatedArray[1].trim();
+    return { keyuser: value1, token: value2 };
+  });
+
+  var keyusers = [];
+    pairs.forEach(function(item) {
+      keyusers.push(item.keyuser);
+    });
+
+  var tokens = [];
+    pairs.forEach(function(item) {
+      tokens.push(item.token);
+    });
+
+  obj.keyusers = keyusers;
+  obj.tokens = tokens;
+  obj.data1 = $("#addNewAcivety1").val();
+  obj.data2 = $("#addNewAcivety2").val();
+  obj.data3 = $("#addNewAcivety3").val();
+  obj.data4 = $("#addNewAcivety4").val();
+  obj.data5 = $("#addNewAcivety5").val();
+  obj.data6 = $("#addNewAcivety6").val();
+  obj.data7 = $("#addNewAcivety7").val();
+  obj.name = localStorage.getItem('name_1') + localStorage.getItem('name_2') + " " + localStorage.getItem('name_3'); 
+  obj.token = localStorage.getItem('token'); 
+  obj.publicKey = localStorage.getItem('publicKey'); 
+
+  const color = departMentData.filter(r => r[2] == obj.data1)
+  obj.textColor = "#FFF";
+  obj.backgroundColor = color[0][4];
+  obj.borderColor = color[0][4];
+
+  const confirmBtn = document.getElementById("confirmSaveNewActivityBtn");
+  
+  confirmBtn.onclick = function() {
+    $('#loader').show();
+    google.script.run.withSuccessHandler((res) => {
+      $('#xsaveNewActivityBtn').click();
+      $('#formActivity')[0].reset();
+      $('.unselect-all').click();
+      $('.section').addClass('collapsed');
+      changePageCalendar(1);
+      insertAllCalendar(localStorage.getItem('publicKey'));
+    }).gsActivityNew(obj)
+  };
+} 
+
+function calendarShow(key) {
+  var calendar = null;
+  google.script.run.withSuccessHandler(function(response) {
+  var calendarEl = document.getElementById('calendar');
+    
+    calendar = new FullCalendar.Calendar(calendarEl, {
+      themeSystem: 'bootstrap5',
+      initialView: 'dayGridMonth',
+      nowIndicator: true,
+      customButtons: {
+        myCustomButton: {
+          text: 'เพิ่มกิจกรรม!',
+          click: function() {
+            changePageCalendar(2);
+          }
+        }
+      },
+      headerToolbar: {
+        left: 'prev,next today myCustomButton',
+        center: 'title',
+        right: 'multiMonthYear,dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+      },
+      navLinks: true, 
+      editable: true,
+      selectable: true,
+      selectMirror: true,
+      dayMaxEvents: true,
+      bootstrapFontAwesome: true,
+      locale: 'th', 
+      buttonText: {
+          today: 'วันนี้',
+          year: 'ปี',
+          month: 'เดือน',
+          week: 'สัปดาห์',
+          day: 'วัน',
+          list: 'กำหนดการ',
+          close: 'ปิด',
+          prev: 'ย้อนกลับ',
+          next: 'ถัดไป',
+          prevYear: 'ปีก่อนหน้า',
+          nextYear: 'ปีถัดไป'
+      },
+      events: response, 
+      eventClick: function(info) {
+        $('#detailActivityBtn').click();
+        $('#detailActivityData1').text(info.event.title);
+        $('#detailActivityData2').text(info.event.extendedProps.activity);
+        $('#detailActivityData3').text(formatThaiDateTimeCalendar(new Date(info.event.start)));
+        $('#detailActivityData4').text(formatThaiDateTimeCalendar(new Date(info.event.end)));
+        $('#detailActivityData5').text(info.event.extendedProps.location);
+        $('#detailActivityData6').text(info.event.extendedProps.note);
+        $('#detailActivityData7').text(info.event.extendedProps.agency);
+        $('#detailActivityData8').text(info.event.extendedProps.requestedBy);
+      }
+    });
+    function formatThaiDateTimeCalendar(date) {
+      const thaiMonths = [
+          'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม','มิถุนายน',
+          'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน','ธันวาคม'
+      ];
+
+      const thaiMonth = thaiMonths[date.getMonth()];
+      const thaiYear = date.getFullYear() + 543; 
+      const thaiDate = `${date.getDate()} ${thaiMonth} ${thaiYear}`;
+      const thaiTime = date.toLocaleTimeString('th-TH', { hour12: false }); 
+      return `${thaiDate} เวลา ${thaiTime} น.`;
+    }
+    calendar.render();
+    $('.loadContianer').addClass('d-none');
+  }).getCalendar(key);
+}
+
+if (!window.calendar_languages) {
+  window.calendar_languages = {};
+}
+
+window.calendar_languages['th-TH'] = {
+  error_noview: 'ปฏิทิน: ไม่พบ View {0}',
+  error_dateformat: 'ปฏิทิน: รูปแบบวันที่ไม่ถูกต้อง {0}. ควรจะเป็นค่า "now" หรือ "yyyy-mm-dd"',
+  error_loadurl: 'ปฏิทิน: URL ของเหตุการณ์ไม่ได้ตั้งค่าไว้',
+  error_where: 'ปฏิทิน: เกิดข้อผิดพลาด {0}. สามารถเป็นได้แค่ค่า "ถัดไป" หรือ "ก่อนหน้า" หรือ "วันนี้" เท่านั้น',
+  error_timedevide: 'ปฏิทิน:  Time split parameter ควรนำไปหาร 60 ลงตัวเท่านั้น. อย่างเช่น 10, 15, 30',
+  
+  no_events_in_day: 'วันนี้ไม่มีเหตุการณ์ใดๆ',
+  
+  title_year: '{0}',
+  title_month: '{0} {1}',
+  title_week: 'สัปดาห์ที่ {0} ของปี {1}',
+  title_day: '{0} {1} {2}, {3}',
+  
+  week: 'สัปดาห์ที่ {0}',
+  all_day: 'ทุกวัน',
+  time: 'เวลา',
+  events: 'เหตุการณ์',
+  before_time: 'เริ่มก่อน Timeline',
+  after_time: 'เริ่มหลัง Timeline',
+  
+  m0: 'มกราคม',
+  m1: 'กุมภาพันธ์',
+  m2: 'มีนาคม',
+  m3: 'เมษายน',
+  m4: 'พฤษภาคม',
+  m5: 'มิถุนายน',
+  m6: 'กรกฎาคม',
+  m7: 'สิงหาคม',
+  m8: 'กันยายน',
+  m9: 'ตุลาคม',
+  m10: 'พฤศจิกายน',
+  m11: 'ธันวาคม',
+  
+  ms0: 'ม.ค.',
+  ms1: 'ก.พ.',
+  ms2: 'มี.ค.',
+  ms3: 'เม.ย.',
+  ms4: 'พ.ค.',
+  ms5: 'มิ.ย.',
+  ms6: 'ก.ค.',
+  ms7: 'ส.ค.',
+  ms8: 'ก.ย.',
+  ms9: 'ต.ค.',
+  ms10: 'พ.ย.',
+  ms11: 'ธ.ค.',
+  
+  d0: 'อาทิตย์',
+  d1: 'จันทร์',
+  d2: 'อังคาร',
+  d3: 'พุธ',
+  d4: 'พฤหัสบดี',
+  d5: 'ศุกร์',
+  d6: 'เสาร์',
+  
+  first_day: 1,
+  week_numbers_iso_8601: true,
+  holidays: {
+  }
+};
+
+const formatThaiDateTime = (date) => {
+  const thaiMonths = [
+      'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม','มิถุนายน',
+      'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน','ธันวาคม'
+  ];
+
+  const thaiMonth = thaiMonths[date.getMonth()];
+  const thaiYear = date.getFullYear() + 543; 
+  const thaiDate = `${date.getDate()} ${thaiMonth} ${thaiYear}`;
+  return `${thaiDate}`;
+}  
+const formatThaiDateTimeFull = (date) => {
+  const thaiMonths = [
+      'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม','มิถุนายน',
+      'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน','ธันวาคม'
+  ];
+
+  const thaiMonth = thaiMonths[date.getMonth()];
+  const thaiYear = date.getFullYear() + 543; 
+  const thaiDate = `${date.getDate()} ${thaiMonth} พ.ศ.${thaiYear}`;
+  return `${thaiDate}`;
+} 
+const formatTimeFull = () => {
+  const now = new Date();
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  // const seconds = now.getSeconds().toString().padStart(2, '0');
+  return `${hours}:${minutes} น.`;
+}
+
+const startClock = () => {
+  setInterval(() => {
+    $("#watermark_time").html(formatTimeFull());
+  }, 1000); 
+}
+const editActivity = (key) => {
+  $('#editCalendarModalBtn').click();
+
+  let dataArray = getDataAllCalendar.filter(r => r[0] == key);
+
+  if (dataArray.length > 0) {
+    $('#dataEditCalendarKey').val(dataArray[0][0]);
+    $('#dataEditCalendar1').val(dataArray[0][1]);
+    $('#dataEditCalendar2').val(dataArray[0][5]);
+    $('#dataEditCalendar3').val(dataArray[0][4]);
+    $('#dataEditCalendar4').val(dataArray[0][2]);
+    $('#dataEditCalendar5').val(dataArray[0][3]);
+    $('#dataEditCalendar6').val(dataArray[0][6]);
+  }
+}
+$('#confirmEditCalendarBtn').on('click', ()=>{
+  $("#loader").show();
+  var obj = {}
+    obj.key = $("#dataEditCalendarKey").val();
+    obj.data1 = $("#dataEditCalendar1").val();
+    obj.data2 = $("#dataEditCalendar2").val();
+    obj.data3 = $("#dataEditCalendar3").val();
+    obj.data4 = $("#dataEditCalendar4").val();
+    obj.data5 = $("#dataEditCalendar5").val();
+    obj.data6 = $("#dataEditCalendar6").val();
+  google.script.run.withSuccessHandler((res) => {
+    $('#xEditCalendarModalBtn').click();
+    toastAlert(1, '🌟 แก้ไขข้อมูลสำเร็จ');
+    insertAllCalendar(localStorage.getItem('publicKey'));
+    alert(res)
+  }).editActivityCalendar(obj);
+});
+const deleteActivity = (key) => {
+  $('#deleteModalBtn').click();
+  
+  const confirmBtn = document.getElementById("confirmDeleteModalBtn");
+  
+  confirmBtn.onclick = function() {
+    $("#loader").show();
+    google.script.run.withSuccessHandler((res) => {
+      $('#xDeleteModalBtn').click();
+      toastAlert(1, '🌟 ยกเลิกข้อมูลสำเร็จ');
+      insertAllCalendar(localStorage.getItem('publicKey'));
+    }).deleteActivity(key);
+  };
+}
+</script>  
+
+<script>
+let dataAllLeave;  
+
+const checkboxSelectLeave = (data) => { 
+  var checkboxContainer = document.getElementById("addLeaveNew11");
+  checkboxContainer.innerHTML = "";
+
+  const saveLeavingData = document.getElementById('saveLeavingData8'); 
+  const saveReportingData = document.getElementById('saveReportingData8'); 
+  const saveProjectingData = document.getElementById('saveProjectingData8'); 
+  const defaultOption = createOption('', 'โปรดเลือก', true);
+  saveLeavingData.appendChild(defaultOption.cloneNode(true));
+  saveReportingData.appendChild(defaultOption.cloneNode(true));
+  saveProjectingData.appendChild(defaultOption.cloneNode(true));
+
+  data.forEach(function(row) {
+    var optionForm = document.createElement('option');
+    optionForm.value = row[0] + ', ' + row[14]; 
+    optionForm.text = row[3] + row[4] + ' ' + row[5]; 
+    optionForm.setAttribute("data-section", row[7]);
+    optionForm.setAttribute("data-index", "1");
+    checkboxContainer.appendChild(optionForm);
+
+    const option = createOption(row[0] + ', ' + row[14], row[3] + row[4] + ' ' + row[5]);
+    saveLeavingData.appendChild(option.cloneNode(true));
+    saveReportingData.appendChild(option.cloneNode(true));
+    saveProjectingData.appendChild(option.cloneNode(true));
+  });
+  $("#addLeaveNew11").treeMultiselect({
+    allowBatchSelection: true,
+    searchable: true, 
+    enableSelectAll: true,
+    enableSelectAll: true,
+    searchParams: ['text', 'description', 'section'],
+    startCollapsed: true,
+    selectAllText: 'เลือกทั้งหมด', 
+    unselectAllText: 'ยกเลิกทั้งหมด',
+    single: true
+  });
+}
+$("#addLeaveNew11").on('change', function() {
+  $(".remove-selected").html('<i class="fa-solid fa-circle-xmark"></i>');
+});
+
+$('#addLeaveNew3, #addLeaveNew4').on('change', function() {
+  calculateDate();
+});
+$('#detailleaveShow3, #detailleaveShow4').on('change', function() {
+  calculateDateEdit();
+});
+
+const calculateDate = () => {
+  var startDate = new Date($("#addLeaveNew3").val());
+  var endDate = new Date($("#addLeaveNew4").val());
+
+  if (startDate <= endDate) {
+    var daysDifference = 0;
+    var currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+      var day = currentDate.getDay();
+      if (day !== 0 && day !== 6) { 
+        daysDifference++;
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    $("#addLeaveNew5").val(daysDifference);
+  } else {
+    toastAlert(0, '⚠️ เกิดข้อผิดพลาดในการเลือกวันที่');
+    $("#addLeaveNew3").val("");
+    $("#addLeaveNew4").val("");
+    $("#addLeaveNew5").val("");
+  }
+}
+const calculateDateEdit = () => {
+  var startDate = new Date($("#detailleaveShow3").val());
+  var endDate = new Date($("#detailleaveShow4").val());
+
+  if (startDate <= endDate) {
+    var daysDifference = 0;
+    var currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+      var day = currentDate.getDay();
+      if (day !== 0 && day !== 6) { 
+        daysDifference++;
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    $("#detailleaveShow5").val(daysDifference);
+  } else {
+    toastAlert(0, '⚠️ เกิดข้อผิดพลาดในการเลือกวันที่');
+    $("#detailleaveShow3").val("");
+    $("#detailleaveShow4").val("");
+    $("#detailleaveShow5").val("");
+  }
+}
+
+const addLeaveNew = () => {
+  if ($("input[name='addLeaveNew1']:checked").length === 0) {
+    toastAlert(0, '⚠️ โปรดเลือกหัวข้อการลา');
+    return;
+  } else if ($("#addLeaveNew2").val() === "") {
+    toastAlert(0, '⚠️ โปรดระบุสาเหตุการลา');
+    return;
+  } else if ($("#addLeaveNew3").val() === "" && $("#addLeaveNew4").val() === "") {
+    toastAlert(0, '⚠️ โปรดระบุวันที่ต้องการลา');
+    return;
+  }
+
+  $('#saveNewActivityBtn').click();  
+  var obj = {};
+  var selectedValues = $('#addLeaveNew11').val();
+  var pairs = selectedValues.map(function(valueSet) {
+    var separatedArray = valueSet.split(", ");
+    var value1 = separatedArray[0].trim();
+    var value2 = separatedArray[1].trim();
+    return { keyuser: value1, token: value2 };
+  });
+
+  var keyusers = [];
+    pairs.forEach(function(item) {
+      keyusers.push(item.keyuser);
+    });
+
+  var tokenuser = [];
+    pairs.forEach(function(item) {
+      tokenuser.push(item.token);
+    });
+
+  obj.data1 = $("input[name='addLeaveNew1']:checked").val();
+  obj.data2 = $("#addLeaveNew2").val();
+  obj.data3 = $("#addLeaveNew3").val();
+  obj.data4 = $("#addLeaveNew4").val();
+  obj.data5 = $("#addLeaveNew5").val();
+  obj.data6 = $("#addLeaveNew6").val();
+  obj.data7 = $("#addLeaveNew7").val();
+  obj.data8 = $("#addLeaveNew8").val();
+  obj.data9 = $("#addLeaveNew9").val();
+  obj.data10 = $("#addLeaveNew10").val();
+  obj.name = localStorage.getItem('name_1') + localStorage.getItem('name_2') + " " + localStorage.getItem('name_3'); 
+  obj.token = localStorage.getItem('token'); 
+  obj.position = localStorage.getItem('position'); 
+  obj.agency = localStorage.getItem('agency'); 
+  obj.publicKey = localStorage.getItem('publicKey'); 
+  obj.sig = localStorage.getItem('sig'); 
+  obj.keyusers = keyusers;
+  obj.tokenuser = tokenuser;
+
+  const confirmBtn = document.getElementById("confirmSaveNewActivityBtn");
+  
+  confirmBtn.onclick = function() {
+    $('#loader').show();
+    google.script.run.withSuccessHandler((res) => {
+      $('#xsaveNewActivityBtn').click();
+      $('#addNewLeave')[0].reset();
+      $('.unselect-all').click();
+      $('.section').addClass('collapsed');
+      changePageLeave(1);
+    }).gsLeaveNew(obj)
+  };
+} 
+
+google.script.run.withSuccessHandler((res)=>{
+  dataAllLeave = res;
+  loadDataLeave(res);
+  showRecentLeave(res);
+}).getDataLeaveAll(localStorage.getItem('publicKey'));
+
+const loadDataLeave = (data) => {
+  data= data.filter(function(row) {
+    return row[6] != 0;
+  });
+
+  let leaveHead1 = 0;
+  let leaveHead2 = 0;
+  let leaveHead3 = 0;
+  let leaveHead4 = 0;
+  let leaveHead5 = 0;
+
+  for (let i = 0; i < data.length; i++) {
+    const row = data[i];
+    if (row.length >= 2) {
+      const leaveType = row[1];
+      leaveHead5 += row[5] ? parseInt(row[5]) : 0;
+
+      if (leaveType === "ลากิจ") {
+        leaveHead1 += row[5] ? parseInt(row[5]) : 0;
+      } else if (leaveType === "ลาป่วย") {
+        leaveHead2 += row[5] ? parseInt(row[5]) : 0;
+      } else if (leaveType === "ลาคลอด") {
+        leaveHead4 += row[5] ? parseInt(row[5]) : 0;
+      } else if (leaveType === "ลาพักผ่อน") {
+        leaveHead3 += row[5] ? parseInt(row[5]) : 0;
+      }
+    }
+  }
+
+  $('#leaveDash1').text(leaveHead1);
+  $('#leaveDash2').text(leaveHead2);
+  $('#leaveDash3').text(leaveHead3);
+  $('#leaveDash4').text(leaveHead4);
+  $('#leaveDash5').text(leaveHead5);
+};
+
+const showRecentLeave = (data) => {
+  data.reverse();
+
+  const dataContainer = $('#myLeaveRecent')[0];
+  dataContainer.innerHTML = "";
+
+  if (data.length === 0) {
+    var noDataText = document.createElement("p");
+    noDataText.textContent = "ไม่พบข้อมูล!";
+    noDataText.className = "fw-medium text-danger fs-4 text-center p-5";
+    dataContainer.appendChild(noDataText);
+    return;
+  }
+
+  data.forEach(function(item) {
+    var container = document.createElement("div");
+    container.className = "staprecent";
+
+    var divText = document.createElement("div");
+    divText.className = "text-center";
+
+    var spanText1 = document.createElement("span");
+    spanText1.innerHTML = "หัวข้อการลา " + item[1] + " เนื่องจาก" + item[2];
+
+    var spanText2 = document.createElement("span");
+    spanText2.innerHTML = "ใน" + item[3] + " ถึง" + item[4] + " เป็นระยะเวลา " + item[5] + " วัน";
+
+    var stepContianer = document.createElement("div");
+    stepContianer.className = "form-header d-flex mb-4";
+
+    var stepSpanCancel = document.createElement("span");
+    stepSpanCancel.className = "stepIndicator text-danger";
+    stepSpanCancel.innerHTML = `<i class="fa-duotone fa-trash-can-xmark"></i> ยกเลิก`;
+    if (item[6] == 0) {
+      stepSpanCancel.classList.add("finish");
+    }
+
+    var stepSpan1 = document.createElement("span");
+    stepSpan1.className = "stepIndicator";
+    stepSpan1.innerHTML = `<i class="fa-duotone fa-envelope-open-text"></i> ยื่นใบลา`;
+    if (item[6] == 1) {
+      stepSpan1.classList.add("active");
+    } else if (item[6] >= 2) {
+      stepSpan1.classList.add("finish");
+    }
+
+    var stepSpan2 = document.createElement("span");
+    stepSpan2.className = "stepIndicator";
+    stepSpan2.innerHTML = `<i class="fa-duotone fa-file-magnifying-glass"></i> ตรวจสอบใบลา`;
+    if (item[6] > 2) {
+      stepSpan2.classList.add("finish");
+    }
+    if (item[6] == 2) {
+      stepSpan2.classList.add("active");
+    }
+
+    var stepSpan3 = document.createElement("span");
+    stepSpan3.className = "stepIndicator";
+    stepSpan3.innerHTML = `<i class="fa-duotone fa-newspaper"></i> เสนอข้อพิจารณา`;
+    if (item[6] > 3) {
+      stepSpan3.classList.add("finish");
+    }
+    if (item[6] == 3) {
+      stepSpan3.classList.add("active");
+    }
+
+    var stepSpan4 = document.createElement("span");
+    stepSpan4.className = "stepIndicator";
+    stepSpan4.innerHTML = `<i class="fa-duotone fa-radar"></i> อยู่ระหว่างพิจารณา`;
+    if (item[6] > 4) {
+      stepSpan4.classList.add("finish");
+    }
+    if (item[6] == 4) {
+      stepSpan4.classList.add("active");
+    }
+
+    var stepSpan5 = document.createElement("span");
+    stepSpan5.className = "stepIndicator";
+    stepSpan5.innerHTML = `<i class="fa-duotone fa-megaphone"></i> แจ้งผู้บริหาร`;
+    if (item[6] > 5) {
+      stepSpan5.classList.add("finish");
+    }
+    if (item[6] == 5) {
+      stepSpan5.classList.add("active");
+    }
+
+    var stepSpan6 = document.createElement("span");
+    stepSpan6.className = "stepIndicator";
+    stepSpan6.innerHTML = `<i class="fa-duotone fa-cloud-check"></i> สำเร็จ`;
+    if (item[6] == 6) {
+      stepSpan6.classList.add("finish");
+    }
+
+    stepContianer.appendChild(stepSpanCancel);
+    stepContianer.appendChild(stepSpan1);
+    stepContianer.appendChild(stepSpan2);
+    stepContianer.appendChild(stepSpan3);
+    stepContianer.appendChild(stepSpan4);
+    stepContianer.appendChild(stepSpan5);
+    stepContianer.appendChild(stepSpan6);
+
+    divText.appendChild(spanText1);
+    divText.appendChild(spanText2);
+
+    container.appendChild(divText);
+    container.appendChild(stepContianer);
+
+    dataContainer.appendChild(container);
+  });
+}
+
+const getDataLoadLeave = () => {
+  $('#loader').show();
+  $('#loadHistoryLeave').html('<i class="fa-duotone fa-spinner-scale fa-spin"></i>');
+  var key = localStorage.getItem('publicKey');
+
+  google.script.run.withSuccessHandler((data)=>{
+    if (data.length > 0) {
+      $('#addLeaveNew6').val(data[0][0]);
+      $('#addLeaveNew7').val(data[0][1]);
+      $('#addLeaveNew8').val(data[0][2]);
+      $('#addLeaveNew9').val(data[0][3]);
+      $('#addLeaveNew10').val(data[0][4]);
+    } else {
+      $('#addLeaveNew6').val("-");
+      $('#addLeaveNew7').val("-");
+      $('#addLeaveNew8').val("-");
+      $('#addLeaveNew9').val("-");
+      $('#addLeaveNew10').val("");
+    }
+    toastAlert(2, '📂 โหลดข้อมูลสำเร็จ');
+    $('#loadHistoryLeave').html('<i class="fa-duotone fa-spinner-scale"></i> ดึงข้อมูลการประวัติการลา');
+  }).getDataLoadLeave(key);
+}
+const seeHistoryLeave = (key) => {
+  $('#editLeaveBtn').click();
+  $('#dataEditLeaveKey').val(key);
+
+  const dataArray = dataAllLeave.filter(r => r[0] == key);
+
+  if (dataArray.length > 0) {
+    const dateStart = dataArray[0][3].split(' ');
+    const dateEnd = dataArray[0][4].split(' ');
+
+    const thaiDateS = dateStart[1] + " " + dateStart[2] + " " + dateStart[4];
+    const [dayS, monthNameS, yearS] = thaiDateS.split(' ');
+    const month_S = getMonthNumber(monthNameS);
+    const years_S = parseInt(yearS) - 543;
+    const formattedDate_S = `${years_S}-${month_S.toString().padStart(2, '0')}-${dayS.toString().padStart(2, '0')}`;
+
+    const thaiDateE = dateEnd[1] + " " + dateEnd[2] + " " + dateEnd[4];
+    const [dayE, monthNameE, yearE] = thaiDateE.split(' ');
+    const month_E = getMonthNumber(monthNameE);
+    const years_E = parseInt(yearE) - 543;
+    const formattedDate_E = `${years_E}-${month_E.toString().padStart(2, '0')}-${dayE.toString().padStart(2, '0')}`;
+
+    $('#detailleaveShow1').val(dataArray[0][1]);
+    $('#detailleaveShow2').val(dataArray[0][2]);
+    $('#detailleaveShow3').val(formattedDate_S);
+    $('#detailleaveShow4').val(formattedDate_E);
+    $('#detailleaveShow5').val(dataArray[0][5]);
+    $('#detailleaveShow6').val(dataArray[0][7]);
+  }
+  if (dataArray[0][6] == 1 || dataArray[0][6] == 2) {
+    $("#confirmEditLeaveBtn").removeAttr('disabled');
+    $("#cancelLeaveBtn").removeAttr('disabled');
+  } else if (dataArray[0][6] == 3 || dataArray[0][6] == 4) {
+    $("#confirmEditLeaveBtn").attr('disabled', 'disabled');
+    $("#cancelLeaveBtn").removeAttr('disabled');
+  } else if (dataArray[0][6] == 5 || dataArray[0][6] == 6) {
+    $("#confirmEditLeaveBtn").attr('disabled', 'disabled');
+    $("#cancelLeaveBtn").attr('disabled', 'disabled');
+  }
+  function getMonthNumber(monthName) {
+    const months = [
+          'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+          'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+        ];
+    return months.indexOf(monthName) + 1;
+  }
+}
+$('#confirmEditLeaveBtn').on('click', function() {
+  $('#saveNewActivityBtn').click();
+
+  $('#confirmSaveNewActivityBtn').on('click', function(){
+    $('#loader').show();
+    var obj = {
+      key: $('#dataEditLeaveKey').val(),
+      data1: $('#detailleaveShow1').val(),
+      data2: $('#detailleaveShow2').val(),
+      data3: $('#detailleaveShow3').val(),
+      data4: $('#detailleaveShow4').val(),
+      data5: $('#detailleaveShow5').val(),
+      data6: $('#detailleaveShow6').val()
+    }
+    google.script.run.withSuccessHandler((res) => {
+      toastAlert(1, '✨ แก้ไขข้อมูลสำเร็จ');
+      $('#xsaveNewActivityBtn').click();
+    }).editLeaveGs(obj);
+  });
+
+  $('#xsaveNewActivityBtn').on('click', function(){
+    $('#editLeaveBtn').click();    
+  });
+});
+$('#cancelLeaveBtn').on('click', function() {
+  $('#deleteModalBtn').click();
+
+  $('#confirmDeleteModalBtn').on('click', function(){
+    $('#loader').show();
+    var key = $('#dataEditLeaveKey').val();
+    
+    google.script.run.withSuccessHandler((res) => {
+      toastAlert(1, '✨ ข้อมูลสำเร็จ');
+      $('#xDeleteModalBtn').click();
+      insertAllHistoryLeave(res);
+    }).cancelLeaveGs(key);
+  });
+
+  $('#xDeleteModalBtn').on('click', function(){
+    $('#editLeaveBtn').click();    
+  });
+});
+
+$("input[name='selectHrmStatus']").on('change', function(){
+  getDataHrmLeave();
+});
+const getDataHrmLeave = () => {
+  var dataContainer = $("#hrmLeaveData")[0];
+  dataContainer.innerHTML = "";
+  $('#loader').show();
+  $('.loadContianer').removeClass('d-none');
+  var countStatus = $("input[name='selectHrmStatus']:checked").val();
+  google.script.run.withSuccessHandler((data) => {
+    toastAlert(1, '📋 โหลดข้อมูลสำเร็จ');
+    leaveHRMDataContainer(data);
+    $('.loadContianer').addClass('d-none');
+  }).getDataLeaveCheck(countStatus);
+}
+
+const leaveHRMDataContainer = (data) => {
+  var dataContainer = $("#hrmLeaveData")[0];
+  dataContainer.innerHTML = "";
+
+  if (data.length === 0) {
+    var noDataText = document.createElement("p");
+    noDataText.textContent = "ไม่พบข้อมูล!";
+    noDataText.className = "fw-medium text-danger fs-4 text-center p-5";
+    dataContainer.appendChild(noDataText);
+    return;
+  }
+
+  var startIndex = (currentPage - 1) * itemsPerPage;
+  var endIndex = startIndex + itemsPerPage;
+  var displayedItems = data.slice(startIndex, endIndex);
+
+  displayedItems.forEach(function(item) {
+    var containerRow = document.createElement("div");
+    containerRow.className = "container-fluid";
+
+    var rowContianer = document.createElement("div");
+    rowContianer.className = "row";
+
+    var colContianer1 = document.createElement("div");
+    colContianer1.className = "col-md-9";
+
+    var colContianer2 = document.createElement("div");
+    colContianer2.className = "col-md-3 d-flex flex-column align-items-center justify-content-center";
+
+    var titleRow1 = document.createElement("div");
+    titleRow1.className = "fs-5 mt-1 mb-3 ";
+    titleRow1.innerHTML = "<span class='fw-medium' style='color: var(--dark);'>รหัสคำร้อง </span>" + item[0];
+    titleRow1.style.color = "var(--orange)";
+
+    var titleRow2 = document.createElement("div");
+    titleRow2.className = "mb-2";
+
+    var spanTitleRow2 = document.createElement("span");
+    spanTitleRow2.className = "fw-medium fs-6";
+    spanTitleRow2.innerHTML = "<i class='fa-duotone fa-user-tie'></i> ผู้ขออนุญาตลา : ";
+
+    var spanRow2 = document.createElement("span");
+    spanRow2.className = "fs-6";
+    spanRow2.textContent = item[1];
+    spanRow2.style.color = "var(--box3)";
+
+    var titleRow3 = document.createElement("div");
+    titleRow3.className = "row mb-2";
+
+    var titleRow3Col1 = document.createElement("div");
+    titleRow3Col1.className = "col-auto";
+
+    var spanTitleRow3_1 = document.createElement("span");
+    spanTitleRow3_1.className = "fw-medium fs-6";
+    spanTitleRow3_1.innerHTML = "<i class='fa-duotone fa-crosshairs'></i> ตำแหน่ง : ";
+
+    var spanRow3_1 = document.createElement("span");
+    spanRow3_1.className = "fs-6 ";
+    spanRow3_1.textContent = item[2];
+
+    var titleRow3Col2 = document.createElement("div");
+    titleRow3Col2.className = "col-auto";
+
+    var spanTitleRow3_2 = document.createElement("span");
+    spanTitleRow3_2.className = "fw-medium fs-6";
+    spanTitleRow3_2.innerHTML = "<i class='fa-duotone fa-business-time'></i> สังกัด : ";
+
+    var spanRow3_2 = document.createElement("span");
+    spanRow3_2.className = "fs-6";
+    spanRow3_2.textContent = item[3];
+
+    var titleRow4 = document.createElement("div");
+    titleRow4.className = "mb-2";
+
+    var spanTitleRow4 = document.createElement("span");
+    spanTitleRow4.className = "fw-medium fs-6";
+    spanTitleRow4.innerHTML = "<i class='fa-duotone fa-disease'></i> การลา : ";
+
+    var spanRow4 = document.createElement("span");
+    spanRow4.className = "fs-6";
+    spanRow4.textContent = item[4] + ' เนื่องจาก' + item[5];
+
+    var titleRow5 = document.createElement("div");
+    titleRow5.className = "row mb-2";
+
+    var titleRow5Col1 = document.createElement("div");
+    titleRow5Col1.className = "col-auto";
+
+    var spanTitleRow5_1 = document.createElement("span");
+    spanTitleRow5_1.className = "fs-6 fw-medium";
+    spanTitleRow5_1.innerHTML = "<i class='fa-duotone fa-calendar-xmark'></i> ใน : ";
+
+    var spanRow5_1 = document.createElement("span");
+    spanRow5_1.className = " fs-6 ";
+    spanRow5_1.textContent = item[6] + ' ถึง' + item[7];
+
+    var titleRow5Col2 = document.createElement("div");
+    titleRow5Col2.className = "col-auto";
+
+    var spanTitleRow5_2 = document.createElement("span");
+    spanTitleRow5_2.className = "fs-6 fw-medium";
+    spanTitleRow5_2.innerHTML = "<i class='fa-duotone fa-clock-rotate-left'></i> เป็นเวลา : ";
+
+    var spanRow5_2 = document.createElement("span");
+    spanRow5_2.className = " fs-6 ";
+    spanRow5_2.textContent = item[8] + ' วัน'; 
+
+    var titleRow6 = document.createElement("div");
+    titleRow6.className = "mb-2";
+
+    var spanTitleRow6 = document.createElement("span");
+    spanTitleRow6.className = "fw-medium fs-6";
+    spanTitleRow6.innerHTML = "<i class='fa-duotone fa-house-user'></i> สามารถติดต่อได้ที่ : ";
+
+    var spanRow6 = document.createElement("span");
+    spanRow6.className = "fs-6";
+    spanRow6.textContent = item[9];
+    spanRow6.style.color = "var(--box2)";
+
+    var titleRow7 = document.createElement("div");
+    titleRow7.className = "mb-2";
+
+    var spanTitleRow7 = document.createElement("span");
+    spanTitleRow7.className = "fw-medium fs-6";
+    spanTitleRow7.innerHTML = "<i class='fa-duotone fa-comment-dots'></i> สถานะ :  ";
+
+    var spanRow7 = document.createElement("span");
+    spanRow7.className = "fs-6";
+    var statusMap = {
+      0: `<span style="color: var(--box4);"><i class="fa-duotone fa-trash-can-xmark fa-xl"></i> ยกเลิก </span>`,
+      1: `<span style="color: var(--box2);"><i class="fa-duotone fa-envelope-open-text fa-xl"></i> ยื่นใบลาสำเร็จ</span>`,
+      2: `<span style="color: var(--box3);"><i class="fa-duotone fa-file-magnifying-glass fa-xl"></i> อยู่ระหว่างตรวจสอบใบ</span>`,
+      3: `<span style="color: var(--box1);"><i class="fa-duotone fa-newspaper fa-xl"></i> อยู่ระหว่างตรวจสอบการลาโดยฝ่ายบุคคล</span>`,
+      4: `<span style="color: var(--yellow);"><i class="fa-duotone fa-radar fa-xl"></i> อยู่ระหว่างพิจารณาจากหัวหน้าฝ่าย/กอง</span>`,
+      5: `<span style="color: var(--orange);"><i class="fa-duotone fa-megaphone fa-xl"></i> พิจารณาโดยผู้บริหาร</span>`,
+      6: `<span style="color: var(--box2);"><i class="fa-duotone fa-cloud-check fa-xl"></i> เสร็จสิ้น</span>`,
+    };
+    const status = statusMap[item[10]] || "";
+    spanRow7.innerHTML = status;
+
+    var imgRow8 = document.createElement("img");
+    var imgMap = {
+      "ลาป่วย": `https://cdn.jsdelivr.net/gh/JacketJK/image/fiverr.png`,
+      "ลากิจ": `https://cdn.jsdelivr.net/gh/JacketJK/image/suitcase.png`,
+      "ลาพักผ่อน": `https://cdn.jsdelivr.net/gh/JacketJK/image/beach-chair.png`,
+      "ลาคลอด": `https://cdn.jsdelivr.net/gh/JacketJK/image/incubator.png`
+    };
+    const img = imgMap[item[4]] || "";
+    imgRow8.src = img;
+    imgRow8.style.width = '50%';
+
+    var btnRow9 = document.createElement("button");
+    btnRow9.className = "btn btn-warning btn-sm rounded-pill mt-3";
+    btnRow9.innerHTML = "<i class='fa-duotone fa-user-pen'></i> ตรวจสอบการลา";
+    
+    btnRow9.onclick = function() {
+      senderHrmLeave(item[0])
+    };
+
+    var hr = document.createElement("hr");
+    hr.className = "mt-3 md-1 opacity-25";
+
+    titleRow2.appendChild(spanTitleRow2);
+    titleRow2.appendChild(spanRow2);
+
+    titleRow3Col1.appendChild(spanTitleRow3_1);
+    titleRow3Col1.appendChild(spanRow3_1);
+    titleRow3Col2.appendChild(spanTitleRow3_2);
+    titleRow3Col2.appendChild(spanRow3_2);
+    titleRow3.appendChild(titleRow3Col1);
+    titleRow3.appendChild(titleRow3Col2);
+
+    titleRow4.appendChild(spanTitleRow4);
+    titleRow4.appendChild(spanRow4);
+
+    titleRow5Col1.appendChild(spanTitleRow5_1);
+    titleRow5Col1.appendChild(spanRow5_1);
+    titleRow5Col2.appendChild(spanTitleRow5_2);
+    titleRow5Col2.appendChild(spanRow5_2);
+    titleRow5.appendChild(titleRow5Col1);
+    titleRow5.appendChild(titleRow5Col2);
+
+    titleRow6.appendChild(spanTitleRow6);
+    titleRow6.appendChild(spanRow6);
+
+    titleRow7.appendChild(spanTitleRow7);
+    titleRow7.appendChild(spanRow7);
+
+    colContianer1.appendChild(titleRow1);
+    colContianer1.appendChild(titleRow2);
+    colContianer1.appendChild(titleRow3);
+    colContianer1.appendChild(titleRow4);
+    colContianer1.appendChild(titleRow5);
+    colContianer1.appendChild(titleRow6);
+    colContianer1.appendChild(titleRow7);
+    colContianer2.appendChild(imgRow8);
+    colContianer2.appendChild(btnRow9);
+
+    rowContianer.appendChild(colContianer1);
+    rowContianer.appendChild(colContianer2);
+
+    containerRow.appendChild(rowContianer);
+
+    dataContainer.appendChild(containerRow);
+    dataContainer.appendChild(hr);
+  });
+
+  var paginationContainer = document.createElement("div");
+  paginationContainer.className = "pagination-container";
+
+  var totalPages = Math.ceil(data.length / itemsPerPage);
+
+  var maxVisibleButtons = 5; 
+  var startPage = 1;
+  var endPage = totalPages;
+
+  if (totalPages > maxVisibleButtons) {
+    var middleButton = Math.floor(maxVisibleButtons / 2);
+    var farthestStart = currentPage - middleButton;
+    var farthestEnd = currentPage + middleButton - 1;
+
+    if (farthestStart > 1) {
+      startPage = farthestStart;
+      if (farthestEnd < totalPages) {
+        endPage = farthestEnd;
+      } else {
+        endPage = totalPages;
+        startPage = totalPages - maxVisibleButtons + 1;
+      }
+    } else {
+      startPage = 1;
+      endPage = maxVisibleButtons;
+    }
+  }
+
+  if (currentPage > 1) {
+    var firstButton = document.createElement("button");
+    firstButton.textContent = "1";
+    firstButton.className = "pagination-button fs-5";
+    firstButton.addEventListener("click", function () {
+      currentPage = 1;
+      leaveHRMDataContainer(data);
+    });
+    paginationContainer.appendChild(firstButton);
+
+    var ellipsisButton1 = document.createElement("span");
+    ellipsisButton1.textContent = "...";
+    paginationContainer.appendChild(ellipsisButton1);
+  }
+
+  for (var i = startPage; i <= endPage; i++) {
+    var pageButton = document.createElement("button");
+    pageButton.textContent = i;
+    pageButton.className = "pagination-button fs-5";
+    if (i === currentPage) {
+      pageButton.disabled = true;
+      pageButton.classList.add("active");
+    } else {
+      pageButton.addEventListener("click", (function (page) {
+        return function () {
+          currentPage = page;
+          leaveHRMDataContainer(data);
+        };
+      })(i));
+    }
+    paginationContainer.appendChild(pageButton);
+  }
+
+  if (currentPage < totalPages) {
+    var ellipsisButton2 = document.createElement("span");
+    ellipsisButton2.textContent = "...";
+    paginationContainer.appendChild(ellipsisButton2);
+
+    var lastButton = document.createElement("button");
+    lastButton.textContent = totalPages;
+    lastButton.className = "pagination-button fs-5";
+    lastButton.addEventListener("click", function () {
+      currentPage = totalPages;
+      leaveHRMDataContainer(data);
+    });
+    paginationContainer.appendChild(lastButton);
+  }
+
+  dataContainer.appendChild(paginationContainer);
+}
+
+const senderHrmLeave = (key) => {
+  $('#loader').show();
+
+  google.script.run.withSuccessHandler((data) => {
+    toastAlert(2, '📋 โหลดข้อมูล');
+    changePageLeave(7);
+    insertTableLeaveDetail(data);
+    showDetailDataLeave(data[0]);
+    var codeKey = data[1].filter(function(row) {
+      return row[2] === localStorage.getItem('publicKey');
+    });
+    if (codeKey.length !== 0) {
+      openDocLeave(codeKey[0][0]);
+      $('#saveLeavingDataKey').val(codeKey[0][0]);
+    } else {
+      toastAlert(0, '⚠️ ไม่พบข้อมูลของท่าน');
+    }
+  }).dataLeaveInprogress(key);
+}
+
+const openDocLeave = (key) => {
+  google.script.run.withSuccessHandler(()=>{
+    
+  }).openDocLeave(key);
+}
+
+const showDetailDataLeave = (data) => {
+  $('#retureLeavetext').text('บันทึกงานตีกลับ ใบลา \n' + data[0][0]);
+  $('#closeLeavetext').text('ยืนยันการปิดงานหนังสือใบลา \n' + data[0][0]);
+  $('#saveLeaveDetailBtn').toggle(data[0][15] == 1 || data[0][15] == 2 || data[0][15] == 3 || data[0][15] == 4 || data[0][15] == 5);
+  $('#backLeaveDetailBtn').toggle(data[0][15] == 1 || data[0][15] == 2 || data[0][15] == 3);
+  $('#closeLeaveDetailBtn').toggle(data[0][15] == 5);
+  $('#btnSaveLeaving1').toggle(data[0][15] == 1 || data[0][15] == 2);
+  $('#btnSaveLeaving2').toggle(data[0][15] == 3);
+  $('#btnSaveLeaving3').toggle(data[0][15] == 4);
+  $('#btnSaveLeaving4').toggle(data[0][15] == 5);
+
+  $('#leaveDetailKey').text(data[0][0]);
+  $('#leaveDetail1').text(data[0][1]);
+  $('#leaveDetail2').text(data[0][2]);
+  $('#leaveDetail3').text(data[0][3]);
+  $('#leaveDetail4').text(data[0][4]);
+  $('#leaveDetail5').text(data[0][5]);
+  $('#leaveDetail6').text(data[0][6]);
+  $('#leaveDetail7').text(`ใน${data[0][7]} ถึง${data[0][8]}`);
+  $('#leaveDetail8').text(data[0][9] + ' วัน');
+  $('#leaveDetail9').text(data[0][10]);
+  $('#leaveDetail10').text(data[0][11]);
+  $('#leaveDetail11').text(data[0][12]);
+  $('#leaveDetail12').text(data[0][13]  + ' วัน');
+  $('#leaveDetail13').text(data[0][14]);
+  var statusMap = {
+    0: `<span style="color: var(--box4);"><i class="fa-duotone fa-trash-can-xmark fa-xl"></i> ยกเลิก </span>`,
+    1: `<span style="color: var(--box2);"><i class="fa-duotone fa-envelope-open-text fa-xl"></i> ยื่นใบลาสำเร็จ</span>`,
+    2: `<span style="color: var(--box3);"><i class="fa-duotone fa-file-magnifying-glass fa-xl"></i> อยู่ระหว่างตรวจสอบใบ</span>`,
+    3: `<span style="color: var(--box1);"><i class="fa-duotone fa-newspaper fa-xl"></i> อยู่ระหว่างตรวจสอบการลาโดยฝ่ายบุคคล</span>`,
+    4: `<span style="color: var(--yellow);"><i class="fa-duotone fa-radar fa-xl"></i> อยู่ระหว่างพิจารณาจากหัวหน้าฝ่าย/กอง</span>`,
+    5: `<span style="color: var(--orange);"><i class="fa-duotone fa-megaphone fa-xl"></i> พิจารณาโดยผู้บริหาร</span>`,
+    6: `<span style="color: var(--box2);"><i class="fa-duotone fa-cloud-check fa-xl"></i> เสร็จสิ้น</span>`,
+  };
+  const status = statusMap[data[0][15]] || "";
+  $('#leaveDetail14').html(status);
+
+  if (data[0][15] == 1 || data[0][15] == 2) {
+    $('#saveLeavingData3').val('ด้วย' +  data[0][2] + ' ตำแหน่ง ' + data[0][3] + ' ขออนุญาต' + data[0][5] + ' ตั้งแต่' + data[0][7] + ' ถึง' + data[0][8] + ' มีกำหนด ' + data[0][9] + ' วัน');
+  } else if (data[0][15] == 3) {
+    $('#saveLeavingData3').val('ด้วยบุคคลดังกล่าวขออนุญาต' + data[0][5] + ' ตั้งแต่' + data[0][7] + ' ถึง' + data[0][8] + ' มีกำหนด ' + data[0][9] + ' วัน');
+  }
+}
+
+const saveLeavingData = () => {
+  $('#loader').show();
+  if ($('#saveLeavingData1').val() === "") {
+    toastAlert(0, '⚠️ โปรดเลือกสถานะตอบรับ');
+    return;
+  } else if ($('#saveLeavingData8').val() === "") {
+    toastAlert(0, '⚠️ โปรดเลือกผู้รับหนังสือ');
+    return;
+  }
+  var selectedValues = $('#saveLeavingData8').val();
+  var separatedArray = selectedValues.split(", ");
+  var value1 = separatedArray[0].trim();
+  var value2 = separatedArray[1].trim();
+
+  var obj = {
+    key : $('#saveLeavingDataKey').val(),
+    response : $('#saveLeavingData1').val(),
+    reWord : $('#saveLeavingData2').val(),
+    jobWord : $('#saveLeavingData3').val(),
+    replace : $('#saveLeavingData6').val(),
+    keyuser : value1,
+    tokenuser : value2,
+    status : "3",
+  }
+
+  google.script.run.withSuccessHandler((response)=> {
+    toastAlert(1, '📂 บันทึกตอบรับสำเร็จ');
+    $('#xSaveLeavingModal').click();
+    $("#leaveDetail14").html(`<span style="color: var(--box1);"><i class="fa-duotone fa-newspaper fa-xl"></i> อยู่ระหว่างตรวจสอบการลาโดยฝ่ายบุคคล</span>`); 
+  }).saveLeavingData(obj);
+}
+
+const saveLeavingHrm = () => {
+  $('#loader').show();
+  if ($('#saveLeavingData1').val() === "") {
+    toastAlert(0, '⚠️ โปรดเลือกสถานะตอบรับ');
+    return;
+  } else if ($('#saveLeavingData8').val() === "") {
+    toastAlert(0, '⚠️ โปรดเลือกผู้รับหนังสือ');
+    return;
+  }
+  var selectedValues = $('#saveLeavingData8').val();
+  var separatedArray = selectedValues.split(", ");
+  var value1 = separatedArray[0].trim();
+  var value2 = separatedArray[1].trim();
+
+  var obj = {
+    key : $('#saveLeavingDataKey').val(),
+    response : $('#saveLeavingData1').val(),
+    reWord : $('#saveLeavingData2').val(),
+    jobWord : $('#saveLeavingData3').val(),
+    replace : $('#saveLeavingData6').val(),
+    keyuser : value1,
+    tokenuser : value2,
+    status : "4",
+  }
+
+  google.script.run.withSuccessHandler((response)=> {
+    toastAlert(1, '📂 บันทึกตอบรับสำเร็จ');
+    $('#xSaveLeavingModal').click();
+    $("#leaveDetail14").html(`<span style="color: var(--yellow);"><i class="fa-duotone fa-radar fa-xl"></i> อยู่ระหว่างพิจารณาจากหัวหน้าฝ่าย/กอง</span>`); 
+  }).saveLeavingData(obj);
+}
+const saveLeavingHeader = () => {
+  $('#loader').show();
+  if ($('#saveLeavingData1').val() === "") {
+    toastAlert(0, '⚠️ โปรดเลือกสถานะตอบรับ');
+    return;
+  } else if ($('#saveLeavingData8').val() === "") {
+    toastAlert(0, '⚠️ โปรดเลือกผู้รับหนังสือ');
+    return;
+  }
+  var selectedValues = $('#saveLeavingData8').val();
+  var separatedArray = selectedValues.split(", ");
+  var value1 = separatedArray[0].trim();
+  var value2 = separatedArray[1].trim();
+
+  var obj = {
+    key : $('#saveLeavingDataKey').val(),
+    response : $('#saveLeavingData1').val(),
+    reWord : $('#saveLeavingData2').val(),
+    jobWord : $('#saveLeavingData3').val(),
+    replace : $('#saveLeavingData6').val(),
+    keyuser : value1,
+    tokenuser : value2,
+    status : "5",
+  }
+
+  google.script.run.withSuccessHandler((response)=> {
+    toastAlert(1, '📂 บันทึกตอบรับสำเร็จ');
+    $('#xSaveLeavingModal').click();
+    $("#leaveDetail14").html(`<span style="color: var(--orange);"><i class="fa-duotone fa-megaphone fa-xl"></i> พิจารณาโดยผู้บริหาร</span>`); 
+  }).saveLeavingData(obj);
+}
+
+const saveLeavingAdmint = () => {
+  $('#loader').show();
+  if ($('#saveLeavingData1').val() === "") {
+    toastAlert(0, '⚠️ โปรดเลือกสถานะตอบรับ');
+    return;
+  }
+
+  var obj = {
+    key : $('#saveLeavingDataKey').val(),
+    response : $('#saveLeavingData1').val(),
+    reWord : $('#saveLeavingData2').val(),
+    jobWord : $('#saveLeavingData3').val(),
+    replace : $('#saveLeavingData6').val(),
+    status : "5",
+  }
+
+  google.script.run.withSuccessHandler((response)=> {
+    toastAlert(1, '📂 บันทึกตอบรับสำเร็จ');
+    $('#xSaveLeavingModal').click();
+    $("#leaveDetail14").html(`<span style="color: var(--orange);"><i class="fa-duotone fa-megaphone fa-xl"></i> พิจารณาโดยผู้บริหาร</span>`); 
+  }).saveLeavingDataFinal(obj);
+}
+const returnLeave = () => {
+  $('#loader').show();
+  var key = $('#saveLeavingDataKey').val();
+  var text = $('#retureLeaveInput').val();
+
+  google.script.run.withSuccessHandler(()=> {
+    toastAlert(2, '📂 บันทึกการตีกลับสำเร็จ');
+    changePageLeave(6);
+    $('#xReturnLeaveModal').click();
+  }).returnLeave(key, text);
+}
+
+const closeLeaveDoc = () => {
+  $('#loader').show();
+  var key = $('#leaveDetailKey').text();
+
+  google.script.run.withSuccessHandler((key) => {
+    google.script.run.withSuccessHandler((res)=>{
+      dataAllLeave = res;
+      loadDataLeave(res);
+      showRecentLeave(res);
+      changePageLeave(1);
+      $('#xCloseLeaveModal').click();
+      toastAlert(1, '🎉 ปิดงานสำเร็จ');
+    }).getDataLeaveAll(key);
+  }).closeLeaveDoc(key);
+}
+const getDataHeaderLeave = () => {
+  var dataContainer = $("#headDapartLeaveData")[0];
+  dataContainer.innerHTML = "";
+  $('#loader').show();
+  $('.loadContianer').removeClass('d-none');
+
+  google.script.run.withSuccessHandler((data) => {
+    toastAlert(1, '📋 โหลดข้อมูลสำเร็จ');
+    leaveHeaddDataContainer(data);
+    $('.loadContianer').addClass('d-none');
+  }).getDataLeaveCheck(4);
+}
+const leaveHeaddDataContainer = (data) => {
+  var dataContainer = $("#headDapartLeaveData")[0];
+  dataContainer.innerHTML = "";
+
+  if (data.length === 0) {
+    var noDataText = document.createElement("p");
+    noDataText.textContent = "ไม่พบข้อมูล!";
+    noDataText.className = "fw-medium text-danger fs-4 text-center p-5";
+    dataContainer.appendChild(noDataText);
+    return;
+  }
+
+  var startIndex = (currentPage - 1) * itemsPerPage;
+  var endIndex = startIndex + itemsPerPage;
+  var displayedItems = data.slice(startIndex, endIndex);
+
+  displayedItems.forEach(function(item) {
+    var containerRow = document.createElement("div");
+    containerRow.className = "container-fluid";
+
+    var rowContianer = document.createElement("div");
+    rowContianer.className = "row";
+
+    var colContianer1 = document.createElement("div");
+    colContianer1.className = "col-md-9";
+
+    var colContianer2 = document.createElement("div");
+    colContianer2.className = "col-md-3 d-flex flex-column align-items-center justify-content-center";
+
+    var titleRow1 = document.createElement("div");
+    titleRow1.className = "fs-5 mt-1 mb-3 ";
+    titleRow1.innerHTML = "<span class='fw-medium' style='color: var(--dark);'>รหัสคำร้อง </span>" + item[0];
+    titleRow1.style.color = "var(--box2)";
+
+    var titleRow2 = document.createElement("div");
+    titleRow2.className = "mb-2";
+
+    var spanTitleRow2 = document.createElement("span");
+    spanTitleRow2.className = "fw-medium fs-6";
+    spanTitleRow2.innerHTML = "<i class='fa-duotone fa-user-tie'></i> ผู้ขออนุญาตลา : ";
+
+    var spanRow2 = document.createElement("span");
+    spanRow2.className = "fs-6";
+    spanRow2.textContent = item[1];
+    spanRow2.style.color = "var(--box1)";
+
+    var titleRow3 = document.createElement("div");
+    titleRow3.className = "row mb-2";
+
+    var titleRow3Col1 = document.createElement("div");
+    titleRow3Col1.className = "col-auto";
+
+    var spanTitleRow3_1 = document.createElement("span");
+    spanTitleRow3_1.className = "fw-medium fs-6";
+    spanTitleRow3_1.innerHTML = "<i class='fa-duotone fa-crosshairs'></i> ตำแหน่ง : ";
+
+    var spanRow3_1 = document.createElement("span");
+    spanRow3_1.className = "fs-6 ";
+    spanRow3_1.textContent = item[2];
+
+    var titleRow3Col2 = document.createElement("div");
+    titleRow3Col2.className = "col-auto";
+
+    var spanTitleRow3_2 = document.createElement("span");
+    spanTitleRow3_2.className = "fw-medium fs-6";
+    spanTitleRow3_2.innerHTML = "<i class='fa-duotone fa-business-time'></i> สังกัด : ";
+
+    var spanRow3_2 = document.createElement("span");
+    spanRow3_2.className = "fs-6";
+    spanRow3_2.textContent = item[3];
+
+    var titleRow4 = document.createElement("div");
+    titleRow4.className = "mb-2";
+
+    var spanTitleRow4 = document.createElement("span");
+    spanTitleRow4.className = "fw-medium fs-6";
+    spanTitleRow4.innerHTML = "<i class='fa-duotone fa-disease'></i> การลา : ";
+
+    var spanRow4 = document.createElement("span");
+    spanRow4.className = "fs-6";
+    spanRow4.textContent = item[4] + ' เนื่องจาก' + item[5];
+
+    var titleRow5 = document.createElement("div");
+    titleRow5.className = "row mb-2";
+
+    var titleRow5Col1 = document.createElement("div");
+    titleRow5Col1.className = "col-auto";
+
+    var spanTitleRow5_1 = document.createElement("span");
+    spanTitleRow5_1.className = "fs-6 fw-medium";
+    spanTitleRow5_1.innerHTML = "<i class='fa-duotone fa-calendar-xmark'></i> ใน : ";
+
+    var spanRow5_1 = document.createElement("span");
+    spanRow5_1.className = " fs-6 ";
+    spanRow5_1.textContent = item[6] + ' ถึง' + item[7];
+
+    var titleRow5Col2 = document.createElement("div");
+    titleRow5Col2.className = "col-auto";
+
+    var spanTitleRow5_2 = document.createElement("span");
+    spanTitleRow5_2.className = "fs-6 fw-medium";
+    spanTitleRow5_2.innerHTML = "<i class='fa-duotone fa-clock-rotate-left'></i> เป็นเวลา : ";
+
+    var spanRow5_2 = document.createElement("span");
+    spanRow5_2.className = " fs-6 ";
+    spanRow5_2.textContent = item[8] + ' วัน'; 
+
+    var titleRow6 = document.createElement("div");
+    titleRow6.className = "mb-2";
+
+    var spanTitleRow6 = document.createElement("span");
+    spanTitleRow6.className = "fw-medium fs-6";
+    spanTitleRow6.innerHTML = "<i class='fa-duotone fa-house-user'></i> สามารถติดต่อได้ที่ : ";
+
+    var spanRow6 = document.createElement("span");
+    spanRow6.className = "fs-6";
+    spanRow6.textContent = item[9];
+    spanRow6.style.color = "var(--orange)";
+
+    var imgRow8 = document.createElement("img");
+    var imageMap = {
+      "ลาป่วย": 'fiverr.png',
+      "ลากิจ": 'suitcase.png',
+      "ลาพักผ่อน": 'beach-chair.png',
+      "ลาคลอด": 'incubator.png'
+    };
+    const image = imageMap[item[4]] || "";
+    imgRow8.src = "https://cdn.jsdelivr.net/gh/JacketJK/image/" + image;
+    imgRow8.style.width = '50%';
+
+    var btnRow9 = document.createElement("button");
+    btnRow9.className = "btn btn-green btn-sm rounded-pill mt-3";
+    btnRow9.innerHTML = "<i class='fa-duotone fa-flag-pennant'></i> พิจารณาการลา";
+
+    btnRow9.onclick = function() {
+      senderHrmLeave(item[0])
+    };
+
+    var titleRow7 = document.createElement("div");
+    titleRow7.className = "mb-2";
+
+    var spanTitleRow7 = document.createElement("span");
+    spanTitleRow7.className = "fw-medium fs-6";
+    spanTitleRow7.innerHTML = "<i class='fa-duotone fa-comment-dots'></i> สถานะ : <span style='color: var(--yellow);'><i class='fa-duotone fa-radar fa-xl'></i> อยู่ระหว่างพิจารณาจากหัวหน้าฝ่าย/กอง</span>";
+
+    var hr = document.createElement("hr");
+    hr.className = "mt-3 md-1 opacity-25";
+
+    titleRow2.appendChild(spanTitleRow2);
+    titleRow2.appendChild(spanRow2);
+
+    titleRow3Col1.appendChild(spanTitleRow3_1);
+    titleRow3Col1.appendChild(spanRow3_1);
+    titleRow3Col2.appendChild(spanTitleRow3_2);
+    titleRow3Col2.appendChild(spanRow3_2);
+    titleRow3.appendChild(titleRow3Col1);
+    titleRow3.appendChild(titleRow3Col2);
+
+    titleRow4.appendChild(spanTitleRow4);
+    titleRow4.appendChild(spanRow4);
+
+    titleRow5Col1.appendChild(spanTitleRow5_1);
+    titleRow5Col1.appendChild(spanRow5_1);
+    titleRow5Col2.appendChild(spanTitleRow5_2);
+    titleRow5Col2.appendChild(spanRow5_2);
+    titleRow5.appendChild(titleRow5Col1);
+    titleRow5.appendChild(titleRow5Col2);
+
+    titleRow6.appendChild(spanTitleRow6);
+    titleRow6.appendChild(spanRow6);
+
+    titleRow7.appendChild(spanTitleRow7);
+
+    colContianer1.appendChild(titleRow1);
+    colContianer1.appendChild(titleRow2);
+    colContianer1.appendChild(titleRow3);
+    colContianer1.appendChild(titleRow4);
+    colContianer1.appendChild(titleRow5);
+    colContianer1.appendChild(titleRow6);
+    colContianer1.appendChild(titleRow7);
+    colContianer2.appendChild(imgRow8);
+    colContianer2.appendChild(btnRow9);
+
+    rowContianer.appendChild(colContianer1);
+    rowContianer.appendChild(colContianer2);
+
+    containerRow.appendChild(rowContianer);
+
+    dataContainer.appendChild(containerRow);
+    dataContainer.appendChild(hr);
+  });
+
+  var paginationContainer = document.createElement("div");
+  paginationContainer.className = "pagination-container";
+
+  var totalPages = Math.ceil(data.length / itemsPerPage);
+
+  var maxVisibleButtons = 5; 
+  var startPage = 1;
+  var endPage = totalPages;
+
+  if (totalPages > maxVisibleButtons) {
+    var middleButton = Math.floor(maxVisibleButtons / 2);
+    var farthestStart = currentPage - middleButton;
+    var farthestEnd = currentPage + middleButton - 1;
+
+    if (farthestStart > 1) {
+      startPage = farthestStart;
+      if (farthestEnd < totalPages) {
+        endPage = farthestEnd;
+      } else {
+        endPage = totalPages;
+        startPage = totalPages - maxVisibleButtons + 1;
+      }
+    } else {
+      startPage = 1;
+      endPage = maxVisibleButtons;
+    }
+  }
+
+  if (currentPage > 1) {
+    var firstButton = document.createElement("button");
+    firstButton.textContent = "1";
+    firstButton.className = "pagination-button fs-5";
+    firstButton.addEventListener("click", function () {
+      currentPage = 1;
+      leaveHeaddDataContainer(data);
+    });
+    paginationContainer.appendChild(firstButton);
+
+    var ellipsisButton1 = document.createElement("span");
+    ellipsisButton1.textContent = "...";
+    paginationContainer.appendChild(ellipsisButton1);
+  }
+
+  for (var i = startPage; i <= endPage; i++) {
+    var pageButton = document.createElement("button");
+    pageButton.textContent = i;
+    pageButton.className = "pagination-button fs-5";
+    if (i === currentPage) {
+      pageButton.disabled = true;
+      pageButton.classList.add("active");
+    } else {
+      pageButton.addEventListener("click", (function (page) {
+        return function () {
+          currentPage = page;
+          leaveHeaddDataContainer(data);
+        };
+      })(i));
+    }
+    paginationContainer.appendChild(pageButton);
+  }
+
+  if (currentPage < totalPages) {
+    var ellipsisButton2 = document.createElement("span");
+    ellipsisButton2.textContent = "...";
+    paginationContainer.appendChild(ellipsisButton2);
+
+    var lastButton = document.createElement("button");
+    lastButton.textContent = totalPages;
+    lastButton.className = "pagination-button fs-5";
+    lastButton.addEventListener("click", function () {
+      currentPage = totalPages;
+      leaveHeaddDataContainer(data);
+    });
+    paginationContainer.appendChild(lastButton);
+  }
+
+  dataContainer.appendChild(paginationContainer);
+}
+const getDataAdministLeave = () => {
+  var dataContainer = $("#administratorLeaveData")[0];
+  dataContainer.innerHTML = "";
+  $('#loader').show();
+  $('.loadContianer').removeClass('d-none');
+  google.script.run.withSuccessHandler((data) => {
+    toastAlert(1, '📋 โหลดข้อมูลสำเร็จ');
+    leaveAdministDataContainer(data);
+    $('.loadContianer').addClass('d-none');
+  }).getDataLeaveCheck(5);
+}
+const leaveAdministDataContainer = (data) => {
+  var dataContainer = $("#administratorLeaveData")[0];
+  dataContainer.innerHTML = "";
+
+  if (data.length === 0) {
+    var noDataText = document.createElement("p");
+    noDataText.textContent = "ไม่พบข้อมูล!";
+    noDataText.className = "fw-medium text-danger fs-4 text-center p-5";
+    dataContainer.appendChild(noDataText);
+    return;
+  }
+
+  var startIndex = (currentPage - 1) * itemsPerPage;
+  var endIndex = startIndex + itemsPerPage;
+  var displayedItems = data.slice(startIndex, endIndex);
+
+  displayedItems.forEach(function(item) {
+    var containerRow = document.createElement("div");
+    containerRow.className = "container-fluid";
+
+    var rowContianer = document.createElement("div");
+    rowContianer.className = "row";
+
+    var colContianer1 = document.createElement("div");
+    colContianer1.className = "col-md-9";
+
+    var colContianer2 = document.createElement("div");
+    colContianer2.className = "col-md-3 d-flex flex-column align-items-center justify-content-center";
+
+    var titleRow1 = document.createElement("div");
+    titleRow1.className = "fs-5 mt-1 mb-3 ";
+    titleRow1.innerHTML = "<span class='fw-medium' style='color: var(--dark);'>รหัสคำร้อง </span>" + item[0];
+    titleRow1.style.color = "var(--box4)";
+
+    var titleRow2 = document.createElement("div");
+    titleRow2.className = "mb-2";
+
+    var spanTitleRow2 = document.createElement("span");
+    spanTitleRow2.className = "fw-medium fs-6";
+    spanTitleRow2.innerHTML = "<i class='fa-duotone fa-user-tie'></i> ผู้ขออนุญาตลา : ";
+
+    var spanRow2 = document.createElement("span");
+    spanRow2.className = "fs-6";
+    spanRow2.textContent = item[1];
+    spanRow2.style.color = "var(--box3)";
+
+    var titleRow3 = document.createElement("div");
+    titleRow3.className = "row mb-2";
+
+    var titleRow3Col1 = document.createElement("div");
+    titleRow3Col1.className = "col-auto";
+
+    var spanTitleRow3_1 = document.createElement("span");
+    spanTitleRow3_1.className = "fw-medium fs-6";
+    spanTitleRow3_1.innerHTML = "<i class='fa-duotone fa-crosshairs'></i> ตำแหน่ง : ";
+
+    var spanRow3_1 = document.createElement("span");
+    spanRow3_1.className = "fs-6 ";
+    spanRow3_1.textContent = item[2];
+
+    var titleRow3Col2 = document.createElement("div");
+    titleRow3Col2.className = "col-auto";
+
+    var spanTitleRow3_2 = document.createElement("span");
+    spanTitleRow3_2.className = "fw-medium fs-6";
+    spanTitleRow3_2.innerHTML = "<i class='fa-duotone fa-business-time'></i> สังกัด : ";
+
+    var spanRow3_2 = document.createElement("span");
+    spanRow3_2.className = "fs-6";
+    spanRow3_2.textContent = item[3];
+
+    var titleRow4 = document.createElement("div");
+    titleRow4.className = "mb-2";
+
+    var spanTitleRow4 = document.createElement("span");
+    spanTitleRow4.className = "fw-medium fs-6";
+    spanTitleRow4.innerHTML = "<i class='fa-duotone fa-disease'></i> การลา : ";
+
+    var spanRow4 = document.createElement("span");
+    spanRow4.className = "fs-6";
+    spanRow4.textContent = item[4] + ' เนื่องจาก' + item[5];
+
+    var titleRow5 = document.createElement("div");
+    titleRow5.className = "row mb-2";
+
+    var titleRow5Col1 = document.createElement("div");
+    titleRow5Col1.className = "col-auto";
+
+    var spanTitleRow5_1 = document.createElement("span");
+    spanTitleRow5_1.className = "fs-6 fw-medium";
+    spanTitleRow5_1.innerHTML = "<i class='fa-duotone fa-calendar-xmark'></i> ใน : ";
+
+    var spanRow5_1 = document.createElement("span");
+    spanRow5_1.className = " fs-6 ";
+    spanRow5_1.textContent = item[6] + ' ถึง' + item[7];
+
+    var titleRow5Col2 = document.createElement("div");
+    titleRow5Col2.className = "col-auto";
+
+    var spanTitleRow5_2 = document.createElement("span");
+    spanTitleRow5_2.className = "fs-6 fw-medium";
+    spanTitleRow5_2.innerHTML = "<i class='fa-duotone fa-clock-rotate-left'></i> เป็นเวลา : ";
+
+    var spanRow5_2 = document.createElement("span");
+    spanRow5_2.className = " fs-6 ";
+    spanRow5_2.textContent = item[8] + ' วัน'; 
+
+    var titleRow6 = document.createElement("div");
+    titleRow6.className = "mb-2";
+
+    var spanTitleRow6 = document.createElement("span");
+    spanTitleRow6.className = "fw-medium fs-6";
+    spanTitleRow6.innerHTML = "<i class='fa-duotone fa-house-user'></i> สามารถติดต่อได้ที่ : ";
+
+    var spanRow6 = document.createElement("span");
+    spanRow6.className = "fs-6";
+    spanRow6.textContent = item[9];
+    spanRow6.style.color = "var(--box2)";
+
+    var imgRow8 = document.createElement("img");
+    var imageMap = {
+      "ลาป่วย": 'fiverr.png',
+      "ลากิจ": 'suitcase.png',
+      "ลาพักผ่อน": 'beach-chair.png',
+      "ลาคลอด": 'incubator.png'
+    };
+    const image = imageMap[item[4]] || "";
+    imgRow8.src = "https://cdn.jsdelivr.net/gh/JacketJK/image/" + image;
+    imgRow8.style.width = '50%';
+
+    var btnRow9 = document.createElement("button");
+    btnRow9.className = "btn btn-violet btn-sm rounded-pill mt-3";
+    btnRow9.innerHTML = "<i class='fa-duotone fa-magnifying-glass'></i> ตรวจสอบการลา";
+
+    btnRow9.onclick = function() {
+      senderHrmLeave(item[0])
+    };
+
+    var titleRow7 = document.createElement("div");
+    titleRow7.className = "mb-2";
+
+    var spanTitleRow7 = document.createElement("span");
+    spanTitleRow7.className = "fw-medium fs-6";
+    spanTitleRow7.innerHTML = "<i class='fa-duotone fa-comment-dots'></i> สถานะ : <span style='color: var(--orange);'><i class='fa-duotone fa-megaphone fa-xl'></i> พิจารณาโดยผู้บริหาร</span>";
+
+    var hr = document.createElement("hr");
+    hr.className = "mt-3 md-1 opacity-25";
+
+    titleRow2.appendChild(spanTitleRow2);
+    titleRow2.appendChild(spanRow2);
+
+    titleRow3Col1.appendChild(spanTitleRow3_1);
+    titleRow3Col1.appendChild(spanRow3_1);
+    titleRow3Col2.appendChild(spanTitleRow3_2);
+    titleRow3Col2.appendChild(spanRow3_2);
+    titleRow3.appendChild(titleRow3Col1);
+    titleRow3.appendChild(titleRow3Col2);
+
+    titleRow4.appendChild(spanTitleRow4);
+    titleRow4.appendChild(spanRow4);
+
+    titleRow5Col1.appendChild(spanTitleRow5_1);
+    titleRow5Col1.appendChild(spanRow5_1);
+    titleRow5Col2.appendChild(spanTitleRow5_2);
+    titleRow5Col2.appendChild(spanRow5_2);
+    titleRow5.appendChild(titleRow5Col1);
+    titleRow5.appendChild(titleRow5Col2);
+
+    titleRow6.appendChild(spanTitleRow6);
+    titleRow6.appendChild(spanRow6);
+
+    titleRow7.appendChild(spanTitleRow7);
+
+    colContianer1.appendChild(titleRow1);
+    colContianer1.appendChild(titleRow2);
+    colContianer1.appendChild(titleRow3);
+    colContianer1.appendChild(titleRow4);
+    colContianer1.appendChild(titleRow5);
+    colContianer1.appendChild(titleRow6);
+    colContianer1.appendChild(titleRow7);
+    colContianer2.appendChild(imgRow8);
+    colContianer2.appendChild(btnRow9);
+
+    rowContianer.appendChild(colContianer1);
+    rowContianer.appendChild(colContianer2);
+
+    containerRow.appendChild(rowContianer);
+
+    dataContainer.appendChild(containerRow);
+    dataContainer.appendChild(hr);
+  });
+
+  var paginationContainer = document.createElement("div");
+  paginationContainer.className = "pagination-container";
+
+  var totalPages = Math.ceil(data.length / itemsPerPage);
+
+  var maxVisibleButtons = 5; 
+  var startPage = 1;
+  var endPage = totalPages;
+
+  if (totalPages > maxVisibleButtons) {
+    var middleButton = Math.floor(maxVisibleButtons / 2);
+    var farthestStart = currentPage - middleButton;
+    var farthestEnd = currentPage + middleButton - 1;
+
+    if (farthestStart > 1) {
+      startPage = farthestStart;
+      if (farthestEnd < totalPages) {
+        endPage = farthestEnd;
+      } else {
+        endPage = totalPages;
+        startPage = totalPages - maxVisibleButtons + 1;
+      }
+    } else {
+      startPage = 1;
+      endPage = maxVisibleButtons;
+    }
+  }
+
+  if (currentPage > 1) {
+    var firstButton = document.createElement("button");
+    firstButton.textContent = "1";
+    firstButton.className = "pagination-button fs-5";
+    firstButton.addEventListener("click", function () {
+      currentPage = 1;
+      leaveHeaddDataContainer(data);
+    });
+    paginationContainer.appendChild(firstButton);
+
+    var ellipsisButton1 = document.createElement("span");
+    ellipsisButton1.textContent = "...";
+    paginationContainer.appendChild(ellipsisButton1);
+  }
+
+  for (var i = startPage; i <= endPage; i++) {
+    var pageButton = document.createElement("button");
+    pageButton.textContent = i;
+    pageButton.className = "pagination-button fs-5";
+    if (i === currentPage) {
+      pageButton.disabled = true;
+      pageButton.classList.add("active");
+    } else {
+      pageButton.addEventListener("click", (function (page) {
+        return function () {
+          currentPage = page;
+          leaveHeaddDataContainer(data);
+        };
+      })(i));
+    }
+    paginationContainer.appendChild(pageButton);
+  }
+
+  if (currentPage < totalPages) {
+    var ellipsisButton2 = document.createElement("span");
+    ellipsisButton2.textContent = "...";
+    paginationContainer.appendChild(ellipsisButton2);
+
+    var lastButton = document.createElement("button");
+    lastButton.textContent = totalPages;
+    lastButton.className = "pagination-button fs-5";
+    lastButton.addEventListener("click", function () {
+      currentPage = totalPages;
+      leaveHeaddDataContainer(data);
+    });
+    paginationContainer.appendChild(lastButton);
+  }
+
+  dataContainer.appendChild(paginationContainer);
+}
+</script>
+
+<script>
+const checkboxReport = (data) => { 
+  var checkboxContainer = document.getElementById("addReportNew8");
+  checkboxContainer.innerHTML = "";
+
+  data.forEach(function(row) {
+    var optionForm = document.createElement('option');
+    optionForm.value = row[0] + ', ' + row[14]; 
+    optionForm.text = row[3] + row[4] + ' ' + row[5]; 
+    optionForm.setAttribute("data-section", row[7]);
+    optionForm.setAttribute("data-index", "1");
+    checkboxContainer.appendChild(optionForm);
+  });
+  $("#addReportNew8").treeMultiselect({
+    allowBatchSelection: true,
+    searchable: true, 
+    enableSelectAll: true,
+    enableSelectAll: true,
+    searchParams: ['text', 'description', 'section'],
+    startCollapsed: true,
+    selectAllText: 'เลือกทั้งหมด', 
+    unselectAllText: 'ยกเลิกทั้งหมด',
+  });
+}
+$("#addReportNew8").on('change', function() {
+  $(".remove-selected").html('<i class="fa-solid fa-circle-xmark"></i>');
+});
+
+const addReportNew = () => {
+  $("#loader").show();
+  if ($('#addReportNew1').val() === "" && $('#addReportNew2').val() === "") {
+    toastAlert(0, '⚠️ โปรดเลือกหมู่บ้านที่รายงาน');
+    return;
+  } else if ($('#addReportNew3').val() === "") {
+    toastAlert(0, '⚠️ โปรดระบุวันที่เข้าร่วมประชุม');
+    return;
+  } else if ($('#addReportNew4').val() === "") {
+    toastAlert(0, '⚠️ โปรดระบุจำนวนผู้เข้าร่วมประชุม');
+    return;
+  } else if ($('#addReportNew5').val() === "") {
+    toastAlert(0, '⚠️ โปรดระบุเรื่องที่แจ้งในที่ประชุม');
+    return;
+  } else if ($('#addReportNew6').val() === "") {
+    toastAlert(0, '⚠️ โปรดระบุเรื่องแจ้งเพื่อทราบจากหน่วยงาน');
+    return;
+  } else if ($('#addReportNew7').val() === "") {
+    toastAlert(0, '⚠️ โปรดระบุข้อเสนอแนะจากหมู่บ้าน');
+    return;
+  } else if ($('#addReportNew8').val() === "") {
+    toastAlert(0, '⚠️ โปรดเลือกผู้ต้องการแจ้งรายงาน');
+    return;
+  }
+  var selectedValues = $('#addReportNew8').val();
+  var pairs = selectedValues.map(function(valueSet) {
+    var separatedArray = valueSet.split(", ");
+    var value1 = separatedArray[0].trim();
+    var value2 = separatedArray[1].trim();
+    return { keyuser: value1, token: value2 };
+  });
+
+  var keyusers = [];
+    pairs.forEach(function(item) {
+      keyusers.push(item.keyuser);
+    });
+
+  var tokens = [];
+    pairs.forEach(function(item) {
+      tokens.push(item.token);
+    });
+  var obj = {}
+    obj.data1 = $('#addReportNew1').val();
+    obj.data2 = $('#addReportNew2').val();
+    obj.data3 = $('#addReportNew3').val();
+    obj.data4 = $('#addReportNew4').val();
+    obj.data5 = $('#addReportNew5').val();
+    obj.data6 = $('#addReportNew6').val();
+    obj.data7 = $('#addReportNew7').val();
+    obj.name = localStorage.getItem('name_1') + localStorage.getItem('name_2') + " " + localStorage.getItem('name_3'); 
+    obj.token = localStorage.getItem('token'); 
+    obj.position = localStorage.getItem('position'); 
+    obj.agency = localStorage.getItem('agency'); 
+    obj.publicKey = localStorage.getItem('publicKey'); 
+    obj.sig = localStorage.getItem('sig'); 
+    obj.keyusers = keyusers;
+    obj.tokens = tokens;
+
+  google.script.run.withSuccessHandler((res) => {
+    toastAlert(1, '🎊 บันทึกข้อมูลสำเร็จ');
+    changePageReport(1);
+    $('#reportForm')[0].reset();
+    $('.unselect-all').click();
+    $('.section').addClass('collapsed');
+    google.script.run.withSuccessHandler((data) => {
+      dataAllReport = data;
+    }).getDataReport();
+  }).gsaddReport(obj);
+}
+
+$('#filterReportYear, #filterReportMonth').on('change' ,function() {
+  filterReportShow();
+});
+const filterReportShow = () => {
+  var dataContainer = $('#reportContianer')[0];
+  dataContainer.innerHTML = "";
+  $('.loadContianer').removeClass('d-none');
+  const year = $('#filterReportYear').val();
+  const month = $('#filterReportMonth').val();
+
+  google.script.run.withSuccessHandler((data) => {    
+    createRrport(data);
+    $('.loadContianer').addClass('d-none');
+  }).getDataShowReport(year, month);
+}
+let dataAllReport;
+google.script.run.withSuccessHandler((data) => {
+  dataAllReport = data;
+}).getDataReport();
+
+const createRrport = (data) => {
+  var dataContainer = $('#reportContianer')[0];
+  dataContainer.innerHTML = "";
+
+  if (data.length === 0) {
+    var noDataText = document.createElement("p");
+    noDataText.innerHTML = "<i class='fa-solid fa-circle-info'></i>" + " ไม่พบข้อมูล !";
+    noDataText.className = "fw-medium text-danger fs-5 text-center p-5";
+    dataContainer.appendChild(noDataText);
+    return;
+  }
+
+  data.sort(function(a, b) {
+    return a[7] - b[7];
+  });
+
+  var rowContianer = document.createElement('div');
+  rowContianer.className = 'row row-cols-1 row-cols-4 g-3';
+
+  data.forEach(function(item) {
+    var colContianer = document.createElement('div');
+    colContianer.className = 'col d-flex justify-content-center align-items-center flex-column mb-2';
+
+    colContianer.addEventListener('click', function() {
+      showReportRajchakan(item[0])
+    });
+
+    var imgData = document.createElement('img');
+    imgData.style.width = '100px';
+    imgData.style.cursor = 'pointer';
+    imgData.src = 'https://cdn.jsdelivr.net/gh/JacketJK/image/house_village.png';
+    
+    var spanDataMoo = document.createElement('span');
+    spanDataMoo.style.fontSize = '14px';
+    spanDataMoo.innerHTML = 'หมู่ที่ ' + item[7];
+    
+    var spanDataHome = document.createElement('span');
+    spanDataHome.style.fontSize = '14px';
+    spanDataHome.innerHTML = item[8];
+
+    colContianer.appendChild(imgData);
+    colContianer.appendChild(spanDataMoo);
+    colContianer.appendChild(spanDataHome);
+    rowContianer.appendChild(colContianer);
+  });
+  dataContainer.appendChild(rowContianer);
+}
+const showReportRajchakan = (key) => {
+  $('#seeDetailReportModal').modal('show');
+
+  const dataArray = dataAllReport.filter(r => r[0] == key);
+  
+  if (dataArray.length > 0) {
+    $('#detailHistory1').text(dataArray[0][9]);
+    var month = dataArray[0][9].split(' ')
+    $("#detailHistory2").text("รายงานผลการประชุมหมู่บ้าน หมู่ที่ "+ dataArray[0][7] +" "+ dataArray[0][8] + " ประจำเดือน " + month[2] + " " + month[4]);
+    $("#detailHistory3").html("<span style='margin-left: 65px;'></span>วันที่ประชุม " + dataArray[0][9] + " จำนวนผู้เข้าร่วมประชุม " + dataArray[0][10] + " คน");
+    $("#detailHistory4").html("<span style='margin-left: 65px;'></span>" + dataArray[0][11]);
+    $("#detailHistory5").html("<span style='margin-left: 65px;'></span>" + dataArray[0][12]);
+    $("#detailHistory6").html("<span style='margin-left: 65px;'></span>" + dataArray[0][13]);
+    $("#detailHistory7").attr('src', dataArray[0][6]);
+    $("#detailHistory8").text("(" + dataArray[0][3] + ")");
+    $("#detailHistory9").html("เจ้าหน้าที่ประจำหมู่บ้าน หมู่ที่ " + dataArray[0][7] + "<br>" + dataArray[0][8]);
+    const number = departMentData.filter(num => num[2] == dataArray[0][5]);
+    $('#rajchakanNumHeadder').text(number[0][3] + '/-');
+    $('#agencyHeadder').html(' ' + number[0][2] + ' ');
+  }
+}
+const reportDetailOpenfile = (code, key) => {
+  $('#loader').show();
+  $('#reportDetailingSave').val(key);
+
+  google.script.run.withSuccessHandler((res) => {
+    toastAlert(2, '📂 เปิดเอกสารสำเร็จ');
+    reportdetailfile(code);
+  }).openReport(key);
+}
+const reportdetailfile = (key) => {  
+  changePageReport(4);
+
+  google.script.run.withSuccessHandler((res) => {
+    insertTableReportDetail(res);
+  }).dataReportSave(key);
+
+  let dataArray = dataAllReport.filter(r => r[0] == key);
+  if (dataArray.length > 0) {
+    $('#retureReporttext').html('บันทึกงานตีกลับ \n' + dataArray[0][0]);
+    $('#closeReporttext').html('ยืนยันการปิดงาน \n' + dataArray[0][0]);
+    $('#reportDetailingKey').html(dataArray[0][0]);
+    $('#reportDetailing1').html(dataArray[0][1]);
+    $('#reportDetailing2').html(dataArray[0][3]);
+    $('#reportDetailing3').html(dataArray[0][4]);
+    $('#reportDetailing4').html(dataArray[0][5]);
+    $('#reportDetailing5').html("หมู่ที่ " + dataArray[0][7] + " " + dataArray[0][8]);
+    $('#reportDetailing6').html(dataArray[0][9]);
+    $('#reportDetailing7').html(dataArray[0][10] + " คน");
+    $('#reportDetailing8').html(dataArray[0][11]);
+    $('#reportDetailing9').html(dataArray[0][12]);
+    $('#reportDetailing10').html(dataArray[0][13]);
+  }
+
+  $('#saveReportingData9').on('change', function() {
+    var isChecked = $(this).is(':checked');
+    var textToSet = isChecked ? dataArray[0][3] : '';
+    $('#saveReportingData8 option').filter(function() {
+      return $(this).text() === textToSet; 
+    }).prop('selected', true); 
+    if (!isChecked) { 
+      $('#saveReportingData8').val(''); 
+    } 
+  });
+}
+const returnReport = () => {
+  $('#loader').show();
+  var key = $('#reportDetailingSave').val();
+  var text = $('#retureReportInput').val();
+
+  google.script.run.withSuccessHandler((res)=> {
+    toastAlert(2, '📂 บันทึกการตีกลับสำเร็จ');
+    insertDataReportSend(res);
+    changePageReport(1);
+    $('#xReturnReportModal').click();
+  }).returnReport(key, text);
+}
+
+const closeReportDoc = () => {
+  $('#loader').show();
+  var key = $('#reportDetailingKey').text();
+
+  google.script.run.withSuccessHandler((res) => {
+    toastAlert(1, '🎉 ปิดงานสำเร็จ');
+    insertDataReportSend(res);
+    changePageReport(1);
+    $('#xCloseReportModal').click();
+  }).closeReturnDoc(key);
+}
+
+const closeReportDocTable = (key) => {
+  $('#closeReportModal2').modal('show');
+  $('#closeReporttext2').html('ยืนยันการปิดงาน \n' + key);
+
+  const confirmBtn = document.getElementById("closeReportDocBtn");
+  confirmBtn.onclick = function() {
+    $('#loader').show();
+    google.script.run.withSuccessHandler((res) => {
+      toastAlert(1, '🎉 ปิดงานสำเร็จ');
+      insertDataReportSend(res);
+      changePageReport(1);
+      $('#xCloseReportModal2').click();
+    }).closeReturnDoc(key);
+  }
+}
+$('#saveReportingData2').on('change', function() {
+  $('#saveReportingData3').val(this.value);
+});
+$('#saveReportingData4').on('change', function() {
+  var isChecked = $(this).is(':checked');
+  $('#saveReportingData5_Div').toggle(isChecked);
+  $('#saveReportingData6').prop('disabled', !isChecked);
+  if (!isChecked) {
+    $('#saveReportingData6').val('');
+  }
+});
+$('input[name=saveReportingData5]').on('change', function() {
+  $('#saveReportingData6').val(this.value);
+});
+
+const saveReportData = () => {
+  $('#loader').show();
+  if ($('#saveReportingData1').val() === "") {
+    toastAlert(0, '⚠️ โปรดเลือกสถานะตอบรับ');
+    return;
+  } 
+
+  var obj = {
+    key : $('#reportDetailingSave').val(),
+    response : $('#saveReportingData1').val(),
+    reWord : $('#saveReportingData2').val(),
+    jobWord : $('#saveReportingData3').val(),
+    replace : $('#saveReportingData4').val(),
+    status : "3",
+  }
+
+  if ($('#saveReportingData8 option:selected').length > 0) {
+    var selectedValues = $('#saveReportingData8').val();
+    if (Array.isArray(selectedValues)) {
+      var separatedArray = selectedValues.map(function(value) {
+        return value.trim();
+      });
+      if (separatedArray.length >= 2) {
+        obj.keyuser = separatedArray[0];
+        obj.tokenuser = separatedArray[1];
+      } else {
+        obj.keyuser = separatedArray[0];
+        obj.tokenuser = '';
+      }
+    } else {
+      obj.keyuser = selectedValues.trim();
+      obj.tokenuser = '';
+    }
+  }
+  google.script.run.withSuccessHandler((response)=> {
+    toastAlert(1, '📂 บันทึกตอบรับสำเร็จ');
+    $('#xSaveReportingModal').click();
+    insertDataReportSend(response);
+  }).saveReportingData(obj);
+}
+const deleteReport = (key) => {
+  $('#deleteModalBtn').click();
+  
+  const confirmBtn = document.getElementById("confirmDeleteModalBtn");
+  
+  confirmBtn.onclick = function() {
+    $("#loader").show();
+    google.script.run.withSuccessHandler((res) => {
+      $('#xDeleteModalBtn').click();
+      toastAlert(1, '🌟 ยกเลิกข้อมูลสำเร็จ');
+      insertAllHistoryReport(localStorage.getItem('publicKey'));
+    }).deleteReport(key);
+  };
+}
+const editdocReport = (key) => {
+  $('#editReportingModal').modal('show');
+
+  const dataArray = dataAllReport.filter(r => r[0] == key);
+
+  if (dataArray.length > 0) {
+    const date = dataArray[0][9].split(' ');
+
+    const thaiDate = date[1] + " " + date[2] + " " + date[4];
+    const [day, monthName, year] = thaiDate.split(' ');
+    const month = getMonthNumber(monthName);
+    const years = parseInt(year) - 543;
+    const formattedDate = `${years}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+    $('#editReportDataKey').val(dataArray[0][0])
+    $('#editReportData1').val(formattedDate);
+    $('#editReportData2').val(dataArray[0][10]);
+    $('#editReportData3').val(dataArray[0][11]);
+    $('#editReportData4').val(dataArray[0][12]);
+    $('#editReportData5').val(dataArray[0][13]);
+  }
+  function getMonthNumber(monthName) {
+    const months = [
+          'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+          'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+        ];
+    return months.indexOf(monthName) + 1;
+  }
+}
+const editingReport = () => {
+  $('#loader').show();
+  var obj = {
+    key : $('#editReportDataKey').val(),
+    data1 : $('#editReportData1').val(),
+    data2 : $('#editReportData2').val(),
+    data3 : $('#editReportData3').val(),
+    data4 : $('#editReportData4').val(),
+    data5 : $('#editReportData5').val()
+  }
+
+  google.script.run.withSuccessHandler((res) => {
+    $('#xEditReportingModal').click();
+    toastAlert(1, '🌟 แก้ไขอมูลสำเร็จ');
+    insertAllHistoryReport(localStorage.getItem('publicKey'));
+  }).editingReport(obj);
+}
+</script>

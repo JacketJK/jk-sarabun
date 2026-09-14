@@ -1,0 +1,351 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-flag"></i> รายงานประจำหมู่บ้าน</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>แบบฟอร์ม</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a id="reportbreadcrumb1">รายงานประจำเดือน</a>
+      </li>
+      <li id="reportbreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="reportbreadcrumb3"></a>
+      </li>
+      <li style="display:none" id="reportbreadcrumb4"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="reportbreadcrumb5"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    <button class="btn btn-outline-green rounded-pill btn-sm px-3" id="addReportBtn" style="display: none;" onclick="changePageReport(2)">
+      <i class="fa-duotone fa-plus"></i> เพิ่มรายงาน
+    </button>
+  </div>
+</div>
+
+<div class="data-contianer" id="reportPage1" style="display:none">
+  <div class="datacontent">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-file-circle-exclamation"></i> รายละเอียดรายงานการประชุมประจำหมู่บ้าน</h5>
+    </div>
+    
+    <div class="table-responsive mt-3">
+      <table id="reportSentTable" class="table table-sm">
+        <thead>
+          <tr class="text-center">
+            <th scope="col" class="text-center">หมู่บ้าน</th>
+            <th scope="col" class="text-center">เข้าเมื่อ</th>
+            <th scope="col" class="text-center">รายละเอียด</th>
+            <th scope="col" class="text-center">สถานะ</th>
+          </tr>
+        </thead>
+        <tbody id="reportSentTable-body">
+          <tr>
+            <td class="text-center" colspan="4"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div>     
+  </div>
+
+  <div class="databox">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-house-chimney"></i> การรายงานประจำเดือน</h5>
+      <div class="mb-0">
+        <div class="field-input">
+          <span>ปี</span>
+          <select id="filterReportYear" class="form-field year-filter">
+            <option selected value="2567">2567</option>
+            <option value="2566">2566</option>
+            <option value="2565">2565</option>
+            <option value="2564">2564</option>
+          </select>  
+          <i class="fa-duotone fa-earth-americas input-icon fs-5"></i>
+        </div>
+      </div>
+    </div>
+    <div class="mb-3">
+      <p class="col-form-label" >ประจำเดือน</p>
+      <div class="field-input">
+        <i class="fa-duotone fa-calendar-range input-icon fs-5"></i>
+        <select class="form-field text-center" id="filterReportMonth">
+          <option value="มกราคม">มกราคม</option>
+          <option value="กุมภาพันธ์">กุมภาพันธ์</option>
+          <option value="มีนาคม">มีนาคม</option>
+          <option value="เมษายน">เมษายน</option>
+          <option value="พฤษภาคม">พฤษภาคม</option>
+          <option value="มิถุนายน">มิถุนายน</option>
+          <option value="กรกฎาคม">กรกฎาคม</option>
+          <option value="สิงหาคม">สิงหาคม</option>
+          <option value="กันยายน">กันยายน</option>
+          <option value="ตุลาคม">ตุลาคม</option>
+          <option value="พฤศจิกายน">พฤศจิกายน</option>
+          <option value="ธันวาคม">ธันวาคม</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="loadContianer d-flex justify-content-center align-items-center p-5 my-3 d-none">
+      <div class="loaderContainer"></div>
+    </div>
+    <div id="reportContianer"></div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="reportPage2" style="display:none">
+  <div class="datarespone">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-rectangle-list"></i> แบบฟอร์มรายงานผลการประชุมหมู่บ้าน</h5>
+    </div>
+
+    <form id="reportForm">
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5">
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >หมู่ที่รายงาน :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-house-user input-icon fs-5"></i>
+              <select class="form-field" id="addReportNew1" name="addReportNew1" required></select>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >ชื่อบ้าน :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-house-night input-icon fs-5"></i>
+              <select class="form-field" id="addReportNew2" name="addReportNew2" required></select>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >วันที่ประชุม :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-calendar-day input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addReportNew3" name="addReportNew3" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >จำนวนผู้เข้าร่วมประชุม :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-handshake input-icon fs-5"></i>
+              <input type="number" class="form-field" id="addReportNew4" name="addReportNew4" required>
+              <span>คน</span>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >เรื่องที่แจ้งในที่ประชุมทราบ (วาระประชุมของหมู่บ้าน) :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-bullhorn input-icon fs-5"></i>
+              <textarea class="form-field" id="addReportNew5" name="addReportNew5" rows="8" required></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5">
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >เรื่องแจ้งเพื่อทราบจากหน่วยงาน :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-file-contract input-icon fs-5"></i>
+              <textarea class="form-field" id="addReportNew6" name="addReportNew6" rows="9" required></textarea>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >ข้อเสนอแนะจากหมู่บ้าน :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-xmark-to-slot input-icon fs-5"></i>
+              <textarea class="form-field" id="addReportNew7" name="addReportNew7" rows="8" required></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="head my-3">
+        <h5><i class="fa-duotone fa-bullhorn"></i> แจ้งรายงานผู้บริหาร</h5>
+      </div>
+      <select id="addReportNew8" name="addReportNew8"></select>
+      <div class="container mt-4 d-flex justify-content-center align-items-center">
+        <button type="reset" class="btn btn-outline-danger rounded-pill px-4"><i class="fa-duotone fa-xmark-large"></i> ยกเลิกรายงาน</button>
+        <button type="button" onclick="addReportNew()" class="btn btn-outline-green rounded-pill px-4 ms-2"><i class="fa-duotone fa-down-to-bracket"></i> บันทึกรายงาน</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="data-contianer" id="reportPage3" style="display:none">
+  <div class="databox">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-window"></i> ประวัติรายงานการประชุมประจำหมู่บ้าน</h5>
+    </div>
+    
+    <div class="container-fluid my-4">
+      <div class="row">
+        <div class="col-lg-2">
+          <label for="reportfilter1" class="label-form">ปีสารบรรณ</label>
+          <select id="reportfilter1" class="form-select rounded-4 year-filter">
+            <option selected value="">ปีทั้งหมด</option>
+            <option value="2567">2567</option>
+            <option value="2566">2566</option>
+            <option value="2565">2565</option>
+            <option value="2564">2564</option>
+          </select>  
+        </div>
+        <div class="col-lg-2">
+          <label for="reportfilter2" class="label-form">เดือน</label>
+          <select id="reportfilter2" class="form-select rounded-4">
+            <option selected value="">เดือนทั้งหมด</option>
+            <option value="มกราคม">มกราคม</option>
+            <option value="กุมภาพันธ์">กุมภาพันธ์</option>
+            <option value="มีนาคม">มีนาคม</option>
+            <option value="เมษายน">เมษายน</option>
+            <option value="พฤษภาคม">พฤษภาคม</option>
+            <option value="มิถุนายน">มิถุนายน</option>
+            <option value="กรกฎาคม">กรกฎาคม</option>
+            <option value="สิงหาคม">สิงหาคม</option>
+            <option value="กันยายน">กันยายน</option>
+            <option value="ตุลาคม">ตุลาคม</option>
+            <option value="พฤศจิกายน">พฤศจิกายน</option>
+            <option value="ธันวาคม">ธันวาคม</option>
+          </select>
+        </div>
+        <div class="col-lg-2">
+          <label for="reportfilter3" class="label-form">หมู่บ้าน</label>
+          <select id="reportfilter3" class="form-select rounded-4"></select>
+        </div>
+        <div class="col-lg-3">
+          <label for="reportfilter4" class="label-form">ค้นหา</label>
+          <div class="input-group z-index-0">
+            <input type="text" id="reportfilter4" class="form-control rounded-4 rounded-end-0" placeholder="คำค้นหา">
+            <button type="button" class="btn btn-primary rounded-4 rounded-start-0 ">ค้นหา</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive mt-3" style="padding-bottom: 80px;">
+      <table id="tableReportHistory" class="table table-sm">
+        <thead>
+          <tr class="text-center">
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" rowspan="2"><i class="fa-duotone fa-house-tree"></i> หมู่บ้าน</th>
+            <th scope="col" rowspan="2">ประจำเดือน</th>
+            <th scope="col" rowspan="2">วันที่ประชุม</th>
+            <th scope="col" rowspan="2">ผู้เข้าร่วมประชุม<br>(คน)</th>
+            <th scope="col" colspan="3"><i class="fa-duotone fa-handshake"></i> รายงานประชุม</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr class="text-center">
+            <th scope="col">วาระ</th>
+            <th scope="col">เรื่องแจ้ง</th>
+            <th scope="col">ข้อเสนอแนะ</th>
+          </tr>
+        </thead>
+        <tbody id="tableReportHistory-body" class="table-group-divider">
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+          <tr>
+            <td class="text-center py-4" colspan="10"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="reportPage4" style="display:none">
+  <div class="container-fluid">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-file-circle-info"></i> รายละเอียดรายงาน</h5>
+    </div>
+    
+    <div class="row">
+      <div class="col-sm-1"></div>
+      <input type="hidden" id="reportDetailingSave">
+      <div class="col-sm-5">
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">Report Key :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="reportDetailingKey"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">วันที่รายงาน :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="reportDetailing1"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">ผู้รายงาน :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="reportDetailing2"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">ตำแหน่ง :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="reportDetailing3"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">สังกัด :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="reportDetailing4"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">หมู่ที่รายงาน :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="reportDetailing5"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">วันที่ประชุม :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="reportDetailing6"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">จำนวนผู้เข้าร่วมประชุม :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="reportDetailing7"></span>
+        </div>
+      </div>
+      <div class="col-sm-1"></div>
+      <div class="col-sm-5">
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">วาระ :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="reportDetailing8"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">เรื่องที่แจ้ง :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="reportDetailing9"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">ข้อเสนอแนะ :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="reportDetailing10"></span>
+        </div>
+      </div>
+    </div>
+
+    <hr class="opacity-25 mb-3">
+    <div class="text-end">
+      <button class="btn btn-outline-green rounded-3" data-bs-toggle="modal" data-bs-target="#closeReportModal"><i class="fa-duotone fa-power-off"></i> ปิดงาน</button>
+      <button class="btn btn-violet rounded-3" data-bs-toggle="modal" data-bs-target="#saveReportingModal"><i class="fa-duotone fa-cloud-arrow-down"></i> บันทึกงาน</button>
+      <button class="btn btn-red rounded-3" data-bs-toggle="modal" data-bs-target="#returnReportModal"><i class="fa-duotone fa-duotone fa-share-all fa-flip-horizontal"></i> ตีกลับ</button>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="head mb-4">
+      <h5><i class="fa-duotone fa-traffic-cone"></i> การเกษียนหนังสือ</h5>
+    </div>
+
+    <div class="table-responsive mt-3">
+      <table id="tableReportDoc" class="table table-sm">
+        <thead>
+          <tr class="text-center">
+            <th scope="col" class="text-center">#</th>
+            <th scope="col" class="text-center">สถานะ</th>
+            <th scope="col" class="text-center">วันที่ส่ง</th>
+            <th scope="col" class="text-center">ส่งจาก</th>
+            <th scope="col" class="text-center">ส่งถึง</th>
+            <th scope="col" class="text-center">ผู้ลงรับ</th>
+            <th scope="col" class="text-center">วันที่ลงรับ</th>
+          </tr>
+        </thead>
+        <tbody id="tableReportDoc-body" class="table-group-divider">
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+          <tr>
+            <td class="text-center" colspan="8"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

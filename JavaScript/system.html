@@ -1,0 +1,889 @@
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    function updateBuddhistYear(instance) {
+        const buddhistYear = instance.currentYear + 543;
+        instance.currentYearElement.value = buddhistYear;
+    }
+
+    $('.monthsSelect').flatpickr({
+        disableMobile: true,
+        defaultDate: "today", 
+        locale: {
+            months: {
+                shorthand: ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."],
+                longhand: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"]
+            }
+        },
+        plugins: [
+            new monthSelectPlugin({
+                shorthand: false,
+                dateFormat: "m-Y", 
+                altFormat: "F Y", 
+            })
+        ],
+        altInput: true,
+        onReady(selectedDates, dateStr, instance) {
+            updateBuddhistYear(instance);
+
+            const date = instance.selectedDates[0] || new Date(); 
+            const thaiYear = date.getFullYear() + 543;
+            const month = instance.l10n.months.longhand[date.getMonth()];
+            instance.altInput.value = `${month} ${thaiYear}`;
+        },
+        onChange(selectedDates, dateStr, instance) {
+            updateBuddhistYear(instance);
+
+            const date = selectedDates[0];
+            if (date) {
+                const thaiYear = date.getFullYear() + 543;
+                const month = instance.l10n.months.longhand[date.getMonth()];
+                instance.altInput.value = `${month} ${thaiYear}`;
+            }
+        },
+        onOpen(selectedDates, dateStr, instance) {
+            updateBuddhistYear(instance);
+        },
+        onYearChange(selectedDates, dateStr, instance) {
+            updateBuddhistYear(instance);
+        },
+        onMonthChange(selectedDates, dateStr, instance) {
+            updateBuddhistYear(instance);
+        },
+    });
+
+
+    $(".dateSelect, .monthsSelect, #monthTimeWorking, .timeSelect").removeClass('form-control');
+    $(".flatpickr-next-month, .flatpickr-prev-month").hide();
+});
+
+let DataEmployee;
+
+google.script.run.withSuccessHandler(res => {
+    DataEmployee = res;
+    populateSelectElements(res);
+}).getAllEmployee();
+
+const populateSelectElements = (data) => {
+    data.sort((a, b) => a.uid - b.uid);
+
+    const selectElementIds = [
+        'salaryAddData2',
+    ];
+
+    selectElementIds.forEach(id => {
+        const select = document.getElementById(id);
+        if (!select) {
+            return;
+        }
+
+        select.innerHTML = '';
+
+        const defaultOption = createOption('', 'โปรดเลือก', true);
+        select.appendChild(defaultOption);
+
+        data.forEach(row => {
+            const option = createOption(row.uid, row.name);
+            select.appendChild(option);
+        });
+    });
+};
+
+const selectEmployeeData = () => {
+    const inputValue = document.getElementById('salaryAddData2');
+    const dataArray = DataEmployee.filter(row => row.uid === inputValue.value);
+
+    if (dataArray.length != 0) {
+        $('#salaryAddData3').val(dataArray[0].position);
+        $('#salaryAddData4').val(dataArray[0].type);
+        $('#salaryAddData5').val(dataArray[0].agency);
+    } else {
+        $('#salaryAddData3').val("");
+        $('#salaryAddData4').val("");
+        $('#salaryAddData5').val("");
+    }
+};
+
+$(document).ready(function() {
+    $('#negative_list_revenue').on('click', function() {
+        var listObjective = document.getElementById('list_item_revenue');
+        var countObjective = document.getElementById('list_count_revenue');
+
+        var listItems = listObjective.querySelectorAll('.mb-2');
+        var countItems = countObjective.querySelectorAll('.mb-2');
+
+        if (listItems.length > 1 && countItems.length > 1) {
+            listObjective.removeChild(listItems[listItems.length - 1]);
+            countObjective.removeChild(countItems[countItems.length - 1]);
+        }
+    });
+
+    $('#positive_list_revenue').on('click', function() {
+        var listObjective = document.getElementById('list_item_revenue');
+        var countObjective = document.getElementById('list_count_revenue');
+
+        var inputs = listObjective.querySelectorAll('.mb-2');
+        var newIndex = inputs.length + 1;
+        var option = `<option value="">โปรดเลือก</option>`;
+
+        dataRevenueSet.forEach((row, index) => {
+            option += `<option value="${row[1]}">${row[1]}</option>`;
+        });
+
+        var newInputlist = document.createElement('div');
+        newInputlist.classList.add('mb-2');
+        newInputlist.innerHTML = `
+            <div class="field-input">
+                <span>${newIndex}.</span>
+                <select class="form-field" name="salaryAddDatalist_revenue${newIndex}" id="salaryAddDatalist_revenue${newIndex}" required>
+                    ${option}
+                </select>
+            </div>
+        `;
+
+        listObjective.appendChild(newInputlist);
+
+        var newInputCount = document.createElement('div');
+        newInputCount.classList.add('mb-2');
+        newInputCount.innerHTML = `
+            <div class="field-input">
+                <i style="color: var(--box2);" class="fa-duotone fa-coin input-icon fs-5"></i>
+                <input type="text" class="form-field input-thousand" name="salaryAddDatacount_revenue${newIndex}" id="salaryAddDatacount_revenue${newIndex}" oninput="calculateSalary();" required>
+                <span style="color: var(--box2);">บาท</span>
+            </div>
+        `;
+        countObjective.appendChild(newInputCount);
+        initializeCleave();
+    });
+});
+
+$(document).ready(function() {
+    $('#negative_list_expenses').on('click', function() {
+        var listObjective = document.getElementById('list_item_expenses');
+        var countObjective = document.getElementById('list_count_expenses');
+
+        var listItems = listObjective.querySelectorAll('.mb-2');
+        var countItems = countObjective.querySelectorAll('.mb-2');
+
+        if (listItems.length > 0 && countItems.length > 0) {
+            listObjective.removeChild(listItems[listItems.length - 1]);
+            countObjective.removeChild(countItems[countItems.length - 1]);
+        }
+    });
+
+    $('#positive_list_expenses').on('click', function() {
+        var listObjective = document.getElementById('list_item_expenses');
+        var countObjective = document.getElementById('list_count_expenses');
+
+        var inputs = listObjective.querySelectorAll('.mb-2');
+        var newIndex = inputs.length + 1;
+        var option = `<option value="">โปรดเลือก</option>`;
+
+        dataExpensesSet.forEach((row, index) => {
+            option += `<option value="${row[1]}">${row[1]}</option>`;
+        });
+
+        var newInputlist = document.createElement('div');
+        newInputlist.classList.add('mb-2');
+        newInputlist.innerHTML = `
+            <div class="field-input">
+                <span>${newIndex}.</span>
+                <select class="form-field" name="salaryAddDatalist_expenses${newIndex}" id="salaryAddDatalist_expenses${newIndex}" required>
+                    ${option}
+                </select>
+            </div>
+        `;
+
+        listObjective.appendChild(newInputlist);
+
+        var newInputCount = document.createElement('div');
+        newInputCount.classList.add('mb-2');
+        newInputCount.innerHTML = `
+            <div class="field-input">
+                <i style="color: var(--box4);" class="fa-duotone fa-coin input-icon fs-5"></i>
+                <input type="text" class="form-field input-thousand" name="salaryAddDatacount_expenses${newIndex}" id="salaryAddDatacount_expenses${newIndex}" oninput="calculateSalary();" required>
+                <span style="color: var(--box4);">บาท</span>
+            </div>
+        `;
+        countObjective.appendChild(newInputCount);
+        initializeCleave();
+    });
+});
+
+function initializeCleave() {
+    document.querySelectorAll('.input-thousand').forEach(input => {
+        if (!input.dataset.cleaveInitialized) { 
+            new Cleave(input, {
+                numeral: true,
+                numeralThousandsGroupStyle: 'thousand'
+            });
+            input.dataset.cleaveInitialized = true; 
+        }
+    });
+}
+
+document.querySelectorAll('.input-thousand').forEach(input => {
+    new Cleave(input, {
+        numeral: true,
+        numeralThousandsGroupStyle: 'thousand'
+    });
+});
+
+const calculateSalary = () => {
+    const revenueInputs = document.querySelectorAll('[id^="salaryAddDatacount_revenue"]');
+    let totalRevenue = 0;
+
+    revenueInputs.forEach(input => {
+        const value = parseFloat(input.value.replace(/,/g, '')); 
+        if (!isNaN(value)) {
+            totalRevenue += value;
+        }
+    });
+
+    const expensesInputs = document.querySelectorAll('[id^="salaryAddDatacount_expenses"]');
+    let totalExpenses = 0;
+
+    expensesInputs.forEach(input => {
+        const value = parseFloat(input.value.replace(/,/g, '')); 
+        if (!isNaN(value)) {
+            totalExpenses += value;
+        }
+    });
+
+    const netTotal = totalRevenue - totalExpenses;
+
+    const revenueField = document.getElementById('salaryAddData6');
+    if (revenueField) {
+        revenueField.value = totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    const expensesField = document.getElementById('salaryAddData7');
+    if (expensesField) {
+        expensesField.value = totalExpenses.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    const totalField = document.getElementById('salaryAddData8');
+    if (totalField) {
+        totalField.value = netTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+};
+
+const salaryAddData = () => {
+    $("#loader").show();
+    
+    const object = {
+        key: document.getElementById('salaryAddDataKey').value || "",
+        uid: document.getElementById('salaryAddData2').value,
+        round: document.getElementById('salaryAddData1').value,
+        position: document.getElementById('salaryAddData3').value,
+        type: document.getElementById('salaryAddData4').value,
+        agency: document.getElementById('salaryAddData5').value,
+        revenuesCount: document.getElementById('salaryAddData6').value,
+        expensessCount: document.getElementById('salaryAddData7').value,
+        total: document.getElementById('salaryAddData8').value,
+        revenues: [],
+        expensess: [],
+    };
+
+    const listItemsR = document.querySelectorAll('#list_item_revenue select');
+    const listCountsR = document.querySelectorAll('#list_count_revenue input');
+
+    listItemsR.forEach((item, index) => {
+        const revenue = {
+            item: item.value,
+            amount: listCountsR[index].value.replace(/,/g, ''),
+        };
+        object.revenues.push(revenue);
+    });
+
+    const listItemsE = document.querySelectorAll('#list_item_expenses select');
+    const listCountsE = document.querySelectorAll('#list_count_expenses input');
+
+    listItemsE.forEach((item, index) => {
+        const expenses = {
+            item: item.value,
+            amount: listCountsE[index].value.replace(/,/g, ''),
+        };
+        object.expensess.push(expenses);
+    });
+
+    google.script.run
+        .withSuccessHandler((response) => {
+            if (response.success) {
+                toastAlert(1, 'บันทึกข้อมูลเรียบร้อยแล้ว');
+                document.getElementById('salaryAddDataForm').reset();
+                var listObjective = document.getElementById('list_item_expenses');
+                var countObjective = document.getElementById('list_count_expenses');
+                listObjective.innerHTML = '';
+                countObjective.innerHTML = '';
+
+                var listObjectiverevenue = document.getElementById('list_item_revenue');
+                var countObjectiverevenue = document.getElementById('list_count_revenue');
+                listObjectiverevenue.innerHTML = '';
+                countObjectiverevenue.innerHTML = '';
+
+                google.script.run.withSuccessHandler((response) => {
+                    dataAllSlipSalary = response;
+                    changeSalaryFilter();
+                }).getDataAllSlipBase();
+            } else {
+                toastAlert(0, 'เกิดข้อผิดพลาด: ' + response.error);
+            }
+        })
+        .saveSalaryData(object);
+
+    return false;
+};
+
+let dataSalary;
+
+const getDataSlipBase = (uid) => {
+    google.script.run.withSuccessHandler(res => {
+        if (res.length != 0) {
+            dataSalary = res;
+            selectRoundSalary();
+        }
+    }).getDataSlipBase(uid);
+};
+
+const selectRoundSalary = () => {
+    const month = document.getElementById('filterslipSalary1');
+    const filterData = dataSalary.filter(row => row[2] === month.value);
+
+    const monthText = convertToThaiDate(month.value);
+    $('#roundSalary').text(monthText);
+
+    if (filterData.length == 1) {
+        $('#moneyTotal').text(filterData[0][7].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        $('#moneyRevenus').text("+ " + filterData[0][5].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        $('#moneyExpenses').text("- " + filterData[0][6].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+        const dayText = convertToThaiDateTimeSalary(filterData[0][8]);
+        $('#datesaveSalary').text("เมื่อ" + dayText);
+        $('#statusSalary').html('<span class="badge badge-success me-3">บันทึกแล้ว</span>');
+
+        $('#btnPrintslip').prop('disabled', false);
+        toastAlert(1, 'สลิปปรพจำเดือน ' + monthText);
+        
+        const bahtText = THBText(filterData[0][7]);
+        const income = JSON.parse(filterData[0][3]);
+        const expenses = JSON.parse(filterData[0][4]);
+
+        const tableContent = createAlternatingTable(income, expenses);
+
+        var table = `
+            <table class="table-salary">
+                <thead>
+                    <tr>
+                        <th colspan="2">รายรับ</th>
+                        <th colspan="2">รายจ่าย</th>
+                    </tr>
+                    <tr>
+                        <th>รายการ</th>
+                        <th>บาท</th>
+                        <th>รายการ</th>
+                        <th>บาท</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableContent}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td style="text-align: center;">รวมรายรับ</td>
+                        <td>${filterData[0][5].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td style="text-align: center;">รวมรายจ่าย</td>
+                        <td>${filterData[0][6].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="text-align: center;">ยอดคงเหลือ ${filterData[0][7].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท (${bahtText})</td>
+                    </tr>
+                </tfoot>
+            </table>
+        `;
+
+        $('#detailSalary').html(table);
+    } else {
+
+        $('#statusSalary').html('<span class="badge badge-secondary me-3">รอการบันทึก</span>');
+        $('#moneyTotal').text("-");
+        $('#moneyRevenus').text("-");
+        $('#moneyExpenses').text("-");
+        $('#datesaveSalary').text("");
+        $('#detailSalary').html("");
+
+        $('#btnPrintslip').prop('disabled', true);
+        toastAlert(3, '⚠️ ไม่พบข้อมูล');
+    };
+};
+
+const createAlternatingTable = (income, expenses) => {
+    const maxLength = Math.max(income.length, expenses.length); 
+    let tableRows = '';
+
+    for (let i = 0; i < maxLength; i++) {
+        const incomeItem = income[i] ? `<td>${income[i].item}</td><td>${income[i].amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>` : '<td></td><td></td>';
+        const expenseItem = expenses[i] ? `<td>${expenses[i].item}</td><td>${expenses[i].amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>` : '<td></td><td></td>';
+        tableRows += `<tr>${incomeItem}${expenseItem}</tr>`;
+    }
+
+    return tableRows;
+};
+
+const convertToThaiDate = (dateString) => {
+  const [month, year] = dateString.split('-');
+
+  const thaiMonths = [
+    "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", 
+    "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", 
+    "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+  ];
+
+  const thaiYear = parseInt(year) + 543;
+
+  return `${thaiMonths[parseInt(month) - 1]} ${thaiYear}`;
+};
+
+const convertToThaiDateTimeSalary = (dateString) => {
+    const date = new Date(dateString);
+
+    const thaiMonths = [
+        "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", 
+        "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", 
+        "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+    ];
+
+    const thaiDays = [
+        "วันอาทิตย์", "วันจันทร์", "วันอังคาร", 
+        "วันพุธ", "วันพฤหัสบดี", "วันศุกร์", "วันเสาร์"
+    ];
+
+    const day = thaiDays[date.getDay()];
+    const dateNumber = date.getDate();
+    const month = thaiMonths[date.getMonth()];
+    const year = date.getFullYear() + 543;
+    const hours = date.getHours().toString().padStart(2, '0'); 
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0'); 
+
+    return `วันที่ ${dateNumber} ${month} ${year}`;
+};
+
+const convertToThaiDateTimeSalaryTonow = (dateString) => {
+    const date = new Date(dateString);
+
+    const thaiMonths = [
+        "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", 
+        "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", 
+        "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+    ];
+
+    const thaiDays = [
+        "วันอาทิตย์", "วันจันทร์", "วันอังคาร", 
+        "วันพุธ", "วันพฤหัสบดี", "วันศุกร์", "วันเสาร์"
+    ];
+
+    const day = thaiDays[date.getDay()];
+    const dateNumber = date.getDate();
+    const month = thaiMonths[date.getMonth()];
+    const year = date.getFullYear() + 543;
+    const hours = date.getHours().toString().padStart(2, '0'); 
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0'); 
+
+    return `${day} ที่ ${dateNumber} ${month} ${year} เวลา ${hours}:${minutes} น.`;
+};
+
+const addSalaryXls = () => {
+    $("#addDataXlsSalaryModal").modal('show'); 
+    $('#textDataXlsSalary').text('เพิ่มรายรับของพนักงานทั้งหมด').css('color', 'var(--box2)');
+
+    document.getElementById('dataIncomeXlsMonthFile').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }); 
+
+            const headers = jsonData[0]; 
+            const resultIncome = [];
+
+            for (let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+                const name = row[0]; 
+                const uid = row[1]; 
+
+                const rowData = [];
+
+                for (let j = 4; j < headers.length; j++) {
+                    if (headers[j] && row[j] !== undefined && row[j] !== "") { 
+                        rowData.push({
+                            item: headers[j], 
+                            amount: row[j] 
+                        });
+                    }
+                }
+
+                if (rowData.length > 0 && uid) { 
+                    resultIncome.push({
+                        name: name || "", 
+                        uid: uid || "", 
+                        dateround: $('#dataXlsMonth').val() || "", 
+                        details: rowData 
+                    });
+                }
+            }
+
+            if (resultIncome.length == 0) {
+                toastAlert(3, 'ข้อมูลว่างเปล่า โปรดตรวจสอบข้อมูล');
+                return;
+            }
+
+            $('#salaryFileIncomeContainer').hide();
+            $('#salaryFileExpensesContainer').show();
+            $('#salaryCountNum').text(resultIncome.length);
+            $('#textDataXlsSalary').text('เพิ่มรายจ่ายของพนักงานทั้งหมด').css('color', 'var(--box4)');
+            toastAlert(1, 'เพิ่มข้อมูลสำเร็จ');
+
+            document.getElementById('dataExpensesXlsMonthFile').addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }); 
+
+                    const headers = jsonData[0]; 
+                    const resultExpenses = [];
+
+                    for (let i = 1; i < jsonData.length; i++) {
+                        const row = jsonData[i];
+                        const total = row[1]; 
+                        const income = row[2]; 
+                        const expenses = row[3]; 
+                        const nameExpenses = row[0]; 
+
+                        const rowData = [];
+
+                        for (let j = 5; j < headers.length; j++) {
+                            if (headers[j] && row[j] !== undefined && row[j] !== "") { 
+                                rowData.push({
+                                    item: headers[j], 
+                                    amount: row[j]
+                                });
+                            }
+                        }
+
+                        if (row[0]) {
+                            resultExpenses.push({
+                                nameExpenses: nameExpenses || "",
+                                total: total || "",
+                                income: income || "",
+                                expenses: expenses || "",
+                                details: rowData 
+                            });
+                        }
+                    }
+
+                    if (resultExpenses.length == 0) {
+                        toastAlert(3, 'ข้อมูลว่างเปล่า โปรดตรวจสอบข้อมูล');
+                        return;
+                    }
+
+                    if ($('#dataXlsMonth').val() === "") {
+                        toastAlert(3, 'โปรดเลือกเดือนที่ต้องการบันทึก');
+                        return;
+                    }
+                    
+                    $('#salaryCountNum').text(resultExpenses.length);
+                    $('#confirmDataXlsSalaryBtn').prop('disabled', false);
+
+                    $('#confirmDataXlsSalaryBtn').off('click').on('click', function () {
+                        $("#loader").show();
+                        google.script.run
+                            .withSuccessHandler((response) => {
+                                if (response.success) {
+                                    toastAlert(1, 'บันทึกข้อมูลเรียบร้อยแล้ว');
+                                    $('#confirmDataXlsSalaryBtn').prop('disabled', true);
+                                    $("#addDataXlsSalaryModal").modal('hide'); 
+                                    $('#textDataXlsSalary').text('เพิ่มรายรับของพนักงานทั้งหมด').css('color', 'var(--box2)');
+                                    $('#salaryFileIncomeContainer').show();
+                                    $('#salaryFileExpensesContainer').hide();
+                                    $('#salaryCountNum').text("0");
+                                } else {
+                                    toastAlert(0, 'เกิดข้อผิดพลาด: ' + response.error);
+                                }
+                            })
+                            .addDataSalaryFileIncome(resultIncome, resultExpenses);
+
+                        return false;
+                    });
+                };
+
+                reader.readAsArrayBuffer(file);
+            });
+        };
+
+        reader.readAsArrayBuffer(file);
+    });
+};
+
+let dataAllSlipSalary
+
+const tableSalaryAll = () => {
+    google.script.run.withSuccessHandler((response) => {
+        dataAllSlipSalary = response;
+        const month = document.getElementById('filterslipSalaryDash');
+        const filterData = dataAllSlipSalary.filter(row => row[2] === month.value);
+        populateTableSalary(filterData);
+    }).getDataAllSlipBase();
+};
+
+const changeSalaryFilter = () => {
+    const month = document.getElementById('filterslipSalaryDash');
+    const filterData = dataAllSlipSalary.filter(row => row[2] === month.value);
+    populateTableSalary(filterData);
+};
+
+const populateTableSalary = (data) => {
+    $('#salaryCountNo1').text(data.length);
+    let revenue = 0;
+    let expense = 0;
+
+    if (!data || data.length === 0) {
+        $('#table_DashboradEmployeeSalary tbody').html(`
+            <tr>
+                <td colspan="6">
+                    <div class="d-flex justify-content-center align-items-center flex-column">
+                        <img style="width: 300px" src="https://raw.githubusercontent.com/JacketJK/image/main/uploads/file%20copy.png" alt="lock-image" class="lock-image">
+                        <h3 class="text-secondary mt-3">ไม่มีข้อมูล</h3>
+                    </div>
+                </td>
+            </tr>
+        `);
+
+        $('#salaryCountNo2').text("0");
+        $('#salaryCountNo3').text("0");
+    } else {
+        const formattedData = data.map((row) => {
+            revenue += row[5];
+            expense += row[6];
+
+            const actions = `<button class="btn rounded-circle" onclick="manageDataSalary('${row[0]}')">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                             </button>`;
+            const user = `<div class="d-flex align-items-center">
+                                <img src="${row[22]}" alt="User Image" class="rounded-circle object-fit-cover me-3" style="width: 45px; height: 45px;">
+                                <div class="text-start">
+                                    <span>${row[12]}${row[13]} ${row[14]}</span><br>
+                                    <span class="font-size-12">${row[9]}</span>
+                                </div>
+                            </div>`;
+
+            const income = row[5].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); 
+            const expenses = row[6].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); 
+            const total = row[7].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); 
+            const month = convertToThaiDate(row[2]); 
+
+            return {
+                ...row,
+                employee: user,
+                month ,
+                income,
+                expenses,
+                total,
+                actions,
+            };
+        });
+
+        $('#salaryCountNo2').text("+" + revenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        $('#salaryCountNo3').text("-" + expense.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+        $('#table_DashboradEmployeeSalary').bootstrapTable('load', formattedData);
+    }
+};
+
+const manageDataSalary = (key) => {
+    const dataArray = dataAllSlipSalary.filter(row => row[0] === key);
+
+    if (dataArray.length !== 0) {
+        const income = JSON.parse(dataArray[0][3]);
+        const expenses = JSON.parse(dataArray[0][4]);
+
+        changePageESalary(2);
+
+        $('#salaryAddDataKey').val(dataArray[0][0]);
+        $('#salaryAddData1').val(dataArray[0][2]);
+        $('#salaryAddData2').val(dataArray[0][1]);
+        selectEmployeeData(); 
+        $('#salaryAddData6').val(dataArray[0][5].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        $('#salaryAddData7').val(dataArray[0][6].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        $('#salaryAddData8').val(dataArray[0][7].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+        var listObjectiverevenue = document.getElementById('list_item_revenue');
+        var countObjectiverevenue = document.getElementById('list_count_revenue');
+        listObjectiverevenue.innerHTML = '';
+        countObjectiverevenue.innerHTML = '';
+
+        income.forEach((item, index) => {
+            var newIndex = index + 1;
+            var option = `<option value="${item.item}" selected>${item.item}<option>`;
+
+            dataRevenueSet.forEach((row, index) => {
+                option += `<option value="${row[1]}">${row[1]}</option>`;
+            });
+
+            var newInputlist = document.createElement('div');
+            newInputlist.classList.add('mb-2');
+            newInputlist.innerHTML = `
+                <div class="field-input">
+                    <span>${newIndex}.</span>
+                    <select class="form-field" name="salaryAddDatalist_revenue${newIndex}" id="salaryAddDatalist_revenue${newIndex}" required>      
+                        ${option}
+                    </select>
+                </div>
+            `;
+
+            listObjectiverevenue.appendChild(newInputlist);
+
+            var newInputCount = document.createElement('div');
+            newInputCount.classList.add('mb-2');
+            newInputCount.innerHTML = `
+                <div class="field-input">
+                    <i style="color: var(--box2);" class="fa-duotone fa-coin input-icon fs-5"></i>
+                    <input type="text" class="form-field input-thousand" name="salaryAddDatacount_revenue${newIndex}" id="salaryAddDatacount_revenue${newIndex}" oninput="calculateSalary();" value="${parseFloat(item.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}" required>
+                    <span style="color: var(--box2);">บาท</span>
+                </div>
+            `;
+            countObjectiverevenue.appendChild(newInputCount);
+            initializeCleave();
+        });
+
+        var listObjective = document.getElementById('list_item_expenses');
+        var countObjective = document.getElementById('list_count_expenses');
+        listObjective.innerHTML = '';
+        countObjective.innerHTML = '';
+
+        expenses.forEach((item, index) => {
+            var newIndex = index + 1;
+            var option = `<option value="${item.item}" selected>${item.item}<option>`;
+
+            dataExpensesSet.forEach((row, index) => {
+                option += `<option value="${row[1]}">${row[1]}</option>`;
+            });
+
+            var newInputlist = document.createElement('div');
+            newInputlist.classList.add('mb-2');
+            newInputlist.innerHTML = `
+                <div class="field-input">
+                    <span>${newIndex}.</span>
+                    <select class="form-field" name="salaryAddDatalist_expenses${newIndex}" id="salaryAddDatalist_expenses${newIndex}" required>      
+                        ${option}
+                    </select>
+                </div>
+            `;
+
+            listObjective.appendChild(newInputlist);
+
+            var newInputCount = document.createElement('div');
+            newInputCount.classList.add('mb-2');
+            newInputCount.innerHTML = `
+                <div class="field-input">
+                    <i style="color: var(--box4);" class="fa-duotone fa-coin input-icon fs-5"></i>
+                    <input type="text" class="form-field input-thousand" name="salaryAddDatacount_expenses${newIndex}" id="salaryAddDatacount_expenses${newIndex}" oninput="calculateSalary();" value="${parseFloat(item.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}" required>
+                    <span style="color: var(--box4);">บาท</span>
+                </div>
+            `;
+            countObjective.appendChild(newInputCount);
+            initializeCleave();
+        });
+    } else {
+        toastAlert(0, 'ไม่พบข้อมูล');
+    }
+};
+
+function populateYearFilters(selector) {
+    const currentYear = new Date().getFullYear() + 543; 
+    const startYear = currentYear - 10; 
+    const endYear = currentYear + 10; 
+    const selectElements = document.querySelectorAll(selector); 
+
+    selectElements.forEach(selectElement => {
+        selectElement.innerHTML = '';
+
+        for (let year = startYear; year <= endYear; year++) {
+            const option = document.createElement('option');
+            option.value = year; 
+            option.textContent = year; 
+
+            if (year === currentYear) {
+                option.selected = true;
+            }
+            selectElement.appendChild(option);
+        }
+    });
+}
+
+populateYearFilters('.year-filter');
+
+const updateCardProfile = async (key) => {
+    google.script.run.withSuccessHandler((data) => {
+        let dataArray = data.filter(r => r[0] === key);
+        if (dataArray.length > 0) {
+            // $('#editCardData1').val(dataArray[0][2]);
+            // $('#editCardData2').val(dataArray[0][3]);
+            // $('#editCardData3').val(dataArray[0][4]);
+            // $('#editCardData4').val(dataArray[0][6]);
+            // $('#editCardData5').val(dataArray[0][14]);
+
+            $('#showCardProfileData1').attr('src', dataArray[0][9]);
+            $('#showCardProfileData2').text(dataArray[0][1]);
+            $('#showCardProfileData3').text(dataArray[0][2] + dataArray[0][3] + ' ' + dataArray[0][4]);
+            $('#showCardProfileData4, #showCardProfileData11').text(dataArray[0][6]);
+            $('#showCardProfileData6').attr('src', dataArray[0][15]);
+            $('#showCardProfileData7').text(dataArray[0][14]);
+            $('#showCardProfileData12').text(dataArray[0][12]);
+            $('#showCardProfileData14').text(formatToDateCardThai(new Date(dataArray[0][13])));
+            $('#showCardProfileData15').text(formatToDateCardEndThai(new Date(dataArray[0][13])));
+        } else {
+            
+        }
+    }).getAlldataHrm();
+};
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const runSettingMenu = async () => {
+    try {
+        const functions = [
+            getTypeEmployeeSet,
+            getExpensesSet,
+            getRevenueSet,
+            getCategorySet,
+            getObjectiveSet,
+            getClassSpeedSet,
+            getClassSecretSet,
+            getResponseSet,
+            getJobWordSet,
+            getMooBanSet,
+            getDepartMentSet,
+            getPositionSet,
+            getCarSet,
+        ];
+
+        for (const func of functions) {
+            await func(); 
+            await delay(100); 
+        }
+    } catch (error) {
+        console.error("Error loading settings:", error);
+    }
+};
+</script>

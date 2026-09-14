@@ -1,0 +1,105 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-house"></i> หน้าแรก</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>ระบบฐานข้อมูล</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="breadcrumbA">ภาพรวมของปี <span id="totalyearhomepage"></span></a>
+      </li>
+      <li id="breadcrumbName" style="display:none"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a id="nameActive" style="display:none"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">         
+
+  </div>
+</div>
+
+<ul class="box-info">
+  <li>
+    <i class="fa-solid fa-briefcase"></i>
+    <span class="text d-flex flex-column">
+      <span>ประกาศ</span>  
+      <span>อัพเดทล่าสุด Version 1.2.8</span>          
+      <span>- แก้ไขการแจ้งเตือนผ่าน Line Notify เป็น Line Messaging API</span>          
+    </span>
+  </li>
+  <li role="button" onclick="changePageGetDoc(1)">
+    <i class="fa-solid fa-paperclip"></i>
+    <span class="text">
+      <p>หนังสือรอลงรับ <span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingDocNo1">0</h3>                
+    </span>
+  </li>
+  <li role="button" onclick="changePageSenddoc(2)">
+    <i class="fa-solid fa-paper-plane"></i>
+    <span class="text">
+      <p>หนังสือรอดำเนินการ <span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingDocNo2">0</h3>        
+    </span>
+  </li>
+  <li role="button" onclick="changePageSenddoc(5)">
+    <i class="fa-solid fa-envelope"></i>
+    <span class="text">
+      <p>หนังสือที่ต้องติดตาม <span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingDocNo3">0</h3>               
+    </span>
+  </li>
+</ul>
+
+<div class="data-contianer">
+  <div class="datacontent">
+    <div class="head mb-0">
+      <h5><i class="fa-solid fa-download"></i> รายการลงรับหนังสือล่าสุด</h5>
+    </div>
+
+    <div class="table-responsive mt-3">
+      <table id="docsendTable" class="table table-sm">
+        <thead>
+          <tr class="text-center">
+            <th scope="col" class="text-center">เลขที่หนังสือ</th>
+            <th scope="col" class="text-center">เข้าเมื่อ</th>
+            <th scope="col" class="text-center">รายละเอียด</th>
+            <th scope="col" class="text-center">สถานะ</th>
+          </tr>
+        </thead>
+        <tbody id="docsendTable-body">
+          <tr>
+            <td class="text-center" colspan="4"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div>     
+  </div>
+
+  <div class="databox">
+    <div class="head mb-0">
+      <h5><i class="fa-solid fa-envelopes-bulk"></i> รายการหนังสือส่งล่าสุด</h5>
+    </div>
+
+    <div class="table-responsive mt-3">
+      <table id="docOwnerTable" class="table table-sm">
+        <thead>
+          <tr class="text-center">
+            <th scope="col" class="text-center">เลขที่หนังสือ</th>
+            <th scope="col" class="text-center">ส่งเมื่อ</th>
+            <th scope="col" class="text-center">รายละเอียด</th>
+            <th scope="col" class="text-center">สถานะ</th>
+          </tr>
+        </thead>
+        <tbody id="docOwnerTable-body">
+          <tr>
+            <td class="text-center" colspan="4"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div>            
+  </div>
+</div>        

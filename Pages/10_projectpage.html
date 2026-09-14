@@ -1,0 +1,528 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-house-building"></i> เสนอโครงการ</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>แบบฟอร์ม</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a id="projectbreadcrumb1">การเสนอโครงการ</a>
+      </li>
+      <li id="projectbreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="projectbreadcrumb3"></a>
+      </li>
+      <li style="display:none" id="projectbreadcrumb4"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="projectbreadcrumb5"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+<div class="data-contianer" id="projectPage1" style="display: none">
+  <div class="container-fluid">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-rocket-launch"></i> การเพิ่มโครงการ</h5>
+    </div>
+
+    <div class="staprecent">
+      <h6 class="text-primary mb-3 text-center">
+        ขั้นตอนการเสนอโครงการ
+      </h6>
+      <div class="form-header d-flex mb-4">
+        <span class="stepIndicator" id="stepIndicator1" role="button">ชื่อโครงการ</span>
+        <span class="stepIndicator" id="stepIndicator2" role="button">ยุทธศาสตร์</span>
+        <span class="stepIndicator" id="stepIndicator3" role="button">หลักการและเหตุผล</span>
+        <span class="stepIndicator" id="stepIndicator4" role="button">วัตถุประสงค์</span>
+        <span class="stepIndicator" id="stepIndicator5" role="button">เป้าหมาย</span>
+        <span class="stepIndicator" id="stepIndicator6" role="button">วิธีการดำเนินการ</span>
+        <span class="stepIndicator" id="stepIndicator7" role="button">ระยะเวลาดำเนินการ</span>
+        <span class="stepIndicator" id="stepIndicator8" role="button">งบประมาณ</span>
+        <span class="stepIndicator" id="stepIndicator9" role="button">หน่วยดำเนินการ</span>
+        <span class="stepIndicator" id="stepIndicator10" role="button">ผลที่คาดว่าจะได้รับ</span>
+        <span class="stepIndicator" id="stepIndicator11" role="button">ตัวชี้วัดโครงการ</span>
+        <span class="stepIndicator" id="stepIndicator12" role="button">เสร็จสิ้น</span>
+      </div>
+    </div>
+
+    <div class="py-3" id="projectStep1">
+      <div class="head">
+        <h5><i class="fa-duotone fa-file-chart-pie"></i> ชื่อโครงการ</h5>
+      </div>
+      <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+          <div class="mb-2">
+            <label for="projectData1" class="col-form-label" >ชื่อโครงการ</label>
+            <div class="field-input">
+              <i class="fa-duotone fa-shield-check input-icon fs-5"></i>
+              <input id="projectData1" class="form-field ms-2" placeholder="โปรดระบุชื่อโครงการที่ต้องการเสนอ">
+            </div>
+          </div>
+          <div>
+            <label for="projectData2" class="col-form-label" >หน่วยงานที่รับผิดชอบ</label>
+            <div class="field-input">
+              <i class="fa-duotone fa-building input-icon fs-5"></i>
+              <select id="projectData2" class="form-field ms-2"></select>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2"></div>
+      </div>
+    </div>
+
+    <div class="py-3" id="projectStep2" style="display: none">
+      <div class="head">
+        <h5><i class="fa-duotone fa-chess-knight"></i> ยุทธศาสตร์การพัฒนาจังหวัด</h5>
+      </div>
+      <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+          <div class="mb-2">
+            <label for="projectData3" class="col-form-label" >ยุทธศาสตร์</label>
+            <div class="field-input">
+              <i class="fa-duotone fa-castle input-icon fs-5"></i>
+              <select id="projectData3" class="form-field ms-2">
+                <option selected value="">โปรดเลือก</option>
+                <option value="ประเด็นการพัฒนาที่ 1: สร้างมูลค่าเพิ่มในการผลิต การแปรรูปการตลาดสินค้าเกษตรปลอดภัย และพลังงานทดแทนด้วยนวัตกรรมและเทคโนโลยี">ประเด็นการพัฒนาที่ 1</option>
+                <option value="ประเด็นการพัฒนาที่ 2: พัฒนาการบริหารจัดการท่องเที่ยวมรดกโลกทางวัฒนธรรมและธรรมชาติเชื่อมโยงกับแหล่งท่องเที่ยวที่มีศักยภาพและวิถีชุมชนเพื่อยกระดับมาตรฐานสู่สากล">ประเด็นการพัฒนาที่ 2</option>
+                <option value="ประเด็นการพัฒนาที่ 3: พัฒนาคุณภาพชีวิตประชาชน สร้างสังคมที่เข้มแข็ง และบริหารจัดการทรัพยากรธรรมชาติและสิ่งแวดล้อมอย่างยั่งยืน">ประเด็นการพัฒนาที่ 3</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2"></div>
+      </div>
+    </div>
+
+    <div class="py-3" id="projectStep3" style="display: none">
+      <div class="head">
+        <h5><i class="fa-duotone fa-pencil"></i> หลักการและเหตุผล</h5>
+      </div>
+      <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+          <div class="mb-2">
+            <label for="projectData4" class="col-form-label" >หลักการและเหตุผล</label>
+            <div class="field-input">
+              <i class="fa-duotone fa-gear input-icon fs-5"></i>
+              <textarea id="projectData4" class="form-field ms-2" rows="10" placeholder="โปรดระบุหลักการและเหตุผลของโครงการ"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2"></div>
+      </div>
+    </div>
+
+    <div class="py-3" id="projectStep4" style="display: none">
+      <div class="head">
+        <h5><i class="fa-duotone fa-object-subtract"></i> วัตถุประสงค์</h5>
+        <div>
+          <button class="btn btn-danger rounded-end-0 rounded-4 px-4" id="negativeObj"><i class="fa-duotone fa-message-minus"></i> ลด</button>
+          <button class="btn btn-green rounded-start-0 rounded-4 px-4" id="positiveObj"><i class="fa-duotone fa-message-plus"></i> เพิ่ม</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+          <p class="col-form-label" >วัตถุประสงค์ของโครงการ</p>
+          <div id="projectOjective">
+            <div class="mb-2">
+              <div class="field-input">
+                <span>1. </span>
+                <input type="text" id="projectData5-1" name="projectData5" class="form-field ms-2">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2"></div>
+      </div>
+    </div>
+
+    <div class="py-3" id="projectStep5" style="display: none">
+      <div class="head">
+        <h5><i class="fa-duotone fa-bullseye"></i> เป้าหมาย</h5>
+      </div>
+      <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+          <div class="mb-2">
+            <label for="projectData6" class="col-form-label">เป้าหมายของโครงการ</label>
+            <div class="field-input">
+              <i class="fa-duotone fa-bullseye-arrow input-icon fs-5"></i>
+              <textarea id="projectData6" class="form-field ms-2" rows="4" placeholder="โปรดระบุเป้าหมายของโครงการ"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2"></div>
+      </div>
+    </div>
+
+    <div class="py-3" id="projectStep6" style="display: none">
+      <div class="head">
+        <h5><i class="fa-duotone fa-ballot-check"></i> วิธีการดำเนินการ</h5>
+        <div>
+          <button class="btn btn-danger rounded-end-0 rounded-4 px-4" id="negativePc"><i class="fa-duotone fa-message-minus"></i> ลด</button>
+          <button class="btn btn-green rounded-start-0 rounded-4 px-4" id="positivePc"><i class="fa-duotone fa-message-plus"></i> เพิ่ม</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+          <p class="col-form-label" >วิธีการดำเนินการของโครงการ</p>
+          <div id="projectProceed">
+            <div class="mb-2">
+              <div class="field-input">
+                <span>1. </span>
+                <input type="text" id="projectData7-1" name="projectData7" class="form-field ms-2">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2"></div>
+      </div>
+    </div>
+
+    <div class="py-3" id="projectStep7" style="display: none">
+      <div class="head">
+        <h5><i class="fa-duotone fa-stopwatch"></i> ระยะเวลาดำเนินการ</h5>
+      </div>
+      <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <label for="projectData8" class="col-form-label">ระยะเวลาดำเนินการ</label>
+            <div class="field-input">
+              <i class="fa-duotone fa-timer input-icon fs-5"></i>
+              <input id="projectData8" class="form-field ms-2" placeholder="โปรดระบุห้วงเวลาของโครงการ">
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <label for="projectData9" class="col-form-label">ถึงเดือน</label>
+            <div class="field-input">
+              <i class="fa-duotone fa-alarm-exclamation input-icon fs-5"></i>
+              <input id="projectData9" class="form-field ms-2" placeholder="โปรดระบุห้วงเวลาดำเนินการ">
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2"></div>
+      </div>
+    </div>
+
+    <div class="py-3" id="projectStep8" style="display: none">
+      <div class="head">
+        <h5><i class="fa-duotone fa-money-bill"></i> งบประมาณ</h5>
+      </div>
+      <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+          <div class="mb-2">
+            <label for="projectData10" class="col-form-label" >งบประมาณที่ใช้ในโครงการ</label>
+            <div class="field-input">
+              <i class="fa-duotone fa-piggy-bank input-icon fs-5"></i>
+              <input type="number" id="projectData10" class="form-field ms-2 text-center" placeholder="โปรดระบุงบประมาณที่ใช้ในโครงการ">
+              <span>บาท</span>
+            </div>
+          </div>
+          <div class="text-center">
+            <span id="textthaibath"></span>
+          </div>
+        </div>
+        <div class="col-lg-2"></div>
+      </div>
+    </div>
+
+    <div class="py-3" id="projectStep9" style="display: none">
+      <div class="head">
+        <h5><i class="fa-duotone fa-bulldozer"></i> หน่วยดำเนินการ</h5>
+      </div>
+      <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+          <div class="mb-2">
+            <label for="projectData11" class="col-form-label" >หน่วยงาน</label>
+            <div class="field-input">
+              <i class="fa-duotone fa-hotel input-icon fs-5"></i>
+              <input type="text" id="projectData11" class="form-field ms-2" placeholder="โปรดระบุหน่วยงานที่ดำเนินโครงการ">
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2"></div>
+      </div>
+    </div>
+
+    <div class="py-3" id="projectStep10" style="display: none">
+      <div class="head">
+        <h5><i class="fa-duotone fa-road-bridge"></i> ผลที่คาดว่าจะได้รับ</h5>
+        <div>
+          <button class="btn btn-danger rounded-end-0 rounded-4 px-4" id="negativeRs"><i class="fa-duotone fa-message-minus"></i> ลด</button>
+          <button class="btn btn-green rounded-start-0 rounded-4 px-4" id="positiveRs"><i class="fa-duotone fa-message-plus"></i> เพิ่ม</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+          <p class="col-form-label">ผลที่คาดว่าจะได้รับของโครงการ</p>
+          <div id="projectResults">
+            <div class="mb-2">
+              <div class="field-input">
+                <span>1. </span>
+                <input type="text" id="projectData12-1" name="projectData12" class="form-field ms-2">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2"></div>
+      </div>
+    </div>
+
+    <div class="py-3" id="projectStep11" style="display: none">
+      <div class="head">
+        <h5><i class="fa-duotone fa-hand-point-up"></i> ตัวชี้วัดโครงการ</h5>
+      </div>
+      <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+          <div class="mb-2">
+            <label for="projectData13" class="col-form-label">ตัวชี้วัดของโครงการ</label>
+            <div class="field-input">
+              <i class="fa-duotone fa-shield-check input-icon fs-5"></i>
+              <textarea id="projectData13" class="form-field ms-2" rows="3" placeholder="โปรดระบุตัวชี้วัดโครงการ"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2"></div>
+      </div>
+    </div>
+
+    <div class="py-3" id="projectStep12" style="display: none">
+      <div class="head">
+        <h5><i class="fa-duotone fa-chalkboard-user"></i> เสนอโครงการ</h5>
+      </div>
+      <select id="projectData14"></select>
+    </div>
+
+    <div class="mt-5 d-flex justify-content-center align-items-center">
+      <button class="btn btn-outline-blue rounded-pill btn-sm" style="width: 130px" id="prevBtn"><i class="fa-duotone fa-circle-chevron-right fa-flip-horizontal"></i> ย้อนกลับ</button>
+      <button class="btn btn-outline-blue rounded-pill btn-sm ms-2" style="width: 130px" id="nextBtn">ต่อไป <i class="fa-duotone fa-circle-chevron-right"></i></button>
+      <button class="btn btn-outline-green rounded-pill btn-sm ms-2" style="width: 130px;display: none" onclick="addNewProject()" id="saveProjectBtn"> บันทึกข้อมูล</button>
+    </div>
+  </div>
+
+  <div class="container-fluid p-5" id="projectContianer" style="display: none">
+    <div class="d-flex justify-content-center align-items-center my-3">
+      <h6 style="font-size: 18px;" class="text-primary">แบบเสนอโครงการ</h6>
+    </div>
+    <div class="row">
+      <h6 class="col-lg-1 mb-3 text-primary fw-medium">ชื่อโครงการ</h6>
+      <span class="col-lg-11 mb-3" id="textShowData1"></span>
+      <h6 class="col-lg-1 mb-3 text-primary fw-medium">หน่วยงาน</h6>
+      <span class="col-lg-11 mb-3" id="textShowData2"></span>
+    </div>
+    <hr class="opacity-10">
+    <div class="row mb-3">
+      <h6 class="col-lg-12 text-primary fw-medium">ยุทธศาสตร์การพัฒนาจังหวัด</h6>
+      <div class="col-lg-1"></div>
+      <span class="col-lg-11" id="textShowData3"></span> 
+    </div>
+    <div class="row mb-3">
+      <h6 class="col-lg-12 text-primary fw-medium">หลักการและเหตุผล</h6>
+      <div class="col-lg-1"></div>
+      <span class="col-lg-11" id="textShowData4"></span> 
+    </div>
+    <div class="row mb-3">
+      <h6 class="col-lg-12 text-primary fw-medium">วัตถุประสงค์ของโครงการ</h6>
+      <div class="col-lg-1"></div>
+      <span class="col-lg-11" id="textShowData5"></span> 
+    </div>
+    <div class="row mb-3">
+      <h6 class="col-lg-12 text-primary fw-medium">เป้าหมาย</h6>
+      <div class="col-lg-1"></div>
+      <span class="col-lg-11" id="textShowData6"></span> 
+    </div>
+    <div class="row mb-3">
+      <h6 class="col-lg-12 text-primary fw-medium">วิธีการดำเนินการ</h6>
+      <div class="col-lg-1"></div>
+      <span class="col-lg-11" id="textShowData7"></span> 
+    </div>
+    <div class="row mb-3">
+      <h6 class="col-lg-12 text-primary fw-medium">ระยะเวลาดำเนินการ</h6>
+      <div class="col-lg-1"></div>
+      <span class="col-lg-11" id="textShowData8"></span> 
+    </div>
+    <div class="row mb-3">
+      <h6 class="col-lg-12 text-primary fw-medium">งบประมาณ</h6>
+      <div class="col-lg-1"></div>
+      <span class="col-lg-11" id="textShowData9"></span> 
+    </div>
+    <div class="row mb-3">
+      <h6 class="col-lg-12 text-primary fw-medium">หน่วยดำเนินการ</h6>
+      <div class="col-lg-1"></div>
+      <span class="col-lg-11" id="textShowData10"></span> 
+    </div>
+    <div class="row mb-3">
+      <h6 class="col-lg-12 text-primary fw-medium">ผลที่คาดว่าจะได้รับ</h6>
+      <div class="col-lg-1"></div>
+      <span class="col-lg-11" id="textShowData11"></span> 
+    </div>
+    <div class="row mb-3">
+      <h6 class="col-lg-12 text-primary fw-medium">ตัวชี้วัดโครงการ</h6>
+      <div class="col-lg-1"></div>
+      <span class="col-lg-11" id="textShowData12"></span> 
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="projectPage2" style="display: none">
+  <div class="datacontent">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-file-chart-pie"></i> การตรวจสอบโครงการ</h5>
+    </div>
+    <div id="projectDataContainer"></div>
+  </div>
+
+  <div class="datacontent">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-folder-open"></i> การเสนอโครงการ</h5>
+    </div>
+
+    <div class="table-responsive mt-3">
+      <table id="projectSentTable" class="table table-sm">
+        <thead>
+          <tr class="text-center">
+            <th scope="col" class="text-center">ผู้เสนอ</th>
+            <th scope="col" class="text-center">เข้าเมื่อ</th>
+            <th scope="col" class="text-center">รายละเอียด</th>
+            <th scope="col" class="text-center">สถานะ</th>
+          </tr>
+        </thead>
+        <tbody id="projectSentTable-body">
+          <tr>
+            <td class="text-center" colspan="4"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div>  
+  </div>
+</div>
+
+<div class="data-contianer" id="projectPage3" style="display: none">
+  <div class="container-fluid">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-file-circle-info"></i> รายละเอียดของโครงการ</h5>
+    </div>
+    
+    <div class="row">
+      <div class="col-sm-1"></div>
+      <input type="hidden" id="projectDetailingSave">
+      <div class="col-sm-5">
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">Project Key :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="projectDetailingKey"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">วันที่รายงาน :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="projectDetailing1"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">ผู้รายงาน :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="projectDetailing2"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">ชื่อโครง :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="projectDetailing3"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">หน่วยงานที่เสนอ :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="projectDetailing4"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">ประเด็นยุทธศาสตร์ :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="projectDetailing5"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">หลักการและเหตุผล :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="projectDetailing6"></span>
+        </div>
+      </div>
+      <div class="col-sm-1"></div>
+      <div class="col-sm-5">
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">วัตถุประสงค์ของโครงการ :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="projectDetailing7"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">เป้าหมายของโครงการ :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="projectDetailing8"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">วิธีการดำเนินการของโครงการ :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="projectDetailing9"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">ระยะเวลาดำเนินการ :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="projectDetailing10"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">งบประมาณที่ใช้ในโครงการ :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="projectDetailing11"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">หน่วยดำเนินการ :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="projectDetailing12"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">ผลที่คาดว่าจะได้รับ :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="projectDetailing13"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">ตัวชี้วัดของโครงการ :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="projectDetailing14"></span>
+        </div>
+      </div>
+    </div>
+
+    <hr class="opacity-25 mb-3">
+    <div class="text-end" id="projectDivBtn">
+      <button class="btn btn-outline-green rounded-3" data-bs-toggle="modal" data-bs-target="#closeProjectModal"><i class="fa-duotone fa-power-off"></i> ปิดงาน</button>
+      <button class="btn btn-violet rounded-3" data-bs-toggle="modal" data-bs-target="#saveProjectingModal"><i class="fa-duotone fa-cloud-arrow-down"></i> บันทึกงาน</button>
+      <button class="btn btn-red rounded-3" data-bs-toggle="modal" data-bs-target="#returnProjectModal"><i class="fa-duotone fa-duotone fa-share-all fa-flip-horizontal"></i> ตีกลับ</button>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="head mb-4">
+      <h5><i class="fa-duotone fa-folder-open"></i> การตอบรับโครงการ</h5>
+    </div>
+
+    <div class="table-responsive mt-3">
+      <table id="tableProjectDoc" class="table table-sm">
+        <thead>
+          <tr class="text-center">
+            <th scope="col" class="text-center">#</th>
+            <th scope="col" class="text-center">สถานะ</th>
+            <th scope="col" class="text-center">วันที่ส่ง</th>
+            <th scope="col" class="text-center">ส่งจาก</th>
+            <th scope="col" class="text-center">ส่งถึง</th>
+            <th scope="col" class="text-center">ผู้ลงรับ</th>
+            <th scope="col" class="text-center">วันที่ลงรับ</th>
+          </tr>
+        </thead>
+        <tbody id="tableProjectDoc-body" class="table-group-divider">
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+          <tr>
+            <td class="text-center" colspan="8"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,395 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-id-card-clip"></i> ประวัติส่วนตัว</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>ข้อมูลผู้ใช้งาน</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a>โปรไฟล์ของฉัน</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="profilebreadcrumb1">ประวัติส่วนตัว</a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+<div class="data-contianer">
+  <div class="databox">
+    <center>
+      <div style="width: 200px; height: 200px; overflow: hidden; border-radius: 50%; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); border:3px solid white;" class="mb-3 mt-3">
+        <img id="profileImg" src="https://cdn.jsdelivr.net/gh/JacketJK/image/user-1.png" alt="รูปประจำตัว" style="width: 100%; height: 100%; object-fit: cover; object-position: top;">
+      </div>
+      <h6 class="fw-bold fs-5" id="profileData1">นายคนงาน ทั่วไป</h6>
+      <h6 class="fw-light fs-6 text-secondary" id="profileData2">jacknaja108@gmail.com</h6>
+      <h6 class="fw-light fs-6" id="profileData3">สำนักปลัด อบต.</h6>
+    </center>
+    <hr class="opacity-25 border-1">
+    <div class="row">
+      <div class="col-sm-12 mt-3 mb-3">
+        <span class="fw-light fs-6 opacity-50">เบอร์โทร : </span><span class="fs-6" id="profileData4">0855379486</span>
+      </div>
+      <div class="col-sm-12 mb-3">
+        <span class="fw-light fs-6 opacity-50">ที่อยู่ : </span><span class="fs-6" id="profileData5">340 หมู่ที่ 20 ตำบลปางมะค่า อำเภอขาณุวรลักษบุรี จังหวัดกำแพงเพชร 62140</span>
+      </div>
+    </div>
+    <hr class="opacity-25 border-1">
+    <center>
+      <img id="profileSig" class="mt-3 inverted-color" src="https://ioffice-utp.com/khongphai/assets/upload/signature/signature_76_20231012164533.png" alt="ลายเซ็นต์" style="width: 300px; height: 75px;">
+    </center>
+    <div class="row mt-3 md-3">
+      <div class="col-md-12 text-center">
+        <label for="upload-image-signature" class="btn btn-primary btn-sm rounded-pill px-4" style="font-size: 14px;">
+          <i class="fa-solid fa-image"></i> อัพโหลดรูปลายเซ็นขนาด กว้าง 600px และสูง 150px
+          <input type="file" accept="image/*" name="user_signature_path" onchange="upload_image_signature(this);" id="upload-image-signature" style="display: none">
+        </label>
+      </div>
+    </div>
+    <hr class="opacity-25 border-1">
+    <div class="my-3">
+      <span class="fw-light fs-6 opacity-50">Public Key : </span><span class="fs-6" id="profileData6"></span>
+    </div>
+    <div class="my-3">
+      <span class="fw-light fs-6 opacity-50">Private Key : </span><span class="fs-6" id="profileData7">*****************************************</span>
+    </div>
+    <hr class="opacity-25 border-1">
+      <a href="#" target="_blank" class="mb-2" id="addLineMesApi">เพิ่มเพื่อน Line เพื่อรับแจ้งเตือน</a>
+      <a href="#" id="lineOntifyAdd" target="_blank" class="w-100 btn btn-outline-success btn-lg rounded-pill"><i class="fa-brands fa-line fa-shake" style="color: #60f000;"></i> รับการแจ้งเตือนผ่าน Line</a>
+  </div>
+
+  <div class="datarespone"> 
+    <ul class="nav nav-underline nav-fill z-index-5">
+      <li class="nav-item" onclick="profileManu(1)">
+        <a class="nav-link" id="profileManu1">หน่วยงาน</a>
+      </li>
+      <li class="nav-item" onclick="profileManu(2)">
+        <a class="nav-link" id="profileManu2">ตำแหน่งงาน</a>
+      </li>
+      <li class="nav-item" onclick="profileManu(3)">
+        <a class="nav-link active" aria-current="page" id="profileManu3">ประวัติส่วนตัว</a>
+      </li>
+      <li class="nav-item" onclick="profileManu(6)">
+        <a class="nav-link " id="profileManu6">บัตรประจำตัว</a>
+      </li>
+      <li class="nav-item" onclick="profileManu(4)">
+        <a class="nav-link " id="profileManu4">ประวัติเข้าใช้งาน</a>
+      </li>
+      <li class="nav-item" onclick="profileManu(5)">
+        <a class="nav-link " id="profileManu5">ประวัติแก้ไขข้อมูล</a>
+      </li>
+    </ul> 
+    <hr class="w-100" style="margin-top: -1px;">
+
+    <div id="pageProflies1" style="display:none;">
+      <div class="container-fluid">
+        <div class="row mt-5">
+          <div class="col-md-4 d-flex align-items-center justify-content-end">
+            <h6 class="fw-normal">รหัสหน่วยงาน</h6>
+          </div>
+          <div class="col-md-7 ms-3">
+            <input type="text" class="form-control rounded-4 w-100 text-secondary" id="dataAgency1" disabled>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4 d-flex align-items-center justify-content-end">
+            <h6 class="fw-normal">ชื่อหน่วยงาน</h6>
+          </div>
+          <div class="col-md-7 ms-3">
+            <input type="text" class="form-control rounded-4 w-100 text-secondary" id="dataAgency2" disabled>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4 d-flex align-items-center justify-content-end">
+            <h6 class="fw-normal">เบอร์โทร</h6>
+          </div>
+          <div class="col-md-7 ms-3">
+            <input type="text" class="form-control rounded-4 w-100 text-secondary" id="dataAgency3" disabled>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4 d-flex align-items-center justify-content-end">
+            <h6 class="fw-normal">สถานะที่</h6>
+          </div>
+          <div class="col-md-7 ms-3">
+            <input type="text" class="form-control rounded-4 w-100 text-secondary" id="dataAgency4" disabled>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4 d-flex align-items-center justify-content-end" >
+            <h6 class="fw-normal">รายละเอียด</h6>
+          </div>
+          <div class="col-md-7 ms-3">
+            <textarea class="form-control rounded-4 w-100 text-secondary" id="dataAgency5" rows="2" disabled></textarea>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4 d-flex align-items-center justify-content-end">
+            <h6 class="fw-normal">สถานะหน่วยงาน</h6>
+          </div>
+          <div class="col-md-7 ms-3" id="dataAgency8">
+            <span class="badge badge-success"><i class="fa-solid fa-check"></i> ปกติ</span>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4 d-flex align-items-center justify-content-end">
+            <h6 class="fw-normal">รหัสนำหน้าหนังสือส่งออกภายใน</h6>
+          </div>
+          <div class="col-md-7 ms-3">
+            <input type="text" class="form-control rounded-4 w-100 text-secondary" id="dataAgency6" disabled>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4 d-flex align-items-center justify-content-end">
+            <h6 class="fw-normal">รหัสนำหน้าหนังสือส่งออกภายนอก</h6>
+          </div>
+          <div class="col-md-7 ms-3">
+            <input type="text" class="form-control rounded-4 w-100 text-secondary" id="dataAgency7" disabled>
+          </div>
+        </div>
+        <hr class="opacity-25 border-1 my-5">
+        <div class="row mt-3">
+          <div class="col-md-4 d-flex align-items-center justify-content-end">
+            <h6 class="fw-normal">ปีงานสารบรรณ</h6>
+          </div>
+          <div class="col-md-7 ms-3">
+            <input type="text" class="form-control rounded-4 w-100 text-secondary" id="dataAgency9" disabled>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4 d-flex align-items-center justify-content-end">
+            <h6 class="fw-normal">เลขทะเบียนรับเข้าสุดท้าย</h6>
+          </div>
+          <div class="col-md-7 ms-3">
+            <input type="text" class="form-control rounded-4 w-100 text-secondary" id="dataAgency10" disabled>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4 d-flex align-items-center justify-content-end">
+            <h6 class="fw-normal">เลขที่ส่งออกภายในสุดท้าย</h6>
+          </div>
+          <div class="col-md-7 ms-3">
+            <input type="text" class="form-control rounded-4 w-100 text-secondary" id="dataAgency11" disabled>
+          </div>
+        </div>
+      </div>  
+    </div> 
+
+    <div id="pageProflies2" style="display:none;">
+      <div class="table-responsive mt-4" style="padding-bottom: 80px;">
+        <table id="positionActiveTable" class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="text-center">#</th>
+              <th scope="col" class="text-center">หน่วยงาน</th>
+              <th scope="col" class="text-center">ตำแหน่ง</th>
+              <th scope="col" class="text-center">ใช้งานหลัก</th>
+              <th scope="col" class="text-center">สถานะ</th>
+            </tr>
+          </thead>
+          <tbody id="positionActiveTable-body">
+            <tr>
+              <td class="text-center" colspan="5"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+            </tr>
+            <!-- แทรกข้อมูลจากฐานข้อมูล -->
+          </tbody>
+        </table>
+      </div> 
+    </div>  
+
+    <div id="pageProflies3" style="display:none;">
+      <div class="container d-flex flex-column justify-content-center align-items-center">
+        <div style="width: 200px; height: 200px; overflow: hidden; border-radius: 50%; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); border:3px solid white;" class="mb-3 mt-3">
+          <img id="dataProfile1" src="" alt="รูปประจำตัว" style="width: 100%; height: 100%; object-fit: cover; object-position: top;">
+        </div>
+        <span style="font-size: 14px;">แนะนำรูปขนาด 400x400 px</span>
+        <label for="dataProfileUpload" class="btn btn-sm rounded-pill btn-blue px-4"><i class="fa-solid fa-image"></i> อัพโหลดรูป</label>
+        <input type="file" id="dataProfileUpload" class="d-none" onchange="upload_image_pofile(this)" accept="image/*">
+      </div>
+      <div class="container">
+        <div class="row mt-3">
+          <div class="col-1"></div>
+          <div class="col-md-2 d-flex align-items-center">
+            <label for="dataProfile2" class="label-form">Username</label>
+          </div>
+          <div class="col-md-6 d-flex align-items-center">
+            <input type="text" class="form-control rounded-4 w-100 text-secondary" id="dataProfile2" readonly>
+          </div>
+          <div class="col-md-3 d-flex align-items-center">
+            <button class="btn btn-warning btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#userChangePwModal"><i class="fa-solid fa-rotate-reverse"></i> เปลี่ยนรหัสผ่าน</button>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-1"></div>
+          <div class="col-md-2 d-flex align-items-center">
+            <label for="dataProfile3" class="label-form">ชื่อผู้ใช้งาน</label>
+          </div>
+          <div class="col-md-6 d-flex align-items-center">
+            <input type="text" class="form-control rounded-4 rounded-end-0 border-end-0 w-25" id="dataProfile3">
+            <input type="text" class="form-control rounded-0 border-start-0 border-end-0" id="dataProfile8">
+            <input type="text" class="form-control rounded-4 rounded-start-0 border-start-0" id="dataProfile9">
+          </div>
+          <div class="col-md-2 d-flex align-items-center">
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-1"></div>
+          <div class="col-md-2 d-flex align-items-center">
+            <label for="dataProfile4" class="label-form">เบอร์โทร</label>
+          </div>
+          <div class="col-md-6 d-flex align-items-center">
+            <input type="text" class="form-control rounded-4 w-100" id="dataProfile4">
+          </div>
+          <div class="col-md-2 d-flex align-items-center">
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-1"></div>
+          <div class="col-md-2 d-flex align-items-center">
+            <label for="dataProfile5" class="label-form">อีเมล์</label>
+          </div>
+          <div class="col-md-6 d-flex align-items-center">
+            <input type="text" class="form-control rounded-4 w-100 text-secondary" id="dataProfile5" readonly disabled>
+          </div>
+          <div class="col-md-2 d-flex align-items-center">
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-1"></div>
+          <div class="col-md-2 d-flex align-items-center">
+            <label for="dataProfile6" class="label-form">ที่อยู่</label>
+          </div>
+          <div class="col-md-6 d-flex align-items-center">
+            <textarea class="form-control rounded-4 w-100" id="dataProfile6" rows="3"></textarea>
+          </div>
+          <div class="col-md-2 d-flex align-items-center">
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-1"></div>
+          <div class="col-md-2 d-flex align-items-center">
+            <h6>สถานะผู้ใช้งาน</h6>
+          </div>
+          <div class="col-md-6 d-flex align-items-center">
+            <span id="dataProfile7"></span>
+          </div>
+          <div class="col-md-2 d-flex align-items-center">
+          </div>
+        </div>
+        <div class="container d-flex justify-content-center align-items-center mt-3">
+          <button class="btn btn-outline-primary btn-sm rounded-pill py-1 px-4" onclick="edit_userchangedata()"><i class="fa-duotone fa-floppy-disk-circle-arrow-right"></i> บันทึก</button>
+          <button class="btn btn-outline-danger btn-sm rounded-pill ms-2 py-1 px-4"><i class="fa-duotone fa-xmark"></i> ยกเลิก</button>
+        </div>
+      </div>
+      
+    </div>  
+
+    <div id="pageProflies4" style="display:none;">
+      <div class="table-responsive mt-4" style="padding-bottom: 80px;">
+        <table id="historyActiveTable" class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="text-center">#</th>
+              <th scope="col" class="text-center">สถานะ</th>
+              <th scope="col" class="text-center">IP</th>
+              <th scope="col" class="text-center">Browser</th>
+              <th scope="col" class="text-center">เวลา</th>
+            </tr>
+          </thead>
+          <tbody id="historyActiveTable-body">
+            <tr>
+              <td class="text-center" colspan="5"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+            </tr>
+            <!-- แทรกข้อมูลจากฐานข้อมูล -->
+          </tbody>
+        </table>
+      </div> 
+    </div>
+
+    <div id="pageProflies5" style="display:none;">
+      <div class="table-responsive mt-4" style="padding-bottom: 80px;">
+        <table id="historyEditTable" class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="text-center">#</th>
+              <th scope="col" class="text-center">ประวัติ</th>
+              <th scope="col" class="text-center">ชื่อผู้ใช้งาน</th>
+              <th scope="col" class="text-center">IP</th>
+              <th scope="col" class="text-center">Browser</th>
+              <th scope="col" class="text-center">เวลา</th>
+            </tr>
+          </thead>
+          <tbody id="historyEditTable-body">
+            <tr>
+              <td class="text-center" colspan="6"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+            </tr>
+            <!-- แทรกข้อมูลจากฐานข้อมูล -->
+          </tbody>
+        </table>
+      </div> 
+    </div>  
+
+    <div id="pageProflies6" style="display:none;">
+      <div class="container-fluid" style="height: 500px;">
+        <div class="myCard" id="showCardProfile" onclick="flipCardShow()">
+          <div class="frontSide">
+            <div class="employee-card">
+              <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/seal_agency.png" alt="seal" class="seal-agency">
+              <div class="card-header">
+                <img src="https://lh3.googleusercontent.com/d/1Zbx8KeFawrNt6RnYvFKwT0OSACj2oUfp" alt="Employee Picture" class="card-picture" id="showCardProfileData1">
+                <div class="card-details">
+                  <p class="card-id text-center fw-medium mt-4">หมายเลขบัตรประจำตัวประชาชน</p>
+                  <p class="card-id text-center fw-medium" id="showCardProfileData2">x-xxxx-xxxxx-xx-x</p>
+                  <p class="card-name fw-medium">ชื่อ <span id="showCardProfileData3"></span></p>
+                  <p class="card-info fw-medium">ตำแหน่ง <span id="showCardProfileData4"></span></p>
+                  <p class="card-info fw-medium">สังกัด <span id="showCardProfileData5"></span></p>
+                </div>
+              </div>
+              <div class="card-employee-body">
+                <div class="grid-item">
+                  <img src="https://lh3.googleusercontent.com/d/1pqeyn763JNn9H59hxzYhOhkJHIraR2pD" alt="Employee Signature" class="card-signature inverted-color" id="showCardProfileData6">
+                  <p class="card-info-boss">ลายมือชื่อ</p>           
+                  <p class="card-info">หมู่โลหิต &nbsp;<span class="fw-medium" id="showCardProfileData7">บี</span></p>    
+                </div>
+                <div class="grid-item">
+                  <img src="https://lh3.googleusercontent.com/d/1pqeyn763JNn9H59hxzYhOhkJHIraR2pD" alt="Employee Signature" class="card-signature-boss inverted-color" id="showCardProfileData8">
+                  <span class="card-info text-center fw-medium" id="showCardProfileData9">(นายประภัสร์  อ่อนฤทธิ์)</span>
+                  <span class="card-info-boss text-center fw-medium" id="showCardProfileData10">รองนายกองค์การบริหารส่วนตำบลโค้งไผ่</span>
+                  <span class="card-info-boss text-center fw-medium">ผู้ออกบัตร</span>
+                </div>       
+              </div>
+            </div>           
+          </div>
+          <div class="backSide">
+            <div class="employee-card">
+              <div class="card-header">
+                <div class="card-details">
+                  <p class="card-id text-center mt-3"><b>บัตรประจำตัวเจ้าหน้าที่ของรัฐ</b></p>
+                  <div style="display: flex; justify-content: center;" class="mt-3">
+                    <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/Rajchakan.png" style="width:100px;" class="inverted-color">
+                  </div>
+                  <p class="card-info text-center mt-2 fw-medium" id="showCardProfileData11">ตำแหน่ง</p>
+                  <p class="card-info text-center mt-2 fw-medium" >เลขที่ <span id="showCardProfileData12"></span></p>
+                  <p class="card-info text-center mt-2 fw-medium" id="showCardProfileData13"></p>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info text-center mt-2 fw-medium">วันที่ออกบัตร <span id="showCardProfileData14"></span></p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info text-center mt-2 fw-medium">บัตรหมดอายุ <span id="showCardProfileData15"></span></p>
+                    </div>
+                  </div>
+                </div>
+              </div>                         
+            </div>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>          
+</div>

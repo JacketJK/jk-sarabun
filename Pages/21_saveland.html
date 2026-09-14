@@ -1,0 +1,227 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-island-tropical"></i> ฐานข้อมูลการอุทิศที่ดิน</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>ระบบเพิ่มเติม</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a id="savelandbreadcrumb1">การอุทิศที่ดินให้สาธารณะประโยชน์</a>
+      </li>
+      <li id="savelandbreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="savelandbreadcrumb3"></a>
+      </li>
+      <li style="display:none" id="savelandbreadcrumb4"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="savelandbreadcrumb5"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+<div class="data-contianer" id="savelandPage1" style="display: none;">
+  <div class="container-fluid">
+    <div class="head mb-3">
+      <h5><h5><i class="fa-duotone fa-file-certificate"></i> ฐานข้อมูลหนังสือแสดงความประสงค์อุทิศที่ดินให้กับทางราชการหรือยินยอมให้ทางราชการเข้าไปดำเนินการเพื่อให้มีการใช้ประโยชน์ร่วมกัน</h5></h5>
+    </div>
+    
+    <form onsubmit="searchLandData()">
+      <div class="mx-5 px-5">
+        <div class="row">
+          <div class="mb-2 col-md-6">
+            <label for="savelandSearch1" class="col-form-label"> ปี พ.ศ. :</label>
+            <div class="field-input">
+              <i class="fa-regular fa-calendar-xmark input-icon fs-5"></i>
+              <select class="form-field ms-3 text-center" id="savelandSearch1" name="savelandSearch1"></select>
+            </div>
+          </div>
+          <div class="mb-2 col-md-6">
+            <label for="savelandSearch2" class="col-form-label"> โครงการ :</label>
+            <div class="field-input">
+              <i class="fa-regular fa-graduation-cap input-icon fs-5"></i>
+              <select class="form-field ms-3 text-center" id="savelandSearch2" name="savelandSearch2"></select>
+            </div>
+          </div>
+          <div class="mb-2 col-md-9">
+            <label for="savelandSearch3" class="col-form-label"> เลขที่โฉนด :</label>
+            <div class="field-input">
+              <i class="fa-regular fa-diploma input-icon fs-5"></i>
+              <input type="text" class="form-field ms-3 text-center" id="savelandSearch3" name="savelandSearch3" placeholder="เลขที่โฉนดที่ดิน">
+            </div>
+          </div>
+          <div class="mb-2 col-md-3 d-flex justify-content-center align-items-end">
+            <button type="submit" id="savelandSearch" class="btn btn-outline-green rounded-4 px-4 mb-1">
+              <i class="fa-regular fa-magnifying-glass"></i> ค้นหาข้อมูล
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="container-fluid" id="findDataSaveland" style="display: none">
+    <div class="text-center">
+      <h4 style="color: var(--box3)">ข้อมูลที่พบในฐานข้อมูล</h4>
+    </div>
+
+    <div class="d-flex justify-content-end align-items-center mt-3">
+      <div class="row">
+        <div class="col-lg-12">
+          <label for="filterSaveland" class="col-form-label">ค้นหา</label>
+          <div class="input-group z-index-0" style="font-size: 14px;">
+            <input type="text" id="filterSaveland" class="form-control form-control-sm rounded-4 rounded-end-0" placeholder="คำค้นหา">
+            <button type="button" class="btn btn-primary rounded-4 rounded-start-0 btn-sm">ค้นหา</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive mt-2">
+      <table id="findDataSavelandTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">โครงการ</th>
+            <th scope="col" rowspan="2">เลขที่โฉนด</th>
+            <th scope="col" colspan="3">ข้อมูส่วนตัว</th>
+            <th scope="col" rowspan="2">เอกสารแนบ</th>
+            <th scope="col" rowspan="2">วันที่บันทึก</th>
+          </tr>
+          <tr>
+            <th scope="col">ชื่อ - นามสกุล</th>
+            <th scope="col">เลขบัตรประชาชน</th>
+            <th scope="col">ที่อยู่</th>
+          </tr>
+        </thead>
+        <tbody id="findDataSavelandTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="7"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+</div>
+
+<div class="data-contianer" id="savelandPage2" style="display: none;">
+  <div class="datacontent">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-cloud-plus"></i> แบบฟอร์มเพิ่มข้อมูลการแสดงความประสงค์อุทิศที่ดินให้กับทางราชการ</h5></h5>
+    </div>
+    
+    <form id="addSavelandForm" class="mt-3" onsubmit="addSavelandFn(this)">
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5">                   
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label">ปี พ.ศ. ของโครงการ :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-business-time input-icon fs-5"></i>
+              <select class="form-field" id="addNewSaveLand1" name="addNewSaveLand1" required></select>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label">ชื่อโครงการ :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-joystick input-icon fs-5"></i>
+              <textarea class="form-field" id="addNewSaveLand2" name="addNewSaveLand2" rows="3" required></textarea>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label">เลขที่โฉนด :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-calendar-star input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addNewSaveLand3" name="addNewSaveLand3" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label">ชื่อผู้มอบที่ดิน :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-calendar-lines-pen input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addNewSaveLand4" name="addNewSaveLand4" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label">เลขบัตรประชาชน :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-tree-city input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addNewSaveLand5" name="addNewSaveLand5" required>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5">                             
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label">บ้านเลขที่ :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-file-circle-info input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addNewSaveLand6" name="addNewSaveLand6">
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label">หมู่ที่ :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-asterisk input-icon fs-5"></i>
+              <input type="number" class="form-field" id="addNewSaveLand7" name="addNewSaveLand7" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label">ตำบล :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-asterisk input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addNewSaveLand8" name="addNewSaveLand8" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label">อำเภอ :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-asterisk input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addNewSaveLand9" name="addNewSaveLand9" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label">จังหวัด :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-asterisk input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addNewSaveLand10" name="addNewSaveLand10" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label">รหัสไปรษณีย์ :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-asterisk input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addNewSaveLand11" name="addNewSaveLand11" required>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="head my-3">
+        <h5><i class="fa-duotone fa-file-arrow-up"></i> อัพโหลดไฟล์เอกสารแนบ</h5>
+        <label for="addNewSaveLand12" class="text-center" style="color: var(--box2);">
+          <i class="fa-regular fa-cloud-arrow-up fa-bounce fs-1"></i>
+          <input type="file" id="addNewSaveLand12" name="addNewSaveLand12" class="d-none" accept=".pdf" required>
+        </label>
+      </div>
+      
+      <div class="row mt-4">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+          <div class="rounded-5 shadow" id="pdf-preview-container">
+            <div id="pdf-preview"></div>
+          </div>
+        </div>
+        <div class="col-md-2"></div>
+      </div>
+
+      <div class="container mt-4 d-flex justify-content-center align-items-center">
+        <button type="reset" class="btn btn-outline-danger rounded-pill px-4"><i class="fa-duotone fa-xmark-large"></i> ยกเลิกกิจกรรม</button>
+        <button type="submit" class="btn btn-outline-green rounded-pill px-4 ms-2"><i class="fa-duotone fa-down-to-bracket"></i> บันทึกกิจกรรม</button>
+      </div>
+    </form>
+  </div>
+</div>

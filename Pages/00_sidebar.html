@@ -1,0 +1,654 @@
+<ul class="side-menu top">
+  <li class="headerli">HOME</li>
+  <li class="active" onclick="changePage(1)" id="sidebarManu1">
+    <a href="#">
+      <i class="fa-regular fa-house"></i>
+      <span class="text">หน้าแรก</span>
+    </a>
+  </li>     
+  <li class="headsubmane" id="sidebarManu2">
+    <a href="#" id="aheadsubmane1">
+      <i class="fa-regular fa-paper-plane"></i>
+      <span class="text">หนังสือส่งภายใน</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane1"></i>
+  </li>
+  <div class="submenu none" id="submenu1">
+    <li onclick="changePageSenddoc(1)" id="sidebarManu3">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="สร้างหนังสือส่งภายใน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">สร้างหนังสือส่งภายใน</span>
+      </a>
+    </li>
+    <li onclick="changePageSenddoc(2)" id="sidebarManu4">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="หนังสือรอดำเนินการ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">หนังสือรอดำเนินการ</span>
+      </a>
+    </li>
+    <li onclick="changePageSenddoc(3)" id="sidebarManu5">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="หนังสืออยู่ระหว่างดำเนินการ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">หนังสืออยู่ระหว่างดำเนินการ</span>
+      </a>
+    </li>
+    <li onclick="changePageSenddoc(4)" id="sidebarManu6">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="รายการหนังสือส่งภายใน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">รายการหนังสือส่งภายใน</span>
+      </a>
+    </li>
+    <li onclick="changePageSenddoc(5)" id="sidebarManu7">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="หนังสือที่ต้องติดตาม">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">หนังสือที่ต้องติดตาม</span>
+      </a>
+    </li>
+    <li onclick="changePageSenddoc(6)" id="sidebarManu8">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="หนังสือตีกลับ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">หนังสือตีกลับ</span>
+      </a>
+    </li>
+  </div>
+  <li class="headsubmane" id="sidebarManu9">
+    <a href="#" id="aheadsubmane8">
+        <i class="fa-regular fa-inboxes"></i>
+        <span class="text">หนังสือ/คำสั่ง/ประกาศ</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane8"></i>
+  </li>
+  <div class="submenu none" id="submenu8" id="sidebarManu10">
+    <li onclick="changePageBookSend(1)">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="บันทึกหนังสือส่งภายนอก">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">บันทึกหนังสือส่ง</span>
+      </a>
+    </li>
+    <li onclick="changePageBookSend(2)" id="sidebarManu11">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="รายงานหนังสือส่งภายนอก">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">รายงานหนังสือส่ง</span>
+      </a>
+    </li>
+  </div>
+  <li class="headsubmane" id="sidebarManu12">
+    <a href="#" id="aheadsubmane2">
+      <i class="fa-regular fa-stamp"></i>
+      <span class="text">รับหนังสือ</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane2"></i>
+  </li>
+  <div class="submenu none" id="submenu2">
+    <li onclick="changePageGetDoc(1)" id="sidebarManu13">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="รับหนังสือ (ภายใน)">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">รับหนังสือ (ภายใน)</span>
+      </a>
+    </li>
+    <li onclick="changePageGetDoc(2)" id="sidebarManu14">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="รับหนังสือ (ภายนอก)">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">รับหนังสือ (ภายนอก)</span>
+      </a>
+    </li>
+    <li onclick="changePageGetDoc(3)" id="sidebarManu15">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="รายการติดตามหนังสือรับ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">รายการติดตามหนังสือรับ</span>
+      </a>
+    </li>
+  </div>
+  <li class="headsubmane" id="sidebarManu16">
+    <a href="#" id="aheadsubmane9">
+      <i class="fa-regular fa-envelope-open"></i>
+      <span class="text">ลงรับหนังสือ</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane9"></i>
+  </li>
+  <div class="submenu none" id="submenu9">
+    <li onclick="changePageDocOut(1)" id="sidebarManu17">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="สร้างหนังสือรับ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">สร้างหนังสือรับ</span>
+      </a>
+    </li>
+    <li onclick="changePageDocOut(2)" id="sidebarManu18">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="หนังสือรอดำเนินการ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">หนังสือรอดำเนินการ</span>
+      </a>
+    </li>
+    <li onclick="changePageDocOut(3)" id="sidebarManu19">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="หนังสืออยู่ระหว่างดำเนินการ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">หนังสืออยู่ระหว่างดำเนินการ</span>
+      </a>
+    </li>
+    <li onclick="changePageDocOut(4)" id="sidebarManu20">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="รายการหนังสือรับเข้า">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">รายการหนังสือรับเข้า</span>
+      </a>
+    </li>
+    <li onclick="changePageDocOut(5)" id="sidebarManu21">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="หนังสือที่ต้องติดตาม">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">หนังสือที่ต้องติดตาม</span>
+      </a>
+    </li>
+    <li onclick="changePageDocOut(6)" id="sidebarManu22">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="หนังสือตีกลับ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">หนังสือตีกลับ</span>
+      </a>
+    </li>
+  </div>
+
+  <li class="headerli">SYSTEMS</li>
+  <li class="headsubmane" id="sidebarManu23">
+    <a href="#" id="aheadsubmane14">
+      <i class="fa-regular fa-clipboard-user"></i>
+      <span class="text">บริหารบุคลากร</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane14"></i>
+  </li>
+  <div class="submenu none" id="submenu14">
+    <li onclick="changePageHrm(1)" id="sidebarManu24">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="บุคลากรในหน่วยงาน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">บุคลากรในหน่วยงาน</span>
+      </a>
+    </li>
+    <li onclick="changePageHrm(2)" id="sidebarManu25">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ออกบัตรประจำตัว">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ออกบัตรประจำตัว</span>
+      </a>
+    </li>
+    <li onclick="changePageHrm(3)" id="sidebarManu26">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="สถานะบุคลากร">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">สถานะบุคลากร</span>
+      </a>
+    </li>
+  </div>
+  <li class="headsubmane" id="sidebarManu27">
+    <a href="#" id="aheadsubmane15">
+      <i class="fa-regular fa-island-tropical"></i>
+      <span class="text">ฐานข้อมูลการอุทิศที่ดิน</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane15"></i>
+  </li>
+  <div class="submenu none" id="submenu15">
+    <li onclick="changePageLand(1)" id="sidebarManu28">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="การอุทิศที่ดิน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">การอุทิศที่ดิน</span>
+      </a>
+    </li>
+    <li onclick="changePageLand(2)" id="sidebarManu29">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เพิ่มข้อมูลการอุทิศ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">เพิ่มข้อมูลการอุทิศ</span>
+      </a>
+    </li>
+  </div>
+  <li class="headsubmane" id="sidebarManu30">
+    <a href="#" id="aheadsubmane16">
+      <i class="fa-regular fa-trash-can"></i>
+      <span class="text">Check Bin</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane16"></i>
+  </li>
+  <div class="submenu none" id="submenu16">
+    <li onclick="changePageCheckBin(1)" id="sidebarManu31">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ถังขยะทั้งหมด">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ถังขยะทั้งหมด</span>
+      </a>
+    </li>
+    <li onclick="changePageCheckBin(2)" id="sidebarManu32">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="การจัดการถังขยะ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">การจัดการถังขยะ</span>
+      </a>
+    </li>
+    <li onclick="changePageCheckBin(3)" id="sidebarManu33">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="การเก็บค่าธรรมเนียม">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">การเก็บค่าธรรมเนียม</span>
+      </a>
+    </li>
+    <li onclick="changePageCheckBin(4)" id="sidebarManu34">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="การแจ้งเก็บขยะ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">การแจ้งเก็บขยะ</span>
+      </a>
+    </li>
+  </div>
+  <li class="headsubmane" id="sidebarManu35">
+    <a href="#" id="aheadsubmane18">
+      <i class="fa-regular fa-receipt"></i>
+      <span class="text">ระบบสลิปเงินเดือน</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane18"></i>
+  </li>
+  <div class="submenu none" id="submenu18">
+    <li onclick="changePageESalary(1)" id="sidebarManu36">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ข้อมูลสลิปเงินเดือน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ข้อมูลสลิปเงินเดือน</span>
+      </a>
+    </li>
+    <li onclick="changePageESalary(2)" id="sidebarManu37">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="การจัดการข้อมูลเงินเดือน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">การจัดการข้อมูลเงินเดือน</span>
+      </a>
+    </li>
+    <li onclick="changePageESalary(3)" id="sidebarManu38">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="แก้ไขข้อมูลเงินเดือน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">แก้ไขข้อมูลเงินเดือน</span>
+      </a>
+    </li>
+  </div>
+
+  <li class="headsubmane" id="sidebarManu39">
+    <a href="#" id="aheadsubmane17">
+      <i class="fa-regular fa-computer-classic"></i>
+      <span class="text">วัสดุ-ครุภัณฑ์</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane17"></i>
+  </li>
+  <div class="submenu none" id="submenu17">
+    <li onclick="changePageEquip(1)" id="sidebarManu40">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="รายงานวัสดุ-ครุภัณฑ์">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">รายงานวัสดุ-ครุภัณฑ์</span>
+      </a>
+    </li>
+    <li onclick="changePageEquip(2)" id="sidebarManu41">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="จัดซื้อ-จัดจ้าง">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">จัดซื้อ-จัดจ้าง</span>
+      </a>
+    </li>
+    <li onclick="changePageEquip(3)" id="sidebarManu42">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ครุภัณฑ์ในหน่วยงาน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ครุภัณฑ์ในหน่วยงาน</span>
+      </a>
+    </li>
+    <li onclick="changePageEquip(4)" id="sidebarManu43">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="วัสดุในหน่วยงาน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">วัสดุในหน่วยงาน</span>
+      </a>
+    </li>
+    <li onclick="changePageEquip(5)" id="sidebarManu44">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="การยืม/คืนวัสดุและครุภัณฑ์">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">การยืม/คืนวัสดุและครุภัณฑ์</span>
+      </a>
+    </li>
+  </div>
+
+  <li class="headerli">FORMS</li>
+  <li class="headsubmane" id="sidebarManu45">
+    <a href="#" id="aheadsubmane3">
+      <i class="fa-regular fa-car-building"></i>
+      <span class="text">การขอใช้รถ</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane3"></i>
+  </li>
+  <div class="submenu none" id="submenu3">
+    <li onclick="changePageCarReserve(1)" id="sidebarManu46">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="รถทั้งหมด">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">รถทั้งหมด</span>
+      </a>
+    </li>
+    <li onclick="changePageCarReserve(2)" id="sidebarManu47">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ประวัติการขอใช้รถ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ประวัติการขอใช้รถ</span>
+      </a>
+    </li>
+    <li onclick="changePageCarReserve(3)" id="sidebarManu48">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="การอนุญาตใช้รถ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">การอนุญาตใช้รถ</span>
+      </a>
+    </li>
+    <li onclick="changePageCarReserve(4)" id="sidebarManu49">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="การอนุมัติใช้รถ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">การอนุมัติใช้รถ</span>
+      </a>
+    </li>
+  </div>
+  <li class="headsubmane" id="sidebarManu50">
+    <a href="#" id="aheadsubmane4">
+      <i class="fa-regular fa-calendar-circle-user"></i>
+      <span class="text">ปฏิทินกิจกรรม</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane4"></i>
+  </li>
+  <div class="submenu none" id="submenu4">
+    <li onclick="changePageCalendar(1)" id="sidebarManu51">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="กิจกรรมทั้งหมด">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">กิจกรรมทั้งหมด</span>
+      </a>
+    </li>
+    <li onclick="changePageCalendar(2)" id="sidebarManu52">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เพิ่มกิจกรรม">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">เพิ่มกิจกรรม</span>
+      </a>
+    </li>
+    <li onclick="changePageCalendar(3)" id="sidebarManu53">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="แก้ไขกิจกรรม">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">แก้ไขกิจกรรม</span>
+      </a>
+    </li>
+  </div>
+  <li class="headsubmane" id="sidebarManu54">
+    <a href="#" id="aheadsubmane5">
+      <i class="fa-regular fa-house-person-leave"></i>
+      <span class="text">การขออนุญาตลา</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane5"></i>
+  </li>
+  <div class="submenu none" id="submenu5">
+    <li onclick="changePageLeave(1)" id="sidebarManu55">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="แดชบอร์ดการลา">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">แดชบอร์ดการลา</span>
+      </a>
+    </li>
+    <li onclick="changePageLeave(2)" id="sidebarManu56">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="แบบฟอร์มการลา">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">แบบฟอร์มการลา</span>
+      </a>
+    </li>
+    <li onclick="changePageLeave(3)" id="sidebarManu57">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ประวัติการลา">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ประวัติการลา</span>
+      </a>
+    </li>
+    <li onclick="changePageLeave(4)" id="sidebarManu58">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ตรวจสอบการลาฝ่ายบุคคล">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ตรวจสอบการลาฝ่ายบุคคล</span>
+      </a>
+    </li>
+    <li onclick="changePageLeave(5)" id="sidebarManu59">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="พิจารณาการลาฝ่าย/กอง">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">พิจารณาการลาฝ่าย/กอง</span>
+      </a>
+    </li>
+    <li onclick="changePageLeave(6)" id="sidebarManu60">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ตรวจสอบการลา">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ตรวจสอบการลา</span>
+      </a>
+    </li>
+  </div>
+  <li class="headsubmane" id="sidebarManu61">
+    <a href="#" id="aheadsubmane6">
+      <i class="fa-regular fa-flag"></i>
+      <span class="text">รายงานประจำหมู่บ้าน</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane6"></i>
+  </li>
+  <div class="submenu none" id="submenu6">
+    <li onclick="changePageReport(1)" id="sidebarManu62">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="การรายงาน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">การรายงาน</span>
+      </a>
+    </li>
+    <li onclick="changePageReport(2)" id="sidebarManu63">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เพิ่มรายงาน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">เพิ่มรายงาน</span>
+      </a>
+    </li>
+    <li onclick="changePageReport(3)" id="sidebarManu64">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ประวัติการรายงาน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ประวัติการรายงาน</span>
+      </a>
+    </li>
+  </div>
+  <li class="headsubmane" id="sidebarManu65">
+    <a href="#" id="aheadsubmane7">
+      <i class="fa-regular fa-house-building"></i>
+      <span class="text">เสนอโครงการ</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane7"></i>
+  </li>
+  <div class="submenu none" id="submenu7">
+    <li onclick="changePageProject(1)" id="sidebarManu66">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เพิ่มโครงการ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">เพิ่มโครงการ</span>
+      </a>
+    </li>
+    <li onclick="changePageProject(2)" id="sidebarManu67">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ตรวจสอบโครงการ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ตรวจสอบโครงการ</span>
+      </a>
+    </li>
+  </div>
+  <li class="headsubmane" id="sidebarManu68">
+    <a href="#" id="aheadsubmane13">
+      <i class="fa-regular fa-projector"></i>
+      <span class="text">จองห้องประชุม</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane13"></i>
+  </li>
+  <div class="submenu none" id="submenu13">
+    <li onclick="changePageMeeting(1)" id="sidebarManu69">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="หัองประชุม">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">หัองประชุม</span>
+      </a>
+    </li>
+    <li onclick="changePageMeeting(2)" id="sidebarManu70">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เพิ่มข้อมูลการจอง">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">เพิ่มข้อมูลการจอง</span>
+      </a>
+    </li>
+    <li onclick="changePageMeeting(3)" id="sidebarManu71">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="อนุมัติการจอง">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">อนุมัติการจอง</span>
+      </a>
+    </li>
+  </div>
+
+  <li class="headerli">USER</li>
+  <li onclick="changePage(11)" id="sidebarManu72">
+    <a>
+      <i class="fa-regular fa-users-gear"></i>
+      <span class="text">ผู้ใช้งานระบบ</span>
+    </a>
+  </li>
+  <li onclick="changePage(12)" id="sidebarManu73">
+    <a>
+      <i class="fa-regular fa-user-plus"></i>
+      <span class="text">เพิ่มผู้ใช้งาน</span>
+    </a>
+  </li>
+  <li class="headsubmane" id="sidebarManu74">
+    <a href="#" id="aheadsubmane10">
+      <i class="fa-regular fa-bullhorn"></i>
+      <span class="text">แจ้งเตือนผ่าน Line</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane10"></i>
+  </li>
+  <div class="submenu none" id="submenu10">
+    <li onclick="changePageNotify(1)" id="sidebarManu75">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="บันทึกประกาศแจ้งเตือน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">บันทึกประกาศแจ้งเตือน</span>
+      </a>
+    </li>
+    <li onclick="changePageNotify(2)" id="sidebarManu76">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="รายการประกาศแจ้งเตือน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">รายการประกาศแจ้งเตือน</span>
+      </a>
+    </li>
+    <li onclick="changePageNotify(3)" id="sidebarManu77">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ตรวจสอบ Line Token">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ตรวจสอบ Line Token</span>
+      </a>
+    </li>
+  </div>
+
+  <li class="headerli">SETTING</li>
+  <li class="headsubmane" id="sidebarManu78">
+    <a href="#" id="aheadsubmane11">
+      <i class="fa-regular fa-gear"></i>
+      <span class="text">ตั้งค่าหน่วยงาน</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane11"></i>
+  </li>
+  <div class="submenu none" id="submenu11">
+    <li onclick="changePageSetAgency(1)" id="sidebarManu79">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ตั้งค่าหน่วยงาน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ตั้งค่าหน่วยงาน</span>
+      </a>
+    </li>
+    <li onclick="changePageSetAgency(2)" id="sidebarManu80">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ตั้งค่าแผนก">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ตั้งค่าแผนก</span>
+      </a>
+    </li>
+    <li onclick="changePageSetAgency(3)" id="sidebarManu81">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ตั้งค่าตำแหน่ง">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ตั้งค่าตำแหน่ง</span>
+      </a>
+    </li>
+    <li onclick="changePageSetAgency(9)" id="sidebarManu82">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ตั้งค่าตำแหน่ง">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ตั้งค่าบัตรประจำตัว</span>
+      </a>
+    </li>
+  </div>
+  <li class="headsubmane" id="sidebarManu83">
+    <a href="#" id="aheadsubmane12">
+      <i class="fa-regular fa-database"></i>
+      <span class="text">ข้อมูลอ้างอิงระบบ</span>
+    </a>
+    <i class="fa-solid fa-chevron-right chevron" id="fasubmane12"></i>
+  </li> 
+  <div class="submenu none" id="submenu12">
+    <li onclick="changePageDatabase(1)" id="sidebarManu84">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="หน่วยงานที่เกี่ยวข้อง">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">หน่วยงาน</span>
+      </a>
+    </li>
+    <li onclick="changePageDatabase(2)" id="sidebarManu85">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="หมวดของหนังสือ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">หมวดหนังสือ</span>
+      </a>
+    </li>
+    <li onclick="changePageDatabase(3)" id="sidebarManu86">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="วัตถุประสงค์ของหนังสือ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">วัตถุประสงค์</span>
+      </a>
+    </li>
+    <li onclick="changePageDatabase(4)" id="sidebarManu87">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ชั้นความเร็วหนังสือ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ชั้นความเร็ว</span>
+      </a>
+    </li>
+    <li onclick="changePageDatabase(5)" id="sidebarManu88">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ชั้นความลับหนังสือ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ชั้นความลับ</span>
+      </a>
+    </li>
+    <li onclick="changePageDatabase(6)" id="sidebarManu89">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="สถานะการตอบรับ">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">สถานะการตอบรับ</span>
+      </a>
+    </li>
+    <li onclick="changePageDatabase(7)" id="sidebarManu90">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คำบันทึกงาน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">คำบันทึกงาน</span>
+      </a>
+    </li>
+    <li onclick="changePageDatabase(8)" id="sidebarManu91">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="หมู่บ้านในพื้นที่">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">หมู่บ้าน</span>
+      </a>
+    </li>
+    <li onclick="changePageDatabase(9)" id="sidebarManu92">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="รถส่วนกลาง">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">รถส่วนกลาง</span>
+      </a>
+    </li>
+    <li onclick="changePageDatabase(10)" id="sidebarManu93">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ห้องประชุม">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ห้องประชุม</span>
+      </a>
+    </li>
+    <li onclick="changePageDatabase(11)" id="sidebarManu94">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ประเภทตำแหน่ง">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">ประเภทตำแหน่ง</span>
+      </a>
+    </li>
+    <li onclick="changePageDatabase(12)" id="sidebarManu95">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="รายรับของเดือน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">รายรับของเดือน</span>
+      </a>
+    </li>
+    <li onclick="changePageDatabase(13)" id="sidebarManu96">
+      <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="รายการหักของเดือน">
+        <i class="fa-duotone fa-circle"></i>
+        <span class="text">รายการหักของเดือน</span>
+      </a>
+    </li>
+  </div>
+  <li onclick="changePage(19)" id="sidebarManu97">
+    <a>
+      <i class="fa-regular fa-file-certificate"></i>
+      <span class="text">สิทธิการใช้งาน</span>
+    </a>
+  </li>
+  <li onclick="changePage(16)" id="sidebarManu98">
+    <a>
+      <i class="fa-regular fa-wrench"></i>
+      <span class="text">ตั้งค่าระบบ</span>
+    </a>
+  </li>
+</ul>

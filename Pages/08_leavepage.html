@@ -1,0 +1,443 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-house-person-leave"></i> การขออนุญาตลา</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>แบบฟอร์ม</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a id="leavebreadcrumb1">การขออนุญาตลา</a>
+      </li>
+      <li id="leavebreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a id="leavebreadcrumb3" class="active"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    <button class="btn btn-outline-green rounded-pill btn-sm px-3" id="addLeaveBtn" style="display: none;" onclick="changePageLeave(2)">
+      <i class="fa-duotone fa-plus"></i> เพิ่มการขออนุญาตลา
+    </button>
+    <button class="btn btn-warning rounded-pill btn-sm px-2" id="loadHistoryLeave" style="display: none;" onclick="getDataLoadLeave()">
+      <i class="fa-duotone fa-spinner-scale"></i> ดึงข้อมูลการประวัติการลา
+    </button>
+  </div>
+</div>
+
+<div class="data-contianer" id="leavePage1" style="display: none">
+  <div class="datarespone">
+    <div class="head mb-0">
+      <h5><i class="fa-duotone fa-chart-simple"></i> สถิติการลา</h5>
+    </div>
+
+    <div class="dashboard-container mt-3">
+      <div class="dashboard-box">
+        <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/suitcase.png">
+        <div>
+          <h2>การลากิจ <span style="font-size: 12px;">(วัน)</span></h2>
+          <p id="leaveDash1">0</p>
+        </div>
+      </div>
+      <div class="dashboard-box">
+        <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/fiverr.png">
+        <div>
+          <h2>การลาป่วย <span style="font-size: 12px;">(วัน)</span></h2>
+          <p id="leaveDash2">0</p>
+        </div>
+      </div>
+      <div class="dashboard-box">
+        <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/beach-chair.png">
+        <div>
+          <h2>การลาพักผ่อน <span style="font-size: 12px;">(วัน)</span></h2>
+          <p id="leaveDash3">0</p>
+        </div>
+      </div>
+      <div class="dashboard-box">
+        <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/incubator.png">
+        <div>
+          <h2>การลาคลอด <span style="font-size: 12px;">(วัน)</span></h2>
+          <p id="leaveDash4">0</p>
+        </div>
+      </div>
+      <div class="dashboard-box">
+        <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/calendar.png">
+        <div>
+          <h2>รวมวันลาทั้งหมด <span style="font-size: 12px;">(วัน)</span></h2>
+          <p id="leaveDash5">0</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="head my-3">
+      <h5><i class="fa-duotone fa-arrow-progress"></i> สถานะการขออนุญาตลา</h5>
+    </div>
+    <div id="myLeaveRecent"></div>
+
+  </div>
+</div>
+
+<div class="data-contianer" id="leavePage2" style="display:none">
+  <div class="container-fluid">
+    <div class="head mb-0">
+      <h5><i class="fa-duotone fa-file-lines"></i> แบบฟอร์มใบลา</h5>
+    </div>
+
+    <form id="addNewLeave">
+      <div class="row mt-3">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-5">
+          <div class="mb-3 row">
+            <p class="col-sm-3 col-form-label" >หัวข้อการลา :</p>
+            <div class="col-sm-8" style="font-size: 16px;">
+              <div class="row">
+                <div class="col">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="addLeaveNew1" id="addLeaveNew1_1" value="ลาป่วย">
+                    <label class="form-check-label" style="color: var(--blue);" role="button" for="addLeaveNew1_1">
+                      <i class="fa-duotone fa-viruses fs-5"></i> ลาป่วย                          
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="addLeaveNew1" id="addLeaveNew1_2" value="ลากิจ">
+                    <label class="form-check-label" style="color: var(--blue);" role="button" for="addLeaveNew1_2">
+                      <i class="fa-duotone fa-briefcase fs-5"></i> ลากิจ
+                    </label>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="addLeaveNew1" id="addLeaveNew1_3" value="ลาคลอด">
+                    <label class="form-check-label" style="color: var(--blue);" role="button" for="addLeaveNew1_3">
+                      <i class="fa-duotone fa-baby-carriage fs-5"></i> ลาคลอด
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="addLeaveNew1" id="addLeaveNew1_4" value="ลาพักผ่อน">
+                    <label class="form-check-label" style="color: var(--blue);" role="button" for="addLeaveNew1_4">
+                      <i class="fa-duotone fa-backpack fs-5"></i> ลาพักผ่อน                         
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-3 col-form-label" >เนื่องจาก :</p>
+            <div class="col-sm-8 field-input">
+              <i class="fa-duotone fa-file-invoice input-icon fs-5"></i>
+              <textarea class="form-field" id="addLeaveNew2" name="addLeaveNew2" rows="4" placeholder="สาเหตุการลา" required></textarea>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-3 col-form-label" >ตั้งแต่วันที่ :</p>
+            <div class="col-sm-8 field-input">
+              <i class="fa-duotone fa-calendar-star input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addLeaveNew3" name="addLeaveNew3" placeholder="เลือกวันที่" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-3 col-form-label" >ถึงวันที่ :</p>
+            <div class="col-sm-8 field-input">
+              <i class="fa-duotone fa-calendar-range input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addLeaveNew4" name="addLeaveNew4" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-3 col-form-label" >เป็นเวลา :</p>
+            <div class="col-sm-8 field-input">
+              <i class="fa-duotone fa-sun input-icon fs-5"></i>
+              <input type="number" class="form-field" id="addLeaveNew5" name="addLeaveNew5" readonly required>
+              <span>วัน</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-1"></div>
+        <div class="col-lg-5">
+          <div class="mb-3 row">
+            <p class="col-sm-3 col-form-label" >ลาครั้งล่าสุด :</p>
+            <div class="col-sm-8 field-input">
+              <i class="fa-duotone fa-face-vomit input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addLeaveNew6" name="addLeaveNew6">
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-3 col-form-label" >ตั้งแต่วันที่ :</p>
+            <div class="col-sm-8 field-input">
+              <i class="fa-duotone fa-calendar-star input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addLeaveNew7" name="addLeaveNew7">
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-3 col-form-label" >ถึงวันที่ :</p>
+            <div class="col-sm-8 field-input">
+              <i class="fa-duotone fa-calendar-range input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addLeaveNew8" name="addLeaveNew8">
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-3 col-form-label" >เป็นเวลา :</p>
+            <div class="col-sm-8 field-input">
+              <i class="fa-duotone fa-sun input-icon fs-5"></i>
+              <input type="number" class="form-field" id="addLeaveNew9" name="addLeaveNew9">
+              <span>วัน</span>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-3 col-form-label" >ในระหว่างลาจะติดต่อได้ที่ :</p>
+            <div class="col-sm-8 field-input">
+              <i class="fa-duotone fa-house input-icon fs-5"></i>
+              <textarea class="form-field" id="addLeaveNew10" name="addLeaveNew10" rows="4" required></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="head my-3">
+        <h5><i class="fa-solid fa-users-rays"></i> แจ้งฝ่ายบุคคลในหน่วยงาน</h5>
+      </div>
+      <select id="addLeaveNew11"></select>
+      <div class="container mt-4 d-flex justify-content-center align-items-center">
+        <button type="reset" class="btn btn-outline-danger rounded-pill px-4"><i class="fa-duotone fa-xmark-large"></i> ยกเลิกการลา</button>
+        <button type="button" onclick="addLeaveNew()" class="btn btn-outline-blue rounded-pill px-4 ms-2"><i class="fa-duotone fa-down-to-bracket"></i> บันทึกการลา</button>
+      </div>
+    </form>    
+  </div>
+</div>
+
+<div class="data-contianer" id="leavePage3" style="display:none">
+  <div class="datacontent">
+    <div class="head mb-0">
+      <h5><i class="fa-duotone fa-rectangle-history-circle-plus"></i> ประวัติการขออนุญาตลา</h5>
+    </div>
+
+    <div class="container-fluid my-4">
+      <div class="row">
+        <div class="col-lg-2">
+          <label for="leavefilter1" class="label-form">การลา</label>
+          <select id="leavefilter1" class="form-select rounded-4">
+            <option selected value="">การลาทั้งหมด</option>
+            <option value="ลากิจ">การลากิจ</option>
+            <option value="ลาป่วย">การลาป่วย</option>
+            <option value="ลาพักผ่อน">การลาพักผ่อน</option>
+            <option value="ลาคลอด">การลาคลอด</option>
+          </select>  
+        </div>
+        <div class="col-lg-2">
+          <label for="leavefilter2" class="label-form">ห้วงเวลา</label>
+          <input type="text" id="leavefilter2" class="form-control rounded-4" placeholder="เลือกวันที่">
+        </div>
+        <div class="col-lg-2">
+          <label for="leavefilter3" class="label-form">ถึงวันที่</label>
+          <input type="text" id="leavefilter3" class="form-control rounded-4" placeholder="เลือกวันที่">
+        </div>
+        <div class="col-lg-2">
+          <label for="leavefilter4" class="label-form">สถานะ</label>
+          <select id="leavefilter4" class="form-select rounded-4">
+            <option selected value="">สถานะทั้งหมด</option>
+            <option value="3">อยู่ระหว่างตรวจสอบการลาโดยฝ่ายบุคคล</option>
+            <option value="4">อยู่ระหว่างพิจารณาจากหัวหน้าฝ่าย/กอง</option>
+            <option value="5">พิจารณาโดยผู้บริหาร</option>
+            <option value="6">เสร็จสิ้น</option>
+            <option value="2">อยู่ระหว่างตรวจสอบใบ</option>
+            <option value="1">ยื่นใบลาสำเร็จ</option>
+            <option value="0">ยกเลิก</option>
+          </select>  
+        </div>
+        <div class="col-lg-3">
+          <label for="leavefilter5" class="label-form">ค้นหา</label>
+          <div class="input-group z-index-0">
+            <input type="text" id="leavefilter5" class="form-control rounded-4 rounded-end-0" placeholder="คำค้นหา">
+            <button type="button" class="btn btn-primary rounded-4 rounded-start-0 ">ค้นหา</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive mt-3" style="padding-bottom: 80px;">
+      <table id="tableLeaveHistory" class="table table-sm">
+        <thead>
+          <tr class="text-center">
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2"><i class="fa-duotone fa-file-exclamation"></i> รายละเอียด</th>
+            <th scope="col" colspan="3"><i class="fa-duotone fa-calendar"></i> วันที่</th>
+            <th scope="col" rowspan="2">สถานะ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr class="text-center">
+            <th scope="col">การลา</th>
+            <th scope="col">สาเหตุการลา</th>
+            <th scope="col">ตั้งแต่วันที่</th>
+            <th scope="col">ถึงวันที่</th>
+            <th scope="col">ระยะเวลา</th>
+          </tr>
+        </thead>
+        <tbody id="tableLeaveHistory-body" class="table-group-divider">
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+          <tr>
+            <td class="text-center py-4" colspan="8"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="leavePage4" style="display:none">
+  <div class="datarespone">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-folder-magnifying-glass"></i> ตรวจสอบการลา</h5>
+      <div>
+        <input type="radio" class="d-none" name="selectHrmStatus" id="selectHrmStatus0" value="1" autocomplete="off" checked>
+        <input type="radio" class="btn-check" name="selectHrmStatus" id="selectHrmStatus1" value="2" autocomplete="off">
+        <label class="btn btn-green btn-sm rounded-pill" for="selectHrmStatus1">เกษียนส่งฝ่ายบุคคล</label>
+        <input type="radio" class="btn-check" name="selectHrmStatus" id="selectHrmStatus2" value="3" autocomplete="off">
+        <label class="btn btn-blue btn-sm rounded-pill ms-2" for="selectHrmStatus2">เกษียนส่งหัวหน้าฝ่าย</label>
+      </div>
+    </div>
+
+    <div class="loadContianer d-flex justify-content-center align-items-center p-5 my-3 d-none">
+      <div class="loaderContainer"></div>
+    </div>
+    <div id="hrmLeaveData">
+      <p class="fw-medium text-warning fs-4 text-center p-5"><i class="fa-duotone fa-circle-exclamation"></i> โปรดเลือกหัวข้อ</p>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="leavePage5" style="display:none">
+  <div class="datacontent">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-pen-field"></i> พิจารณาการลา</h5>
+    </div>
+
+    <div class="loadContianer d-flex justify-content-center align-items-center p-5 my-3 d-none">
+      <div class="loaderContainer"></div>
+    </div>
+    <div id="headDapartLeaveData"></div>
+  </div>
+</div>
+
+<div class="data-contianer" id="leavePage6" style="display:none">
+  <div class="datacontent">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-telescope"></i> ตรวจสอบการลา</h5>
+    </div>
+
+    <div class="loadContianer d-flex justify-content-center align-items-center p-5 my-3 d-none">
+      <div class="loaderContainer"></div>
+    </div>
+    <div id="administratorLeaveData"></div>
+  </div>
+</div>
+
+<div class="data-contianer" id="leavePage7" style="display:none">
+  <div class="container-fluid">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-file-circle-info"></i> รายละเอียดการลา</h5>
+    </div>
+    
+    <div class="row">
+      <div class="col-sm-1"></div>
+      <div class="col-sm-5">
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">Leave Key :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="leaveDetailKey"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">วันที่ขออนุญาต :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="leaveDetail1"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">ผู้ขออนุญาตลา :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="leaveDetail2"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">ตำแหน่ง :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="leaveDetail3"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">สังกัด :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="leaveDetail4"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">การลา :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="leaveDetail5"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">สาเหตุการลา :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="leaveDetail6"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">วันที่ลา :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="leaveDetail7"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">ระยะเวลา :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="leaveDetail8"></span>
+        </div>
+      </div>
+      <div class="col-sm-1"></div>
+      <div class="col-sm-5">
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">การลาครั้งก่อน :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="leaveDetail9"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">วันที่ลา :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="leaveDetail10"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">ถึงวันที่ :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="leaveDetail11"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">เป็นระยะเวลา :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="leaveDetail12"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">ช่องทางการติดต่อ :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="leaveDetail13"></span>
+        </div>
+        <div class="form-group row mb-2">
+            <span class="col-sm-4 fw-medium" style="font-size: 14px;">สถานะ :</span>
+            <span class="col-sm-7" style="font-size: 14px;" id="leaveDetail14"></span>
+        </div>
+      </div>
+    </div>
+
+    <hr class="opacity-25 mb-3">
+    <div class="text-end">
+      <button class="btn btn-outline-green rounded-3" id="closeLeaveDetailBtn" data-bs-toggle="modal" data-bs-target="#closeLeaveModal" style="display: none;"><i class="fa-duotone fa-power-off"></i> ปิดงาน</button>
+      <button class="btn btn-violet rounded-3" id="saveLeaveDetailBtn" style="display: none;" data-bs-toggle="modal" data-bs-target="#saveLeavingModal"><i class="fa-duotone fa-cloud-arrow-down"></i> บันทึกงาน</button>
+      <button class="btn btn-red rounded-3" id="backLeaveDetailBtn" data-bs-toggle="modal" data-bs-target="#returnLeaveModal" style="display: none;"><i class="fa-duotone fa-duotone fa-share-all fa-flip-horizontal"></i> ตีกลับ</button>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="head mb-4">
+      <h5><i class="fa-duotone fa-traffic-cone"></i> การเกษียนหนังสือ</h5>
+    </div>
+
+    <div class="table-responsive mt-3">
+      <table id="tableLeaveDoc" class="table table-sm">
+        <thead>
+          <tr class="text-center">
+            <th scope="col" class="text-center">#</th>
+            <th scope="col" class="text-center">สถานะ</th>
+            <th scope="col" class="text-center">วันที่ส่ง</th>
+            <th scope="col" class="text-center">ส่งจาก</th>
+            <th scope="col" class="text-center">ส่งถึง</th>
+            <th scope="col" class="text-center">ผู้ลงรับ</th>
+            <th scope="col" class="text-center">วันที่ลงรับ</th>
+          </tr>
+        </thead>
+        <tbody id="tableLeaveDoc-body" class="table-group-divider">
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+          <tr>
+            <td class="text-center" colspan="8"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,191 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-user-plus"></i> เพิ่มผู้ใช้งาน</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>ผู้ใช้งานระบบ</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="adduserbreadcrumb1">เพิ่มผู้ใช้งาน</a>
+      </li>
+      <li style="display:none" id="adduserbreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="adduserbreadcrumb3"></a>
+      </li>
+      <li style="display:none" id="adduserbreadcrumb4"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="adduserbreadcrumb5"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+<div class="data-contianer">
+  <div class="datarespone">
+    <div class="head mb-0">
+      <h5><i class="fa-solid fa-users-medical"></i> เพิ่มผู้ใช้งาน</h5>
+    </div>
+
+    <form id="addRegictor" onsubmit="handleRegistorSubmit(this)">
+      <div class="row mt-4">
+        <div class="col-md-6 d-flex align-items-center justify-content-center">
+          <div style="width: 250px; height: 250px; overflow: hidden; border-radius: 50%; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); border:3px solid white;" class="mb-3">
+            <img id="regictorPreview" src="https://cdn.jsdelivr.net/gh/JacketJK/image/nonuser.png" alt="รูปประจำตัว" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <input type="file" name="regictorImg" id="regictorImg" style="display: none;">                           
+        </div>
+        <div class="col-md-6">
+          <div class="mb-2">
+            <label class="form-label" for="regictorAgency">หน่วยงานหลัก <span class="text-danger fw-bold">*</span></label>
+            <div class="field">
+              <i class="fa-regular fa-house-building input-icon"></i>
+              <select id="regictorAgency" name="regictorAgency" class="input-field" required></select>
+            </div>
+          </div>
+          <div class="mb-2">
+            <label class="form-label" for="regictorPosition">ตำแหน่งหลัก <span class="text-danger fw-bold">*</span></label>
+            <div class="field">
+              <i class="fa-regular fa-address-card input-icon"></i>
+              <input type="text" id="regictorPosition" name="regictorPosition" class="input-field" required>
+            </div>
+          </div>
+          <div class="mb-2">
+            <label class="form-label" for="regictorTypeposition">ประเภทตำแหน่ง <span class="text-danger fw-bold">*</span></label>
+            <div class="field">
+              <i class="fa-regular fa-user-gear input-icon"></i>
+              <select id="regictorTypeposition" name="regictorTypeposition" class="input-field" required></select>
+            </div>
+          </div>
+          <div class="mb-2">
+            <label class="form-label" for="regictorLevel">สิทธิ์ผู้ใช้งานระบบ <span class="text-danger fw-bold">*</span></label>
+            <div class="field">
+              <i class="fa-regular fa-dial-off input-icon"></i>
+              <select id="regictorLevel" name="regictorLevel" class="input-field" required>
+                <option selected value="">โปรดเลือก</option>
+                <option value="5">ผู้ปฏิบัติงาน</option>
+                <option value="3">งานสารบรรณ</option>
+                <option value="2">ผู้บริหาร</option>
+                <option value="4">สารบรรณหน่วยย่อย</option>
+                <option value="1">ผู้ดูแลระบบ</option>
+              </select>
+            </div>
+          </div>
+        </div>       
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-6">
+          <label class="form-label" for="regictorData1">ไอดีผู้ใช้งาน <span class="text-danger fw-bold">*</span></label>
+          <div class="field">
+            <i class="fa-regular fa-user input-icon"></i>
+            <input type="text" pattern="[a-zA-Z\.]+" id="regictorData1" name="regictorData1" class="input-field" placeholder="Username" required>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="regictorData2">รหัสผ่าน <span class="text-danger fw-bold">*</span></label>
+          <div class="field">
+            <i class="fa-regular fa-lock input-icon"></i>
+            <input type="password" id="regictorData2" name="regictorData2" class="input-field" minlength="8" placeholder="Password" autocomplete="new-username" required>
+            <div class="input-group-append d-flex justify-content-center align-items-center">
+              <i class="fa-solid fa-eye ms-2" onclick="togglePasswordVisibility()"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-3">
+          <label for="regictorData3" class="form-label">คำนำหน้า <span class="text-danger fw-bold">*</span></label>
+          <div class="field">
+            <select id="regictorData3" name="regictorData3" class="input-field col-2" required>
+              <option selected value="">โปดเลือก</option>
+              <option value="นาย">นาย</option>
+              <option value="นาง">นาง</option>
+              <option value="นางสาว">นางสาว</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <label for="regictorData4" class="form-label">ชื่อผู้ใช้งาน <span class="text-danger fw-bold">*</span></label>
+          <div class="field">
+            <input type="text" id="regictorData4" name="regictorData4" class="input-field" placeholder="ชื่อจริง" required>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="regictorData5" class="form-label">นามสกุล <span class="text-danger fw-bold">*</span></label>
+          <div class="field">
+            <input type="text" id="regictorData5" name="regictorData5" class="input-field" placeholder="นามสกุล" required>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-6">
+          <label for="regictorData6" class="form-label">เบอร์โทร</label>
+          <div class="field">
+            <i class="fa-regular fa-mobile input-icon"></i>
+            <input type="text" id="regictorData6" name="regictorData6" class="input-field" maxlength="10" minlength="10" placeholder="0XX-XXXX-XXX" pattern="[0-9]+">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="regictorData7" class="form-label">อีเมล์ <span class="text-danger fw-bold">*</span></label>
+          <div class="field">
+            <i class="fa-regular fa-envelope input-icon"></i>
+            <input type="email" id="regictorData7" name="regictorData7" class="input-field" placeholder="E-Mail" required>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-3">
+          <label for="regictorData8" class="form-label">บ้านเลขที่</label>
+          <div class="field">
+            <i class="fa-regular fa-house input-icon"></i>
+            <input type="text" id="regictorData8" name="regictorData8" class="input-field">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="regictorData9" class="form-label">หมู่ที่</label>
+          <div class="field">
+            <i class="fa-regular fa-house-tree input-icon"></i>
+            <input type="text" id="regictorData9" name="regictorData9" class="input-field">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="regictorSearch" class="form-label">ค้นหาที่อยู่</label>
+          <div class="field">
+            <i class="fa-regular fa-magnifying-glass input-icon"></i>
+            <input type="text" id="regictorSearch" class="input-field" placeholder="พิมพ์หาตำบล อำเภอ จังหวัด หรือรหัสไปรษณีย์">
+          </div>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-12">
+          <label for="regictorData10" class="form-label">ที่อยู่ปัจจุบัน</label>
+          <div class="field">
+            <i class="fa-regular fa-location-dot input-icon"></i>
+            <input type="text" id="regictorData10" name="regictorData10" class="input-field">
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center mt-3">
+        <button type="reset" class="btn rounded-4 btn-danger"><i class="fa-duotone fa-rotate-left"></i> ยกเลิก</button>
+        <button type="submit" class="btn rounded-4 btn-blue ms-2"><i class="fa-duotone fa-cloud-arrow-up"></i> ลงทะเบียนผู้ใช้งาน</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="databox">
+    <div class="head mb-3">
+      <h5><i class="fa-solid fa-image-polaroid-user"></i> เลือกรูปประจำตัว</h5>
+    </div>
+    <label for="regictorImg" class="btn btn-primary btn-sm rounded-pill w-100">
+      <i class="fa-solid fa-image"></i> อัพโหลดรูปประจำตัว ขนาดแนะนำ 600 x 600 pixel
+    </label> 
+    <div class="position-relative text-center my-2">
+      <p class="mb-0 fs-6 px-3 d-inline-block bg-body text-dark z-index-5 position-relative">หรือเลือกรูปประจำตัว</p>
+      <span class="border-top w-100 position-absolute top-50 start-50 translate-middle"></span>
+    </div>     
+    <div id="reviewdivprofile"></div>      
+  </div>
+</div>

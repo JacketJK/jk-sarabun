@@ -1,0 +1,165 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-calendar-circle-user"></i> ปฏิทินกิจกรรม</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>แบบฟอร์ม</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a id="calenadarbreadcrumb1">ปฏิทินกิจกรรม</a>
+      </li>
+      <li id="calenadarbreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a id="calenadarbreadcrumb3" class="active"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+
+  </div>
+</div>
+
+<div class="data-contianer" id="calandarPage1" style="display:none">
+  <div class="datacontent">
+    
+    <div class="loadContianer d-flex justify-content-center align-items-center p-5 my-3 d-none">
+      <div class="loaderContainer"></div>
+    </div>
+    <div id="calendar"></div>
+  </div>
+</div>
+
+<div class="data-contianer" id="calandarPage2" style="display:none">
+  <div class="container-fluid">
+    <div class="head mb-0">
+      <h5><i class="fa-regular fa-calendar-plus"></i> เพิ่มกิจกรรมในปฏิทิน</h5>
+    </div>
+
+    <form id="formActivity" class="mt-3">
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5">                   
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >กอง/ฝ่าย ที่รับผิดชอบ :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-business-time input-icon fs-5"></i>
+              <select class="form-field" id="addNewAcivety1" name="addNewAcivety1" required></select>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >หัวข้อของกิจกรรม :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-joystick input-icon fs-5"></i>
+              <textarea class="form-field" id="addNewAcivety2" name="addNewAcivety2" rows="3" required></textarea>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >ในวันและเวลาที่ :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-calendar-star input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addNewAcivety3" name="addNewAcivety3" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >ถึงวันและเวลาที่ :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-calendar-lines-pen input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addNewAcivety4" name="addNewAcivety4" required>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5">                   
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >สถานที่ :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-tree-city input-icon fs-5"></i>
+              <input type="text" class="form-field" id="addNewAcivety5" name="addNewAcivety5" required>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >รายละเอียดกิจกรรม :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-file-circle-info input-icon fs-5"></i>
+              <textarea class="form-field" id="addNewAcivety6" name="addNewAcivety6" rows="4" required></textarea>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <p class="col-sm-4 col-form-label" >หมายเหตุเพิ่มเติม :</p>
+            <div class="col-sm-7 field-input">
+              <i class="fa-duotone fa-asterisk input-icon fs-5"></i>
+              <textarea class="form-field" id="addNewAcivety7" name="addNewAcivety7" rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="head my-3">
+        <h5><i class="fa-solid fa-arrows-down-to-people"></i> เลือกเป้าหมายของกิจกรรม</h5>
+      </div>
+      <select id="addNewAcivety8"></select>
+      <div class="container mt-4 d-flex justify-content-center align-items-center">
+        <button type="reset" class="btn btn-outline-danger rounded-pill px-4"><i class="fa-duotone fa-xmark-large"></i> ยกเลิกกิจกรรม</button>
+        <button type="button" onclick="addActivityNew()" class="btn btn-outline-green rounded-pill px-4 ms-2"><i class="fa-duotone fa-down-to-bracket"></i> บันทึกกิจกรรม</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="data-contianer" id="calandarPage3" style="display:none">
+  <div class="datacontent">
+    <div class="head mb-0">
+      <h5><i class="fa-duotone fa-money-check-pen"></i> แก้ไขกิจกรรม</h5>
+    </div>
+
+    <div class="container-fluid my-4">
+      <div class="row">
+        <div class="col-lg-3">
+          <label for="editCldfilter1" class="label-form">หน่วยงานที่รับผิดชอบ</label>
+          <select id="editCldfilter1" class="form-select rounded-4"></select>  
+        </div>
+        <div class="col-lg-3">
+          <label for="editCldfilter2" class="label-form">ห้วงเวลา</label>
+          <input type="text" id="editCldfilter2" class="form-control rounded-4">
+        </div>
+        <div class="col-lg-3">
+          <label for="editCldfilter3" class="label-form">ถึงวันที่</label>
+          <input type="text" id="editCldfilter3" class="form-control rounded-4">
+        </div>
+        <div class="col-lg-3">
+          <label for="editCldfilter4" class="label-form">ค้นหา</label>
+          <div class="input-group z-index-0">
+            <input type="text" id="editCldfilter4" class="form-control rounded-4 rounded-end-0" placeholder="คำค้นหา">
+            <button type="button" class="btn btn-primary rounded-4 rounded-start-0 ">ค้นหา</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive mt-3" style="padding-bottom: 80px;">
+      <table id="tableEditCld" class="table table-sm">
+        <thead>
+          <tr class="text-center">
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" rowspan="2">หัวข้อของกิจกรรม</th>
+            <th scope="col" colspan="2">วันที่</th>
+            <th scope="col" rowspan="2">รายละเอียด</th>
+            <th scope="col" rowspan="2">ผู้เข้าร่วมกิจกรรม</th>
+            <th scope="col" rowspan="2">หน่วยงานที่รับผิดชอบ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr class="text-center">
+            <th scope="col">ตั้งวันที่</th>
+            <th scope="col">ถึงวันที่</th>
+          </tr>
+        </thead>
+        <tbody id="tableEditCld-body" class="table-group-divider">
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+          <tr>
+            <td class="text-center py-4" colspan="8"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

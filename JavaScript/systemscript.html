@@ -1,0 +1,1226 @@
+<!------- Systems -------->
+<script>
+let dataAliveHrm;
+
+$('#hrmfilter2, #hrmfilter1').on('input change', function() {
+  const filter1Text = $('#hrmfilter1').val();
+  const filter2Text = $('#hrmfilter2').val();
+  searchDataHrm(filter1Text, filter2Text);
+});
+
+const searchDataHrm = (searchText1, searchText2) => {
+  let filteredData = dataAliveHrm;
+
+  if (searchText1 !== '') {
+    filteredData = filteredData.filter(item => {
+      return item[5] === searchText1;
+    });
+  }
+  if (searchText2 !== '') {
+    filteredData = filteredData.filter(item => {
+      return item[2].toLowerCase().includes(searchText2.toLowerCase()) || item[3].toLowerCase().includes(searchText2.toLowerCase()) || item[4].toLowerCase().includes(searchText2.toLowerCase()) || item[6].toLowerCase().includes(searchText2.toLowerCase());
+    });
+  }
+
+  displayCardsHrm(filteredData);
+};
+
+const displayCardsHrm = (data) => {
+  const dataContainer = $('#hrm-Cardemployee')[0];
+  dataContainer.innerHTML = '';
+  counting1 = data.length;
+  counting2 = counting3 = counting4 = 0;
+
+  data.sort((a, b) => a[5].localeCompare(b[5]));
+
+  data.forEach(item => {
+    if (item[5] === "ข้าราชการ") {
+      counting2++;
+    } else if (item[5] === "พนักงานจ้าง") {
+      counting3++;
+    } else if (item[5] === "ลูกจ้างประจำ") {
+      counting4++;
+    }
+
+    var col = document.createElement('div');
+    col.className = 'col';
+    col.innerHTML = `
+      <div class="card-employee">
+        <div class="image"><img src="${item[9]}"></div>
+        <div class="card-info">
+          <span>${item[2]}${item[3]}  ${item[4]}</span>
+          <p>${item[6]}</p>
+        </div>
+        <a onclick="loadDateHrm('${item}')" class="button">ดูโปรไฟล์</a>
+      </div>
+    `;
+    dataContainer.appendChild(col);
+  });
+
+  $('#countingHrm1').text(counting1);
+  $('#countingHrm2').text(counting2);
+  $('#countingHrm3').text(counting3);
+  $('#countingHrm4').text(counting4);
+  
+  if (data.length < 1) {
+    var noDataText = document.createElement("p");
+    noDataText.textContent = "ไม่พบข้อมูล !";
+    noDataText.className = "col-md-12 fw-medium text-danger fs-4 text-center p-5";
+    dataContainer.appendChild(noDataText);
+    $('.loadContianer').addClass('d-none');
+    return;
+  }
+  
+  $('.loadContianer').addClass('d-none');
+};
+const loadDateHrm = (data) => {
+  const thaiMonths = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+  const thaiDays = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"];
+  const item = data.split(',');
+  $('#hrmDataModal').modal('show');
+  $('#dataHrmShowkey').val(item[0]);
+  $('#dataHrmShow1').html(`${item[2]}${item[3]} ${item[4]} (${item[6]})`);
+  $('#dataHrmShow2').prop('src', item[9]);
+  $('#dataHrmShow3').val(item[1]);
+  $('#dataHrmShow4').val(item[2]);
+  $('#dataHrmShow5').val(item[3]);
+  $('#dataHrmShow6').val(item[4]);
+  $('#dataHrmShow7').val(item[5]);
+  $('#dataHrmShow8').val(item[6]);
+  $("#dataHrmShow9, #dataHrmShow10").flatpickr({
+    locale: "th",
+    disableMobile: true,
+    onReady: function(selectedDates, dateStr, instance) {
+      $('#dataHrmShow9').val(item[7]);
+      $('#dataHrmShow10').val(item[8]);
+      instance.setDate(item[7], false); 
+      instance.setDate(item[8], false);
+    }
+  });
+
+  const masked = IMask($('#dataHrmShow3')[0], { mask: "0-0000-00000-00-0" });
+
+  function calculateAge(birthDate, currentDate) {
+    let ageYears = currentDate.getFullYear() - birthDate.getFullYear();
+    let ageMonths = currentDate.getMonth() - birthDate.getMonth();
+    let ageDays = currentDate.getDate() - birthDate.getDate();
+    if (ageDays < 0) {
+        ageDays += 30;
+        ageMonths -= 1;
+    }
+    if (ageMonths < 0) {
+        ageMonths += 12;
+        ageYears -= 1;
+    }
+    return {
+        years: ageYears,
+        months: ageMonths,
+        days: ageDays
+    };
+  }
+  var birthYear = item[7].split('-');
+  var hireYear = item[8].split('-');
+  function calculateRetirement() {
+    const birthDate = new Date(item[7]);
+    const hireDate = new Date(item[8]);
+    const currentDate = new Date();
+    const age = calculateAge(birthDate, currentDate);
+    const retirementYear = (birthDate.getMonth() > 9 || (birthDate.getMonth() == 9 && birthDate.getDate() >= 2))
+                ? parseInt(birthYear[0]) + 61
+                : parseInt(birthYear[0]) + 60;
+    const retirementDate = new Date(retirementYear, 8, 30);
+    const serviceTime = retirementDate - hireDate;
+    const years = Math.floor(serviceTime / (365.25 * 24 * 60 * 60 * 1000));
+    const months = Math.floor((serviceTime % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000));
+    const days = Math.floor((serviceTime % (30.44 * 24 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000)+2);
+    const remainingTime = retirementDate - currentDate;
+    const remainingYears = Math.floor(remainingTime / (365.25 * 24 * 60 * 60 * 1000));
+    const remainingMonths = Math.floor((remainingTime % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000));
+    const remainingDays = Math.floor((remainingTime % (30.44 * 24 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000));
+    document.getElementById('resultDatahrmShow').innerHTML = `
+        วันเกิด: ${birthDate.getDate()} ${thaiMonths[birthDate.getMonth()]} ${parseInt(birthYear[0]) + 543} (${thaiDays[birthDate.getDay()]})
+        <br>วันที่บรรจุราชการ: ${hireDate.getDate()} ${thaiMonths[hireDate.getMonth()]} ${parseInt(hireYear[0]) + 543}
+        <br>อายุ: ${age.years} ปี ${age.months} เดือน ${age.days} วัน
+        <br>วันที่เกษียณอายุราชการ: 1 ${thaiMonths[9]} ${parseInt(retirementYear) + 543}
+        <br>อายุราชการในวันเกษียณ: ${years} ปี ${months} เดือน ${days} วัน
+        <br>อายุราชการที่เหลือ: ${remainingYears} ปี ${remainingMonths} เดือน ${remainingDays} วัน
+    `;
+  }
+  calculateRetirement();
+
+  $('#confirmeditHrmBtn').on('click', () => {
+    $('#loader').show();
+    var obj = {
+      key: $('#dataHrmShowkey').val(),
+      data1: $('#dataHrmShow3').val(),
+      data2: $('#dataHrmShow4').val(),
+      data3: $('#dataHrmShow5').val(),
+      data4: $('#dataHrmShow6').val(),
+      data5: $('#dataHrmShow7').val(),
+      data6: $('#dataHrmShow8').val(),
+      data7: $('#dataHrmShow9').val(),
+      data8: $('#dataHrmShow10').val(),
+    }
+    google.script.run.withSuccessHandler(() => {
+      toastAlert(1, '✨ แก้ไขข้อมูลสำเร็จ');
+      $('#hrmDataModal').modal('hide');
+      changePageHrm(1);
+    }).editDataEmployee(obj);
+  });
+}
+const upload_image_hrmprofile = async (f) => {
+  $("#loader").show();
+  const codes = $('#dataHrmShow3').val();
+  const file = f.files[0];
+  const fr = new FileReader();
+  fr.onload = function (e) {
+    const obj = {
+      code: codes,
+      filename: "IMG_"+ codes,
+      mimeType: file.type,
+      bytes: [...new Int8Array(e.target.result)]
+    };
+    google.script.run.withSuccessHandler(function(response) {
+      toastAlert('🏦 อัพโหลดรูปประจำตัวสำเร็จสำเร็จ');
+      $('#hrmDataModal').modal('hide');
+      changePageHrm(1);
+    }).editFileProfile(obj);  
+  };
+  fr.readAsArrayBuffer(file);
+}
+const changeStatusHrm = (data) => {
+  $('#statusHrmShowModal').modal('show');
+  const item = data.split(',');
+  $('#statusHrmInputKey').val(item[0]);
+  $('#statusHrmInput').val(item[10]);
+
+  $('#confirm_status_hrm').on('click', ()=> {
+    $('#loader').show();
+    var obj = {
+      key: $('#statusHrmInputKey').val(),
+      status: $('#statusHrmInput').val(),
+    }
+    google.script.run.withSuccessHandler(()=> {
+      $('#statusHrmShowModal').modal('hide');
+      toastAlert(1, '🎊 เปลี่ยนสถานะสำเร็จ');
+      insertStatusHrm();
+    }).statusHrm(obj);
+  })
+}
+const flipCardOle = () => {
+  const card = document.getElementById('oldCard');
+  card.classList.toggle('flipped');
+}
+const flipCardNew = () => {
+  const card = document.getElementById('newCard');
+  card.classList.toggle('flipped');
+}
+const flipCardShow = () => {
+  const card = document.getElementById('showCardProfile');
+  card.classList.toggle('flipped');
+}
+const formatToDateCardThai = (date) => {
+  var thaiMonths = [
+    'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+    'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+  ];
+  var thaiMonth = thaiMonths[date.getMonth()];
+  var thaiYear = date.getFullYear() + 543;
+  var thaiDate = date.getDate() + ' ' + thaiMonth + ' ' + thaiYear;
+  return thaiDate;
+}
+const formatToDateCardEndThai = (date) => {
+  var thaiMonths = [
+    'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+    'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+  ];
+  var thaiMonth = thaiMonths[date.getMonth()];
+  var thaiYear = date.getFullYear() + 543 + 6;
+
+  var thaiday = date.getDate();
+  if (thaiday === 1) {
+    var lastDayOfPreviousMonth = new Date(date.getFullYear(), date.getMonth(), 0);
+    thaiday = lastDayOfPreviousMonth.getDate();
+    thaiMonth = thaiMonths[lastDayOfPreviousMonth.getMonth()];
+    thaiYear = lastDayOfPreviousMonth.getFullYear() + 543 + 6;
+  } else {
+    thaiday -= 1;
+  }
+
+  var thaiDate = thaiday + ' ' + thaiMonth + ' ' + thaiYear;
+  return thaiDate;
+}
+const searchDataHrmCard = () => {
+  $('#cardSearchHrmBtn').html('<i class="fa-duotone fa-loader fa-spin"></i>').prop('disabled', true);
+  const value = $('#cardSearchHrm').val();
+
+  google.script.run.withSuccessHandler((data) => {
+    let dataArray = data.filter(r => r[1] === value);
+    if (dataArray.length > 0) {
+      toastAlert(1, '👤 ข้อมูลส่วนเจ้าหน้าที่');
+      $('#detail_CardHrm').show();
+
+      $('#editCardDatakey').val(dataArray[0][0]);
+      $('#editCardData1').val(dataArray[0][2]);
+      $('#editCardData2').val(dataArray[0][3]);
+      $('#editCardData3').val(dataArray[0][4]);
+      $('#editCardData4').val(dataArray[0][6]);
+      $('#editCardData5').val(dataArray[0][14]);
+
+      $('#oldCardData1, #newCardData1').attr('src', dataArray[0][9]);
+      $('#oldCardData2, #newCardData2').text(dataArray[0][1]);
+      $('#oldCardData3, #newCardData3').text(dataArray[0][2] + dataArray[0][3] + ' ' + dataArray[0][4]);
+      $('#oldCardData4, #newCardData4, #oldCardData11, #newCardData11').text(dataArray[0][6]);
+      $('#oldCardData6, #newCardData6').attr('src', dataArray[0][15]);
+      $('#oldCardData7, #newCardData7').text(dataArray[0][14]);
+      $('#oldCardData12').text(dataArray[0][12]);
+      $('#oldCardData14').text(formatToDateCardThai(new Date(dataArray[0][13])));
+      $('#oldCardData15').text(formatToDateCardEndThai(new Date(dataArray[0][13])));
+    } else {
+      toastAlert(0, '⚠️ ไม่พบข้อมูลเจ้าหน้าที่');
+      $('#detail_CardHrm').hide();
+    }
+    $('#cardSearchHrmBtn').html('ค้นหา').prop('disabled', false);
+  }).getAlldataHrm();
+
+}
+const editimageCard = (e) => {
+  $('#editCardData7Div').toggle(e == 1);
+}
+const upload_image_EditCard = async (f) => {
+  $('#loader').show();
+  const codes = $('#oldCardData2').text();
+  const file = f.files[0];
+  const fr = new FileReader();
+  fr.onload = function (e) {
+    const obj = {
+      code: codes,
+      filename: "IMG_"+ codes,
+      mimeType: file.type,
+      bytes: [...new Int8Array(e.target.result)]
+    };
+    google.script.run.withSuccessHandler(function(response) {
+      toastAlert(1,'🏦 อัพโหลดรูปประจำตัวสำเร็จสำเร็จ');
+      $("#editCardData7Img, #newCardData1").attr('src', response);
+    }).editFileProfile(obj);  
+  };
+  fr.readAsArrayBuffer(file);
+}
+const edit_CardEmployee = () => {
+  $('#newCardData3').text($('#editCardData1').val() + $('#editCardData2').val() + ' ' + $('#editCardData3').val());
+  $('#newCardData4, #newCardData11').text($('#editCardData4').val());
+  $('#newCardData7').text($('#editCardData5').val());
+  $('#newCardData14').text(formatToDateCardThai(new Date($('#editCardData9').val())));
+  $('#newCardData15').text(formatToDateCardEndThai(new Date($('#editCardData9').val())));
+}
+const save_EditCardEmployee = () => {
+  $('#registorUserModal').modal('show');
+
+  $('#confirmRegicBtn').off('click').on('click', ()=> {
+    $('#loader').show();
+    var obj = {
+      key: $('#editCardDatakey').val(),
+      data1: $('#editCardData1').val(),
+      data2: $('#editCardData2').val(),
+      data3: $('#editCardData3').val(),
+      data4: $('#editCardData4').val(),
+      data5: $('#editCardData8').val(),
+      data6: $('#editCardData9').val(),
+      data7: $('#editCardData5').val(),
+    }
+    google.script.run.withSuccessHandler(()=> {
+      toastAlert(1, '🎊 บันทึกข้อมูลสำเร็จ');
+      $('#registorUserModal').modal('hide');
+      $('#detail_CardHrm').hide();
+      google.script.run.withSuccessHandler((res) =>{
+        const now = new Date();
+        const defaultYear = now.getFullYear() + 543;
+        const numberCard = parseInt(res[3]) + 1;
+        $('#oldCardData9, #newCardData9').html(res[0]);
+        $('#oldCardData10, #newCardData10').html(res[1]);
+        $('#oldCardData8, #newCardData8').attr('src', res[2]);
+        $('.seal-agency').attr('src', res[4]);
+        $('#newCardData12').text(numberCard + "/" + defaultYear);
+        $('#editCardData8').val(numberCard + "/" + defaultYear);
+      }).setCardEmployee();
+    }).edit_CardEmployeeSet(obj);
+  })
+}
+const add_newEmployee = () => {
+  $('#addhrmDataModal').modal('show');
+
+  $('#confirmAddHrmBtn').off('click').on('click', ()=> {
+    $('#confirmAddHrmBtn').html('<i class="fa-duotone fa-spinner-third fa-spin"></i>').prop('disabled', true);
+    for (let i = 3; i <= 10; i++) {
+      if ($(`#addEmployeeData${i}`).val() === "") {
+        toastAlert(0, '⚠️ โปรดกรอกข้อมูลให้ครบถ้วน');
+        $('#confirmAddHrmBtn').html('บันทึกข้อมูล').prop('disabled', false);
+        return;
+      } else if ($('#upload_image_Addhrmprofile').val() === "" && $('#upload_image_Addhrmsig').val() === "") {
+        toastAlert(0, '⚠️ โปรดอัพโหลดภาพให้ครบถ้วน');
+        $('#confirmAddHrmBtn').html('บันทึกข้อมูล').prop('disabled', false);
+        return;
+      }
+    }
+    var imgElement1 = document.getElementById("addEmployeeData1");
+    var canvas1 = document.createElement("canvas");
+    var context1 = canvas1.getContext("2d");
+    canvas1.width = imgElement1.naturalWidth;
+    canvas1.height = imgElement1.naturalHeight;
+    context1.drawImage(imgElement1, 0, 0, imgElement1.naturalWidth, imgElement1.naturalHeight);
+    var imageDataUrl1 = canvas1.toDataURL("image/png");
+
+    var imgElement2 = document.getElementById("addEmployeeData2");
+    var canvas2 = document.createElement("canvas");
+    var context2 = canvas2.getContext("2d");
+    canvas2.width = imgElement2.naturalWidth;
+    canvas2.height = imgElement2.naturalHeight;
+    context2.drawImage(imgElement2, 0, 0, imgElement2.naturalWidth, imgElement2.naturalHeight);
+    var imageDataUrl2 = canvas2.toDataURL("image/png");
+
+    var obj = {
+      data1: $('#addEmployeeData3').val(),
+      data2: $('#addEmployeeData4').val(),
+      data3: $('#addEmployeeData5').val(),
+      data4: $('#addEmployeeData6').val(),
+      data5: $('#addEmployeeData7').val(),
+      data6: $('#addEmployeeData8').val(),
+      data7: $('#addEmployeeData9').val(),
+      data8: $('#addEmployeeData10').val(),
+      filetype: "image/png",
+      imageDataUrl1: imageDataUrl1,
+      imageDataUrl2: imageDataUrl2,
+    }
+
+    google.script.run.withSuccessHandler((res)=> {
+      $('#confirmAddHrmBtn').html('บันทึกข้อมูล').prop('disabled', false);
+      $('#addhrmDataModal').modal('hide');
+    }).add_newEmployee(obj);
+  })
+}
+const upload_image_Addhrmprofile = (input) => {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById('addEmployeeData1').src = e.target.result;
+    }
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+const upload_image_Addhrmsig = (input) => {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById('addEmployeeData2').src = e.target.result;
+    }
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>
+
+<!---------------------- SaveLand ------------------------>
+<script>
+const searchLandData = ()=> {
+  $('#savelandSearch').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> กำลังค้นหา...').attr('disabled', true);
+  $('#findDataSaveland').hide();
+  var obj = {
+    dropdown1: $('#savelandSearch1').val(),
+    dropdown2: $('#savelandSearch2').val(),
+    dropdown3: $('#savelandSearch3').val(),
+  };
+  google.script.run.withSuccessHandler((res)=>{
+    $('#findDataSaveland').show();
+    insertDataSaveland(res);
+    if (res.length === 0) {
+      toastAlert(0, '⚠️ ไม่พบข้อมูล');
+    } else {
+      toastAlert(1, '🎊 ค้นหาข้อมูลสำเร็จ');
+    }
+    $('#savelandSearch').html('<i class="fa-regular fa-magnifying-glass"></i> ค้นหาข้อมูล').attr('disabled', false);
+  }).getDataTableSaveland(obj);
+}
+
+const clearDropdownsSL = ()=> {
+  var colA = document.getElementById('savelandSearch1');
+  var colB = document.getElementById('savelandSearch2');
+  colA.length = 0;
+  colB.length = 0;
+
+  var defaultOptionA = document.createElement("option");
+  defaultOptionA.text = "โปรดเลือกปี พ.ศ.";
+  defaultOptionA.value = "";
+  defaultOptionA.selected = true;
+  defaultOptionA.disabled = false;
+  colA.add(defaultOptionA);
+
+  var defaultOptionB = document.createElement("option");
+  defaultOptionB.text = "โปรดเลือกชื่อโครงการ";
+  defaultOptionB.value = "";
+  defaultOptionB.selected = true;
+  defaultOptionB.disabled = false;
+  colB.add(defaultOptionB);
+}
+google.script.run.withSuccessHandler(function (obj) {
+  clearDropdownsSL();
+  dropDownListSL(obj);
+}).getDataSaveLandDB();
+
+const dropDownListSL = (obj)=> {
+  var colA = document.getElementById('savelandSearch1');
+  var colB = document.getElementById('savelandSearch2');
+
+  for (var x in obj) {
+    colA.options[colA.options.length] = new Option(x, x);
+  }
+
+  colA.onchange = function () {
+    colB.length = 0;
+
+    var defaultOption = document.createElement("option");
+    defaultOption.text = "โปรดเลือกชื่อโครงการ";
+    defaultOption.value = "";
+    defaultOption.selected = true;
+    defaultOption.disabled = false;
+    colB.add(defaultOption);
+
+    for (var i = 0; i < obj[this.value].length; i++) {
+      colB.options[colB.options.length] = new Option(obj[this.value][i], obj[this.value][i]);
+    }
+  }
+}
+$('#addNewSaveLand12').on('change', (event) => {
+  const file = event.target.files[0];
+
+  if (file) {
+    const reader = new FileReader();
+    $('#pdf-preview').show();
+    reader.onload = (e) => {
+      const pdfData = e.target.result;
+
+      pdfjsLib.getDocument({ data: pdfData }).promise.then((pdf) => {
+        pdf.getPage(1).then((page) => {
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          const viewport = page.getViewport({ scale: 1 });
+
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          const renderContext = {
+              canvasContext: context,
+              viewport: viewport
+          };
+
+          page.render(renderContext).promise.then(() => {
+            $('#pdf-preview').empty().append(canvas);
+            $('#pdf-preview-container').show();
+            $("#page21").stop().animate({ scrollTop: $(document).height() }, 500);
+          });
+        });
+      });
+    };
+
+    reader.readAsArrayBuffer(file);
+  }
+});
+
+$.Thailand({
+  $district: $('#addNewSaveLand8'), 
+  $amphoe: $('#addNewSaveLand9'), 
+  $province: $('#addNewSaveLand10'),
+  $zipcode: $('#addNewSaveLand11'), 
+});
+
+const insertYear = () => {
+  const currentYear = new Date().getFullYear() + 543; 
+  const years = Array.from({length: 51}, (v, i) => currentYear - i);
+  
+  const addNewSaveLand1 = document.getElementById('addNewSaveLand1');
+  const feeTrashfilter1 = document.getElementById('feeTrashfilter1');
+  const feeTrashdetail3 = document.getElementById('feeTrashdetail3');
+
+  years.forEach(year => {
+    const option = document.createElement('option');
+    option.value = year;
+    option.text = year;
+    addNewSaveLand1.appendChild(option);
+
+    const optionClone = option.cloneNode(true);
+    feeTrashfilter1.appendChild(optionClone);
+
+    const optionClone2 = option.cloneNode(true);
+    feeTrashdetail3.appendChild(optionClone2);
+  });
+}
+
+const addSavelandFn = (obj) => {
+  $('#registorUserModal').modal('show');
+
+  $('#confirmRegicBtn').off('click').on('click', ()=> {
+    $('#loader').show();
+
+    google.script.run.withSuccessHandler(()=> {
+      toastAlert(1, '🎊 บันทึกข้อมูลสำเร็จ');
+      $('#addSavelandForm')[0].reset();
+      $('#registorUserModal').modal('hide');
+      $('#pdf-preview-container').hide();
+      google.script.run.withSuccessHandler(function (res) {
+        clearDropdownsSL();
+        dropDownListSL(res);
+      }).getDataSaveLandDB();
+    }).addSavelandgs(obj);
+  });
+}
+</script>
+
+<!---------------------------- Check Bin ------------------------>
+<script>
+var map;
+const initCheckBinMap = () => {
+  map = new longdo.Map({
+    placeholder: document.getElementById('map')
+  });
+
+  map.location({ lon: 99.69712436199188, lat: 16.09727985574149 }, true);
+  map.zoom(17, true);
+  map.Tags.add('shopping');
+ 
+  google.script.run.withSuccessHandler((dataTrash) => {
+    
+    dataTrash.forEach(item => {
+      const markerBin = new longdo.Marker(
+        { lon: item[2], lat: item[1] }, 
+        { title: `<i class="fa-solid fa-trash-can"></i>`,
+          detail: `<table class="table table-borderless" style="text-align:left;font-size: 14px">
+                    <h6><b><center>รายละเอียด</center></b></h6><br>
+                    <tr>
+                      <th>ถังขยะ</th>
+                      <td>${item[0]}</td>
+                    </tr>
+                    <tr>
+                      <th>เจ้าของ</th>
+                      <td>${item[4]}</td>
+                    </tr>
+                    <tr>
+                      <th>พิกัด</th>
+                      <td>${item[1]}, ${item[2]}</td>
+                    </tr>
+                    <tr>
+                      <th>บ้านเลขที่</th>
+                      <td>${item[5]}</td>
+                    </tr>
+                    <tr>
+                      <th>ค่าบริการ</th>
+                      <td>${item[6]} บาท</td>
+                    </tr>
+                    <tr>
+                      <th>สถานะ</th>
+                      <td class="text-danger">${item[7]}</td>
+                    </tr>
+                    <tr>
+                      <th>สถานะถัง</th>
+                      <td class="text-success">${item[8]}</td>
+                    </tr>
+                  </table>  
+                  `,
+          icon: {
+            url: 'https://cdn.jsdelivr.net/gh/JacketJK/image/recycle-bin-img.png',
+            offset: { x: 15, y: 10 },
+            size: { width: 20, height: 32 }
+          },
+          draggable: false,
+          weight: longdo.OverlayWeight.Top,
+          size: { width: 300, height: 320 },
+        }
+      );
+      map.Overlays.add(markerBin);
+    });
+  }).getDataCheckBin();
+}
+var mapEdit;
+const initCheckBinMapEdit = () => {
+  mapEdit = new longdo.Map({
+    placeholder: document.getElementById('mapEdit')
+  });
+  mapEdit.location({ lon: 99.69712436199188, lat: 16.09727985574149 }, true);
+  mapEdit.zoom(17, true);
+  mapEdit.Tags.add('shopping');
+  
+  mapEdit.Event.bind('location', function() {
+    var result = mapEdit.location();
+    $('#LatitudeEdit').val(result.lat);
+    $('#LongitudeEdit').val(result.lon);
+  });
+}
+const trashEditData = (data) => {
+  const dataArray = data.split(',');
+
+  $('#trashEditData1').val(dataArray[0]);
+  $('#trashEditData2, #trashEditData3').val(dataArray[4]);
+  $('#trashEditData4').val(dataArray[5]);
+  $('#trashEditData5').val(dataArray[6]);
+  $('#trashEditData7').val(dataArray[13]);
+  $('#trashEditData10').attr('src', dataArray[9]);
+  $('#trashEditData11').attr('src', dataArray[10]);
+  if (dataArray[8] === "true") {
+    $('#trashEditData6_label').text('ใช้งานอยู่').removeClass('text-danger').addClass('text-success');
+    $('#trashEditData6').prop('checked', true);
+  } else {
+    $('#trashEditData6_label').text('ยกเลิกใช้งาน').removeClass('text-success').addClass('text-danger');
+    $('#trashEditData6').prop('checked', false);
+  }
+  $('#trashEditData6').on('change', () => {
+    if ($('#trashEditData6').is(':checked')) {
+      $('#trashEditData6_label').text('ใช้งานอยู่').removeClass('text-danger').addClass('text-success');
+    } else {
+      $('#trashEditData6_label').text('ยกเลิกใช้งาน').removeClass('text-success').addClass('text-danger');
+    }
+  });
+
+  $('#LatitudeEdit').val(dataArray[1]);
+  $('#LongitudeEdit').val(dataArray[2]);
+
+  mapEdit.location({ lon: parseFloat(dataArray[2]), lat: parseFloat(dataArray[1]) }, true);  
+  mapEdit.zoom(17, true);
+}
+const positionTrashEdit = () => {
+  $('#positionTrashEdit_btn').html('<i class="fa-duotone fa-loader fa-spin"></i> กำลังแก้ไขข้อมูล').prop('disabled', true);
+  if ($('#trashEditData1').val() === '') {
+    toastAlert(2, '⚠️ โปรดเลือกข้อมูลก่อน'); 
+    $('#positionTrashEdit_btn').html('<i class="fa-light fa-cloud-arrow-down"></i> บันทึกข้อมูล').prop('disabled', false);
+    return;
+  } else if ($('#trashEditData2').val() === '') {
+    toastAlert(2, '⚠️ โปรดระบุเจ้าของถังดังกล่าว'); 
+    $('#positionTrashEdit_btn').html('<i class="fa-light fa-cloud-arrow-down"></i> บันทึกข้อมูล').prop('disabled', false);
+    return;
+  }
+  var obj = {
+    key: $('#trashEditData1').val(),
+    data1: $('#trashEditData2').val(),
+    lat: $('#LatitudeEdit').val(),
+    lon: $('#LongitudeEdit').val()
+  }
+  google.script.run.withSuccessHandler((data)=>{
+    toastAlert(1, '🎊 แก้ไขข้อมูลสำเร็จ');
+    $('#positionTrashEdit_btn').html('<i class="fa-light fa-cloud-arrow-down"></i> บันทึกข้อมูล').prop('disabled', false);
+  }).editTrashPosition(obj);
+}
+const switchPageTrashEdit = () => {
+  $('#switchPage_btn-2').toggleClass('btn-orange btn-outline-orange');
+  $('#trashEditMapDiv').fadeOut(400, function() {
+    $(this).toggleClass('show d-none').fadeIn();
+  });
+  $('#trashEditDataDiv').fadeOut(400, function() {
+    $(this).toggleClass('d-none show').fadeIn();
+  });
+}
+
+const chartTrashFn = () => {
+  let categoryCounts = new Map();
+  google.script.run.withSuccessHandler((data)=> {
+    data.forEach((item) => {
+      var mooban = item[5].split(' ');
+      let category = mooban[2] + ' ' + mooban[3];
+
+      if (categoryCounts.has(category)) {
+        categoryCounts.set(category, categoryCounts.get(category) + 1);
+      } else {
+        categoryCounts.set(category, 1);
+      }
+    });
+
+    let seriesData = [];
+    let categories = [];
+    categoryCounts.forEach((value, key) => {
+      seriesData.push(value);
+      categories.push(key);
+    });
+
+    var options = {
+      chart: {
+        height: 440,
+        type: "area"
+      },
+      dataLabels: {
+        enabled: false
+      },
+      series: [
+        {
+          name: "จำนวน",
+          data: seriesData
+        }
+      ],
+      fill: {
+        type: "gradient",
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.7,
+          opacityTo: 0.9,
+          stops: [0, 90, 100]
+        }
+      },
+      xaxis: {
+        categories: categories,
+        labels: {
+          style: {
+            fontSize: '12px',
+            fontFamily: 'Prompt, sans-serif' 
+          }
+        }
+      }
+    };
+    var chart = new ApexCharts($("#chartTrash")[0], options);
+    chart.render(); 
+  }).getDataCheckBin();
+}
+let mapModal;
+let markerModal;
+
+const trashSeeData = (data) => {
+  $('#seeDrtailTrashModal').modal('show');
+  const dataArray = data.split(',');
+
+  $('#detail1').text(dataArray[0]);
+  $('#detail2').text(dataArray[4]);
+  $('#detail3').text(dataArray[5]);
+  $('#detail4').text(dataArray[6]);
+  $('#detail7').text(dataArray[13]);
+  $('#detail5').prop('src', dataArray[9]);
+  $('#detail6').prop('src', dataArray[10]);
+
+  if (!mapModal) {
+    mapModal = new ol.Map({
+      target: 'mapModal',
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM() 
+        })
+      ]
+    });
+  }
+
+  if (!markerModal) {
+    markerModal = new ol.Feature({
+      geometry: new ol.geom.Point(ol.proj.fromLonLat([parseFloat(dataArray[2]), parseFloat(dataArray[1])]))
+    });
+
+    let markerLayer = new ol.layer.Vector({
+      source: new ol.source.Vector({
+        features: [markerModal]
+      }),
+      style: new ol.style.Style({
+        image: new ol.style.Icon({
+          src: 'https://cdn.jsdelivr.net/gh/JacketJK/image/recycle-bin-img.png', 
+          scale: 1
+        })
+      })
+    });
+
+    mapModal.addLayer(markerLayer); 
+  } else {
+    markerModal.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([parseFloat(dataArray[2]), parseFloat(dataArray[1])])));
+  }
+
+  mapModal.getView().setCenter(ol.proj.fromLonLat([parseFloat(dataArray[2]), parseFloat(dataArray[1])])); 
+  mapModal.getView().setZoom(15); 
+}
+const editFile_Image = (f, runnumber, namefile) => {
+  $('#loader').show();
+  const codes = $("#trashEditData1").val();
+  const file = f.files[0];
+  const fr = new FileReader();
+  fr.onload = function (e) {
+    const obj = {
+      code: codes,
+      owner: $("#trashEditData3").val(),
+      filename: namefile + "_" + codes,
+      mimeType: file.type,
+      bytes: [...new Int8Array(e.target.result)]
+    };
+    const blob = new Blob([new Uint8Array(obj.bytes)], { type: obj.mimeType });
+    const url = URL.createObjectURL(blob);
+    $("#trashEditData" + runnumber).attr("src", url);
+
+    google.script.run.withSuccessHandler(e => toastAlert(1, e)).saveFileTrash(obj, runnumber);
+  };
+  fr.readAsArrayBuffer(file);
+}
+const editTrashData = () => {
+  $('#editTrashData_btn').html('<i class="fa-duotone fa-loader fa-spin"></i> กำลังแก้ไขข้อมูล').prop('disabled', true);
+  if ($('#trashEditData1').val() === '') {
+    toastAlert(2, '⚠️ โปรดเลือกข้อมูลก่อน'); 
+    $('#editTrashData_btn').html('<i class="fa-light fa-pen-to-square"></i> แก้ไขข้อมูล').prop('disabled', false);
+    return;
+  } else if ($('#trashEditData2').val() === '') {
+    toastAlert(2, '⚠️ โปรดระบุเจ้าของถังดังกล่าว'); 
+    $('#editTrashData_btn').html('<i class="fa-light fa-pen-to-square"></i> แก้ไขข้อมูล').prop('disabled', false);
+    return;
+  }
+  var obj = {
+    key: $('#trashEditData1').val(),
+    data1: $('#trashEditData3').val(),
+    data2: $('#trashEditData4').val(),
+    data3: $('#trashEditData5').val(),
+    data4: $('#trashEditData7').val(),
+  }
+  google.script.run.withSuccessHandler((data)=>{
+    toastAlert(1, '🎊 แก้ไขข้อมูลสำเร็จ');
+    $('#editTrashData_btn').html('<i class="fa-light fa-pen-to-square"></i> แก้ไขข้อมูล').prop('disabled', false);
+  }).editTrashData(obj);
+}
+const feeTrashSave = (data) => {
+  $('#addFeeTrashModal').modal('show');
+  let dataArray = data.split(',');
+
+  $('#feeTrashdetail1').text(dataArray[4]);
+  $('#feeTrashdetail2').text(dataArray[5]);
+  $('#feeTrashdetail7').val(dataArray[6]);
+}
+const seefeeTrash = (data) => {
+  $('#detailFeeTrashModal').modal('show');
+  let dataArray = data.split(','); 
+
+  $('#feeTrashsee1').html(dataArray[0]);
+  var imglink = 'https://cdn.jsdelivr.net/gh/JacketJK/image/recycle-bin-table.png';
+  var link = '';
+
+  for (let j = 0; j < dataArray[2]; j++) {
+    const trash = dataArray[1].split("- ");
+    link += `<div class="d-flex flex-column align-items-center justify-content-center ms-2">
+              <img src='${imglink}' width='20'>
+              <span style="font-size: 8px;color: var(--box2);">${trash[j]}</span>
+            </div>`;
+  }
+
+  if (link === '') {
+    link = `<i class='fa-solid fa-ban' style='color: #db0000;' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ไม่มีลิงก์แนบ'></i>`;
+  }
+  $('#feeTrashsee2').html(`
+    <div class="d-flex align-items-center justify-content-start">
+      ${link}
+    </div>
+  `);
+  $('#feeTrashsee3').html((dataArray[5]).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " บาท");
+  $('#feeTrashsee4').html("เล่มที่ " + dataArray[3] + " เลขที่ " + dataArray[4]);
+  $('#feeTrashsee5').html(dataArray[7]);
+  $('#feeTrashsee6').html(dataArray[6]);
+}
+const feeTrashData = () => {
+  $('#confirmFeeTrashBtn').html('<i class="fa-regular fa-recycle fa-spin"></i>').attr('disabled', true);
+  if ($('#feeTrashdetail3').val() === "" && $('#feeTrashdetail4').val() === "") {
+    toastAlert(0, '⚠️ โปรดกรอกปีและเดือนที่บันทึก');
+    $('#confirmFeeTrashBtn').html('บันทึกข้อมูล').attr('disabled', false);
+    return;
+  } else if ($('#feeTrashdetail5').val() === "" && $('#feeTrashdetail6').val() === "") {
+    toastAlert(0, '⚠️ โปรดกรอกเลขที่ในเสร็จให้ครบถ้วน');
+    $('#confirmFeeTrashBtn').html('บันทึกข้อมูล').attr('disabled', false);
+    return;
+  }
+
+  var obj = {
+    data1: $('#feeTrashdetail1').text(),
+    data2: $('#feeTrashdetail2').text(),
+    data3: $('#feeTrashdetail3').val(),
+    data4: $('#feeTrashdetail4').val(),
+    data5: $('#feeTrashdetail5').val(),
+    data6: $('#feeTrashdetail6').val(),
+    data7: $('#feeTrashdetail7').val(),
+    user: localStorage.getItem('name_1') + localStorage.getItem('name_2') + ' ' + localStorage.getItem('name_3'),
+  }
+  
+  google.script.run.withSuccessHandler((res)=>{
+    toastAlert(1, '🎉 บันทึกข้อมูลสำเร็จ');
+    $('#addFeeTrashModal').modal('hide');
+    $('#confirmFeeTrashBtn').html('บันทึกข้อมูล').attr('disabled', false);
+    $('#feeTrashdetail6').val(res);
+    insertTrashFeetable();
+  }).feeTrashData(obj);
+}
+$('#feeTrashfilter1, #feeTrashfilter2').on('change',()=>{
+  insertTrashFeetable();
+  $('.loadContianer').removeClass('d-none');
+});
+
+var mapCompian;
+const initCheckBinMapCompian = () => {
+  mapCompian = new longdo.Map({
+    placeholder: document.getElementById('mapCompian')
+  });
+  mapCompian.location({ lon: 99.69712436199188, lat: 16.09727985574149 }, true);
+  mapCompian.zoom(17, true);
+  mapCompian.Tags.add('shopping');
+
+  google.script.run.withSuccessHandler((dataTrash) => {
+    dataTrash.forEach(item => {
+      const markerBin = new longdo.Marker(
+        { lon: item[4], lat: item[3] }, 
+        { title: `<i class="fa-solid fa-megaphone"></i>`,
+          detail: `<table class="table table-borderless" style="text-align:left;font-size: 14px">
+                    <h6><b><center>รายละเอียด</center></b></h6><br>
+                    <tr>
+                      <th>ถังขยะ</th>
+                      <td>${item[1]}</td>
+                    </tr>
+                    <tr>
+                      <th>เจ้าของ</th>
+                      <td>${item[2]}</td>
+                    </tr>
+                    <tr>
+                      <th>ที่อยู่</th>
+                      <td>${item[5]}</td>
+                    </tr>
+                    <tr>
+                      <th>เบอร์โทร</th>
+                      <td>${item[6]}</td>
+                    </tr>
+                  </table> 
+                  <div class="text-center mt-1"> 
+                    <button class="btn btn-outline-green btn-sm rounded-pill px-2 w-75" onclick="compian_success('${item[0]}')">บันทึกข้อมูล</button>
+                  </div>
+                  `,
+          icon: {
+            url: 'https://cdn.jsdelivr.net/gh/JacketJK/image/trash-full.png',
+            offset: { x: 15, y: 10 },
+            size: { width: 32, height: 32 }
+          },
+          draggable: false,
+          weight: longdo.OverlayWeight.Top,
+          size: { width: 300, height: 260 },
+        }
+      );
+      mapCompian.Overlays.add(markerBin);
+    });
+  }).getDataTrashCompian();
+}
+const compian_trash = (...position) => {
+  mapCompian.location({ lon: position[0], lat: position[1] }, true);
+  mapCompian.zoom(17, true);
+}
+const compian_success = (codeKey) => {
+  $('#compianTrashModal').modal('show');
+  $('#compianTrashData1').val(codeKey);
+
+  $('#confirmCompianTrashBtn').on('click', ()=>{
+    $('#loader').show();
+    var obj = {
+      key: $("#compianTrashData1").val(),
+      user: localStorage.getItem('name_1') + localStorage.getItem('name_2') + ' ' + localStorage.getItem('name_3'),
+    }
+    google.script.run.withSuccessHandler((res) => {
+      $('#compianTrashModal').modal('hide');
+      toastAlert(1, '🎉 บันทึกข้อมูลสำเร็จ');
+      insertCompianTrash();
+    }).compian_success(obj);
+  });
+}
+$('#_checkbox-26').on('change', function() {
+  var isChecked = $(this).is(':checked');
+  $('#compianTrashDataDiv').toggle(isChecked);
+  if (isChecked) {
+    $('#confirmCompianTrashBtn').prop('disabled', false);
+  } else {
+    $('#confirmCompianTrashBtn').prop('disabled', true);
+  }
+});
+const compianFile_Image = (f) => {
+  $('#loader').show();
+  const codes = $("#compianTrashData1").val();
+  const file = f.files[0];
+  const fr = new FileReader();
+  fr.onload = function (e) {
+    const obj = {
+      code: codes,
+      filename: "SC_" + codes,
+      mimeType: file.type,
+      bytes: [...new Int8Array(e.target.result)]
+    };
+    const blob = new Blob([new Uint8Array(obj.bytes)], { type: obj.mimeType });
+    const url = URL.createObjectURL(blob);
+    $("#compianTrashDataImage").attr("src", url);
+
+    google.script.run.withSuccessHandler(e => toastAlert(1, e)).saveFileTrashCompian(obj);
+  };
+  fr.readAsArrayBuffer(file);
+}
+const insertCompianTrash = () => {
+  var dataContainer = $('#compian_div')[0];
+  dataContainer.innerHTML = "";
+
+  google.script.run.withSuccessHandler((data)=> {
+    if (data.length === 0) {
+      var noDataText = document.createElement("p");
+      noDataText.innerHTML = "<i class='fa-regular fa-circle-info'></i>" + " ไม่พบข้อมูล !";
+      noDataText.className = "fw-medium text-danger fs-4 text-center p-5";
+      dataContainer.appendChild(noDataText);
+      return;
+    }
+
+    data.forEach(item => {
+      var container = document.createElement('div');
+      container.className = "row md-2";
+      container.innerHTML = `
+        <div class="col-md-4 d-flex justify-content-center align-items-center">  
+          <div class="ratio ratio-1x1" style="width:100px; overflow: hidden;">
+            <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/trash.png">
+          </div>
+        </div>
+        <div class="col-md-8 d-flex flex-column">
+          <span class="font-size-14">ถังขยะ : <span class="text-primary">${item[1]}</span></span>
+          <span class="font-size-14">ผู้แจ้ง : <span class="text-primary">${item[2]}</span></span>
+          <span class="font-size-14">โทร. : <span class="text-primary">${item[6]}</span></span>
+          <button class="btn btn-outline-orange btn-sm rounded-pill mt-2" onclick="compian_trash('${item[4]}', '${item[3]}')">พิกัดที่อยู่</button>
+        </div>
+        <hr class="opacity-10 col-md-12 mt-2">
+      `;
+
+      dataContainer.appendChild(container);
+    });
+  }).getDataTrashCompian();
+}
+
+</script>
+
+<script>
+google.script.run.withSuccessHandler(data => {
+  getContentCategoty(data);
+  chartMaterial();
+  chartDurable();
+}).getContentCategoty();
+
+
+const getContentCategoty = (data) => {
+  const dataContainer = document.getElementById('swiper-wrapper-container');
+  dataContainer.innerHTML = "";
+
+  if (Array.isArray(data)) {
+    data.forEach(item => {
+      var swiper = document.createElement('div');
+      swiper.className = "swiper-slide";
+      swiper.innerHTML = `
+        <div class="position-relative">
+          <img src="${item[3]}" width="100" role="button" class="swiper-img" data-bs-toggle="tooltip" data-bs-placement="bottom"
+          data-bs-custom-class="custom-tooltip"
+          data-bs-title="${item[2]}${item[1]}">  
+          <span class="position-absolute equip-num">${item[4]}</span>
+        </div>         
+        `;
+
+      dataContainer.appendChild(swiper);
+    });
+
+    var swiper = new Swiper('.swiper', {
+      slidesPerView: 5,
+      loop: true,
+      autoplay: {
+        delay: 2500, 
+        disableOnInteraction: false, 
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
+
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+  } else {
+    toastAlert(2, "Data is not an array");
+  }
+}
+
+
+const chartMaterial = () => {
+  var options = {
+    series: [76, 67, 61, 90],
+    chart: {
+      type: 'donut',
+      fontFamily: 'Prompt, sans-serif',
+      height: 500, 
+      width: 500  
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          labels: {
+            show: true,
+            total: {
+              showAlways: true,
+              show: true
+            }
+          }
+        }
+      }
+    },
+    colors: ['#FFB22B', '#06d79c', '#745af2', '#ef5350'],
+    labels: ['วัสดุคอมพิวเตอร์', 'อะไหล่ทุกชนิด', 'ไฟฟ้าและวิทยุ', 'สำนักงาน'],
+    dataLabels: {
+      dropShadow: {
+        blur: 5,
+        opacity: 0.1
+      }
+    },
+    responsive: [{
+      breakpoint: 480,
+      options: {
+        chart: {
+          width: 300 
+        },
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }]
+  };
+
+  var chart = new ApexCharts(document.querySelector("#chart-Material"), options);
+  chart.render();
+}
+
+const chartDurable = () => {
+  var options = {
+    series: [6, 6, 5, 9, 12],
+    chart: {
+      type: 'donut',
+      fontFamily: 'Prompt, sans-serif',
+      height: 500, 
+      width: 500  
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          labels: {
+            show: true,
+            total: {
+              showAlways: true,
+              show: true
+            }
+          }
+        }
+      }
+    },
+    colors: ['#06d79c', '#745af2', '#FFB22B', '#FF6600', '#ef5350'],
+    labels: ['คอมพิวเตอร์', 'เครื่องมือก่อสร้าง', 'ยานพาหนะและขนส่ง', 'เครื่องมือการเกษตร', 'สำรวจ'],
+    dataLabels: {
+      dropShadow: {
+        blur: 5,
+        opacity: 0.1
+      }
+    },
+    responsive: [{
+      breakpoint: 480,
+      options: {
+        chart: {
+          width: 300 
+        },
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }]
+  };
+
+  var chart = new ApexCharts(document.querySelector("#chart-Durable"), options);
+  chart.render();
+}
+
+</script>  

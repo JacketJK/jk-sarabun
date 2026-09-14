@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <?!= HtmlService.createHtmlOutputFromFile('Styles/css').getContent() ?>
+</head>
+<body>
+  <section id="loginpage" style="display: none">
+    <?!= HtmlService.createHtmlOutputFromFile('Pages/00_loginpage').getContent() ?>
+  </section>
+
+  <section id="sidebar" style="display: none">
+    <a class="brand" role="button" onclick="changePage(1)">
+      <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/logo-Project.png" id="logoSystem">
+      <span class="text" id="nameEngSystem">&nbsp;&nbsp;JK-SARABUN</span>
+      <span class="text-smail text-nowrap" id="nameSystem"></span>
+    </a>
+    <?!= HtmlService.createHtmlOutputFromFile('Pages/00_sidebar').getContent() ?>
+  </section>
+
+  <section id="content" style="display: none">
+    <nav>
+      <i class='fa-solid fa-xmark fa-lg' id="onsideManu"></i>
+      <a href="https://www.youtube.com/playlist?list=PLehRw2H1NDea1WlbOJ6WDyxRRz4rikOGb" target="_blank" class="nav-link text-nowrap"><i class="fa-duotone fa-book"></i> คู่มือการใช้งาน</a>
+      <form action="#">
+      </form>
+      
+      <div class="dropdown">
+        <a class="notification" href="#" role="button" id="chatDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fa-duotone fa-messages"></i>
+          <span class="num" id="chatStackNum"></span>
+        </a>
+        <div class="dropdown-menu z-index-100 rounded-4" aria-labelledby="chatDropdown" style="width: 360px; max-height: 600px;">
+          <div class="d-flex align-items-center justify-content-between px-3 py-2">
+            <h6 class="mb-0 fs-6">สนทนา</h6>
+            <span id="chatStackNum2" class="badge text-bg-blue rounded-4 px-3 py-1 lh-sm"></span>
+          </div>
+          <div class="px-3 py-2">
+            <input type="text" id="search_chat" class="form-control rounded-pill w-100" placeholder="ค้นหาชื่อ">
+          </div>
+          <div class="dropdown-content" id="chat1no1Div">
+            <a href="javascript:void(0)" class="py-2 px-3 d-flex align-items-center dropdown-item start-chat" data-chat="0">
+              <span class="ratio ratio-1x1 overflow-hidden rounded-circle shadow-sm me-3" style="width: 48px; height: 48px;">
+                <img src="https://lh3.googleusercontent.com/d/1AF1d-bLIMaksvpaG-V-GRXM7sGV6jZme" id="image_chat_logo" alt="user" class="object-fit-cover">
+              </span>
+              <div class="w-75 d-inline-block v-middle">
+                <div class="d-flex align-items-center justify-content-between">
+                  <h6 class="mb-0 fw-semibold lh-base limited-text">กลุ่มสนทนาองค์กร</h6>
+                  <span class="text-body-secondary">15 นาที</span>  
+                </div>
+                <span class="d-block fw-medium text-body-dark limited-text">ข้อความใหม่</span>
+              </div>
+            </a>
+          </div>
+          <div class="py-2 px-4">
+            <button class="btn btn-outline-primary rounded-pill w-100" onclick="event.stopPropagation();">ดูการสนทนาทั้งหมด</button>
+          </div>
+        </div>
+      </div>
+      <div class="dropdown">
+        <a class="notification" href="#" role="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fa-duotone fa-bell"></i>
+          <span class="num d-none" id="countingNotify"></span>
+        </a>
+        <div class="dropdown-menu z-index-100 rounded-4" aria-labelledby="notificationDropdown" style="width: 360px; max-height: 600px;">
+          <div class="d-flex align-items-center justify-content-between p-3">
+            <h6 class="mb-0 fs-6">การแจ้งเตือน</h6>
+            <span class="badge text-bg-blue rounded-4 px-3 py-1 lh-sm d-none" id="countingNotification"></span>
+          </div>
+          <div class="dropdown-content" id="notificationDiv">
+          </div>
+          <div class="py-2 px-4">
+            <button class="btn btn-outline-primary rounded-pill w-100" id="showAllNotify">ดูการแจ้งเตือนทั้งหมด</button>
+          </div>
+        </div>
+      </div>
+      <div class="h-75 ps-1 border-end"></div>
+      <a class="profile dropdown">
+        <div class="row mt-0">
+          <div class="col-auto">
+            <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/user-1.png" id="profileSrc" style="box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px; border: 2px solid #03d82e;" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="position-relative">
+              <span class="position-absolute" style="bottom: -5px;right: 2px;"><i class="fa-solid fa-circle-small fa-sm" style="color: #03d82e;"></i></span>
+            </div>
+            <div class="dropdown-menu rounded-4" aria-labelledby="profileSrc" style="width: 340px; max-height: 600px;">
+              <div class="d-flex align-items-center justify-content-between px-3 mt-2">
+                <h6 class="mb-0 fs-6">โปรไฟล์ผู้ใช้งาน</h6>
+              </div>
+              <div class="dropdown-content">
+                <div class="d-flex align-items-center py-3 mx-3 border-bottom">
+                  <img src="https://cdn.jsdelivr.net/gh/JacketJK/image/user-1.png" class="rounded-circle profile-user shadow-sm object-fit-cover" style="object-position: top;" alt="" id="userProfile">
+                  <div class="ms-3">
+                    <h6 class="mb-2 text-nowrap" id="userText1">Jakkrit  Wangsuk</h6>
+                    <span class="mb-1 d-block text-nowrap" style="color: var(--dark);">
+                      <i class="fa-light fa-wreath-laurel"></i>&nbsp;<span id="userText2">099-182-6155</span>
+                    </span>
+                    <span class="mb-1 d-block text-nowrap" style="color: var(--dark);">
+                      <i class="fa-light fa-envelope"></i>&nbsp;<span id="userText3">Jack_108@outlook.co.th</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="message-body">
+                  <div class="py-2 px-3 d-flex align-items-center dropdown-item" onclick="changePageProflie(1)">
+                    <span class="me-3 bg-secondary bg-opacity-25 rounded-4">
+                      <i class="fa-duotone fa-square-user fa-2xl"></i>
+                    </span>
+                    <div class="w-75 d-inline-block v-middle">
+                      <h6 class="mb-0 fw-semibold lh-base limited-text">โปรไฟล์ของฉัน</h6>
+                      <span class="d-block text-body-secondary limited-text">ตั้งค่าบัญชีผู้ใช้</span>
+                    </div>
+                  </div>
+                  <div class="py-2 px-3 d-flex align-items-center dropdown-item" onclick="changePageProflie(2)">
+                    <span class="me-3 bg-secondary bg-opacity-25 rounded-4">
+                      <i class="fa-duotone fa-feather fa-2xl"></i>
+                    </span>
+                    <div class="w-75 d-inline-block v-middle">
+                      <h6 class="mb-0 fw-semibold lh-base limited-text">หน่วยงาน</h6>
+                      <span class="d-block text-body-secondary limited-text">ข้อมูลขององค์กร</span>
+                    </div>
+                  </div>
+                  <div class="py-2 px-3 d-flex align-items-center dropdown-item" onclick="changePageProflie(3)">
+                    <span class="me-3 bg-secondary bg-opacity-25 rounded-4">
+                      <i class="fa-duotone fa-address-card fa-2xl"></i>
+                    </span>
+                    <div class="w-75 d-inline-block v-middle">
+                      <h6 class="mb-0 fw-semibold lh-base limited-text">บัตรประจำตัว</h6>
+                      <span class="d-block text-body-secondary limited-text">ข้อมูลบัตรประตัวเจ้าหน้าที่</span>
+                    </div>
+                  </div>
+                  <div class="py-2 px-3 d-flex align-items-center dropdown-item">
+                    <span class="me-3 bg-secondary bg-opacity-25 rounded-4">
+                      <i class="fa-duotone fa-moon-over-sun fa-2xl"></i>
+                    </span>
+                    <?!= HtmlService.createHtmlOutputFromFile('Pages/00_Darkmode').getContent() ?>
+                  </div>
+                </div>
+              </div>
+              <div class="py-2 px-4">
+                <button class="btn btn-outline-danger rounded-pill w-100" data-bs-target="#logoutModal" data-bs-toggle="modal"><i class="fa-solid fa-power-off"></i> ออกจากระบบ</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </nav>
+
+    <main id="page1">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/01_homepage').getContent() ?>
+    </main>
+
+    <main id="page2" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/02_docsendpage').getContent() ?>
+    </main>
+
+    <main id="page3" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/03_docannoncepage').getContent() ?>
+    </main>
+
+    <main id="page4" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/04_pickupdocpage').getContent() ?>
+    </main>
+
+    <main id="page5" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/05_receivedocpage').getContent() ?>
+    </main>
+
+    <main id="page6" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/06_carreservepage').getContent() ?>
+    </main>
+
+    <main id="page7" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/07_calendarpage').getContent() ?>
+    </main>
+
+    <main id="page8" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/08_leavepage').getContent() ?>
+    </main>
+
+    <main id="page9" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/09_reportpage').getContent() ?>
+    </main>
+
+    <main id="page10" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/10_projectpage').getContent() ?>
+    </main>
+
+    <main id="page11" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/11_userpage').getContent() ?>
+    </main>
+
+    <main id="page12" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/12_adduserpage').getContent() ?>
+    </main>
+
+    <main id="page13" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/13_notifypage').getContent() ?>
+    </main>
+
+    <main id="page14" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/14_setagencypage').getContent() ?>
+    </main>
+
+    <main id="page15" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/15_datasetpage').getContent() ?>
+    </main>
+
+    <main id="page16" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/16_settingpage').getContent() ?>
+    </main>
+
+    <main id="page17" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/17_profilepage').getContent() ?>
+    </main>
+
+    <main id="page18" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/18_meetingroom').getContent() ?>
+    </main>
+
+    <main id="page19" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/19_license').getContent() ?>
+    </main>
+
+    <main id="page20" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/20_hrmaneger').getContent() ?>
+    </main>
+
+    <main id="page21" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/21_saveland').getContent() ?>
+    </main>
+
+    <main id="page22" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/22_checkbin').getContent() ?>
+    </main>
+
+    <main id="page23" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/23_equipment').getContent() ?>
+    </main>
+
+    <main id="page24" style="display: none">
+      <?!= HtmlService.createHtmlOutputFromFile('Pages/24_esalary').getContent() ?>
+    </main>
+    
+    <?!= HtmlService.createHtmlOutputFromFile('Pages/00_chatbox').getContent() ?>
+  </section>
+
+  <?!= HtmlService.createHtmlOutputFromFile('Pages/00_modal').getContent() ?>
+  <?!= HtmlService.createHtmlOutputFromFile('JavaScript/javascript').getContent() ?>
+  <?!= HtmlService.createHtmlOutputFromFile('JavaScript/Document').getContent() ?>
+  <?!= HtmlService.createHtmlOutputFromFile('JavaScript/draganddrop').getContent() ?>
+  <?!= HtmlService.createHtmlOutputFromFile('JavaScript/downscript').getContent() ?>
+  <?!= HtmlService.createHtmlOutputFromFile('JavaScript/table').getContent() ?>
+  <?!= HtmlService.createHtmlOutputFromFile('JavaScript/systemscript').getContent() ?>
+  <?!= HtmlService.createHtmlOutputFromFile('JavaScript/notification').getContent() ?>
+  <?!= HtmlService.createHtmlOutputFromFile('JavaScript/system').getContent() ?>
+</body>
+</html>

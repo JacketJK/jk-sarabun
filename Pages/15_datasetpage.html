@@ -1,0 +1,697 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-database"></i> ข้อมูลอ้างอิงระบบ</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>การตั้งค่า</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="datasetbreadcrumb1"></a>
+      </li>
+      <li style="display:none" id="datasetbreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="datasetbreadcrumb3"></a>
+      </li>
+      <li style="display:none" id="datasetbreadcrumb4"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="datasetbreadcrumb5"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+<div class="data-contianer" id="datasetPage1" style="display: none;">
+  <div class="datacontent" id="datasetPage1_1">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-tower-observation"></i> หน่วยงานที่เกี่ยวข้อง</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3"  onclick="modalAgencyPageSet('add')"><i class="fa-solid fa-plus"></i> เพิ่มหน่วยงานที่เกี่ยวข้อง</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(1, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงหน่วยงานที่เกี่ยวข้อง</button>
+      </div>
+    </div>
+    
+    <div class="table-responsive mt-4">
+      <table id="agencyDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" rowspan="2">รหัส</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">หน่วยงาน</th>
+            <th scope="col">ผู้บริหาร</th>
+          </tr>
+        </thead>
+        <tbody id="agencyDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="5"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+  <div class="datacontent" id="datasetPage1_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงหน่วยงานที่เกี่ยวข้อง</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(1, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-4"></div>
+      <div class="col-lg-4">
+        <ul id="sortableAgency-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-4"></div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="datasetPage2" style="display: none;">
+  <div class="datacontent" id="datasetPage2_1">
+    <div class="head mb-3">
+      <h5><i class="fa-solid fa-books-medical"></i> หมวดของหนังสือ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'DocCategory')"><i class="fa-solid fa-plus"></i> เพิ่มหมวดหนังสือ</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(2, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงหมวดหนังสือ</button>
+      </div>
+    </div>
+    
+    <div class="table-responsive mt-4">
+      <table id="catagoryDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">หมวดหนังสือ</th>
+          </tr>
+        </thead>
+        <tbody id="catagoryDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="5"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+  <div class="datacontent" id="datasetPage2_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงหมวดหนังสือ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(2, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-4"></div>
+      <div class="col-lg-5">
+        <ul id="sortableCategory-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="datasetPage3" style="display: none;">
+  <div class="datacontent" id="datasetPage3_1">
+    <div class="head mb-3">
+      <h5><i class="fa-solid fa-book-bookmark"></i> วัตถุประสงค์ของหนังสือ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'Objective')"><i class="fa-solid fa-plus"></i> เพิ่มวัตถุประสงค์</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(3, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงวัตถุประสงค์</button>
+      </div>
+    </div>
+    
+    <div class="table-responsive mt-4">
+      <table id="objectiveDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">วัตถุประสงค์</th>
+          </tr>
+        </thead>
+        <tbody id="objectiveDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="5"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+  <div class="datacontent" id="datasetPage3_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงวัตถุประสงค์</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(3, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-4"></div>
+      <div class="col-lg-4">
+        <ul id="sortableObjective-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-4"></div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="datasetPage4" style="display: none;">
+  <div class="datacontent" id="datasetPage4_1">
+    <div class="head mb-3">
+      <h5><i class="fa-solid fa-rabbit-running"></i> ชั้นความเร็วของหนังสือ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'ClassSpeed')"><i class="fa-solid fa-plus"></i> เพิ่มชั้นความเร็ว</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(4, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงชั้นความเร็ว</button>
+      </div>
+    </div>
+    
+    <div class="table-responsive mt-4">
+      <table id="classSpeedDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">ชั้นความเร็ว</th>
+          </tr>
+        </thead>
+        <tbody id="classSpeedDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="5"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+  <div class="datacontent" id="datasetPage4_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงชั้นความเร็ว</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(4, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-4"></div>
+      <div class="col-lg-4">
+        <ul id="sortableClassSpeed-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-4"></div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="datasetPage5" style="display: none;">
+  <div class="datacontent" id="datasetPage5_1">
+    <div class="head mb-3">
+      <h5><i class="fa-solid fa-face-zipper"></i> ชั้นความลับของหนังสือ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'ClassSecret')"><i class="fa-solid fa-plus"></i> เพิ่มชั้นความลับ</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(5, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงชั้นความลับ</button>
+      </div>
+    </div>
+    
+    <div class="table-responsive mt-4">
+      <table id="classSecretDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">ชั้นความลับ</th>
+          </tr>
+        </thead>
+        <tbody id="classSecretDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="5"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+  <div class="datacontent" id="datasetPage5_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงชั้นความลับ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(5, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-4"></div>
+      <div class="col-lg-4">
+        <ul id="sortableClassSecret-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-4"></div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="datasetPage6" style="display: none;">
+  <div class="datacontent" id="datasetPage6_1">
+    <div class="head mb-3">
+      <h5><i class="fa-solid fa-share-all"></i> สถานะการตอบรับหนังสือ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'Response')"><i class="fa-solid fa-plus"></i> เพิ่มสถานะการตอบรับ</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(6, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงสถานะการตอบรับ</button>
+      </div>
+    </div>
+    
+    <div class="table-responsive mt-4">
+      <table id="responseDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">สถานะการตอบรับ</th>
+          </tr>
+        </thead>
+        <tbody id="responseDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="5"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+  <div class="datacontent" id="datasetPage6_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงสถานะการตอบรับ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(6, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-4"></div>
+      <div class="col-lg-4">
+        <ul id="sortableResponse-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-4"></div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="datasetPage7" style="display: none;">
+  <div class="datacontent" id="datasetPage7_1">
+    <div class="head mb-3">
+      <h5><i class="fa-solid fa-cloud-arrow-down"></i> คำบันทึกงานตอบรับหนังสือ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'JobWord')"><i class="fa-solid fa-plus"></i> เพิ่มคำบันทึกงาน</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(7, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงคำบันทึกงาน</button>
+      </div>
+    </div>
+    
+    <div class="table-responsive mt-4">
+      <table id="jobWordDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">คำบันทึกงาน</th>
+          </tr>
+        </thead>
+        <tbody id="jobWordDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="5"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+  <div class="datacontent" id="datasetPage7_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงคำบันทึกงาน</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(7, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-4"></div>
+      <div class="col-lg-4">
+        <ul id="sortableJobWord-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-4"></div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="datasetPage8" style="display: none;">
+  <div class="datacontent" id="datasetPage8_1">
+    <div class="head mb-3">
+      <h5><i class="fa-solid fa-house"></i> หมู่บ้านในพื้นที่</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalMoobanPageSet('add')"><i class="fa-solid fa-plus"></i> เพิ่มหมู่บ้านในพื้นที่</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(8, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงหมู่บ้าน</button>
+      </div>
+    </div>
+    
+    <div class="table-responsive mt-4">
+      <table id="mooBanDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" rowspan="2">รหัส</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">หมู่ที่</th>
+            <th scope="col">ชื่อบ้าน</th>
+          </tr>
+        </thead>
+        <tbody id="mooBanDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="5"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+  <div class="datacontent" id="datasetPage8_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงหมู่บ้าน</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(8, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-4"></div>
+      <div class="col-lg-4">
+        <ul id="sortableMooBan-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-4"></div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="datasetPage9" style="display: none;">
+  <div class="datacontent" id="datasetPage9_1">
+    <div class="head mb-3">
+      <h5><i class="fa-solid fa-car-side"></i> รถส่วนกลางในหน่วยงาน</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalCarSet('add', 'Car')"><i class="fa-solid fa-plus"></i> เพิ่มรถในหน่วยงาน</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(9, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงรถส่วนกลาง</button>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-4">
+      <table id="carDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" rowspan="2">รูปภาพ</th>
+            <th scope="col" colspan="3">รายการ</th>
+            <th scope="col" rowspan="2">สถานะ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">ทะเบียนรถ</th>
+            <th scope="col">หน่วยงานที่รับผิดชอบ</th>
+          </tr>
+        </thead>
+        <tbody id="carDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="7"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+  <div class="datacontent" id="datasetPage9_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงรถส่วนกลางในหน่วยงาน</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(9, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-4"></div>
+      <div class="col-lg-4">
+        <ul id="sortableCar-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-4"></div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="datasetPage10" style="display: none;">
+  <div class="datacontent" id="datasetPage10_1">
+    <div class="head mb-3">
+      <h5><i class="fa-solid fa-handshake"></i> ห้องประชุมในหน่วยงาน</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalMeetingRoomSet('add', 'MeetingRoom')"><i class="fa-solid fa-plus"></i> เพิ่มห้องประชุม</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(10, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงห้องประชุม</button>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-4">
+      <table id="meetingRoomTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" rowspan="2">รูปภาพ</th>
+            <th scope="col" colspan="4">รายการ</th>
+            <th scope="col" rowspan="2">สถานะ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">ชื่อห้อง</th>
+            <th scope="col">สถานที่ตั้ง</th>
+            <th scope="col">ความจุ</th>
+          </tr>
+        </thead>
+        <tbody id="meetingRoomTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="8"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+  <div class="datacontent" id="datasetPage10_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงห้องประชุมในหน่วยงาน</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(10, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <ul id="sortableMeetingRoom-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="datasetPage11" style="display: none;">
+  <div class="datacontent" id="datasetPage11_1">
+    <div class="head mb-3">
+      <h5><i class="fa-regular fa-users-gear"></i> ประเภทตำแหน่งของพนักงาน</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'TypeEmployee')"><i class="fa-solid fa-plus"></i> เพิ่มประเภทตำแหน่ง</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(11, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงประเภทตำแหน่ง</button>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-4">
+      <table id="typeEmployeeTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">ประเภทตำแหน่ง</th>
+          </tr>
+        </thead>
+        <tbody id="typeEmployeeTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="8"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+  <div class="datacontent" id="datasetPage11_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงประเภทตำแหน่งของพนักงาน</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(11, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <ul id="sortableTypeEmployee-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="datasetPage12" style="display: none;">
+  <div class="datacontent" id="datasetPage12_1">
+    <div class="head mb-3">
+      <h5><i class="fa-regular fa-sack-dollar"></i> รายการรายรับต่อเดือนของเงินเดือน</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'Revenue')"><i class="fa-solid fa-plus"></i> เพิ่มรายการรายรับ</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(12, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงรายการรายรับ</button>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-4">
+      <table id="RevenueTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">รายการรายรับ</th>
+          </tr>
+        </thead>
+        <tbody id="RevenueTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="8"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+  <div class="datacontent" id="datasetPage12_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงรายการรายรับ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(12, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <ul id="sortableRevenue-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="datasetPage13" style="display: none;">
+  <div class="datacontent" id="datasetPage13_1">
+    <div class="head mb-3">
+      <h5><i class="fa-regular fa-chart-pie-simple-circle-dollar"></i> รายการหักเงินเดือน</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'Expenses')"><i class="fa-solid fa-plus"></i> เพิ่มรายการหัก</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(13, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงรายการหัก</button>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-4">
+      <table id="ExpensesTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">รายการหัก</th>
+          </tr>
+        </thead>
+        <tbody id="ExpensesTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="8"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+  <div class="datacontent" id="datasetPage13_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงรายการหัก</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(13, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <ul id="sortableExpenses-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+</div>

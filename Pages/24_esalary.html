@@ -1,0 +1,369 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-receipt"></i> ระบบสลิปเงินเดือน</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>ฐานข้อมูลเงินเดือน</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a id="esalarybreadcrumb1">สลิปเงินเดือน</a>
+      </li>
+      <li id="esalarybreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active"  id="esalarybreadcrumb3"></a>
+      </li>
+      <li style="display:none" id="esalarybreadcrumb4"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="esalarybreadcrumb5"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+<div class="data-contianer" id="esalaryPage1" style="display: none;">
+  <div class="databox">
+    <div class="head mb-3">
+      <h5>
+        <i class="fa-duotone fa-file-invoice"></i> ระบบพิมพ์สลิปเงินเดือนออนไลน์
+      </h5>
+    </div>
+
+    <div class="container-fluid my-2">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="mb-2">
+            <p class="col-form-label">เลือกเดือน</p>
+            <div class="field-input" role="button">
+              <i class="fa-duotone fa-calendar-star input-icon fs-5"></i>
+              <input type="text" class="form-field monthsSelect" name="filterslipSalary1" id="filterslipSalary1" onchange="selectRoundSalary()">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ps-3 mt-3" id="showSalaryslip">
+      
+      <div class="d-flex">
+        <div style="width: 150px; height: 150px;" class="">
+          <img src="https://raw.githubusercontent.com/JacketJK/image/main/uploads/commerce.png" class="w-100 h-100 object-fit-cover">
+        </div>
+        <div class="d-flex flex-column ms-3">
+          <div class="my-3 text-blue fw-medium" style="font-size: 24px;" id="moneyTotal"></div>
+          <div class="mb-3"><span class="badge badge-success me-3">รายรับ</span><span style="color: var(--box2);" id="moneyRevenus"></span></div>
+          <div class="mb-3"><span class="badge badge-danger me-3">รายจ่าย</span><span style="color: var(--box4);" id="moneyExpenses"></span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="datarespone">
+    <div class="head mb-3">
+      <h5>
+        <i class="fa-duotone fa-solid fa-receipt"></i> สลิปเงินเดือน
+      </h5>
+    </div>
+
+    <div class="container-fluid ps-4 mb-4">
+      <div class="row gy-4">
+        <div class="col-sm-2 font-size-14">ประจำเดือน :</div>
+        <div class="col-sm-10 font-size-14" id="roundSalary"></div>
+        <div class="col-sm-2 font-size-14">สถานะ :</div>
+        <div class="col-sm-10 font-size-14" id="statusSalary"></div>
+        <div class="col-sm-12 font-size-14 d-flex flex-column">
+          <div class="mb-1">รายละเอียด</div>
+          <div id="detailSalary"></div>
+        </div>
+        <div class="col-sm-2 font-size-14">วันที่บันทึก :</div>
+        <div class="col-sm-10 font-size-14" id="datesaveSalary"></div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-blue btn-sm rounded-pill px-5" id="btnPrintslip" onclick="slipSalary_Print()"><i class="fa-duotone fa-solid fa-print"></i>  พิมพ์สลิปเงินเดือน</button>
+    </div>
+  </div>
+</div>
+
+<div class="data-contianer" id="esalaryPage2" style="display: none;">
+  <div class="datarespone">
+    <form id="salaryAddDataForm" onsubmit="salaryAddData()">
+      <div class="head mb-3">
+        <h5>
+          <i class="fa-duotone fa-coin-vertical"></i> การจัดการข้อมูลเงินเดือน
+        </h5>
+      </div>
+
+      <div class="row mb-3 w-100">
+        <div class="col"></div>
+        <div class="col-lg-4">  
+          <input type="hidden" name="salaryAddDataKey" id="salaryAddDataKey">
+          <div class="mb-2">
+            <p class="col-form-label">ประจำเดือน</p>
+            <div class="field-input" role="button">
+              <i class="fa-duotone fa-calendar-star input-icon fs-5"></i>
+              <input type="text" class="form-field monthsSelect" name="salaryAddData1" id="salaryAddData1" required>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ตำแหน่งงาน</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-star input-icon fs-5"></i>
+              <input type="text" class="form-field" name="salaryAddData3" id="salaryAddData3" required>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">สังกัด</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-building input-icon fs-5"></i>
+              <select class="form-field" name="salaryAddData5" id="salaryAddData5" required></select>
+            </div>
+          </div>
+
+        </div>
+        <div class="col"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <p class="col-form-label">เลือกพนักงาน</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-user input-icon fs-5"></i>
+              <select class="form-field" name="salaryAddData2" id="salaryAddData2" onchange="selectEmployeeData()" required></select>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">ประเภทตำแหน่ง</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-users-gear input-icon fs-5"></i>
+              <select class="form-field" name="salaryAddData4" id="salaryAddData4" required></select>
+            </div>
+          </div>
+
+        </div>
+        <div class="col"></div>
+      </div>
+
+      <div class="head mb-3 justify-content-between">
+        <h5>
+          <i class="fa-duotone fa-sack-dollar"></i> รายรับของเดือน
+        </h5>
+        <div class="d-flex justify-content-end align-items-center">
+          <button type="button" class="btn btn-red btn-sm rounded-end-0 rounded-4 px-4" id="negative_list_revenue"><i class="fa-duotone fa-message-minus fa-flip-horizontal"></i> ลด</button>
+          <button type="button" class="btn btn-green btn-sm rounded-start-0 rounded-4 px-4" id="positive_list_revenue">เพิ่ม <i class="fa-duotone fa-message-plus"></i></button>
+        </div>
+      </div>
+
+      <div class="row mb-3 w-100">
+        <div class="col"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <span class="fw-medium text-blue"><i class="fa-duotone fa-solid fa-list"></i> รายการ</span>
+          </div>
+          <div id="list_item_revenue">
+            <div class="mb-2">
+              <div class="field-input">
+                <span>1.</span>
+                <select class="form-field" name="salaryAddDatalist_revenue1" id="salaryAddDatalist_revenue1" required>
+                  <option value="เงินเดือน" selected>เงินเดือน</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <span class="fw-medium" style="color: var(--box2);"><i class="fa-duotone fa-solid fa-coin-vertical"></i> จำนวน (บาท)</span>
+          </div>
+          <div id="list_count_revenue">
+            <div class="mb-2">
+              <div class="field-input">
+                <i style="color: var(--box2);" class="fa-duotone fa-coin input-icon fs-5"></i>
+                <input type="text" class="form-field input-thousand" name="salaryAddDatacount_revenue1" id="salaryAddDatacount_revenue1" oninput="calculateSalary();" required>
+                <span style="color: var(--box2);">บาท</span>
+              </div>
+            </div>
+          </div>
+        </div>  
+        <div class="col"></div>
+      </div>
+
+      <div class="head mb-3 justify-content-between">
+        <h5>
+          <i class="fa-duotone fa-solid fa-chart-pie-simple-circle-dollar"></i> รายการหักของเดือน
+        </h5>
+        <div class="d-flex justify-content-end align-items-center">
+          <button type="button" class="btn btn-red btn-sm rounded-end-0 rounded-4 px-4" id="negative_list_expenses"><i class="fa-duotone fa-message-minus fa-flip-horizontal"></i> ลด</button>
+          <button type="button" class="btn btn-green btn-sm rounded-start-0 rounded-4 px-4" id="positive_list_expenses">เพิ่ม <i class="fa-duotone fa-message-plus"></i></button>
+        </div>
+      </div>
+
+      <div class="row mb-3 w-100">
+        <div class="col"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <span class="fw-medium text-blue"><i class="fa-duotone fa-solid fa-list"></i> รายการ</span>
+          </div>
+          <div id="list_item_expenses">
+          </div>
+        </div>
+        <div class="col"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <span class="fw-medium" style="color: var(--box4);"><i class="fa-duotone fa-solid fa-coin-vertical"></i> จำนวน (บาท)</span>
+          </div>
+          <div id="list_count_expenses">
+          </div>
+        </div>  
+        <div class="col"></div>
+      </div>
+
+      <div class="head mb-3 justify-content-between">
+        <h5>
+          <i class="fa-duotone fa-solid fa-money-simple-from-bracket"></i> ยอดสุทธิเงินเดือน
+        </h5>
+      </div>
+
+      <div class="row mb-3 w-100">
+        <div class="col"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <p class="col-form-label">รวมรายรับ</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-solid fa-money-bill-trend-up input-icon fs-5"></i>
+              <input type="text" class="form-field" name="salaryAddData6" id="salaryAddData6" required>
+              <span>บาท</span>
+            </div>
+          </div>
+        </div>
+        <div class="col"></div>
+        <div class="col-lg-4">
+          <div class="mb-2">
+            <p class="col-form-label">รวมรายจ่าย</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-solid fa-money-bill-transfer input-icon fs-5"></i>
+              <input type="text" class="form-field" name="salaryAddData7" id="salaryAddData7" required>
+              <span>บาท</span>
+            </div>
+          </div>
+          <div class="mb-2">
+            <p class="col-form-label">คงเหลือรับสุทธิ</p>
+            <div class="field-input">
+              <i class="fa-duotone fa-receipt input-icon fs-5"></i>
+              <input type="text" class="form-field" name="salaryAddData8" id="salaryAddData8" required>
+              <span>บาท</span>
+            </div>
+          </div>
+        </div>
+        <div class="col"></div>
+      </div>
+
+      <hr class="opacity-25">
+      <div class="d-flex justify-content-end align-items-center">
+        <button type="submit" class="btn btn-primary rounded-pill px-5" id="saveAddSlipBtn"><i class="fa-regular fa-floppy-disk"></i> บันทึก</button>
+        <button type="reset" class="btn btn-danger rounded-pill px-5 ms-2"><i class="fa-solid fa-xmark"></i> ยกเลิก</button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<ul class="box-info" id="dashboardSalary3">
+  <li style="background: var(--box2);">
+    <lord-icon
+        src="https://cdn.lordicon.com/ihthsaof.json"
+        trigger="loop"
+        deley="2000"
+        style="width:80px;height:80px;">
+    </lord-icon>
+    <span class="text">
+      <p><span class="text-nowrap">บันทึกแล้ว</span> <br><span style="font-size: 12px">(ราย)</span></p>
+      <h3 id="salaryCountNo1">0</h3>                
+    </span>
+  </li>
+  <li style="background: var(--box3);">
+    <lord-icon
+        src="https://cdn.lordicon.com/rhmhivzj.json"
+        trigger="loop"
+        deley="2000"
+        style="width:80px;height:80px;">
+    </lord-icon>
+    <span class="text">
+      <p><span class="text-nowrap">รายรับทั้งหมด</span> <br><span style="font-size: 12px">(บาท)</span></p>
+      <h3 id="salaryCountNo2">0</h3>               
+    </span>
+  </li>
+  <li style="background: var(--box4);">
+    <lord-icon
+        src="https://cdn.lordicon.com/ymgusxed.json"
+        trigger="loop"
+        deley="2000"
+        style="width:80px;height:80px;">
+    </lord-icon>
+    <span class="text">
+      <p><span class="text-nowrap">รายจ่ายทั้งหมด</span> <br><span style="font-size: 12px">(บาท)</span></p>
+      <h3 id="salaryCountNo3">0</h3>               
+    </span>
+  </li>
+</ul>
+
+<div class="data-contianer" id="esalaryPage3" style="display: none;">
+  <div class="datarespone">
+      <div class="head mb-3">
+        <h5>
+          <i class="fa-duotone fa-regular fa-table-tree"></i> ตารางข้อมูลรายรับรายจ่ายของพนักงาน
+        </h5>
+      </div>
+
+      <div class="container-fluid my-2">
+        <div class="row">
+          <div class="col-lg-3">
+            <div class="mb-2">
+              <p class="col-form-label">เดือน</p>
+              <div class="field-input" role="button">
+                <i class="fa-duotone fa-calendar-star input-icon fs-5"></i>
+                <input type="text" class="form-field monthsSelect" name="filterslipSalaryDash" id="filterslipSalaryDash" onchange="changeSalaryFilter();">
+              </div>
+            </div>
+          </div>
+          <div class="col-lg"></div>
+          <div class="col-lg-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <button type="button" class="btn btn-outline-green btn-sm rounded-pill me-2 w-100" onclick="addSalaryXls()"><i class="fa-solid fa-plus"></i> เพิ่มข้อมูลเงินเดือน</button> 
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table 
+          id="table_DashboradEmployeeSalary"
+          data-toggle="table"
+          data-classes="table table-custom align-middle"
+          data-pagination="true"
+          data-search="true"
+          data-locale="th-TH">
+          <thead class="table-secondery">
+            <tr>
+              <th rowspan="2" data-field="employee">พนักงาน</th>
+              <th rowspan="2" data-field="month">เดือน</th>
+              <th colspan="3">เงินเดือน</th>
+              <th rowspan="2" data-field="actions">จัดการ</th>
+            </tr>
+            <tr>
+              <th data-field="income">รายรับทั้งหมด</th>
+              <th data-field="expenses">รายจ่ายทั้งหมด</th>
+              <th data-field="total">คงเหลือ</th>
+            </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+        </table>
+    </div>
+
+  </div>
+</div>

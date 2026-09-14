@@ -1,0 +1,143 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-clipboard-user"></i> ผู้ใช้งานระบบ</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>ผู้ใช้งานระบบ</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="userbreadcrumb1">รายงานผู้ใช้งานในระบบ</a>
+      </li>
+      <li style="display:none" id="userbreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="userbreadcrumb3"></a>
+      </li>
+      <li style="display:none" id="userbreadcrumb4"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="userbreadcrumb5"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+<ul class="box-info">
+  <li>
+    <lord-icon
+        src="https://cdn.lordicon.com/xcxzayqr.json"
+        trigger="loop"
+        deley="2000"
+        style="width:80px;height:80px;">
+    </lord-icon>
+    <span class="text">
+      <p>ผู้ใช้งานระบบ <br><span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingUserNo1">0</h3>                
+    </span>
+  </li>
+  <li>
+    <lord-icon
+        src="https://cdn.lordicon.com/spjdafms.json"
+        trigger="loop"
+        deley="2000"
+        style="width:80px;height:80px;">
+    </lord-icon>
+    <span class="text">
+      <p>ใช้งานอยู่ <br><span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingUserNo2">0</h3>                
+    </span>
+  </li>
+  <li>
+    <lord-icon
+        src="https://cdn.lordicon.com/uoleetlu.json"
+        trigger="loop"
+        deley="2000"
+        style="width:80px;height:80px;">
+    </lord-icon>
+    <span class="text">
+      <p>หน่วยงานทั้งหมด <br><span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingUserNo3">0</h3>        
+    </span>
+  </li>
+  <li>
+    <lord-icon
+        src="https://cdn.lordicon.com/jqnbdcqr.json"
+        trigger="loop"
+        deley="2000"
+        style="width:80px;height:80px;">
+    </lord-icon>
+    <span class="text">
+      <p>ถูกระงับ <br><span style="font-size: 12px">(จำนวน)</span></p>
+      <h3 id="countingUserNo4">0</h3>               
+    </span>
+  </li>
+</ul>
+
+<div class="data-contianer">
+  <div class="datacontent">
+    <div class="head mb-0">
+      <h5><i class="fa-regular fa-user"></i> ผู้ใช้งานระบบ</h5>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="userfilter1" class="col-form-label">สิทธิ์</label>
+          <select id="userfilter1" class="col-form-label form-select rounded-4">
+            <option selected value="">ทั้งหมด</option>
+            <option value="5">ผู้ปฏิบัติงาน</option>
+            <option value="3">งานสารบรรณ</option>
+            <option value="2">ผู้บริหาร</option>
+            <option value="4">สารบรรณหน่วยย่อย</option>
+            <option value="1">ผู้ดูแลระบบ</option>
+          </select>
+        </div>
+        <div class="col-sm-3">
+          <label for="userfilter2" class="col-form-label">สถานะ</label>
+          <select id="userfilter2" class="col-form-label form-select rounded-4">
+            <option selected value="">ทั้งหมด</option>
+            <option value="TRUE">ปกติ</option>
+            <option value="FALSE">ถูกระงับ</option>
+          </select>  
+        </div>
+        <div class="col-lg-3">
+          <label for="userfilter3" class="col-form-label">ค้นหา</label>
+          <div class="input-group z-index-0">
+            <input type="text" id="userfilter3" class="col-form-label form-control rounded-4 rounded-end-0" placeholder="คำค้นหา">
+            <button type="button" class="btn btn-primary rounded-4 rounded-start-0 btn-sm">ค้นหา</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-4" style="padding-bottom: 80px;">
+      <table id="userTable" class="table table-sm">
+        <thead>
+          <tr>
+            <th scope="col" colspan="5" class="text-center"><i class="fa-duotone fa-user-tie"></i> ผู้ใช้งานระบบ</th>
+            <th scope="col" rowspan="2" class="text-center">สิทธิ์ผู้ใช้งาน</th>
+            <th scope="col" rowspan="2" class="text-center">หน่วยงาน<br>(ตำแหน่งหลัก)</th>
+            <th scope="col" rowspan="2" class="text-center">สถานะ/หมดอายุ</th>
+            <th scope="col" rowspan="2" class="text-center">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col" class="text-center">รูปประจำตัว</th>
+            <th scope="col" class="text-center">ไอดีผู้ใช้งาน</th>
+            <th scope="col" class="text-center">ชื่อผู้ใช้งาน</th>
+            <th scope="col" class="text-center">เบอร์โทรศัพท์</th>
+            <th scope="col" class="text-center">อีเมล</th>
+          </tr>
+        </thead>
+        <tbody id="userTable-body">
+          <tr>
+            <td class="text-center" colspan="9"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+          <!-- แทรกข้อมูลจากฐานข้อมูล -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
+
+</div>

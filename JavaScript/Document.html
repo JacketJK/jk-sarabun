@@ -1,0 +1,505 @@
+<script>
+const document_CarRequset = () => {
+  const agency = $('#showDataSet2').text();
+
+  const document = `
+    <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ใบเสนอราคา</title>
+        <style>     
+          @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300&display=swap');
+
+          body {
+            margin: 0;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 16px;
+          }
+          .car_request {
+            width: 210mm;
+            margin: 0 auto;
+            border: 0px solid #000;
+            padding: 20px;
+          }
+          .row {
+            --bs-gutter-x: 1.5rem;
+            --bs-gutter-y: 0;
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: calc(-1* var(--bs-gutter-y));
+            margin-right: calc(-.5* var(--bs-gutter-x));
+            margin-left: calc(-.5* var(--bs-gutter-x));
+          }
+          .col-md-1 {
+              flex: 0 0 auto;
+              width: 8.33333333%;
+          }
+          .col-md-2 {
+              flex: 0 0 auto;
+              width: 16.666666667%;
+          }
+          .col-md-3 {
+              flex: 0 0 auto;
+              width: 25%;
+          }
+          .col-md-4 {
+              flex: 0 0 auto;
+              width: 33.33333333%;
+          }
+          .col-md-5 {
+              flex: 0 0 auto;
+              width: 41.666666667%;
+          }
+          .col-md-6 {
+              flex: 0 0 auto;
+              width: 50%;
+          }
+          .col-md-7 {
+              flex: 0 0 auto;
+              width: 58.33333333%;
+          }
+          .col-md-8 {
+              flex: 0 0 auto;
+              width: 66.66666667%;
+          }
+          .col-md-9 {
+              flex: 0 0 auto;
+              width: 75%;
+          }
+          .col-md-10 {
+              flex: 0 0 auto;
+              width: 83.33333333%;;
+          }
+          .col-md-11 {
+              flex: 0 0 auto;
+              width: 91.66666667%;
+          }
+          .col-md-12 {
+              flex: 0 0 auto;
+              width: 100%;
+          }
+          .col-auto {
+              flex: 0 0 auto;
+              width: auto;
+          }
+          .col {
+              flex: 1 0 0%;
+          }
+          span {
+            display: block;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            unicode-bidi: isolate;
+          }
+        </style>                    
+      </head>
+      <body>
+        <div class="car_request">
+          <h4 style="text-align: right; margin-bottom: -10px;">แบบ 3</h4>
+          <h2 style="text-align: center;">ใบขออนุญาตใช้รถส่วนกลาง/รถรับรอง</h2>
+          
+          <div class="row">
+            <div class="col-md-7"></div>
+            <div class="col-md-4">
+              <p>เขียนที่ ${agency}</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-7"></div>
+            <div class="col-md-4">
+              <span>${dataCarRequset[9]}</span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <p>เรื่อง&nbsp;&nbsp;การขออนุญาตใช้รถส่วนกลางของ${agency}</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <span>เรียน&nbsp;&nbsp;ผู้อำนวยการ${agency}</span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-auto">
+              <p>ข้าพเจ้า</p>
+            </div>
+            <div class="col"><p style="border-bottom: 1px dashed #8c8b8b;border-top: 1px dashed #ffffff;">&nbsp;&nbsp;&nbsp;${dataCarRequset[3]}</p></div>
+            <div class="col-auto">
+              <p>ตำแหน่ง</p>
+            </div>
+            <div class="col-md-4"><p style="border-bottom: 1px dashed #8c8b8b;border-top: 1px dashed #ffffff;">&nbsp;&nbsp;&nbsp;${dataCarRequset[4]}</p></div>
+          </div>
+
+          <div class="row">
+            <div class="col-auto">
+              <span>ขออนุญาตใช้งาน (ไปที่ไหน)</span>
+            </div>
+            <div class="col">
+              <span style="border-bottom: 1px dashed #8c8b8b;border-top: 1px dashed #ffffff;">&nbsp;&nbsp;&nbsp;${dataCarRequset[5]} (${dataCarRequset[7]})</span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-auto">
+              <p>เพื่อ</p>
+            </div>
+            <div class="col">
+              <p style="border-bottom: 1px dashed #8c8b8b;border-top: 1px dashed #ffffff;">&nbsp;&nbsp;&nbsp;${dataCarRequset[6]}</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-8">
+              <span style="color: #ffffff;border-bottom: 1px dashed #8c8b8b;border-top: 1px dashed #ffffff;">.</span>
+            </div>
+            <div class="col-auto">
+              <span>มีคนนั่ง</span>
+            </div>
+            <div class="col">
+              <span style="border-bottom: 1px dashed #8c8b8b;border-top: 1px dashed #ffffff;text-align: center;">
+                ${dataCarRequset[8]}
+              </span>
+            </div>
+            <div class="col-auto">
+              <span>คน</span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-auto">
+              <p>ใน</p>
+            </div>
+            <div class="col">
+              <p style="border-bottom: 1px dashed #8c8b8b;border-top: 1px dashed #ffffff;text-align: center;">${dataCarRequset[9]}</p>
+            </div>
+            <div class="col-auto">
+              <p>เวลา</p>
+            </div>
+            <div class="col-md-2">
+              <p style="color: #fff;border-bottom: 1px dashed #8c8b8b;border-top: 1px dashed #ffffff;text-align: center;">.</p>
+            </div>
+            <div class="col-auto">
+              <p>น. ถึง</p>
+            </div>
+            <div class="col">
+              <p style="border-bottom: 1px dashed #8c8b8b;border-top: 1px dashed #ffffff;text-align: center;">${dataCarRequset[10]}</p>
+            </div>
+            <div class="col-auto">
+              <p>เวลา</p>
+            </div>
+            <div class="col-md-2">
+              <p style="color: #fff;border-bottom: 1px dashed #8c8b8b;border-top: 1px dashed #ffffff;text-align: center;">.</p>
+            </div>
+            <div class="col-auto">
+              <p>น.</p>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-auto">
+              <span>รถหมายเลขทะเบียน</span>
+            </div>
+            <div class="col-md-4">
+              <span style="border-bottom: 1px dashed #8c8b8b;border-top: 1px dashed #ffffff;">
+                &nbsp;&nbsp;&nbsp;${dataCarRequset[2]}
+              </span>
+            </div>
+            <div class="col-auto">
+              <span>พนักงานขับรถ</span>
+            </div>
+            <div class="col">
+              <span style="border-bottom: 1px dashed #8c8b8b;border-top: 1px dashed #ffffff;">
+                &nbsp;&nbsp;&nbsp;${dataCarRequset[11]}
+              </span>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 40px;">
+            <div class="col-md-6"></div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-auto">
+                  <p>ลงชื่อ</p>
+                </div>
+                <div class="col-md-6" style="margin-top: -30px;">
+                  <img src="${dataCarRequset[21]}" width="250">
+                </div>
+                <div class="col-auto">
+                  <p>ผู้ขออนุญาต</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-8" style="margin-top: -30px;">
+                  <p style="text-align: center;">(${dataCarRequset[3]})</p>
+                </div>
+              </div>
+              <div class="row" style="margin-top: -20px;">
+                <div class="col-auto">
+                  <p>ตำแหน่ง ${dataCarRequset[4]}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 0px;">
+            <div class="col-md-6"></div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-8">
+                  <p style="text-align: center;"><b>ข้อเสนอ</b></p>
+                  <p style="text-align: left;"><b>- ${dataCarRequset[16]}</b></p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-auto">
+                  <p>ลงชื่อ</p>
+                </div>
+                <div class="col-md-6" style="margin-top: -30px;">
+                  <img src="${dataCarRequset[22]}" width="250">
+                </div>
+                <div class="col-auto">
+                  <p style="font-size: 10px;">ผู้อำนวยการกอง/หัวหน้ากองหรือผู้แทน</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-8" style="margin-top: -30px;">
+                  <p style="text-align: center;">(${dataCarRequset[17]})</p>
+                </div>
+              </div>
+              <div class="row" style="margin-top: -20px;">
+                <div class="col-auto">
+                  <p>ตำแหน่ง ${dataCarRequset[32]}</p>
+                </div>
+              </div>
+              <div class="row" style="margin-top: -20px;">
+                <div class="col-md-8">
+                  <p style="text-align: center;">${dataCarRequset[20]}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 20px;">
+            <div class="col-md-6"></div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-8">
+                  <p style="text-align: center;"><b>ข้อพิจารณา</b></p>
+                </div>
+              </div>
+              <div class="row" style="margin-top: -20px;">
+                <div class="col-md-8" style="text-align: center;">
+                  <div class="row" style="margin-top: 20px;">
+                    <div class="col-md-6">
+                      <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" checked>
+                      <label for="vehicle1"><b>อนุญาต</b></label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
+                      <label for="vehicle2"><b>ไม่อนุญาต</b></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="margin-top: 30px;">
+                <div class="col-auto">
+                  <p>ลงชื่อ</p>
+                </div>
+                <div class="col-md-6" style="margin-top: -30px;">
+                  <img src="${dataCarRequset[23]}" width="250">
+                </div>
+                <div class="col-auto">
+                  <p>ผู้อนุญาต</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-8" style="margin-top: -30px;">
+                  <p style="text-align: center;">(${dataCarRequset[19]})</p>
+                </div>
+              </div>
+              <div class="row" style="margin-top: -20px;">
+                <div class="col-auto">
+                  <p>ตำแหน่ง ${dataCarRequset[33]}</p>
+                </div>
+              </div>
+              <div class="row" style="margin-top: -20px;">
+                <div class="col-md-8">
+                  <p style="text-align: center;">${dataCarRequset[20]}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </body>
+      </html>
+  `;
+
+
+  var printWindow = window.open('', '', 'width=800,height=600');
+  printWindow.document.open();
+  printWindow.document.write(document);
+  printWindow.document.close();
+};
+
+const slipSalary_Print = () => {
+  const agency = $('#showDataSet2').text();
+  const name = $('#userText1').text();
+  const position = $('#userText2').text();
+  const department = $('#profileData3').text();
+  const logo = $('#logoSystem').attr('src');
+
+  const month = document.getElementById('filterslipSalary1');
+  const filterData = dataSalary.filter(row => row[2] === month.value);
+
+  const monthText = convertToThaiDate(month.value);
+  const dayText = convertToThaiDateTimeSalary(filterData[0][8]);
+
+  const bahtText = THBText(filterData[0][7]);
+  const income = JSON.parse(filterData[0][3]);
+  const expenses = JSON.parse(filterData[0][4]);
+
+  const tableContent = createAlternatingTable(income, expenses);
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Slip Salary</title>
+      <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+      <style>
+        body {
+          background-color: #ffffff;
+          font-family: "Sarabun", serif;
+          margin: 0;
+          padding: 0;
+          width: 210mm;
+          height: 297mm;
+        }
+        .logo {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+        }
+        .logo img {
+          height: 120px;
+        }
+        .logo h4 {
+          font-size: 20px;
+          margin: 0;
+        }
+        .logo div {
+          margin-top: 10px;
+          font-size: 18px;
+        }
+        .content {
+          padding: 15px;
+        }
+        .name-box {
+          margin-top: 10px;
+          display: flex;
+          justify-content: space-between;
+        }
+        .name-box div {
+          margin-bottom: 10px;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+        }
+        table th, table td {
+          border: 1px solid #000;
+          padding: 8px;
+        }
+        thead {
+          background-color: #efefef;
+        }
+        table tr th:nth-child(1), table tr td:nth-child(1), table tr th:nth-child(3), table tr td:nth-child(3) {
+          width: 38%;
+        }
+        tbody tr td:nth-child(2), tbody tr td:nth-child(4), tfoot tr td:nth-child(2), tfoot tr td:nth-child(4) {
+          text-align: right;
+        }
+        tfoot {
+          font-weight: bold;
+        }
+        .timestamp {
+          margin-top: 20px;
+          text-align: right;
+          font-size: 14px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="logo">
+        <img src="${logo}" alt="Logo">
+        <h4>ใบแสดงรายการเงินเดือน${agency}</h4>
+        <div><b>เดือน </b> ${monthText}</div>
+      </div>
+
+      <div class="content">
+        <div class="name-box">
+          <div><b>ชื่อ - นามสกุล</b> ${name}</div>
+          <div><b>ตำแหน่ง</b> ${position}</div>
+          <div><b>สังกัด</b> ${department}</div>
+          <div></div>
+        </div>
+        <div>เมื่อ${dayText}</div>
+
+        <table>
+          <thead>
+            <tr>
+              <th colspan="2">รายรับ</th>
+              <th colspan="2">รายจ่าย</th>
+            </tr>
+            <tr>
+              <th>รายการ</th>
+              <th>บาท</th>
+              <th>รายการ</th>
+              <th>บาท</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableContent}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td style="text-align: center;">รวมรายรับ</td>
+              <td>${filterData[0][5].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td style="text-align: center;">รวมรายจ่าย</td>
+              <td>${filterData[0][6].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>
+            <tr>
+              <td colspan="4" style="text-align: center;">ยอดคงเหลือ ${filterData[0][7].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท (${bahtText})</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="timestamp">พิมพ์เมื่อ${convertToThaiDateTimeSalaryTonow(new Date())}</div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  var printWindow = window.open('', '', 'width=800,height=600');
+  printWindow.document.open();
+  printWindow.document.write(htmlContent);
+  printWindow.document.close();
+  printWindow.onload = function () {
+    printWindow.print();
+  };
+};
+
+
+</script>

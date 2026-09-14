@@ -1,0 +1,729 @@
+<div class="head-title">
+  <div class="left">
+    <h2><i class="fa-duotone fa-envelope-open"></i> ลงรับหนังสือภายนอก</h2>
+    <ul class="breadcrumb">
+      <li>
+        <a>ลงรับหนังสือ</a>
+      </li>
+      <li><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a class="active" id="receivebreadcrumb1"></a>
+      </li>
+      <li style="display:none" id="receivebreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="receivebreadcrumb3"></a>
+      </li>
+      <li style="display:none" id="receivebreadcrumb4"><i class="fa-regular fa-chevron-right"></i></li>
+      <li>
+        <a style="display:none" class="active" id="receivebreadcrumb5"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="right">
+    
+  </div>
+</div>
+
+  <div class="data-contianer" style="display:none" id="menupage5_1">
+    <div class="datacontent">
+      <div class="head mb-0">
+        <h5><i class="fa-solid fa-file-lines"></i> สร้างหนังสือส่งภายนอก</h5>
+      </div>
+      <hr class="opacity-25">
+      <form id="addNewDocOutForm" onsubmit="saveAddnewdocOut(this)">
+        <div class="row">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-5">                   
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >ประเภทหนังสือ :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-file input-icon fs-5"></i>
+                <select class="form-field" id="addNewDocOut1" name="addNewDocOut1">
+                  <option selected value="ลงรับภายนอก">ลงรับภายนอก</option>
+                  <option value="ลงรับภายใน">ลงรับภายใน</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >เลขทะเบียนรับกลาง :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-hashtag input-icon fs-5"></i>
+                <input type="text" class="form-field" id="addNewDocOut15" name="addNewDocOut15" readonly required>
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >เลขที่หนังสือ :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-folder-open input-icon fs-5"></i>
+                <input type="text" class="form-field" id="addNewDocOut2" name="addNewDocOut2" required>
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >จาก (หน่วยงาน) :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-building input-icon fs-5"></i>
+                <input type="text" class="form-field" id="addNewDocOut3" name="addNewDocOut3" required>
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >ถึง (หน่วยงาน) :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-buildings input-icon fs-5"></i>
+                <select class="form-field" id="addNewDocOut4" name="addNewDocOut4" required></select>
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >เรื่อง :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-book input-icon fs-5"></i>
+                <textarea type="text" class="form-field" id="addNewDocOut5" name="addNewDocOut5" rows="3" required></textarea>
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >รายละเอียด :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-file-lines input-icon fs-5"></i>
+                <textarea type="text" class="form-field" rows="5" id="addNewDocOut6" name="addNewDocOut6"></textarea>
+              </div>
+            </div>                
+          </div>
+          <div class="col-sm-1"></div>
+          <div class="col-sm-5">
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >ลงวันที่ :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-calendar-star input-icon fs-5"></i>
+                <input type="date" class="form-field" id="addNewDocOut7" name="addNewDocOut7" required>
+              </div>
+            </div>
+            <div class="mb-3 form-group row">
+              <p class="col-sm-4 col-form-label" >ชั้นความเร็ว :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-person-running-fast input-icon fs-5"></i>
+                <select class="form-field" id="addNewDocOut8" name="addNewDocOut8" required></select>
+              </div>
+            </div>
+            <div class="mb-3 form-group row">
+              <p class="col-sm-4 col-form-label" >ชั้นความลับ :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-user-secret input-icon fs-5"></i>
+                <select class="form-field" id="addNewDocOut9" name="addNewDocOut9" required></select>
+              </div>
+            </div>
+            <div class="mb-3 form-group row">
+              <p class="col-sm-4 col-form-label" >หมวดหนังสือ :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-layer-group input-icon fs-5"></i>
+                <select class="form-field" id="addNewDocOut10" name="addNewDocOut10" required></select>
+              </div>
+            </div>
+            <div class="mb-3 form-group row">
+              <p class="col-sm-4 col-form-label" >วัตถุประสงค์ :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-bullseye-arrow input-icon fs-5"></i>
+                <select class="form-field" id="addNewDocOut11" name="addNewDocOut11" required></select>
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <p class="col-sm-4 col-form-label" >หมายเหตุ :</p>
+              <div class="col-sm-7 field-input">
+                <i class="fa-solid fa-note-sticky input-icon fs-5"></i>
+                <textarea type="text" class="form-field" rows="3" id="addNewDocOut12" name="addNewDocOut12"></textarea>
+              </div>
+            </div>
+            <div class="form-group row mb-3">
+              <p class="col-sm-4 col-form-label" ></p>
+              <div class="col-sm-7">
+                  <input class="form-check-input" type="checkbox" value="1" id="addNewDocOut13" name="addNewDocOut13">
+                  <label class="form-check-label" for="addNewDocOut13">
+                    ติดตามผลการทำงาน
+                  </label>
+              </div>
+            </div>
+            <div class="form-group row mb-3">
+              <p class="col-sm-4 col-form-label" >ต้นฉบับ :</p>
+              <div class="col-sm-7">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="addNewDocOut14" id="addNewDocOut14_1" value="0">
+                  <label class="form-check-label" for="addNewDocOut14_1">
+                  ไม่ส่งต้นฉบับ
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="addNewDocOut14" id="addNewDocOut14_2" value="1">
+                  <label class="form-check-label" for="addNewDocOut14_2">
+                    ส่งต้นฉบับ
+                  </label>
+                </div>
+              </div>
+          </div>                 
+          </div>                                            
+        </div>
+        <hr class="opacity-25">
+        <div class="text-end">
+          <button type="submit" class="btn btn-primary rounded-pill px-5" id="saveaddNewDocOut1"><i class="fa-regular fa-floppy-disk"></i> บันทึก</button>
+          <button type="reset" class="btn btn-danger rounded-pill px-5"><i class="fa-solid fa-xmark"></i> ยกเลิก</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="data-contianer" style="display:none" id="menupage5_2">
+    <div class="datacontent">
+      <div class="head mb-0">
+        <h5><i class="fa-solid fa-arrows-rotate"></i> หนังสือรอดำเนินการ</h5>
+      </div>        
+
+      <div class="container-fluid my-4">
+        <div class="row">
+          <div class="col-lg-2">
+            <label for="paddingDocOutfilter1" class="label-form">ปีสารบรรณ</label>
+            <select id="paddingDocOutfilter1" class="form-select rounded-4 year-filter">
+              <option selected value="2567">2567</option>
+              <option value="2566">2566</option>
+              <option value="2565">2565</option>
+              <option value="2564">2564</option>
+            </select>  
+          </div>
+          <div class="col-lg-2">
+            <label for="paddingDocOutfilter2" class="label-form">สถานะ</label>
+            <select id="paddingDocOutfilter2" class="form-select rounded-4">
+              <option selected value="">สถานะทั้งหมด</option>
+              <option value="2">รอดำเนินการ</option>
+              <option value="1">ลงทะเบียน</option>
+              <option value="3">เตรียมส่ง</option>
+            </select>
+          </div>
+          <div class="col-lg-2">
+            <label for="paddingDocOutfilter3" class="label-form">หมวดเอกสาร</label>
+            <select id="paddingDocOutfilter3" class="form-select rounded-4"></select>
+          </div>
+          <div class="col-lg-4">
+            <label for="paddingDocOutfilter4" class="label-form">ค้นหา</label>
+            <div class="input-group z-index-0">
+              <input type="text" id="paddingDocOutfilter4" class="form-control rounded-4 rounded-end-0" placeholder="คำค้นหา">
+              <button type="button" class="btn btn-primary rounded-4 rounded-start-0 ">ค้นหา</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-end mt-2 mb-2">
+        <h6 class="text-primary" id="numberDocOuttext1"></h6>
+      </div>
+      <div class="table-responsive mt-3" style="padding-bottom: 40px;">
+        <table id="tableDocoutPending" class="table table-sm">
+          <thead>
+            <tr class="text-center">
+              <th scope="col" class="text-center">#</th>
+              <th scope="col" class="text-center">เลขทะเบียนรับ</th>
+              <th scope="col" class="text-center">เลขที่หนังสือ</th>
+              <th scope="col" class="text-center">ลงวันที่</th>
+              <th scope="col" class="text-center">เรื่อง</th>
+              <th scope="col" class="text-center">รายละเอียด</th>
+              <th scope="col" class="text-center">แนบไฟล์</th>
+              <th scope="col" class="text-center">แนบลิงก์</th>
+              <th scope="col" class="text-center">หมวดหนังสือ</th>
+              <th scope="col" class="text-center">สถานะ</th>
+              <th scope="col" class="text-center">ตัวเลือก</th>
+            </tr>
+          </thead>
+          <tbody id="tableDocoutPending-body" class="table-group-divider">
+            <!-- แทรกข้อมูลจากฐานข้อมูล -->
+            <tr>
+              <td class="text-center py-4" colspan="11"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div> 
+    </div>
+  </div>
+
+  <div class="data-contianer" style="display:none" id="menupage5_3">
+    <div class="datacontent">
+      <div class="head mb-0">
+        <h5><i class="fa-solid fa-paper-plane"></i> หนังสืออยู่ระหว่างดำเนินการ</h5>
+      </div>
+      <hr class="opacity-25">
+
+      <div class="container-fluid my-4">
+        <div class="row">
+          <div class="col-lg-2">
+            <label for="InprogressDocOutfilter1" class="label-form">ปีสารบรรณ</label>
+            <select id="InprogressDocOutfilter1" class="form-select rounded-4 year-filter">
+              <option selected value="2567">2567</option>
+              <option value="2566">2566</option>
+              <option value="2565">2565</option>
+              <option value="2564">2564</option>
+            </select>  
+          </div>
+          <div class="col-lg-2">
+            <label for="InprogressDocOutfilter2" class="label-form">สถานะ</label>
+            <select id="InprogressDocOutfilter2" class="form-select rounded-4">
+              <option selected value="">สถานะทั้งหมด</option>
+              <option value="0">ยังไม่ได้เปิด</option>
+              <option value="1">เปิดแล้ว</option>
+              <option value="2">ส่งตีกลับ</option>
+            </select>
+          </div>
+          <div class="col-lg-2">
+            <label for="InprogressDocOutfilter3" class="label-form">ชั้นความเร็ว</label>
+            <select id="InprogressDocOutfilter3" class="form-select rounded-4"></select>
+          </div>
+          <div class="col-lg-2">
+            <label for="InprogressDocOutfilter4" class="label-form">หมวดเอกสาร</label>
+            <select id="InprogressDocOutfilter4" class="form-select rounded-4"></select>
+          </div>
+          <div class="col-lg-4">
+            <label for="InprogressDocOutfilter5" class="label-form">ค้นหา</label>
+            <div class="input-group z-index-0">
+              <input type="text" id="InprogressDocOutfilter5" class="form-control rounded-4 rounded-end-0" placeholder="คำค้นหา">
+              <button type="button" class="btn btn-primary rounded-4 rounded-start-0 ">ค้นหา</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive mt-3" style="padding-bottom: 80px;">
+        <table id="tableDocOutInprogress" class="table table-sm">
+          <thead>
+            <tr class="text-center">
+              <th scope="col" class="text-center">#</th>
+              <th scope="col" class="text-center">เลขทะเบียนรับ</th>
+              <th scope="col" class="text-center">เลขที่หนังสือ</th>
+              <th scope="col" class="text-center">ลงวันที่</th>
+              <th scope="col" class="text-center">เรื่อง</th>
+              <th scope="col" class="text-center">ส่งถึง</th>
+              <th scope="col" class="text-center">แนบไฟล์</th>
+              <th scope="col" class="text-center">แนบลิงก์</th>
+              <th scope="col" class="text-center">ชั้นความเร็ว</th>
+              <th scope="col" class="text-center">หมวดหนังสือ</th>
+              <th scope="col" class="text-center">สถานะ</th>
+              <th scope="col" class="text-center">ตัวเลือก</th>
+            </tr>
+          </thead>
+          <tbody id="tableDocOutInprogress-body" class="table-group-divider">
+            <!-- แทรกข้อมูลจากฐานข้อมูล -->
+            <tr>
+              <td class="text-center py-4" colspan="12"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+    
+  <div class="data-contianer" style="display:none" id="menupage5_4">
+    <div class="datacontent">
+      <div class="head mb-0">
+        <h5><i class="fa-solid fa-inbox"></i> รายการหนังสือรับเข้า</h5>
+      </div>
+      <hr class="opacity-25">
+
+      <div class="container-fluid my-4">
+        <div class="row">
+          <div class="col-lg-2">
+            <label for="insideDocOutfilter1" class="label-form">ปีสารบรรณ</label>
+            <select id="insideDocOutfilter1" class="form-select rounded-4 year-filter">
+              <option selected value="2567">2567</option>
+              <option value="2566">2566</option>
+              <option value="2565">2565</option>
+              <option value="2564">2564</option>
+            </select>  
+          </div>
+          <div class="col-lg-2">
+            <label for="insideDocOutfilter2" class="label-form">สถานะ</label>
+            <select id="insideDocOutfilter2" class="form-select rounded-4">
+              <option selected value="">สถานะทั้งหมด</option>
+              <option value="3">กำลังดำเนินการ</option>
+              <option value="4">เสร็จแล้ว</option>
+              <option value="5">ปิดงานแล้ว</option>
+              <option value="0">ดึงกลับ</option>
+              <option value="1">ลงทะเบียน</option>
+              <option value="2">เตรียมส่ง</option>
+              <option value="-1">ยกเลิก</option>
+            </select>
+          </div>
+          <div class="col-lg-2">
+            <label for="insideDocOutfilter3" class="label-form">หมวดเอกสาร</label>
+            <select id="insideDocOutfilter3" class="form-select rounded-4"></select>
+          </div>
+          <div class="col-lg-4">
+            <label for="insideDocOutfilter4" class="label-form">ค้นหา</label>
+            <div class="input-group z-index-0">
+              <input type="text" id="insideDocOutfilter4" class="form-control rounded-4 rounded-end-0" placeholder="คำค้นหา">
+              <button type="button" class="btn btn-primary rounded-4 rounded-start-0 ">ค้นหา</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive mt-3" style="padding-bottom: 80px;">
+        <table id="tableInsideDocOut" class="table table-sm">
+          <thead>
+            <tr class="text-center">
+              <th scope="col" class="text-center">#</th>
+              <th scope="col" class="text-center">เลขทะเบียนรับ</th>
+              <th scope="col" class="text-center">เลขที่หนังสือ</th>
+              <th scope="col" class="text-center">ลงวันที่</th>
+              <th scope="col" class="text-center">เรื่อง</th>
+              <th scope="col" class="text-center">แนบไฟล์</th>
+              <th scope="col" class="text-center">แนบลิงก์</th>
+              <th scope="col" class="text-center">หมวดหนังสือ</th>
+              <th scope="col" class="text-center">สถานะ</th>
+              <th scope="col" class="text-center">ตัวเลือก</th>
+            </tr>
+          </thead>
+          <tbody id="tableInsideDocOut-body" class="table-group-divider">
+            <!-- แทรกข้อมูลจากฐานข้อมูล -->
+            <tr>
+              <td class="text-center py-4" colspan="10"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="data-contianer" style="display:none" id="menupage5_5">
+    <div class="datacontent">
+      <div class="head mb-0">
+        <h5><i class="fa-solid fa-arrow-up-right-from-square"></i> หนังสือที่ต้องติดตาม</h5>
+      </div>
+      <hr class="opacity-25">
+
+      <div class="container-fluid my-4">
+        <div class="row">
+          <div class="col-lg-2">
+            <label for="followDocOutfilter1" class="label-form">ปีสารบรรณ</label>
+            <select id="followDocOutfilter1" class="form-select rounded-4 year-filter">
+              <option selected value="2567">2567</option>
+              <option value="2566">2566</option>
+              <option value="2565">2565</option>
+              <option value="2564">2564</option>
+            </select>  
+          </div>
+          <div class="col-lg-2">
+            <label for="followDocOutfilter2" class="label-form">สถานะ</label>
+            <select id="followDocOutfilter2" class="form-select rounded-4">
+              <option selected value="">สถานะทั้งหมด</option>
+              <option value="3">กำลังดำเนินการ</option>
+              <option value="4">เสร็จแล้ว</option>
+              <option value="5">ปิดงานแล้ว</option>
+              <option value="0">ดึงกลับ</option>
+              <option value="1">ลงทะเบียน</option>
+              <option value="2">เตรียมส่ง</option>
+              <option value="-1">ยกเลิก</option>
+            </select>
+          </div>
+          <div class="col-lg-2">
+            <label for="followDocOutfilter3" class="label-form">หมวดเอกสาร</label>
+            <select id="followDocOutfilter3" class="form-select rounded-4"></select>
+          </div>
+          <div class="col-lg-4">
+            <label for="followDocOutfilter4" class="label-form">ค้นหา</label>
+            <div class="input-group z-index-0">
+              <input type="text" id="followDocOutfilter4" class="form-control rounded-4 rounded-end-0" placeholder="คำค้นหา">
+              <button type="button" class="btn btn-primary rounded-4 rounded-start-0 ">ค้นหา</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mt-3" style="padding-bottom: 80px;">
+        <table id="tableFollowDocOut" class="table table-sm">
+          <thead>
+            <tr class="text-center">
+              <th scope="col" class="text-center">#</th>
+              <th scope="col" class="text-center">เลขทะเบียนรับ</th>
+              <th scope="col" class="text-center">เลขที่หนังสือ</th>
+              <th scope="col" class="text-center">ลงวันที่</th>
+              <th scope="col" class="text-center">เรื่อง</th>
+              <th scope="col" class="text-center">แนบไฟล์</th>
+              <th scope="col" class="text-center">แนบลิงก์</th>
+              <th scope="col" class="text-center">หมวดหนังสือ</th>
+              <th scope="col" class="text-center">สถานะ</th>
+              <th scope="col" class="text-center">ตัวเลือก</th>
+            </tr>
+          </thead>
+          <tbody id="tableFollowDocOut-body" class="table-group-divider">
+            <!-- แทรกข้อมูลจากฐานข้อมูล -->
+            <tr>
+              <td class="text-center py-4" colspan="9"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="data-contianer" style="display:none" id="menupage5_6">
+    <div class="datacontent">
+      <div class="head mb-0">
+        <h5><i class="fa-solid fa-arrow-right-arrow-left"></i> หนังสือตีกลับ</h5>
+      </div>
+      <hr class="opacity-25">
+      <div class="container-fluid my-4">
+        <div class="row">
+          <div class="col-lg-2">
+            <label for="returnDocOutfilter1" class="label-form">ปีสารบรรณ</label>
+            <select id="returnDocOutfilter1" class="form-select rounded-4 year-filter">
+              <option selected value="2567">2567</option>
+              <option value="2566">2566</option>
+              <option value="2565">2565</option>
+              <option value="2564">2564</option>
+            </select>  
+          </div>
+          <div class="col-lg-4">
+            <label for="returnDocOutfilter2" class="label-form">ค้นหา</label>
+            <div class="input-group z-index-0">
+              <input type="text" id="returnDocOutfilter2" class="form-control rounded-4 rounded-end-0" placeholder="คำค้นหา">
+              <button type="button" class="btn btn-primary rounded-4 rounded-start-0 ">ค้นหา</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mt-3" style="padding-bottom: 80px;">
+        <table id="tableReturnDocOut" class="table table-sm">
+          <thead>
+            <tr class="text-center">
+              <th scope="col" class="text-center">#</th>
+              <th scope="col" class="text-center">เลขทะเบียนรับ</th>
+              <th scope="col" class="text-center">เลขที่หนังสือ</th>
+              <th scope="col" class="text-center">ลงวันที่</th>
+              <th scope="col" class="text-center">เรื่อง</th>
+              <th scope="col" class="text-center">แนบไฟล์</th>
+              <th scope="col" class="text-center">แนบลิงก์</th>
+              <th scope="col" class="text-center">หมวดหนังสือ</th>
+              <th scope="col" class="text-center">สถานะ</th>
+              <th scope="col" class="text-center">ตัวเลือก</th>
+            </tr>
+          </thead>
+          <tbody id="tableReturnDocOut-body" class="table-group-divider">
+            <!-- แทรกข้อมูลจากฐานข้อมูล -->
+            <tr>
+              <td class="text-center py-4" colspan="9"><i class="fa fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="data-contianer" style="display:none" id="menupage5_7">
+    <div class="container-fluid">
+      <div class="head mb-0">
+        <h5 id="addDocumantOut"><i class="fa-solid fa-paperclip"></i> แนบไฟล์</h5>
+        <a class="btn btn-blue btn-sm rounded-pill px-3"> 
+          <i class="fa-solid fa-arrow-left-long"></i>
+          <span class="text">กลับ</span>
+        </a>
+      </div>
+      <hr class="opacity-25 mb-3">
+      <div class="d-flex justify-content-center align-items-center">
+        <div id="uploadedDocOutFiles" style="height:200px;display: flex; justify-content: center;align-items: center;" class="text-danger text-center"></div>
+        <div id="uploadedDocOutLinks"></div>
+      </div>
+      <hr class="opacity-25 mb-3">
+        <div class="row">
+          <div class=" col-md-12 text-left">
+            <span style="color: #900; font-weight: bold;">** หมายเหตุ :</span><br>
+            <span style="color: #900;">- อัพโหลดไฟล์ได้ไม่เกิน 5 ไฟล์</span><br>
+            <span style="color: #900;">- อัพโหลดไฟล์นามสกุล .csv, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .zip, .rar, .jpg, .jpeg, .png, .gif ได้เท่านั้น</span><br>
+            <span style="color: #900;">- อัพโหลดขนาดไฟล์ได้ไม่เกิน 20 MB</span>
+          </div>
+        </div>
+      <form id="docOutAddfileForm">
+        <input type="file" id="addFileDataDocOut1" style="display:none;" onchange="saveFile_Doc(this, 27, 1)">  
+        <input type="file" id="addFileDataDocOut2" style="display:none;" onchange="saveFile_Doc(this, 28, 2)">  
+        <input type="file" id="addFileDataDocOut3" style="display:none;" onchange="saveFile_Doc(this, 29, 3)">   
+        <input type="file" id="addFileDataDocOut4" style="display:none;" onchange="saveFile_Doc(this, 30, 4)">   
+        <input type="file" id="addFileDataDocOut5" style="display:none;" onchange="saveFile_Doc(this, 31, 5)">   
+      </form>
+      <hr class="opacity-25 mb-3">
+        <div class="text-end">
+          <button class="btn btn-outline-warning rounded-pill" data-bs-toggle="modal" data-bs-target="#sendResultModal" id="sendResultToUserBtn" style="display:none"><i class="fa-regular fa-paper-plane"></i> ส่งและบันทึกหนังสือ</button>
+          <button class="btn btn-blue rounded-pill"><i class="fa-solid fa-pen-to-square"></i> แก้ไขหนังสือ</button>
+          <button class="btn btn-danger rounded-pill" onclick="onResetFileDocOut()"><i class="fa-solid fa-ban"></i> ไม่ต้องการแนบไฟล์</button>
+          <a id="labeladdFileDatalinkOut1" class="btn btn-warning rounded-pill" data-bs-toggle="modal" data-bs-target="#addLinkModal" ><i class="fa-solid fa-paperclip"></i> แนบลิงก์</a>
+          <label for="addFileDataDocOut1" id="labeladdFileDataDocOut1" class="btn btn-green rounded-pill"><i class="fa-solid fa-upload"></i> อัพโหลดไฟล์</label>
+          <label for="addFileDataDocOut2" id="labeladdFileDataDocOut2" style="display:none" class="btn btn-green rounded-pill"><i class="fa-solid fa-upload"></i> อัพโหลดไฟล์</label>
+          <label for="addFileDataDocOut3" id="labeladdFileDataDocOut3" style="display:none" class="btn btn-green rounded-pill"><i class="fa-solid fa-upload"></i> อัพโหลดไฟล์</label>
+          <label for="addFileDataDocOut4" id="labeladdFileDataDocOut4" style="display:none" class="btn btn-green rounded-pill"><i class="fa-solid fa-upload"></i> อัพโหลดไฟล์</label>
+          <label for="addFileDataDocOut5" id="labeladdFileDataDocOut5" style="display:none" class="btn btn-green rounded-pill"><i class="fa-solid fa-upload"></i> อัพโหลดไฟล์</label>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="head mb-0">
+        <h5 id="addDocumant1"></h5>
+      </div>
+      <hr class="opacity-25 mb-3">
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5">
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">Document Key :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutViewKey"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">เลขที่หนังสือ :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView1"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">ลงวันที่ :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView2"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">จาก :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView3"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">ถึง :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView4"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">เรื่อง :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView5"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">รายละเอียด :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView6"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">วัตถุประสงค์ :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView7"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">ส่งจาก :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView8"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">สถานะ :</span>
+              <div class="col-sm-7">
+              <span class="badge badge-primary" id="docOutView9"></span>
+              </div>
+          </div>
+        </div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5">
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">ประเภทหนังสือ :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView10"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">ชั้นความเร็ว :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView11"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">ชั้นความลับ :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView12"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">หมวดเอกสาร :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView13"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">ต้นฉบับ :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView14"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">หมายเหตุ :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView15"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">สร้างโดย :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView16"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">สร้างเมื่อ :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView17"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">อัพเดทเมื่อ :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutView18"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="data-contianer" style="display:none" id="menupage5_8">
+    <div class="container-fluid">
+      <div class="head mb-4">
+        <h5 id="sendDocumantOut"><i class="fa-solid fa-file-import"></i> หนังสือรอดำเนินการ</h5>
+        <a class="btn btn-blue btn-sm rounded-pill px-3"> 
+          <i class="fa-solid fa-arrow-left-long"></i>
+          <span class="text">กลับ</span>
+        </a>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5">
+          <input type="hidden" id="keySendDocumentOut">
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">ประเภทหนังสือ:</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutViewSend1"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">เลขที่หนังสือ :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutViewSend2"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">จาก :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutViewSend3"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">ถึง :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutViewSend4"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">เรื่อง :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutViewSend5"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">ติดตาม :</span>
+              <span class="col-sm-7 d-flex align-items-center justify-content-start" style="font-size: 14px;" id="docOutViewSend6"></span>
+          </div>
+        </div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5">
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">ลงวันที่ :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutViewSend7"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">ชั้นความเร็ว :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutViewSend8"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">ชั้นความลับ :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutViewSend9"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">หมวดเอกสาร :</span>
+              <span class="col-sm-7" style="font-size: 14px;" id="docOutViewSend10"></span>
+          </div>
+          <div class="form-group row mb-2">
+              <span class="col-sm-4 fw-medium" style="font-size: 14px;">ต้นฉบับ :</span>
+              <span class="col-sm-7 d-flex align-items-start justify-content-center flex-column" style="font-size: 14px;" id="docOutViewSend11"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="head mb-0">
+        <h5 id="sendDocumant1"><i class="fa-solid fa-paper-plane-top"></i> ส่งเอกสาร</h5>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <select id="sendDocumantOutSelect" multiple="multiple"></select>
+        </div>
+      </div>
+      <hr class="opacity-10 my-3">
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-green rounded-4 px-4"><i class="fa-duotone fa-paper-plane"></i> ส่ง</button>
+      </div> 
+    </div>
+  </div>  
