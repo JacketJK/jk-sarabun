@@ -709,6 +709,15 @@ const appNavigationMenus = [
     submenuId: 9,
     action: () => changePageDocOut(6)
   },
+  {
+    title: 'หนังสือที่ถูกยกเลิก (ลงรับหนังสือ)',
+    category: 'ลงรับหนังสือ',
+    icon: 'fa-regular fa-file-circle-xmark',
+    keywords: ['หนังสือที่ถูกยกเลิก', 'เอกสารยกเลิก', 'ถังขยะ', 'ลบหนังสือ', 'สารบรรณกลาง', 'ลงรับหนังสือ', 'หนังสือรับ', 'canceled', 'delete', 'กู้คืน', 'ลบถาวร'],
+    sidebarId: 'sidebarManuDocOutCanceled',
+    submenuId: 9,
+    action: () => changePageDocOut(9)
+  },
   // บริหารบุคลากร HRM
   {
     title: 'เพิ่มข้อมูลบุคลากร (HRM)',
@@ -1750,11 +1759,12 @@ const changePageDocOut = (data, skipHash) => {
     1: 'สร้างหนังสือส่งภายนอก',
     2: 'หนังสือรอดำเนินการ',
     3: 'หนังสืออยู่ระหว่างดำเนินการ',
-    4: 'รายการหนังสือส่งภายใน',
+    4: 'รายการหนังสือรับเข้า',
     5: 'หนังสือที่ต้องติดตาม',
     6: 'หนังสือตีกลับ',
     7: 'แนบไฟล์เอกสาร',
     8: 'ส่งเอกสาร',
+    9: 'หนังสือที่ถูกยกเลิก',
   };
   const insertData = {
     2: insertDataOutPedding,
@@ -1762,17 +1772,19 @@ const changePageDocOut = (data, skipHash) => {
     4: insertDataOutInside,
     5: insertDataOutFollow,
     6: insertDataOutReturn,
+    9: insertDataOutCanceled,
   };
   changePage(5, true);
   $("#loader").show();
 
   setTimeout(() => {
-    for (let i = 1; i <= 8; i++) {
+    for (let i = 1; i <= 9; i++) {
       $("#menupage5_" + i).toggle(data == i);
     }
     const publicKey = localStorage.getItem('publicKey');
+    const userLevel = localStorage.getItem('level') || '5';
     if (insertData[data]) {
-      insertData[data](publicKey);
+      insertData[data](publicKey, userLevel);
     }
     $("#receivebreadcrumb1").text(textMap[data])
   }, 500);
@@ -4596,6 +4608,9 @@ $('#confirmDeleteDocPermanentBtn').on('click', function () {
         if (typeof insertDataCanceled === 'function') {
           insertDataCanceled(publicKey, userLevel);
         }
+        if (typeof insertDataOutCanceled === 'function') {
+          insertDataOutCanceled(publicKey, userLevel);
+        }
       } else {
         toastAlert(0, res.message || 'ไม่สามารถลบหนังสือได้');
       }
@@ -4631,8 +4646,11 @@ $('#confirmRestoreDocBtn').on('click', function () {
         const publicKey = localStorage.getItem('publicKey');
         const userLevel = localStorage.getItem('level');
         if (typeof insertDataCanceled === 'function') insertDataCanceled(publicKey, userLevel);
+        if (typeof insertDataOutCanceled === 'function') insertDataOutCanceled(publicKey, userLevel);
         if (typeof insertDataPedding === 'function') insertDataPedding(publicKey);
         if (typeof insertDataInside === 'function') insertDataInside(publicKey);
+        if (typeof insertDataOutPedding === 'function') insertDataOutPedding(publicKey);
+        if (typeof insertDataOutInside === 'function') insertDataOutInside(publicKey);
       } else {
         toastAlert(0, 'ไม่สามารถกู้คืนหนังสือได้');
       }

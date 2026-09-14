@@ -727,3 +727,68 @@
       </div> 
     </div>
   </div>  
+
+  <div class="data-contianer" style="display:none" id="menupage5_9">
+    <div class="datacontent">
+      <div class="head mb-0 d-flex justify-content-between align-items-center">
+        <div>
+          <h5><i class="fa-solid fa-file-circle-xmark text-danger"></i> รายการหนังสือรับที่ถูกยกเลิก</h5>
+          <small class="text-muted"><i class="fa-solid fa-shield-halved text-primary me-1"></i> เฉพาะสารบรรณกลางและผู้ดูแลระบบที่มีสิทธิ์ลบหนังสือออกจากระบบอย่างถาวร</small>
+        </div>
+        <div>
+          <button class="btn btn-outline-secondary btn-sm rounded-4" onclick="insertDataOutCanceled(localStorage.getItem('publicKey'), localStorage.getItem('level'))">
+            <i class="fa-solid fa-arrows-rotate"></i> รีเฟรช
+          </button>
+        </div>
+      </div>
+      <hr class="opacity-25">
+      <div class="container-fluid my-4">
+        <div class="row g-2 align-items-end">
+          <div class="col-lg-2 col-md-3">
+            <label for="canceledDocOutFilter1" class="label-form">ปีสารบรรณ</label>
+            <select id="canceledDocOutFilter1" class="form-select rounded-4 year-filter">
+              <option selected value="2567">2567</option>
+              <option value="2566">2566</option>
+              <option value="2565">2565</option>
+              <option value="2564">2564</option>
+            </select>  
+          </div>
+          <div class="col-lg-5 col-md-6">
+            <label for="canceledDocOutFilter2" class="label-form">ค้นหาหนังสือรับที่ยกเลิก</label>
+            <div class="input-group z-index-0">
+              <input type="text" id="canceledDocOutFilter2" class="form-control rounded-4 rounded-end-0" placeholder="ค้นหาเลขที่รับ, เลขที่หนังสือ, เรื่อง, หมายเหตุ...">
+              <button type="button" class="btn btn-primary rounded-4 rounded-start-0"><i class="fa-solid fa-magnifying-glass"></i> ค้นหา</button>
+            </div>
+          </div>
+          <div class="col-lg-5 col-md-3 text-lg-end mt-2 mt-lg-0">
+            <span id="canceledDocOutCountBadge" class="badge text-bg-danger rounded-pill px-3 py-2 fs-6">0 รายการ</span>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mt-3" style="padding-bottom: 80px;">
+        <table id="tableCanceledDocOut" class="table table-sm align-middle">
+          <thead>
+            <tr class="text-center">
+              <th scope="col" style="width: 50px;">#</th>
+              <th scope="col" style="min-width: 140px;">เลขที่รับ / ประเภท</th>
+              <th scope="col" style="min-width: 130px;">เลขที่หนังสือ</th>
+              <th scope="col" style="min-width: 110px;">ลงวันที่</th>
+              <th scope="col" style="min-width: 250px;">เรื่อง / หมายเหตุที่ยกเลิก</th>
+              <th scope="col" style="min-width: 75px;">แนบไฟล์</th>
+              <th scope="col" style="min-width: 75px;">แนบลิงก์</th>
+              <th scope="col" style="min-width: 100px;">หมวดหนังสือ</th>
+              <th scope="col" style="min-width: 110px;">สถานะ</th>
+              <th scope="col" style="min-width: 140px;">การจัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="tableCanceledDocOut-body" class="table-group-divider">
+            <tr>
+              <td class="text-center p-4" colspan="10">
+                <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>กำลังโหลดข้อมูล...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>  
