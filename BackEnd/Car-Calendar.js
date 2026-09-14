@@ -1481,7 +1481,11 @@ function getDataAllCalendar(key) {
   for (const row of filteredData) {
     const userCode = row[8];
     const matchingRows = dataUser.filter(user => user[0] === userCode);
-    filteredUser.push(...matchingRows);
+    if (matchingRows.length > 0) {
+      filteredUser.push(matchingRows[0]);
+    } else {
+      filteredUser.push(["", "", "", "-", "", "", "-", "-"]);
+    }
   }
   filteredData.reverse();
   filteredUser.reverse();

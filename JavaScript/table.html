@@ -3295,31 +3295,32 @@ const insertAllCalendar = (key) => {
       var cell1 = row.insertCell(1);
       cell1.innerHTML = data[0][i][1];
 
-      const dateStart = data[0][i][2].split('T');
+      const dateStart = data[0][i][2] ? String(data[0][i][2]).split('T') : ['', ''];
       var cell2 = row.insertCell(2);
       cell2.innerHTML = `<div class="d-flex flex-column">
-                          <div><span style="font-size: 14px;">${formatThaiDateTime(new Date(dateStart[0]))}</span></div>  
-                          <div><span class="text-primary" style="font-size:12px;">เวลา ${dateStart[1]} น.</span></div>
+                          <div><span style="font-size: 14px;">${dateStart[0] ? formatThaiDateTime(new Date(dateStart[0])) : '-'}</span></div>  
+                          <div><span class="text-primary" style="font-size:12px;">เวลา ${dateStart[1] || '-'} น.</span></div>
                         </div>`;
 
-      const dateEnd = data[0][i][3].split('T');
+      const dateEnd = data[0][i][3] ? String(data[0][i][3]).split('T') : ['', ''];
       var cell3 = row.insertCell(3);
       cell3.innerHTML = `<div class="d-flex flex-column">
-                          <div><span style="font-size: 14px;">${formatThaiDateTime(new Date(dateEnd[0]))}</span></div>  
-                          <div><span class="text-primary" style="font-size:12px;">เวลา ${dateEnd[1]} น.</span></div>
+                          <div><span style="font-size: 14px;">${dateEnd[0] ? formatThaiDateTime(new Date(dateEnd[0])) : '-'}</span></div>  
+                          <div><span class="text-primary" style="font-size:12px;">เวลา ${dateEnd[1] || '-'} น.</span></div>
                         </div>`;
 
       var cell4 = row.insertCell(4);
       cell4.innerHTML = `<div class="d-flex flex-column">
-                          <div><span style="font-size: 14px;">${data[0][i][5]}</span></div>  
-                          <div><span class="text-primary" style="font-size:12px;">สถานที่ : </span><span style="font-size:12px;">${data[0][i][4]}</span></div>
-                          <div><span class="text-primary" style="font-size:12px;">หมายเหตุ : </span><span style="font-size:12px;">${data[0][i][6]}</span></div>
+                          <div><span style="font-size: 14px;">${data[0][i][5] || ''}</span></div>  
+                          <div><span class="text-primary" style="font-size:12px;">สถานที่ : </span><span style="font-size:12px;">${data[0][i][4] || '-'}</span></div>
+                          <div><span class="text-primary" style="font-size:12px;">หมายเหตุ : </span><span style="font-size:12px;">${data[0][i][6] || '-'}</span></div>
                         </div>`;
 
       var cell5 = row.insertCell(5);
+      const userObj = (data[1] && data[1][i]) ? data[1][i] : ["", "", "", "-", "", "", "-", "-"];
       cell5.innerHTML = `<div class="d-flex flex-column">
-                          <div><span style="font-size: 14px;">${data[1][i][3]}${data[1][i][4]} ${data[1][i][5]}</span></div>  
-                          <div><span style="font-size:12px;">(${data[1][i][6]}) ${data[1][i][7]}</span></div>
+                          <div><span style="font-size: 14px;">${userObj[3] || ''}${userObj[4] || ''} ${userObj[5] || ''}</span></div>  
+                          <div><span style="font-size:12px;">(${userObj[6] || '-'}) ${userObj[7] || '-'}</span></div>
                         </div>`;   
 
       var cell6 = row.insertCell(6);
@@ -3360,8 +3361,9 @@ const insertAllCalendar = (key) => {
       const todate = $('#editCldfilter3').val();
 
       $('#tableEditCld-body tr').each(function(i) {
-        const dateStart = data[0][i][2].split('T');
-        var rightValue = data[0][i][7];
+        if (!data[0] || !data[0][i]) return;
+        const dateStart = data[0][i][2] ? String(data[0][i][2]).split('T') : ['', ''];
+        var rightValue = data[0][i][7] || '';
         var formattedDate = dateStart[0];
 
         var showByRight = selectedValue1 === "" || rightValue === selectedValue1;
