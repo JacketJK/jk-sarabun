@@ -1804,6 +1804,423 @@ const insertDataCanceled = (key, userLevel) => {
     .dataDocCanceled(key, userLevel);
 };
 
+// ==========================================
+// รายการหนังสือที่ถูกยกเลิก: เมนู หนังสือ/คำสั่ง/ประกาศ (เมนู 2)
+// ==========================================
+const insertDataBookSendCanceled = (key, userLevel) => {
+  var tableBody = document.getElementById("tableCanceledDocAnnonce-body");
+  if (!tableBody) return;
+
+  if (!userLevel) {
+    userLevel = localStorage.getItem('level') || '5';
+  }
+
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center p-4 text-secondary" colspan="9">
+        <div class="spinner-border text-danger spinner-border-sm me-2" role="status"></div>กำลังโหลดรายการหนังสือที่ยกเลิก...
+      </td>
+    </tr>
+  `;
+
+  google.script.run
+    .withSuccessHandler((data) => {
+      if (!data) data = [];
+
+      data = data.filter((row) => {
+        return row[1] === "หนังสือส่ง" || row[1] === "คำสั่ง" || row[1] === "ประกาศ" || row[1] === "หนังสือรับรอง";
+      });
+
+      const countBadge = document.getElementById("canceledDocAnnonceCountBadge");
+      if (countBadge) {
+        countBadge.textContent = `${data.length} รายการ`;
+      }
+
+      if (data.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td class="text-center p-4 text-muted" colspan="9">
+              <i class="fa-duotone fa-file-circle-check text-success fs-4 d-block mb-2"></i>
+              ไม่มีรายการหนังสือ/คำสั่ง/ประกาศที่ถูกยกเลิกในขณะนี้
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      data.sort((a, b) => String(b[0] || '').localeCompare(String(a[0] || '')));
+      tableBody.innerHTML = "";
+
+      const isSarabun = String(userLevel) === '1' || String(userLevel) === '3';
+
+      for (var i = 0; i < data.length; i++) {
+        var row = tableBody.insertRow(-1);
+
+        // #
+        var cell0 = row.insertCell(0);
+        cell0.className = "text-center fw-medium text-muted";
+        cell0.innerHTML = i + 1;
+
+        // เลขที่ / ประเภท
+        var cell1 = row.insertCell(1);
+        var send = data[i][16] == 1 
+          ? '<span style="color:green;font-size:11px;"><i class="fa-solid fa-paper-plane me-1"></i>ส่งต้นฉบับ</span>' 
+          : '<span style="color:#888;font-size:11px;">ไม่ส่งต้นฉบับ</span>';
+        cell1.innerHTML = `
+          <div class="d-flex flex-column">
+            <span class="text-danger fw-bold text-nowrap" style="font-size:13.5px; cursor: pointer; text-decoration: line-through;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิดดู" onclick="docdetailfile('${data[i][0]}')">
+              ${data[i][2] || '-'}
+            </span>
+            <span class="badge bg-secondary-subtle text-secondary font-size-11 my-1 w-auto align-self-start">${data[i][1]}</span>
+            ${send}
+          </div>
+        `;
+
+        // ลงวันที่
+        var cell2 = row.insertCell(2);
+        cell2.className = "text-center";
+        var dateFormatted = data[i][9] ? formatThaiDateTime(new Date(data[i][9])) : '-';
+        cell2.innerHTML = `<span style="font-size:13px;" class="text-muted">${dateFormatted}</span>`;
+
+        // เรื่อง / หมายเหตุที่ยกเลิก
+        var cell3 = row.insertCell(3);
+        var cancelReason = String(data[i][34] || '').trim();
+        if (!cancelReason) {
+          var rawNote = String(data[i][14] || '');
+          var m = rawNote.match(/\[ยกเลิก:\s*([^\]]+)\]/);
+          if (m) cancelReason = m[1];
+        }
+        var cancelReasonHtml = cancelReason 
+          ? `<div class="mt-1"><span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-3 py-1 px-2 text-wrap text-start" style="font-size:11.5px; line-height: 1.4;"><i class="fa-solid fa-comment-slash me-1"></i><strong>เหตุผล:</strong> ${cancelReason}</span></div>` 
+          : '';
+
+        cell3.innerHTML = `
+          <div class="d-flex flex-column">
+            <span style="font-size:13.5px; font-weight: 500;" class="text-dark">${data[i][7] || '-'}</span>   
+            <div class="small text-muted mt-1">
+              <span class="text-primary">จาก:</span> ${data[i][4] || '-'} 
+              <span class="text-primary ms-2">ถึง:</span> ${data[i][6] || '-'}
+            </div>
+            ${cancelReasonHtml}
+          </div>
+        `;
+
+        // แนบไฟล์
+        var cell4 = row.insertCell(4);
+        cell4.className = "text-center";
+        var imgdoc = 'https://cdn.jsdelivr.net/gh/JacketJK/image/upload.png';
+        var fileHtml = '';
+        for (let j = 26; j <= 30; j++) {
+          if (data[i][j]) {
+            fileHtml += `<a href='${data[i][j]}' class='ms-1' target='_blank'><img src='${imgdoc}' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ไฟล์แนบ ${j - 25}' width='24'></a>`;
+          }
+        }
+        cell4.innerHTML = fileHtml || `<span class="text-muted small">-</span>`;
+
+        // แนบลิงก์
+        var cell5 = row.insertCell(5);
+        cell5.className = "text-center";
+        var imglink = 'https://cdn.jsdelivr.net/gh/JacketJK/image/link_url.png';
+        var linkHtml = '';
+        for (let j = 31; j <= 33; j++) {
+          if (data[i][j]) {
+            linkHtml += `<a href='${data[i][j]}' class='ms-1' target='_blank'><img src='${imglink}' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ลิงก์แนบ ${j - 30}' width='20'></a>`;
+          }
+        }
+        cell5.innerHTML = linkHtml || `<span class="text-muted small">-</span>`;
+
+        // หมวดหนังสือ
+        var cell6 = row.insertCell(6);
+        cell6.className = "text-center";
+        cell6.innerHTML = `<span class="badge bg-light text-secondary border rounded-pill">${data[i][12] || '-'}</span>`;
+
+        // สถานะ
+        var cell7 = row.insertCell(7);
+        cell7.className = "text-center";
+        cell7.innerHTML = `<span class="badge text-bg-danger rounded-pill px-3 py-1"><i class="fa-solid fa-ban me-1"></i>ยกเลิกแล้ว</span>`;
+
+        // การจัดการ
+        var cell8 = row.insertCell(8);
+        cell8.className = "text-center";
+        var docNumEsc = String(data[i][2] || '').replace(/'/g, "\\'");
+        var actionButtons = `
+          <div class="d-flex align-items-center justify-content-center gap-1">
+            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-2 py-1" onclick="docdetailfile('${data[i][0]}')" data-bs-toggle="tooltip" data-bs-title="เปิดดูเอกสาร">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+        `;
+
+        if (isSarabun) {
+          actionButtons += `
+            <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-2 py-1" onclick="openRestoreDocModal('${data[i][0]}', '${docNumEsc}')" data-bs-toggle="tooltip" data-bs-title="กู้คืนหนังสือ">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+            <button type="button" class="btn btn-danger btn-sm rounded-pill px-2 py-1" onclick="openDeleteDocPermanentModal('${data[i][0]}', '${docNumEsc}')" data-bs-toggle="tooltip" data-bs-title="ลบออกจากระบบถาวร (สารบรรณกลาง)">
+              <i class="fa-solid fa-trash-can"></i> ลบถาวร
+            </button>
+          `;
+        } else {
+          actionButtons += `
+            <span class="badge bg-secondary-subtle text-secondary rounded-pill font-size-11" data-bs-toggle="tooltip" data-bs-title="เฉพาะสารบรรณกลางที่สามารถลบถาวรได้">
+              รอสารบรรณกลางลบ
+            </span>
+          `;
+        }
+
+        actionButtons += `</div>`;
+        cell8.innerHTML = actionButtons;
+      }
+
+      // Filter events
+      const filterTableAnnonce = () => {
+        var searchText = $("#canceledDocAnnonceFilter2").val().toLowerCase();
+        var selectedYear = $("#canceledDocAnnonceFilter1").val();
+        var selectedType = $("#canceledDocAnnonceFilter3").val();
+
+        $("#tableCanceledDocAnnonce-body tr").each(function() {
+          var rowText = $(this).text().toLowerCase();
+          var matchSearch = !searchText || rowText.includes(searchText);
+          var matchYear = !selectedYear || $(this).text().includes(selectedYear);
+          var matchType = !selectedType || $(this).text().includes(selectedType);
+
+          if (matchSearch && matchYear && matchType) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
+      };
+
+      $("#canceledDocAnnonceFilter2").off("input").on("input", filterTableAnnonce);
+      $("#canceledDocAnnonceFilter1, #canceledDocAnnonceFilter3").off("change").on("change", filterTableAnnonce);
+
+      // Tooltips
+      const tooltipTriggerList = document.querySelectorAll('#tableCanceledDocAnnonce [data-bs-toggle="tooltip"]');
+      [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    })
+    .withFailureHandler((err) => {
+      tableBody.innerHTML = `
+        <tr>
+          <td class="text-center p-4 text-danger" colspan="9">
+            <i class="fa-solid fa-triangle-exclamation me-1"></i> เกิดข้อผิดพลาดในการโหลดข้อมูล: ${err}
+          </td>
+        </tr>
+      `;
+    })
+    .dataDocCanceled(key, userLevel);
+};
+
+// ==========================================
+// รายการหนังสือที่ถูกยกเลิก: เมนู รับหนังสือ (เมนู 3)
+// ==========================================
+const insertDataPickupDocCanceled = (key, userLevel) => {
+  var tableBody = document.getElementById("tableCanceledPickupDoc-body");
+  if (!tableBody) return;
+
+  if (!userLevel) {
+    userLevel = localStorage.getItem('level') || '5';
+  }
+
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center p-4 text-secondary" colspan="9">
+        <div class="spinner-border text-danger spinner-border-sm me-2" role="status"></div>กำลังโหลดรายการหนังสือรับที่ยกเลิก...
+      </td>
+    </tr>
+  `;
+
+  google.script.run
+    .withSuccessHandler((data) => {
+      if (!data) data = [];
+
+      const countBadge = document.getElementById("canceledPickupDocCountBadge");
+      if (countBadge) {
+        countBadge.textContent = `${data.length} รายการ`;
+      }
+
+      if (data.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td class="text-center p-4 text-muted" colspan="9">
+              <i class="fa-duotone fa-file-circle-check text-success fs-4 d-block mb-2"></i>
+              ไม่มีรายการหนังสือรับที่ถูกยกเลิกในขณะนี้
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      data.sort((a, b) => String(b[0] || '').localeCompare(String(a[0] || '')));
+      tableBody.innerHTML = "";
+
+      const isSarabun = String(userLevel) === '1' || String(userLevel) === '3';
+
+      for (var i = 0; i < data.length; i++) {
+        var row = tableBody.insertRow(-1);
+
+        // #
+        var cell0 = row.insertCell(0);
+        cell0.className = "text-center fw-medium text-muted";
+        cell0.innerHTML = i + 1;
+
+        // เลขที่หนังสือ
+        var cell1 = row.insertCell(1);
+        var send = data[i][16] == 1 
+          ? '<span style="color:green;font-size:11px;"><i class="fa-solid fa-paper-plane me-1"></i>ส่งต้นฉบับ</span>' 
+          : '<span style="color:#888;font-size:11px;">ไม่ส่งต้นฉบับ</span>';
+        cell1.innerHTML = `
+          <div class="d-flex flex-column">
+            <span class="text-danger fw-bold text-nowrap" style="font-size:13.5px; cursor: pointer; text-decoration: line-through;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิดดู" onclick="docdetailfile('${data[i][0]}')">
+              ${data[i][2] || '-'}
+            </span>
+            <span class="badge bg-secondary-subtle text-secondary font-size-11 my-1 w-auto align-self-start">${data[i][1] || 'หนังสือรับ'}</span>
+            ${send}
+          </div>
+        `;
+
+        // ลงวันที่
+        var cell2 = row.insertCell(2);
+        cell2.className = "text-center";
+        var dateFormatted = data[i][9] ? formatThaiDateTime(new Date(data[i][9])) : '-';
+        cell2.innerHTML = `<span style="font-size:13px;" class="text-muted">${dateFormatted}</span>`;
+
+        // เรื่อง / หมายเหตุที่ยกเลิก
+        var cell3 = row.insertCell(3);
+        var cancelReason = String(data[i][34] || '').trim();
+        if (!cancelReason) {
+          var rawNote = String(data[i][14] || '');
+          var m = rawNote.match(/\[ยกเลิก:\s*([^\]]+)\]/);
+          if (m) cancelReason = m[1];
+        }
+        var cancelReasonHtml = cancelReason 
+          ? `<div class="mt-1"><span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-3 py-1 px-2 text-wrap text-start" style="font-size:11.5px; line-height: 1.4;"><i class="fa-solid fa-comment-slash me-1"></i><strong>เหตุผล:</strong> ${cancelReason}</span></div>` 
+          : '';
+
+        cell3.innerHTML = `
+          <div class="d-flex flex-column">
+            <span style="font-size:13.5px; font-weight: 500;" class="text-dark">${data[i][7] || '-'}</span>   
+            <div class="small text-muted mt-1">
+              <span class="text-primary">จาก:</span> ${data[i][4] || '-'} 
+              <span class="text-primary ms-2">ถึง:</span> ${data[i][6] || '-'}
+            </div>
+            ${cancelReasonHtml}
+          </div>
+        `;
+
+        // แนบไฟล์
+        var cell4 = row.insertCell(4);
+        cell4.className = "text-center";
+        var imgdoc = 'https://cdn.jsdelivr.net/gh/JacketJK/image/upload.png';
+        var fileHtml = '';
+        for (let j = 26; j <= 30; j++) {
+          if (data[i][j]) {
+            fileHtml += `<a href='${data[i][j]}' class='ms-1' target='_blank'><img src='${imgdoc}' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ไฟล์แนบ ${j - 25}' width='24'></a>`;
+          }
+        }
+        cell4.innerHTML = fileHtml || `<span class="text-muted small">-</span>`;
+
+        // แนบลิงก์
+        var cell5 = row.insertCell(5);
+        cell5.className = "text-center";
+        var imglink = 'https://cdn.jsdelivr.net/gh/JacketJK/image/link_url.png';
+        var linkHtml = '';
+        for (let j = 31; j <= 33; j++) {
+          if (data[i][j]) {
+            linkHtml += `<a href='${data[i][j]}' class='ms-1' target='_blank'><img src='${imglink}' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ลิงก์แนบ ${j - 30}' width='20'></a>`;
+          }
+        }
+        cell5.innerHTML = linkHtml || `<span class="text-muted small">-</span>`;
+
+        // หมวดหนังสือ
+        var cell6 = row.insertCell(6);
+        cell6.className = "text-center";
+        cell6.innerHTML = `<span class="badge bg-light text-secondary border rounded-pill">${data[i][12] || '-'}</span>`;
+
+        // สถานะ
+        var cell7 = row.insertCell(7);
+        cell7.className = "text-center";
+        cell7.innerHTML = `<span class="badge text-bg-danger rounded-pill px-3 py-1"><i class="fa-solid fa-ban me-1"></i>ยกเลิกแล้ว</span>`;
+
+        // การจัดการ
+        var cell8 = row.insertCell(8);
+        cell8.className = "text-center";
+        var docNumEsc = String(data[i][2] || '').replace(/'/g, "\\'");
+        var actionButtons = `
+          <div class="d-flex align-items-center justify-content-center gap-1">
+            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-2 py-1" onclick="docdetailfile('${data[i][0]}')" data-bs-toggle="tooltip" data-bs-title="เปิดดูเอกสาร">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+        `;
+
+        if (isSarabun) {
+          actionButtons += `
+            <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-2 py-1" onclick="openRestoreDocModal('${data[i][0]}', '${docNumEsc}')" data-bs-toggle="tooltip" data-bs-title="กู้คืนหนังสือ">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+            <button type="button" class="btn btn-danger btn-sm rounded-pill px-2 py-1" onclick="openDeleteDocPermanentModal('${data[i][0]}', '${docNumEsc}')" data-bs-toggle="tooltip" data-bs-title="ลบออกจากระบบถาวร (สารบรรณกลาง)">
+              <i class="fa-solid fa-trash-can"></i> ลบถาวร
+            </button>
+          `;
+        } else {
+          actionButtons += `
+            <span class="badge bg-secondary-subtle text-secondary rounded-pill font-size-11" data-bs-toggle="tooltip" data-bs-title="เฉพาะสารบรรณกลางที่สามารถลบถาวรได้">
+              รอสารบรรณกลางลบ
+            </span>
+          `;
+        }
+
+        actionButtons += `</div>`;
+        cell8.innerHTML = actionButtons;
+      }
+
+      // ผูกตัวกรองค้นหาข้อความ
+      $("#canceledPickupDocFilter2").off("input").on("input", function() {
+        var searchText = $(this).val().toLowerCase();
+        var rows = $("#tableCanceledPickupDoc-body").find("tr");
+        rows.each(function() {
+          var rowText = $(this).text().toLowerCase();
+          if (rowText.includes(searchText)) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
+      });
+
+      // ผูกตัวกรองปี
+      $("#canceledPickupDocFilter1").off("change").on("change", function() {
+        var year = $(this).val();
+        var rows = $("#tableCanceledPickupDoc-body").find("tr");
+        rows.each(function() {
+          if (!year) {
+            $(this).show();
+          } else {
+            var rowText = $(this).text();
+            if (rowText.includes(year)) {
+              $(this).show();
+            } else {
+              $(this).hide();
+            }
+          }
+        });
+      });
+
+      // เปิดใช้งาน Tooltip
+      const tooltipTriggerList = document.querySelectorAll('#tableCanceledPickupDoc [data-bs-toggle="tooltip"]');
+      [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    })
+    .withFailureHandler((err) => {
+      tableBody.innerHTML = `
+        <tr>
+          <td class="text-center p-4 text-danger" colspan="9">
+            <i class="fa-solid fa-triangle-exclamation me-1"></i> เกิดข้อผิดพลาดในการโหลดข้อมูล: ${err}
+          </td>
+        </tr>
+      `;
+    })
+    .dataDocPickupCanceled(key, userLevel);
+};
+
 const insertTableFileDetail = (data) => {
   const tableBody = document.getElementById("tableFlieDoc-body");
   tableBody.innerHTML = "";

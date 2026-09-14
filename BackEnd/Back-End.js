@@ -1428,6 +1428,58 @@ function dataDocCanceled(key, userLevel) {
   return data;
 }
 
+// ฟังก์ชันดึงรายการหนังสือรับที่ถูกยกเลิก (สำหรับเมนู รับหนังสือ)
+function dataDocPickupCanceled(key, userLevel) {
+  const ssDoc = SpreadsheetApp.openById(sheetDocuMent);
+  const sheetSend = ssDoc.getSheetByName("SendDocument");
+  const sheetDoc = ssDoc.getSheetByName("DataDocument");
+  if (!sheetSend || !sheetDoc) return [];
+
+  const lastRowDoc = sheetDoc.getLastRow();
+  if (lastRowDoc < 3) return [];
+
+  const dataDoc = sheetDoc.getDataRange().getValues().slice(2);
+  const dataSend = sheetSend.getDataRange().getValues().slice(1);
+
+  const isSarabun = String(userLevel) === '1' || String(userLevel) === '3';
+
+  // เก็บแผนที่ของเอกสารที่ถูกยกเลิก (status == -1) ใน DataDocument
+  const canceledDocMap = new Map();
+  for (let i = 0; i < dataDoc.length; i++) {
+    const isCanceled = String(dataDoc[i][22]) === "-1" || dataDoc[i][22] === -1;
+    if (isCanceled) {
+      canceledDocMap.set(dataDoc[i][0], dataDoc[i]);
+    }
+  }
+
+  const result = [];
+  const addedDocIds = new Set();
+
+  for (let j = 0; j < dataSend.length; j++) {
+    const sendRow = dataSend[j];
+    const docId = sendRow[1];
+    const receiverKey = sendRow[2];
+
+    if (isSarabun || receiverKey === key) {
+      if (canceledDocMap.has(docId) && !addedDocIds.has(docId)) {
+        addedDocIds.add(docId);
+        result.push(canceledDocMap.get(docId));
+      }
+    }
+  }
+
+  if (isSarabun) {
+    canceledDocMap.forEach((docRow, docId) => {
+      if (!addedDocIds.has(docId)) {
+        addedDocIds.add(docId);
+        result.push(docRow);
+      }
+    });
+  }
+
+  return result;
+}
+
 // ฟังก์ชันลบหนังสือออกจากระบบอย่างถาวร (เฉพาะสารบรรณกลางระดับ 3 หรือแอดมินระดับ 1 เท่านั้น)
 function deleteCanceledDocumentPermanent(key, userLevel) {
   if (String(userLevel) !== '1' && String(userLevel) !== '3') {

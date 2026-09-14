@@ -626,6 +626,15 @@ const appNavigationMenus = [
     submenuId: 8,
     action: () => changePageBookSend(2)
   },
+  {
+    title: 'หนังสือที่ถูกยกเลิก (หนังสือ/คำสั่ง/ประกาศ)',
+    category: 'หนังสือ/คำสั่ง/ประกาศ',
+    icon: 'fa-regular fa-ban text-danger',
+    keywords: ['หนังสือที่ถูกยกเลิก', 'เอกสารยกเลิก', 'ถังขยะ', 'ลบหนังสือ', 'สารบรรณกลาง', 'คำสั่งยกเลิก', 'ประกาศยกเลิก', 'canceled', 'delete', 'กู้คืน', 'ลบถาวร'],
+    sidebarId: 'sidebarManuDocAnnonceCanceled',
+    submenuId: 8,
+    action: () => changePageBookSend(9)
+  },
   // รับหนังสือ
   {
     title: 'รับหนังสือ (ภายใน)',
@@ -653,6 +662,15 @@ const appNavigationMenus = [
     sidebarId: 'sidebarManu15',
     submenuId: 2,
     action: () => changePageGetDoc(3)
+  },
+  {
+    title: 'หนังสือที่ถูกยกเลิก (รับหนังสือ)',
+    category: 'รับหนังสือ',
+    icon: 'fa-regular fa-ban text-danger',
+    keywords: ['หนังสือที่ถูกยกเลิก', 'เอกสารยกเลิก', 'ถังขยะ', 'ลบหนังสือ', 'สารบรรณกลาง', 'รับหนังสือยกเลิก', 'canceled', 'delete', 'กู้คืน', 'ลบถาวร'],
+    sidebarId: 'sidebarManuPickupDocCanceled',
+    submenuId: 2,
+    action: () => changePageGetDoc(9)
   },
   // ลงรับหนังสือ (หนังสือส่งภายนอก)
   {
@@ -1800,6 +1818,7 @@ const changePageBookSend = (data, skipHash) => {
   const textMap = {
     1: 'บันทึกหนังสือส่ง',
     2: 'รายงานหนังสือส่ง',
+    9: 'หนังสือที่ถูกยกเลิก',
   };
 
   resetPageBreadcrumbs(3, data);
@@ -1807,14 +1826,19 @@ const changePageBookSend = (data, skipHash) => {
   $("#loader").show();
 
   setTimeout(() => {
-    for (let i = 1; i <= 8; i++) {
+    for (let i = 1; i <= 9; i++) {
       $("#menupage3_" + i).toggle(data == i);
     }
     const publicKey = localStorage.getItem('publicKey');
+    const userLevel = localStorage.getItem('level') || '5';
     if (data == 2) {
       insertDataDocument(publicKey);
+    } else if (data == 9) {
+      if (typeof insertDataBookSendCanceled === 'function') {
+        insertDataBookSendCanceled(publicKey, userLevel);
+      }
     }
-    $("#docAnnoncebreadcrumb1").text(textMap[data])
+    $("#docAnnoncebreadcrumb1").text(textMap[data] || 'หนังสือส่ง/คำสั่ง/ประกาศ');
   }, 500);
 }   
 const changePageGetDoc = (data, skipHash) => {
@@ -1825,17 +1849,20 @@ const changePageGetDoc = (data, skipHash) => {
     1: 'รับหนังสือ (ภายใน)',
     2: 'รับหนังสือ (ภายนอก)',
     3: 'รายการติดตามหนังสือรับ',
+    9: 'หนังสือที่ถูกยกเลิก',
   };
   const textMap = {
     1: 'รับหนังสือ (ภายใน)',
     2: 'รับหนังสือ (ภายนอก)',
     3: 'รายการติดตามหนังสือรับ',
     4: (lastActiveDocPage && lastActiveDocPage.page === 4 && textMapPickup[lastActiveDocPage.sub]) || 'รายละเอียด',
+    9: 'หนังสือที่ถูกยกเลิก',
   };
   const insertData = {
     1: insertDataGetDocIn,
     2: insertDataGetDocOut,
     3: insertDataGetDocFollow,
+    9: insertDataPickupDocCanceled,
   };  
 
   if (data !== 4) {
@@ -1847,14 +1874,15 @@ const changePageGetDoc = (data, skipHash) => {
   $("#loader").show();
 
   setTimeout(() => {
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 9; i++) {
       $("#menupage4_" + i).toggle(data == i);
     }
     const publicKey = localStorage.getItem('publicKey');
+    const userLevel = localStorage.getItem('level') || '5';
     if (insertData[data]) {
-      insertData[data](publicKey);
+      insertData[data](publicKey, userLevel);
     }
-    $("#pickupbreadcrumb1").text(textMap[data]);
+    $("#pickupbreadcrumb1").text(textMap[data] || 'รับหนังสือ');
   }, 500);
 }
 const changePageDocOut = (data, skipHash) => {
@@ -4760,7 +4788,11 @@ $('#confirmCancelDocBtn').on('click', function () {
       if (typeof insertDataDocument === 'function') insertDataDocument(publicKey);
       if (typeof insertDataOutPedding === 'function') insertDataOutPedding(publicKey);
       if (typeof insertDataOutInside === 'function') insertDataOutInside(publicKey);
-      if (typeof insertDataCanceled === 'function') insertDataCanceled(publicKey, localStorage.getItem('level'));
+      const userLevelCurrent = localStorage.getItem('level') || '5';
+      if (typeof insertDataCanceled === 'function') insertDataCanceled(publicKey, userLevelCurrent);
+      if (typeof insertDataBookSendCanceled === 'function') insertDataBookSendCanceled(publicKey, userLevelCurrent);
+      if (typeof insertDataPickupDocCanceled === 'function') insertDataPickupDocCanceled(publicKey, userLevelCurrent);
+      if (typeof insertDataOutCanceled === 'function') insertDataOutCanceled(publicKey, userLevelCurrent);
     })
     .withFailureHandler(function (err) {
       $('#loader').hide();
@@ -4794,6 +4826,12 @@ $('#confirmDeleteDocPermanentBtn').on('click', function () {
         const publicKey = localStorage.getItem('publicKey');
         if (typeof insertDataCanceled === 'function') {
           insertDataCanceled(publicKey, userLevel);
+        }
+        if (typeof insertDataBookSendCanceled === 'function') {
+          insertDataBookSendCanceled(publicKey, userLevel);
+        }
+        if (typeof insertDataPickupDocCanceled === 'function') {
+          insertDataPickupDocCanceled(publicKey, userLevel);
         }
         if (typeof insertDataOutCanceled === 'function') {
           insertDataOutCanceled(publicKey, userLevel);
@@ -4831,8 +4869,10 @@ $('#confirmRestoreDocBtn').on('click', function () {
       if (res && res.success) {
         toastAlert(1, `♻️ กู้คืนหนังสือ ${res.docNumber || ''} สู่สถานะรอดำเนินการเรียบร้อยแล้ว`);
         const publicKey = localStorage.getItem('publicKey');
-        const userLevel = localStorage.getItem('level');
+        const userLevel = localStorage.getItem('level') || '5';
         if (typeof insertDataCanceled === 'function') insertDataCanceled(publicKey, userLevel);
+        if (typeof insertDataBookSendCanceled === 'function') insertDataBookSendCanceled(publicKey, userLevel);
+        if (typeof insertDataPickupDocCanceled === 'function') insertDataPickupDocCanceled(publicKey, userLevel);
         if (typeof insertDataOutCanceled === 'function') insertDataOutCanceled(publicKey, userLevel);
         if (typeof insertDataPedding === 'function') insertDataPedding(publicKey);
         if (typeof insertDataInside === 'function') insertDataInside(publicKey);
