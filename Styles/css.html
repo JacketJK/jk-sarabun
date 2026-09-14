@@ -3442,17 +3442,17 @@ body.dark .table-equip tbody tr:hover td {
   height: 36px;
   padding: 6px 36px 6px 38px;
   border-radius: 20px;
-  background: var(--grey);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.12);
   font-size: 13px;
   font-family: var(--prompt);
   color: var(--dark);
   transition: all 0.25s ease;
 }
 .home-search-wrapper .home-search-control:focus {
-  background: var(--darkback);
+  background: transparent;
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(93, 135, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(93, 135, 255, 0.12);
   outline: none;
 }
 .home-search-wrapper .home-search-control:focus ~ .search-icon {
@@ -3490,8 +3490,8 @@ body.dark .table-equip tbody tr:hover td {
   height: 36px;
   border-radius: 20px;
   padding: 5px 28px 5px 14px;
-  background-color: var(--grey);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background-color: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.12);
   font-size: 12.5px;
   font-family: var(--prompt);
   color: var(--dark);
@@ -3505,65 +3505,73 @@ body.dark .table-equip tbody tr:hover td {
   background-size: 9px 9px;
 }
 .home-filter-select:focus {
-  background-color: var(--darkback);
+  background-color: transparent;
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(93, 135, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(93, 135, 255, 0.12);
   outline: none;
 }
 
-/* Pagination & Footer */
+/* Pagination & Footer - เรียบๆ ไม่มีพื้นหลัง */
 .home-table-footer {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  justify-content: center;
+  gap: 6px;
+  margin-top: 18px;
+  padding-top: 8px;
+  border-top: none;
 }
 .home-table-footer .footer-info {
-  font-size: 12.5px;
-  color: #64748b;
+  font-size: 12px;
+  color: #94a3b8;
   font-weight: 400;
 }
 .home-pagination {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 4px;
+  gap: 12px;
+}
+.home-pagination .page-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .home-pagination .page-item .page-link {
-  min-width: 32px;
-  height: 32px;
-  border-radius: 16px !important;
-  border: none;
-  background: transparent;
-  color: var(--dark);
-  font-size: 12.5px;
+  min-width: 36px;
+  height: 36px;
+  border-radius: 50% !important;
+  border: none !important;
+  background: transparent !important;
+  color: var(--dark) !important;
+  font-size: 15px;
   font-weight: 500;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 6px;
+  padding: 0;
   cursor: pointer;
   text-decoration: none;
   transition: all 0.2s ease;
+  box-shadow: none !important;
 }
 .home-pagination .page-item:not(.active):not(.disabled) .page-link:hover {
-  background: rgba(93, 135, 255, 0.12);
-  color: var(--blue);
+  color: var(--blue) !important;
 }
 .home-pagination .page-item.active .page-link {
-  background: var(--blue);
+  background: var(--blue) !important;
   color: #fff !important;
-  box-shadow: 0 2px 6px rgba(93, 135, 255, 0.35);
+  border-radius: 50% !important;
+  box-shadow: 0 4px 12px rgba(93, 135, 255, 0.45) !important;
+  font-weight: 600;
 }
 .home-pagination .page-item.disabled .page-link {
-  opacity: 0.35;
-  color: #94a3b8;
+  opacity: 0.3;
+  color: #94a3b8 !important;
   cursor: not-allowed;
 }
 
@@ -3578,19 +3586,16 @@ body.dark .home-table-header .btn-refresh:hover {
 }
 body.dark .home-search-wrapper .home-search-control,
 body.dark .home-filter-select {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.08);
+  background-color: transparent;
+  border-color: rgba(255, 255, 255, 0.15);
   color: var(--dark);
 }
 body.dark .home-search-wrapper .home-search-control:focus,
 body.dark .home-filter-select:focus {
-  background-color: rgba(255, 255, 255, 0.09);
+  background-color: transparent;
   border-color: var(--blue);
 }
-body.dark .home-table-footer {
-  border-top-color: rgba(255, 255, 255, 0.06);
-}
 body.dark .home-table-footer .footer-info {
-  color: #94a3b8;
+  color: #64748b;
 }
 </style>
