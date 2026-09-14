@@ -217,10 +217,12 @@ function renderCategorySwiper(categories) {
 
   categories.forEach(cat => {
     const slideHtml = `
-      <div class="swiper-slide p-3 rounded-4 shadow-sm text-center" style="background: #ffffff; min-width: 150px; border: 1px solid rgba(0,0,0,0.06); cursor: pointer;" onclick="filterEquipByCategory('${cat.name}')">
-        <i class="${cat.icon || 'fa-duotone fa-boxes-stacked'} fs-2 mb-2" style="color: ${cat.color || '#4361ee'}"></i>
+      <div class="swiper-slide equip-swiper-slide p-3 text-center" style="min-width: 155px; cursor: pointer;" onclick="filterEquipByCategory('${cat.name}')">
+        <div class="d-flex justify-content-center align-items-center mb-2" style="width: 48px; height: 48px; margin: 0 auto; border-radius: 14px; background: rgba(93, 135, 255, 0.1);">
+          <i class="${cat.icon || 'fa-duotone fa-boxes-stacked'} fs-3" style="color: ${cat.color || '#4361ee'}"></i>
+        </div>
         <h6 class="fw-bold mb-1 fs-6 text-truncate" title="${cat.name}">${cat.name}</h6>
-        <span class="badge rounded-pill text-bg-primary fs-7">${cat.count} รายการ</span>
+        <span class="badge rounded-pill text-bg-primary font-size-12 px-3 py-1">${cat.count} รายการ</span>
       </div>
     `;
     container.append(slideHtml);
@@ -543,6 +545,17 @@ function loadEquipmentTable() {
 }
 
 function renderEquipmentTable(list) {
+  // Update dashboard 3 counters
+  const total = (list && list.length) || 0;
+  const ready = list ? list.filter(e => e.status === 'พร้อมใช้งาน').length : 0;
+  const inUse = list ? list.filter(e => e.status === 'กำลังใช้งาน').length : 0;
+  const brokenOrDisposed = list ? list.filter(e => ['ชำรุด', 'รอซ่อม', 'ตัดจำหน่าย', 'รอจำหน่าย'].includes(e.status)).length : 0;
+
+  $('#countingEquipPage3_1').text(total.toLocaleString());
+  $('#countingEquipPage3_2').text(ready.toLocaleString());
+  $('#countingEquipPage3_3').text(inUse.toLocaleString());
+  $('#countingEquipPage3_4').text(brokenOrDisposed.toLocaleString());
+
   const tbody = $('#equipmentTable-body');
   tbody.empty();
 
@@ -824,6 +837,17 @@ function loadMaterialTable() {
 }
 
 function renderMaterialTable(list) {
+  // Update dashboard 4 counters
+  const total = (list && list.length) || 0;
+  const inStock = list ? list.filter(m => Number(m.currentQty || 0) > Number(m.minStock || 0)).length : 0;
+  const lowStock = list ? list.filter(m => Number(m.currentQty || 0) <= Number(m.minStock || 0)).length : 0;
+  const totalVal = list ? list.reduce((sum, m) => sum + (Number(m.currentQty || 0) * Number(m.price || 0)), 0) : 0;
+
+  $('#countingMatPage4_1').text(total.toLocaleString());
+  $('#countingMatPage4_2').text(inStock.toLocaleString());
+  $('#countingMatPage4_3').text(lowStock.toLocaleString());
+  $('#countingMatPage4_4').text(totalVal.toLocaleString('th-TH', { minimumFractionDigits: 2 }));
+
   const tbody = $('#parcelmentTable-body');
   tbody.empty();
 
@@ -1092,9 +1116,10 @@ function renderBorrowStatsAndTable(list) {
     }
   });
 
-  $('#borrowCountActive').text(activeCount);
-  $('#borrowCountReturned').text(returnedCount);
-  $('#borrowCountOverdue').text(overdueCount);
+  $('#countingBorrowPage5_1').text((list && list.length || 0).toLocaleString());
+  $('#borrowCountActive').text(activeCount.toLocaleString());
+  $('#borrowCountReturned').text(returnedCount.toLocaleString());
+  $('#borrowCountOverdue').text(overdueCount.toLocaleString());
 
   const tbody = $('#borrowTable-body');
   tbody.empty();

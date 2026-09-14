@@ -3168,9 +3168,84 @@ img.inverted-color.active {
     display: none;
   }
   
-  ::-webkit-scrollbar {
-    display: none;
-  }
+/* ============================================================ */
+/* Equipment & Materials Module Styling                         */
+/* ============================================================ */
+.equip-filter-box {
+  background: var(--darkback);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 18px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
-
+body.dark .equip-filter-box {
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+.equip-section-card {
+  background: var(--darkback);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+body.dark .equip-section-card {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.equip-section-badge {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.equip-swiper-slide {
+  background: var(--darkback) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 18px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.equip-swiper-slide:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+  border-color: var(--blue);
+}
+body.dark .equip-swiper-slide {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.table-equip {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+.table-equip thead th {
+  background: var(--darkback);
+  color: var(--blue);
+  font-weight: 500;
+  font-size: 13px;
+  padding: 12px 10px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.06);
+  white-space: nowrap;
+}
+body.dark .table-equip thead th {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  color: #9daff9;
+}
+.table-equip tbody td {
+  padding: 12px 10px;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+body.dark .table-equip tbody td {
+  border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+.table-equip tbody tr:hover td {
+  background: rgba(93, 135, 255, 0.04);
+}
+body.dark .table-equip tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
 </style>
