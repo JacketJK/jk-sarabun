@@ -719,11 +719,14 @@ const getMeetingRoomAll = () => {
   return [data];
 }
 const getMeetingRoom = () => {
-  const sheet = SpreadsheetApp.openById(sheetMeet)
-  const values = sheet.getSheetByName("MeetingRoom");
-  const data = values.getDataRange().getValues().slice(1);
+  const ss = SpreadsheetApp.openById(sheetMeet);
+  const roomSheet = ss.getSheetByName("MeetingRoom");
+  const meetSheet = ss.getSheetByName("DataMeeting");
 
-  return [data];
+  const rooms = roomSheet ? roomSheet.getDataRange().getValues().slice(1) : [];
+  const bookings = meetSheet ? meetSheet.getDataRange().getValues().slice(1) : [];
+
+  return [rooms, bookings];
 }
 
 const addMeetingSubmit = (obj) => {

@@ -78,132 +78,246 @@ const openNotify = (key) => {
 <!-------------------- Meeting -------------------------->
 <script>
 let dataAllMeetRoom;  
-const displayMeetingRoom = () => {
+let meetingRoomReqId = 0;
+let currentMeetingFilterDate = '';
+
+// แปลงรูปแบบวันที่ให้อยู่ในรูป YYYY-MM-DD เพื่อเปรียบเทียบความถูกต้อง
+const normalizeDateToYMD = (val) => {
+  if (!val) return '';
+  if (val instanceof Date && !isNaN(val.getTime())) {
+    const y = val.getFullYear();
+    const m = String(val.getMonth() + 1).padStart(2, '0');
+    const d = String(val.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+  let s = String(val).trim().replace(/^'/, '');
+  const matchYMD = s.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+  if (matchYMD) {
+    let y = parseInt(matchYMD[1]);
+    if (y > 2400) y -= 543;
+    const m = String(matchYMD[2]).padStart(2, '0');
+    const d = String(matchYMD[3]).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+  const matchDMY = s.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
+  if (matchDMY) {
+    let y = parseInt(matchDMY[3]);
+    if (y > 2400) y -= 543;
+    const m = String(matchDMY[2]).padStart(2, '0');
+    const d = String(matchDMY[1]).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+  const dObj = new Date(s);
+  if (!isNaN(dObj.getTime())) {
+    let y = dObj.getFullYear();
+    if (y > 2400) y -= 543;
+    const m = String(dObj.getMonth() + 1).padStart(2, '0');
+    const d = String(dObj.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+  return s;
+};
+
+const displayMeetingRoom = (targetDate) => {
   const dataContainer = document.getElementById('meetingRoomDiv');
-  dataContainer.innerHTML = '';
+  if (!dataContainer) return;
 
-  google.script.run.withSuccessHandler((data) => {  
-    if (data[0].length === 0) {
-      var noDataText = document.createElement("p");
-      noDataText.textContent = "ไม่มีห้องประชุม !";
-      noDataText.className = "fw-medium text-danger fs-6 text-center p-5";
-      dataContainer.appendChild(noDataText);
-      return;
+  const dateInput = $('#filterMeetdate');
+  if (!targetDate) {
+    targetDate = dateInput.val();
+  }
+
+  // ถ้ายังไม่ได้เลือกวันที่ ให้ใช้วันที่วันนี้ (Today) เป็นค่าเริ่มต้น
+  if (!targetDate) {
+    const today = new Date();
+    const y = today.getFullYear();
+    const m = String(today.getMonth() + 1).padStart(2, '0');
+    const d = String(today.getDate()).padStart(2, '0');
+    targetDate = `${y}-${m}-${d}`;
+  }
+
+  currentMeetingFilterDate = targetDate;
+
+  // ผูก Flatpickr ให้กับ input วันที่ ถ้ายังไม่ได้ผูก
+  if (dateInput.length) {
+    if (!dateInput.data('has-flatpickr')) {
+      dateInput.data('has-flatpickr', true);
+      dateInput.flatpickr({
+        locale: "th",
+        disableMobile: true,
+        defaultDate: targetDate,
+        onChange: function(selectedDates, dateStr) {
+          displayMeetingRoom(dateStr);
+        }
+      });
+    } else if (dateInput.val() !== targetDate) {
+      dateInput.val(targetDate);
     }
+  }
 
-    data[0].forEach((item, index) => {
-      const contain = document.createElement('div');
-      contain.className = "d-flex position-relative";
-      contain.innerHTML = `
-        <div style="width: 250px; height: 250px;" class="z-index-5 rounded-circle border border-5 border-light bg-light shadow">
-          <img src="${item[4]}" class="w-100 h-100 object-fit-cover rounded-circle">
-        </div>
-        <div class="position-absolute z-index-0 ms-5 mt-3 d-flex flex-column" style="width: 97%;">
-          <div class="p-2 ps-4 rounded-pill bg-opacity-25 ms-5 border border-5 border-light shadow" style="background-color: var(--blue);color: var(--light);">
-            <h5 class="text-center">${item[1]}</h5>
-            <div class="row ms-5 ps-3">
-              <div class="col-lg-2"></div><span class="col-lg-10">สถานที่ตั้ง : ${item[2]}</span>
-              <div class="col-lg-2"></div><span class="col-lg-10">ความจุ : ${item[3]} ท่าน</span>
+  $('.loadContianer').removeClass('d-none');
+  const currentReqId = ++meetingRoomReqId;
+
+  google.script.run
+    .withSuccessHandler((data) => {  
+      // ตรวจสอบว่า request นี้เป็นคำขอล่าสุดหรือไม่ เพื่อป้องกัน race condition
+      if (currentReqId !== meetingRoomReqId) return;
+
+      $('.loadContianer').addClass('d-none');
+      dataContainer.innerHTML = '';
+
+      const rawRooms = (data && data[0]) || [];
+      const allBookings = (data && data[1]) || [];
+
+      if (rawRooms.length === 0) {
+        var noDataText = document.createElement("p");
+        noDataText.textContent = "ไม่มีห้องประชุม !";
+        noDataText.className = "fw-medium text-danger fs-6 text-center p-5";
+        dataContainer.appendChild(noDataText);
+        return;
+      }
+
+      // ป้องกันการโหลดซ้ำสองรอบ (Deduplicate ห้องประชุม)
+      const seenRooms = new Set();
+      const uniqueRooms = [];
+      rawRooms.forEach((item) => {
+        const roomKey = String(item[0] || item[1] || '').trim();
+        if (roomKey && !seenRooms.has(roomKey)) {
+          seenRooms.add(roomKey);
+          uniqueRooms.push(item);
+        }
+      });
+
+      const selectedYMD = normalizeDateToYMD(currentMeetingFilterDate);
+
+      uniqueRooms.forEach((item, index) => {
+        const roomName = String(item[1] || '').trim();
+
+        // กรองการจองของห้องนี้ในวันที่เลือก
+        const roomBookings = allBookings.filter((b) => {
+          const bRoom = String(b[1] || '').trim();
+          if (bRoom !== roomName && bRoom !== String(item[0] || '').trim()) return false;
+          // สถานะ 2 = ไม่อนุญาต ให้ข้าม
+          if (String(b[10]) === '2') return false;
+          const bDate = normalizeDateToYMD(b[2]);
+          return bDate === selectedYMD;
+        });
+
+        // สร้าง 12 ช่วงเวลา (07:00 ถึง 19:00 น.)
+        const timeLabels = [
+          '07:00', '08:00', '09:00', '10:00', '11:00', '12:00',
+          '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'
+        ];
+
+        let progressBarsHtml = '';
+        for (let slot = 1; slot <= 12; slot++) {
+          const slotStart = timeLabels[slot - 1];
+          const slotEnd = timeLabels[slot];
+
+          // ตรวจสอบว่า slot นี้ถูกจองไปแล้วหรือไม่
+          const matchedBooking = roomBookings.find((b) => {
+            const startSlot = parseInt(b[3]);
+            const duration = parseInt(b[4]) || 1;
+            const endSlot = startSlot + duration - 1;
+            return slot >= startSlot && slot <= endSlot;
+          });
+
+          if (matchedBooking) {
+            const bookerName = matchedBooking[8] || 'มีผู้จอง';
+            const bStartSlot = parseInt(matchedBooking[3]);
+            const bDuration = parseInt(matchedBooking[4]) || 1;
+            const bStartTime = timeLabels[bStartSlot - 1] || slotStart;
+            const bEndTime = timeLabels[bStartSlot + bDuration - 1] || slotEnd;
+            const statusText = String(matchedBooking[10]) === '1' ? 'อนุมัติแล้ว' : 'ขอจองไว้แล้ว';
+
+            progressBarsHtml += `
+              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
+                <div class="progress-bar progress-bar-striped bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="${statusText}: ${bStartTime} - ${bEndTime} น. (${bookerName})"></div>
+              </div>
+            `;
+          } else {
+            progressBarsHtml += `
+              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
+                <div class="progress-bar bg-green" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ว่าง (${slotStart} - ${slotEnd} น.)"></div>
+              </div>
+            `;
+          }
+        }
+
+        const contain = document.createElement('div');
+        contain.className = "d-flex position-relative mb-2";
+        contain.innerHTML = `
+          <div style="width: 250px; height: 250px;" class="z-index-5 rounded-circle border border-5 border-light bg-light shadow flex-shrink-0">
+            <img src="${item[4] || 'https://placehold.co/250x250'}" class="w-100 h-100 object-fit-cover rounded-circle">
+          </div>
+          <div class="position-absolute z-index-0 ms-5 mt-3 d-flex flex-column" style="width: 97%;">
+            <div class="p-2 ps-4 rounded-pill bg-opacity-25 ms-5 border border-5 border-light shadow" style="background-color: var(--blue);color: var(--light);">
+              <h5 class="text-center">${item[1]}</h5>
+              <div class="row ms-5 ps-3">
+                <div class="col-lg-2"></div><span class="col-lg-10">สถานที่ตั้ง : ${item[2] || '-'}</span>
+                <div class="col-lg-2"></div><span class="col-lg-10">ความจุ : ${item[3] || '-'} ท่าน</span>
+              </div>
+            </div>
+            <div class="progress-contain">
+              <div class="progress-stacked" style="height: 50px;background-color: var(--box2)">
+                ${progressBarsHtml}
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center progress-time">
+              <span class="time-span">07:00</span>
+              <span class="time-span">08:00</span>
+              <span class="time-span">09:00</span>
+              <span class="time-span">10:00</span>
+              <span class="time-span">11:00</span>
+              <span class="time-span">12:00</span>
+              <span class="time-span">13:00</span>
+              <span class="time-span">14:00</span>
+              <span class="time-span">15:00</span>
+              <span class="time-span">16:00</span>
+              <span class="time-span">17:00</span>
+              <span class="time-span">18:00</span>
+              <span class="time-span">19:00</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-end progress-tick">
+              <span class="tick-time"></span><span class="tick-time"></span><span class="tick-time"></span>
+              <span class="tick-time"></span><span class="tick-time"></span><span class="tick-time"></span>
+              <span class="tick-time"></span><span class="tick-time"></span><span class="tick-time"></span>
+              <span class="tick-time"></span><span class="tick-time"></span><span class="tick-time"></span>
+              <span class="tick-time"></span><span class="tick-time"></span><span class="tick-time"></span>
+              <span class="tick-time"></span><span class="tick-time"></span><span class="tick-time"></span>
+              <span class="tick-time"></span><span class="tick-time"></span><span class="tick-time"></span>
+              <span class="tick-time"></span><span class="tick-time"></span><span class="tick-time"></span>
+              <span class="tick-time"></span>
             </div>
           </div>
-          <div class="progress-contain">
-            <div class="progress-stacked" style="height: 50px;background-color: var(--box2)">
-              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
-                <div class="progress-bar bg-green"></div>
-              </div>
-              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
-                <div class="progress-bar progress-bar-striped bg-danger"></div>
-              </div>
-              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
-                <div class="progress-bar bg-green"></div>
-              </div>
-              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
-                <div class="progress-bar bg-green"></div>
-              </div>
-              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
-                <div class="progress-bar bg-green"></div>
-              </div>
-              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
-                <div class="progress-bar bg-green"></div>
-              </div>
-              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
-                <div class="progress-bar bg-green"></div>
-              </div>
-              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
-                <div class="progress-bar bg-green"></div>
-              </div>
-              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
-                <div class="progress-bar bg-green"></div>
-              </div>
-              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
-                <div class="progress-bar bg-green"></div>
-              </div>
-              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
-                <div class="progress-bar bg-green"></div>
-              </div>
-              <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 8.3333%;height: 50px;">
-                <div class="progress-bar bg-green"></div>
-              </div>
-            </div>
+          <div class="d-flex justify-content-start align-items-end mt-5 pt-5">
+            <button class="btn btn-yellow btn-sm rounded-4 ms-2" style="width: 150px;" onclick="setValueOnMeet('${item[1]}', '${item[4]}')">ขอจองห้องประชุมนี้</button>
+            <button class="btn btn-violet btn-sm rounded-4 ms-3" style="width: 150px;" onclick="changePageMeeting(3)">รายละเอียด</button>
           </div>
-          <div class="d-flex justify-content-between align-items-center progress-time">
-            <span class="time-span">07:00</span>
-            <span class="time-span">08:00</span>
-            <span class="time-span">09:00</span>
-            <span class="time-span">10:00</span>
-            <span class="time-span">11:00</span>
-            <span class="time-span">12:00</span>
-            <span class="time-span">13:00</span>
-            <span class="time-span">14:00</span>
-            <span class="time-span">15:00</span>
-            <span class="time-span">16:00</span>
-            <span class="time-span">17:00</span>
-            <span class="time-span">18:00</span>
-            <span class="time-span">19:00</span>
-          </div>
-          <div class="d-flex justify-content-between align-items-end progress-tick">
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-            <span class="tick-time"></span>
-          </div>
-        </div>
-        <div class="d-flex justify-content-start align-items-end mt-5 pt-5">
-          <button class="btn btn-yellow btn-sm rounded-4 ms-2" style="width: 150px;" onclick="setValueOnMeet('${item[1]}', '${item[4]}')">ขอจองห้องประชุมนี้</button>
-          <button class="btn btn-violet btn-sm rounded-4 ms-3" style="width: 150px;">รายละเอียด</button>
-        </div>
+        `;
+
+        var hr = document.createElement('hr');
+        hr.className = "opacity-10 my-3";
+
+        dataContainer.appendChild(contain);  
+        dataContainer.appendChild(hr); 
+      });
+
+      // เปิดใช้งาน Tooltips เพื่อแสดงรายละเอียดผู้จอง/เวลาที่จอง
+      const tooltipTriggerList = dataContainer.querySelectorAll('[data-bs-toggle="tooltip"]');
+      [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    })
+    .withFailureHandler((err) => {
+      if (currentReqId !== meetingRoomReqId) return;
+      $('.loadContianer').addClass('d-none');
+      dataContainer.innerHTML = `
+        <p class="text-danger text-center p-4">
+          <i class="fa-solid fa-triangle-exclamation me-1"></i> เกิดข้อผิดพลาดในการโหลดข้อมูลห้องประชุม: ${err}
+        </p>
       `;
-
-      var hr = document.createElement('hr');
-      hr.className = "opacity-10 my-3";
-
-      dataContainer.appendChild(contain);  
-      dataContainer.appendChild(hr); 
-      $('.loadContianer').addClass('d-none'); 
-    });    
-  }).getMeetingRoom();
-}
+    })
+    .getMeetingRoom();
+};
 const setValueOnMeet = (...data) => {
   changePageMeeting(2);
   $("#addMeetingData1").val(data[0]);
