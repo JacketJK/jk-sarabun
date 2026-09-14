@@ -1405,6 +1405,105 @@ function cancelDocument(obj) {
   return { success: true, key: targetKey, docNumber: docNumber };
 }
 
+// ฟังก์ชันดึงรายการหนังสือที่ถูกยกเลิก (สถานะ -1)
+function dataDocCanceled(key, userLevel) {
+  const sheet = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument"); 
+  if (!sheet) return [];
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  var data = sheet.getDataRange().getValues().slice(2);
+
+  data = data.filter((row) => {
+    const isCanceled = String(row[22]) === "-1" || row[22] === -1;
+    if (!isCanceled) return false;
+
+    // ถ้าเป็นสารบรรณกลาง (ระดับ 3) หรือ ผู้ดูแลระบบ (ระดับ 1) ให้เห็นรายการหนังสือที่ยกเลิกทั้งหมด
+    if (String(userLevel) === '1' || String(userLevel) === '3') {
+      return true;
+    }
+    // ผู้ใช้งานทั่วไปให้เห็นเฉพาะที่ตนเองเป็นเจ้าของ
+    return row[21] === key;
+  });
+
+  return data;
+}
+
+// ฟังก์ชันลบหนังสือออกจากระบบอย่างถาวร (เฉพาะสารบรรณกลางระดับ 3 หรือแอดมินระดับ 1 เท่านั้น)
+function deleteCanceledDocumentPermanent(key, userLevel) {
+  if (String(userLevel) !== '1' && String(userLevel) !== '3') {
+    return { success: false, message: 'ไม่มีสิทธิ์ในการลบหนังสือถาวร (เฉพาะสารบรรณกลางหรือผู้ดูแลระบบเท่านั้น)' };
+  }
+
+  const sheetDoc = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument");
+  if (!sheetDoc) return { success: false, message: 'ไม่พบชีต DataDocument' };
+  
+  const lastRow = sheetDoc.getLastRow();
+  if (lastRow < 3) return { success: false, message: 'ไม่มีข้อมูลเอกสาร' };
+
+  const dataDoc = sheetDoc.getRange('A3:A' + lastRow).getValues();
+  let deletedDocNumber = "";
+  let found = false;
+
+  for (let i = dataDoc.length - 1; i >= 0; i--) {
+    if (dataDoc[i][0] === key) {
+      const rowIndex = i + 3;
+      deletedDocNumber = String(sheetDoc.getRange(rowIndex, 3).getValue() || "");
+      sheetDoc.deleteRow(rowIndex);
+      found = true;
+      break;
+    }
+  }
+
+  // ลบใน SendDocument ด้วยหากมี
+  try {
+    const sheetSend = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("SendDocument");
+    if (sheetSend) {
+      const dataSend = sheetSend.getDataRange().getValues();
+      for (let s = dataSend.length - 1; s >= 1; s--) {
+        if (dataSend[s][1] === key) {
+          sheetSend.deleteRow(s + 1);
+        }
+      }
+    }
+  } catch (e) {
+    Logger.log("Error deleting SendDocument: " + e);
+  }
+
+  return { success: found, docNumber: deletedDocNumber };
+}
+
+// ฟังก์ชันกู้คืนหนังสือที่ยกเลิกกลับมาเป็นสถานะปกติ (รอดำเนินการ)
+function restoreCanceledDocument(key) {
+  const sheetDoc = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument");
+  if (!sheetDoc) return { success: false, message: 'ไม่พบชีต DataDocument' };
+
+  const lastRow = sheetDoc.getLastRow();
+  if (lastRow < 3) return { success: false, message: 'ไม่มีข้อมูลเอกสาร' };
+
+  const dataDoc = sheetDoc.getRange('A3:A' + lastRow).getValues();
+  let docNumber = "";
+  let found = false;
+
+  for (let i = dataDoc.length - 1; i >= 0; i--) {
+    if (dataDoc[i][0] === key) {
+      const rowIndex = i + 3;
+      sheetDoc.getRange(rowIndex, 23).setValue("1"); // ปรับกลับเป็นรอดำเนินการ (1)
+      sheetDoc.getRange(rowIndex, 26).setValue(formatToDateThai(new Date()));
+      docNumber = String(sheetDoc.getRange(rowIndex, 3).getValue() || "");
+      
+      // เอาแท็ก [ยกเลิก: ...] ออกจากหมายเหตุ (คอลัมน์ 15)
+      let curNote = String(sheetDoc.getRange(rowIndex, 15).getValue() || "");
+      curNote = curNote.replace(/\[ยกเลิก:[^\]]*\]/g, "").replace(/\[ยกเลิกหนังสือ\]/g, "").trim();
+      sheetDoc.getRange(rowIndex, 15).setValue(curNote);
+
+      found = true;
+      break;
+    }
+  }
+
+  return { success: found, docNumber: docNumber };
+}
+
 ///////////////////////////////ProJect System////////////////////////////////
 
 const generateProjectNumber = () => {

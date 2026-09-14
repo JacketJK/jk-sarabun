@@ -2565,6 +2565,52 @@
   </div>
 </div>
 
+<!-- Modal Delete Doc Permanent (เฉพาะสารบรรณกลาง) -->
+<div class="modal fade" id="deleteDocPermanentModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+    <div class="modal-content rounded-5">
+      <div class="modal-body p-4">
+        <input type="hidden" id="deleteDocPermanentKey">
+        <div class="text-center">
+          <h3><i class="fa-duotone fa-trash-can-xmark fa-bounce fa-2xl text-danger"></i></h3>
+          <h5 class="mb-1 fw-bold text-danger mt-3">ลบหนังสือออกจากระบบอย่างถาวร</h5>
+          <p class="text-muted small mb-2">การดำเนินการนี้จะลบข้อมูลออกจากระบบสารบรรณและฐานข้อมูลทันที และไม่สามารถกู้คืนได้อีก</p>
+          <div class="mt-2"><span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill fs-6" id="deleteDocPermanentInfo"></span></div>
+          <div class="alert alert-warning border-0 rounded-4 mt-3 text-start small mb-0">
+            <i class="fa-solid fa-triangle-exclamation me-1 text-warning"></i>
+            สิทธิ์เฉพาะ <strong>สารบรรณกลาง</strong> หรือ <strong>ผู้ดูแลระบบ</strong> เท่านั้น
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer flex-nowrap p-0" style="border-color:var(--grey)">
+        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end text-danger" id="confirmDeleteDocPermanentBtn"><strong>ยืนยันลบถาวร</strong></button>
+        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 text-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Restore Doc (กู้คืนหนังสือ) -->
+<div class="modal fade" id="restoreDocModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+    <div class="modal-content rounded-5">
+      <div class="modal-body p-4">
+        <input type="hidden" id="restoreDocKey">
+        <div class="text-center">
+          <h3><i class="fa-duotone fa-rotate-left fa-bounce fa-2xl text-success"></i></h3>
+          <h5 class="mb-1 fw-bold text-success mt-3">กู้คืนหนังสือที่ยกเลิก</h5>
+          <p class="text-muted small mb-2">คุณต้องการนำหนังสือฉบับนี้กลับสู่สถานะปกติ (รอดำเนินการ) ใช่หรือไม่?</p>
+          <div class="mt-2"><span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill fs-6" id="restoreDocInfo"></span></div>
+        </div>
+      </div>
+      <div class="modal-footer flex-nowrap p-0" style="border-color:var(--grey)">
+        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end text-success" id="confirmRestoreDocBtn"><strong>กู้คืนหนังสือ</strong></button>
+        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 text-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Cancel Doc -->
 <div class="modal fade" id="stampDocModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width: 350px;">

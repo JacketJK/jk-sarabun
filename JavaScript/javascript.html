@@ -598,6 +598,15 @@ const appNavigationMenus = [
     submenuId: 1,
     action: () => changePageSenddoc(6)
   },
+  {
+    title: 'หนังสือที่ถูกยกเลิก',
+    category: 'หนังสือส่งภายใน',
+    icon: 'fa-regular fa-file-circle-xmark',
+    keywords: ['หนังสือที่ถูกยกเลิก', 'เอกสารยกเลิก', 'ถังขยะ', 'ลบหนังสือ', 'สารบรรณกลาง', 'canceled', 'delete', 'กู้คืน', 'ลบถาวร'],
+    sidebarId: 'sidebarManuCanceledDoc',
+    submenuId: 1,
+    action: () => changePageSenddoc(9)
+  },
   // หนังสือ/คำสั่ง/ประกาศ
   {
     title: 'บันทึกหนังสือส่ง',
@@ -1649,6 +1658,7 @@ const changePageSenddoc = (data, skipHash) => {
     6: 'หนังสือตีกลับ',
     7: 'แนบไฟล์เอกสาร',
     8: 'ส่งเอกสาร',
+    9: 'หนังสือที่ถูกยกเลิก',
   };
 
   const insertData = {
@@ -1657,13 +1667,14 @@ const changePageSenddoc = (data, skipHash) => {
     4: insertDataInside,
     5: insertDataFollow,
     6: insertDataReturn,
+    9: insertDataCanceled,
   };
 
   changePage(2, true);
   $("#loader").show();
 
   setTimeout(() => {
-    for (let i = 1; i <= 8; i++) {
+    for (let i = 1; i <= 9; i++) {
       $(`#menupage2_${i}`).toggle(data == i);
     }
     if (data == 1) {
@@ -1671,8 +1682,9 @@ const changePageSenddoc = (data, skipHash) => {
       $('#editAddnewdocBtn').hide();
     }
     const publicKey = localStorage.getItem('publicKey');
+    const userLevel = localStorage.getItem('level') || '5';
     if (insertData[data]) {
-      insertData[data](publicKey);
+      insertData[data](publicKey, userLevel);
     }
 
     $("#sendDoc").text(textMap[data]);
@@ -4549,12 +4561,87 @@ $('#confirmCancelDocBtn').on('click', function () {
       if (typeof insertDataDocument === 'function') insertDataDocument(publicKey);
       if (typeof insertDataOutPedding === 'function') insertDataOutPedding(publicKey);
       if (typeof insertDataOutInside === 'function') insertDataOutInside(publicKey);
+      if (typeof insertDataCanceled === 'function') insertDataCanceled(publicKey, localStorage.getItem('level'));
     })
     .withFailureHandler(function (err) {
       $('#loader').hide();
       toastAlert(0, 'เกิดข้อผิดพลาดในการยกเลิกหนังสือ: ' + (err.message || err));
     })
     .cancelDocument(obj);
+});
+
+// จัดการการลบหนังสือออกจากระบบอย่างถาวร (เฉพาะสารบรรณกลาง/แอดมิน)
+let currentDeleteDocPermanentKey = '';
+const openDeleteDocPermanentModal = (key, docNumber) => {
+  currentDeleteDocPermanentKey = key;
+  $('#deleteDocPermanentKey').val(key);
+  $('#deleteDocPermanentInfo').text(docNumber ? `เลขที่หนังสือ: ${docNumber}` : `รหัส: ${key}`);
+  $('#deleteDocPermanentModal').modal('show');
+};
+
+$('#confirmDeleteDocPermanentBtn').on('click', function () {
+  const key = currentDeleteDocPermanentKey || $('#deleteDocPermanentKey').val();
+  if (!key) return;
+
+  const userLevel = localStorage.getItem('level') || '5';
+  $('#deleteDocPermanentModal').modal('hide');
+  $('#loader').show();
+
+  google.script.run
+    .withSuccessHandler(function (res) {
+      $('#loader').hide();
+      if (res && res.success) {
+        toastAlert(1, `🗑️ ลบหนังสือ ${res.docNumber || ''} ออกจากระบบถาวรเรียบร้อยแล้ว`);
+        const publicKey = localStorage.getItem('publicKey');
+        if (typeof insertDataCanceled === 'function') {
+          insertDataCanceled(publicKey, userLevel);
+        }
+      } else {
+        toastAlert(0, res.message || 'ไม่สามารถลบหนังสือได้');
+      }
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, 'เกิดข้อผิดพลาดในการลบหนังสือถาวร: ' + (err.message || err));
+    })
+    .deleteCanceledDocumentPermanent(key, userLevel);
+});
+
+// จัดการการกู้คืนหนังสือที่ยกเลิก
+let currentRestoreDocKey = '';
+const openRestoreDocModal = (key, docNumber) => {
+  currentRestoreDocKey = key;
+  $('#restoreDocKey').val(key);
+  $('#restoreDocInfo').text(docNumber ? `เลขที่หนังสือ: ${docNumber}` : `รหัส: ${key}`);
+  $('#restoreDocModal').modal('show');
+};
+
+$('#confirmRestoreDocBtn').on('click', function () {
+  const key = currentRestoreDocKey || $('#restoreDocKey').val();
+  if (!key) return;
+
+  $('#restoreDocModal').modal('hide');
+  $('#loader').show();
+
+  google.script.run
+    .withSuccessHandler(function (res) {
+      $('#loader').hide();
+      if (res && res.success) {
+        toastAlert(1, `♻️ กู้คืนหนังสือ ${res.docNumber || ''} สู่สถานะรอดำเนินการเรียบร้อยแล้ว`);
+        const publicKey = localStorage.getItem('publicKey');
+        const userLevel = localStorage.getItem('level');
+        if (typeof insertDataCanceled === 'function') insertDataCanceled(publicKey, userLevel);
+        if (typeof insertDataPedding === 'function') insertDataPedding(publicKey);
+        if (typeof insertDataInside === 'function') insertDataInside(publicKey);
+      } else {
+        toastAlert(0, 'ไม่สามารถกู้คืนหนังสือได้');
+      }
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, 'เกิดข้อผิดพลาดในการกู้คืนหนังสือ: ' + (err.message || err));
+    })
+    .restoreCanceledDocument(key);
 });
 
 const docAddfile = (key) => {
