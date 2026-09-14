@@ -152,22 +152,27 @@ $("#seePassword").click(() => {
 
 const allSideMenu = document.querySelectorAll('#sidebar .side-menu.top li a');
 
-allSideMenu.forEach(item=> {
+allSideMenu.forEach(item => {
   const li = item.parentElement;
+  if (!li || li.classList.contains('headsubmane')) return;
 
   item.addEventListener('click', function () {
-    allSideMenu.forEach(i=> {
-      i.parentElement.classList.remove('active');
-    })
+    allSideMenu.forEach(i => {
+      if (i.parentElement && !i.parentElement.classList.contains('headsubmane')) {
+        i.parentElement.classList.remove('active');
+      }
+    });
     li.classList.add('active');
     setTimeout(() => {
-      toastAlert(4, '📃 ' + li.textContent);
+      const text = $(li).find('span.text').text() || li.textContent;
+      toastAlert(4, '📃 ' + text.trim());
     }, 1000);
-  })
+  });
 });
 
 for (let i = 1; i <= 20; i++) {
-  $(`#aheadsubmane${i}`).click(function() {
+  $(`#aheadsubmane${i}, #fasubmane${i}`).click(function(e) {
+    e.stopPropagation();
     const isSubMenuOpen = $(`#submenu${i}`).hasClass("show");
 
     for (let j = 1; j <= 20; j++) {
@@ -332,6 +337,167 @@ function getAppHash() {
   return hash;
 }
 
+const SIDEBAR_PAGE_MAP = {
+  1: { sidebarId: 'sidebarManu1', submenuId: null },
+  2: {
+    submenuId: 1,
+    subs: { 1: 'sidebarManu3', 2: 'sidebarManu4', 3: 'sidebarManu5', 4: 'sidebarManu6', 5: 'sidebarManu7', 6: 'sidebarManu8', 9: 'sidebarManuCanceledDoc' },
+    defaultSidebarId: 'sidebarManu3'
+  },
+  3: {
+    submenuId: 8,
+    subs: { 1: 'sidebarManu10', 2: 'sidebarManu11', 9: 'sidebarManuDocAnnonceCanceled' },
+    defaultSidebarId: 'sidebarManu10'
+  },
+  4: {
+    submenuId: 2,
+    subs: { 1: 'sidebarManu13', 2: 'sidebarManu14', 3: 'sidebarManu15', 9: 'sidebarManuPickupDocCanceled' },
+    defaultSidebarId: 'sidebarManu13'
+  },
+  5: {
+    submenuId: 9,
+    subs: { 1: 'sidebarManu17', 2: 'sidebarManu18', 3: 'sidebarManu19', 4: 'sidebarManu20', 5: 'sidebarManu21', 6: 'sidebarManu22', 9: 'sidebarManuDocOutCanceled' },
+    defaultSidebarId: 'sidebarManu17'
+  },
+  6: {
+    submenuId: 3,
+    subs: { 1: 'sidebarManu46', 2: 'sidebarManu47', 3: 'sidebarManu48', 4: 'sidebarManu49' },
+    defaultSidebarId: 'sidebarManu46'
+  },
+  7: {
+    submenuId: 4,
+    subs: { 1: 'sidebarManu51', 2: 'sidebarManu52', 3: 'sidebarManu53' },
+    defaultSidebarId: 'sidebarManu51'
+  },
+  8: {
+    submenuId: 5,
+    subs: { 1: 'sidebarManu55', 2: 'sidebarManu56', 3: 'sidebarManu57', 4: 'sidebarManu58', 5: 'sidebarManu59', 6: 'sidebarManu60' },
+    defaultSidebarId: 'sidebarManu55'
+  },
+  9: {
+    submenuId: 6,
+    subs: { 1: 'sidebarManu62', 2: 'sidebarManu63', 3: 'sidebarManu64' },
+    defaultSidebarId: 'sidebarManu62'
+  },
+  10: {
+    submenuId: 7,
+    subs: { 1: 'sidebarManu66', 2: 'sidebarManu67' },
+    defaultSidebarId: 'sidebarManu66'
+  },
+  11: { sidebarId: 'sidebarManu72', submenuId: null },
+  12: { sidebarId: 'sidebarManu73', submenuId: null },
+  13: {
+    submenuId: 10,
+    subs: { 1: 'sidebarManu75', 2: 'sidebarManu76', 3: 'sidebarManu77' },
+    defaultSidebarId: 'sidebarManu75'
+  },
+  14: {
+    submenuId: 11,
+    subs: { 1: 'sidebarManu79', 2: 'sidebarManu80', 3: 'sidebarManu81', 9: 'sidebarManu82' },
+    defaultSidebarId: 'sidebarManu79'
+  },
+  15: {
+    submenuId: 12,
+    subs: {
+      1: 'sidebarManu84',
+      2: 'sidebarManu85',
+      3: 'sidebarManu86',
+      4: 'sidebarManu87',
+      5: 'sidebarManu88',
+      6: 'sidebarManu89',
+      7: 'sidebarManu90',
+      8: 'sidebarManu91',
+      9: 'sidebarManu92',
+      10: 'sidebarManu93',
+      11: 'sidebarManu94',
+      12: 'sidebarManu95',
+      13: 'sidebarManu96'
+    },
+    defaultSidebarId: 'sidebarManu84'
+  },
+  16: { sidebarId: 'sidebarManu98', submenuId: null },
+  17: { sidebarId: null, submenuId: null },
+  18: {
+    submenuId: 13,
+    subs: { 1: 'sidebarManu69', 2: 'sidebarManu70', 3: 'sidebarManu71' },
+    defaultSidebarId: 'sidebarManu69'
+  },
+  19: { sidebarId: 'sidebarManu97', submenuId: null },
+  20: {
+    submenuId: 14,
+    subs: { 1: 'sidebarManu24', 2: 'sidebarManu25', 3: 'sidebarManu26' },
+    defaultSidebarId: 'sidebarManu24'
+  },
+  21: {
+    submenuId: 15,
+    subs: { 1: 'sidebarManu28', 2: 'sidebarManu29' },
+    defaultSidebarId: 'sidebarManu28'
+  },
+  22: {
+    submenuId: 16,
+    subs: { 1: 'sidebarManu31', 2: 'sidebarManu32', 3: 'sidebarManu33', 4: 'sidebarManu34' },
+    defaultSidebarId: 'sidebarManu31'
+  },
+  23: {
+    submenuId: 17,
+    subs: { 1: 'sidebarManu40', 2: 'sidebarManu41', 3: 'sidebarManu42', 4: 'sidebarManu43', 5: 'sidebarManu44' },
+    defaultSidebarId: 'sidebarManu40'
+  },
+  24: {
+    submenuId: 18,
+    subs: { 1: 'sidebarManu36', 2: 'sidebarManu37', 3: 'sidebarManu38' },
+    defaultSidebarId: 'sidebarManu36'
+  }
+};
+
+function syncSidebarActive(page, sub) {
+  const pageNum = Number(page);
+  const subNum = sub ? Number(sub) : null;
+  const config = SIDEBAR_PAGE_MAP[pageNum];
+
+  // 1. นำคลาส active ออกจาก li ในเมนูด้านข้างทั้งหมด
+  $('#sidebar .side-menu.top li').removeClass('active');
+
+  if (!config) {
+    for (let j = 1; j <= 20; j++) {
+      $(`#submenu${j}`).removeClass('show').addClass('none');
+      $(`#fasubmane${j}`).removeClass('show click');
+    }
+    return;
+  }
+
+  // 2. กำหนด id ของเมนูที่ต้อง active
+  let targetSidebarId = config.sidebarId || null;
+  if (config.subs) {
+    targetSidebarId = config.subs[subNum] || config.defaultSidebarId;
+  }
+
+  // 3. ใส่คลาส active ให้เมนูเป้าหมาย
+  if (targetSidebarId) {
+    const $target = $(`#${targetSidebarId}`);
+    $target.addClass('active');
+
+    // เลื่อน sidebar ให้เมนูที่ active อยู่ในสายตา
+    try {
+      const el = document.getElementById(targetSidebarId);
+      if (el && typeof el.scrollIntoView === 'function') {
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    } catch (e) {}
+  }
+
+  // 4. จัดการ Submenu: กาง submenu ที่ตรงกับหน้านั้น และพับ submenu อื่นๆ
+  for (let j = 1; j <= 20; j++) {
+    if (config.submenuId && j === Number(config.submenuId)) {
+      $(`#submenu${j}`).addClass('show').removeClass('none');
+      $(`#fasubmane${j}`).addClass('show click');
+    } else {
+      $(`#submenu${j}`).removeClass('show').addClass('none');
+      $(`#fasubmane${j}`).removeClass('show click');
+    }
+  }
+}
+
 function restorePageFromHash(targetHash) {
   const hash = targetHash || getAppHash();
   if (!hash) {
@@ -375,6 +541,9 @@ function restorePageFromHash(targetHash) {
     page = parts[1] ? Number(parts[1]) : 1;
     sub = parts[2] ? Number(parts[2]) : null;
   }
+
+  // ซิงค์ Active บน Sidebar ให้ตรงกับหน้านี้ทันที
+  syncSidebarActive(page, sub);
 
   if (page === 23) {
     if (typeof changePageEquip === 'function') {
@@ -504,15 +673,21 @@ function restorePageFromHash(targetHash) {
 }
 
 function initAppHashRouter() {
+  // ซิงค์หน้าและเมนูทันทีจาก localStorage / hash เริ่มต้น เพื่อความรวดเร็วและไม่กระพริบ
+  const initialHash = getAppHash();
+  if (initialHash) {
+    restorePageFromHash(initialHash);
+  }
+
   if (typeof google !== 'undefined' && google.script && google.script.url) {
     google.script.url.getLocation(function (loc) {
       if (loc && loc.hash) {
         restorePageFromHash(loc.hash);
-      } else {
+      } else if (!initialHash) {
         restorePageFromHash();
       }
     });
-  } else {
+  } else if (!initialHash) {
     restorePageFromHash();
   }
 
@@ -1637,10 +1812,11 @@ const backFromDocDetail = () => {
   }
 };
 
-const changePage = (data, skipHash) => {
+const changePage = (data, skipHash, sub) => {
   if (!skipHash) {
     setAppHash('page=' + data);
   }
+  syncSidebarActive(data, sub);
   $("#loader").show();
   $('.tooltip.custom-tooltip').remove();
   $('#notificationDropdown').dropdown('hide');
@@ -1649,7 +1825,7 @@ const changePage = (data, skipHash) => {
   // รีเซ็ต breadcrumb ย่อยของหน้าเดิมเสมอ
   resetPageBreadcrumbs(data);
   if (data !== 4) {
-    lastActiveDocPage = { page: data, sub: null };
+    lastActiveDocPage = { page: data, sub: sub || null };
   }
 
   setTimeout(() => {
@@ -1673,7 +1849,7 @@ const changePageProflie = (data, skipHash) => {
   $("#loader").show();
 
   setTimeout(() => {
-    changePage(17, true);
+    changePage(17, true, data);
     if (data == 1) {
       profileManu(3);  
       toastAlert(1, "🌟 หน้าโปรไฟล์ของฉัน"); 
@@ -1791,7 +1967,7 @@ const changePageSenddoc = (data, skipHash) => {
   }
   resetPageBreadcrumbs(2, data);
 
-  changePage(2, true);
+  changePage(2, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -1822,7 +1998,7 @@ const changePageBookSend = (data, skipHash) => {
   };
 
   resetPageBreadcrumbs(3, data);
-  changePage(3, true);
+  changePage(3, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -1870,7 +2046,7 @@ const changePageGetDoc = (data, skipHash) => {
   }
   resetPageBreadcrumbs(4, data);
 
-  changePage(4, true);
+  changePage(4, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -1914,7 +2090,7 @@ const changePageDocOut = (data, skipHash) => {
   }
   resetPageBreadcrumbs(5, data);
 
-  changePage(5, true);
+  changePage(5, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -1941,7 +2117,7 @@ const changePageCarReserve = (data, skipHash) => {
   };
 
   resetPageBreadcrumbs(6, data);
-  changePage(6, true);
+  changePage(6, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -1962,7 +2138,7 @@ const changePageCalendar = (data, skipHash) => {
     3: 'แก้ไขกิจกรรม',
   };
 
-  changePage(7, true);
+  changePage(7, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -1991,7 +2167,7 @@ const changePageLeave = (data, skipHash) => {
     7: 'รายละเอียด',
   };
 
-  changePage(8, true);
+  changePage(8, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -2023,7 +2199,7 @@ const changePageReport = (data, skipHash) => {
     3: 'ประวัติการรายงาน',
     4: 'รายละเอียดการรายงาน',
   };
-  changePage(9, true);
+  changePage(9, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -2047,7 +2223,7 @@ const changePageProject = (data, skipHash) => {
     2: 'ตรวจสอบโครงการ',
     3: 'รายละเอียดของโครงการ',
   };
-  changePage(10, true);
+  changePage(10, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -2067,7 +2243,7 @@ const changePageNotify = (data, skipHash) => {
     2: 'รายการประกาศแจ้งเตือน',
     3: 'ตรวจสอบ Line Token',
   };
-  changePage(13, true);
+  changePage(13, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -2093,7 +2269,7 @@ const changePageSetAgency = (data, skipHash) => {
     8: 'หมู่บ้านในพื้นที่',
     9: 'ตั้งค่าบัตรประจำตัว',
   };
-  changePage(14, true);
+  changePage(14, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -2123,7 +2299,7 @@ const changePageDatabase = (data, skipHash) => {
     12: 'รายการรายรับต่อเดือน',
     13: 'รายการหักเงินเดือน',
   };
-  changePage(15, true);
+  changePage(15, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -2143,7 +2319,7 @@ const changePageMeeting = (data, skipHash) => {
     2: 'เพิ่มข้อมูลการจอง',
     3: 'รายละเอียดการจองห้องประชุม',
   };
-  changePage(18, true);
+  changePage(18, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -2170,7 +2346,7 @@ const changePageLicense = (data, skipHash) => {
     1: 'การตั้งค่าสิทธิ์ผู้ใช้งาน',
     2: 'กำหนดสิทธิ์การใช้งาน',
   };
-  changePage(19, true);
+  changePage(19, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -2190,7 +2366,7 @@ const changePageHrm = (data, skipHash) => {
     2: 'ออกบัตรประจำตัวเจ้าหน้าที่',
     3: 'สถานะบุคลากร',
   };
-  changePage(20, true);
+  changePage(20, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -2219,7 +2395,7 @@ const changePageLand = (data, skipHash) => {
     1: 'ฐานข้อมูลการอุทิศที่ดิน',
     2: 'เพิ่มข้อมูลการอุทิศที่ดิน',
   };
-  changePage(21, true);
+  changePage(21, true, data);
   $("#loader").show();
 
   setTimeout(() => {
@@ -2236,7 +2412,7 @@ const changePageCheckBin = (data, skipHash) => {
   }
   const textMap = { 1: 'รายงานถังขยะทั้งหมด', 2: 'การจัดการถังขยะ', 3: 'ค่าธรรมเนียมการกำจัดสิ่งปฏิกูลและมูลฝอย', 4: 'การแจ้งปัญหาเกี่ยวกับถังขยะ' };
 
-  changePage(22, true); 
+  changePage(22, true, data); 
   $("#loader").show();
 
   setTimeout(() => {
@@ -2262,7 +2438,7 @@ const changePageEquip = (data, skipHash) => {
   }
   const textMap = { 1: 'ข้อมูลวัสดุและครุภัณฑ์ในหน่วยงาน', 2: 'การจัดซื้อ-จัดจ้างวัสดุและครุภัณฑ์', 3: 'ครุภัณฑ์ในหน่วยงาน', 4: 'วัสดุในหน่วยงาน', 5: 'การยืม/คืนวัสดุและครุภัณฑ์' };
 
-  changePage(23, true); 
+  changePage(23, true, data); 
   $("#loader").show();
   
   setTimeout(() => {
@@ -2280,7 +2456,7 @@ const changePageESalary = (data, skipHash) => {
   }
   const textMap = { 1: 'ข้อมูลสลิปเงินเดือน', 2: 'การจัดการข้อมูลเงินเดือน', 3: 'แก้ไขข้อมูลเงินเดือน' };
 
-  changePage(24, true); 
+  changePage(24, true, data); 
   $("#loader").show();
   
   setTimeout(() => {
