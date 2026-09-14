@@ -1536,6 +1536,89 @@ function initGlobalMenuSearch() {
   });
 }
 
+const resetPageBreadcrumbs = (pageId, subId) => {
+  // Page 4: รับหนังสือ (pickupdocpage)
+  // Sub 4 คือ หน้าแสดงรายละเอียดหนังสือ (doc detail view)
+  if (pageId !== 4 || (subId !== undefined && subId !== 4)) {
+    $("#pickupbreadcrumb1").addClass("active");
+    $("#pickupbreadcrumb2, #pickupbreadcrumb3, #pickupbreadcrumb4, #pickupbreadcrumb5").hide().text("");
+  }
+
+  // Page 2: หนังสือส่งภายใน (docsendpage)
+  // Sub 7 แนบไฟล์, Sub 8 ส่งเอกสาร
+  if (pageId !== 2 || (subId !== undefined && subId !== 7 && subId !== 8)) {
+    $("#sendDoc").addClass("active");
+    $("#sendDoc2, #sendDoc3, #sendDoc4, #sendDoc5").hide().text("");
+  }
+
+  // Page 5: ลงรับหนังสือภายนอก (receivedocpage)
+  if (pageId !== 5 || (subId !== undefined && subId !== 7 && subId !== 8)) {
+    $("#receivebreadcrumb1").addClass("active");
+    $("#receivebreadcrumb2, #receivebreadcrumb3, #receivebreadcrumb4, #receivebreadcrumb5").hide().text("");
+  }
+
+  // Page 3: หนังสือส่ง/คำสั่ง/ประกาศ (docannoncepage)
+  if (pageId !== 3) {
+    $("#docAnnoncebreadcrumb1").addClass("active");
+    $("#docAnnoncebreadcrumb2, #docAnnoncebreadcrumb3, #docAnnoncebreadcrumb4, #docAnnoncebreadcrumb5").hide().text("");
+  }
+
+  // Page 6: รถส่วนกลาง (carreservepage)
+  if (pageId !== 6) {
+    $("#carbreadcrumb1").addClass("active");
+    $("#carbreadcrumb2").hide();
+    $("#carbreadcrumb3").removeClass("active");
+  }
+
+  // Page 9: report
+  if (pageId !== 9) {
+    $("#reportbreadcrumb3").addClass("active");
+    $("#reportbreadcrumb4, #reportbreadcrumb5").hide().text("");
+  }
+
+  // Page 11: user
+  if (pageId !== 11) {
+    $("#userbreadcrumb1").addClass("active");
+    $("#userbreadcrumb2, #userbreadcrumb3, #userbreadcrumb4, #userbreadcrumb5").hide().text("");
+  }
+
+  // Page 18: meeting
+  if (pageId !== 18) {
+    $("#meetbreadcrumb3").addClass("active");
+    $("#meetbreadcrumb4, #meetbreadcrumb5").hide().text("");
+  }
+
+  // Page 19: license
+  if (pageId !== 19) {
+    $("#licensebreadcrumb1").addClass("active");
+    $("#licensebreadcrumb2, #licensebreadcrumb3, #licensebreadcrumb4, #licensebreadcrumb5").hide().text("");
+  }
+
+  // Page 23: equipment
+  if (pageId !== 23) {
+    $("#equipmentbreadcrumb3").addClass("active");
+    $("#equipmentbreadcrumb4, #equipmentbreadcrumb5").hide().text("");
+  }
+};
+
+let lastActiveDocPage = { page: 4, sub: 1 };
+
+const backFromDocDetail = () => {
+  if (lastActiveDocPage && lastActiveDocPage.page) {
+    if (lastActiveDocPage.page === 4) {
+      changePageGetDoc(lastActiveDocPage.sub && lastActiveDocPage.sub !== 4 ? lastActiveDocPage.sub : 1);
+    } else if (lastActiveDocPage.page === 2) {
+      changePageSenddoc(lastActiveDocPage.sub || 4);
+    } else if (lastActiveDocPage.page === 5) {
+      changePageDocOut(lastActiveDocPage.sub || 1);
+    } else {
+      changePage(lastActiveDocPage.page || 1);
+    }
+  } else {
+    changePageGetDoc(1);
+  }
+};
+
 const changePage = (data, skipHash) => {
   if (!skipHash) {
     setAppHash('page=' + data);
@@ -1544,6 +1627,12 @@ const changePage = (data, skipHash) => {
   $('.tooltip.custom-tooltip').remove();
   $('#notificationDropdown').dropdown('hide');
   $('#profileSrc').dropdown('hide');
+
+  // รีเซ็ต breadcrumb ย่อยของหน้าเดิมเสมอ
+  resetPageBreadcrumbs(data);
+  if (data !== 4) {
+    lastActiveDocPage = { page: data, sub: null };
+  }
 
   setTimeout(() => {
     for (let i = 1; i <= 30; i++) {
@@ -1679,6 +1768,11 @@ const changePageSenddoc = (data, skipHash) => {
     9: insertDataCanceled,
   };
 
+  if (data !== 7 && data !== 8) {
+    lastActiveDocPage = { page: 2, sub: data };
+  }
+  resetPageBreadcrumbs(2, data);
+
   changePage(2, true);
   $("#loader").show();
 
@@ -1708,6 +1802,7 @@ const changePageBookSend = (data, skipHash) => {
     2: 'รายงานหนังสือส่ง',
   };
 
+  resetPageBreadcrumbs(3, data);
   changePage(3, true);
   $("#loader").show();
 
@@ -1726,17 +1821,28 @@ const changePageGetDoc = (data, skipHash) => {
   if (!skipHash) {
     setAppHash(`page=4&sub=${data}`);
   }
+  const textMapPickup = {
+    1: 'รับหนังสือ (ภายใน)',
+    2: 'รับหนังสือ (ภายนอก)',
+    3: 'รายการติดตามหนังสือรับ',
+  };
   const textMap = {
     1: 'รับหนังสือ (ภายใน)',
     2: 'รับหนังสือ (ภายนอก)',
     3: 'รายการติดตามหนังสือรับ',
-    4: 'รายละเอียด',
+    4: (lastActiveDocPage && lastActiveDocPage.page === 4 && textMapPickup[lastActiveDocPage.sub]) || 'รายละเอียด',
   };
   const insertData = {
     1: insertDataGetDocIn,
     2: insertDataGetDocOut,
     3: insertDataGetDocFollow,
   };  
+
+  if (data !== 4) {
+    lastActiveDocPage = { page: 4, sub: data };
+  }
+  resetPageBreadcrumbs(4, data);
+
   changePage(4, true);
   $("#loader").show();
 
@@ -1774,6 +1880,12 @@ const changePageDocOut = (data, skipHash) => {
     6: insertDataOutReturn,
     9: insertDataOutCanceled,
   };
+
+  if (data !== 7 && data !== 8) {
+    lastActiveDocPage = { page: 5, sub: data };
+  }
+  resetPageBreadcrumbs(5, data);
+
   changePage(5, true);
   $("#loader").show();
 
@@ -1800,6 +1912,7 @@ const changePageCarReserve = (data, skipHash) => {
     4: 'การอนุมัติใช้รถ',
   };
 
+  resetPageBreadcrumbs(6, data);
   changePage(6, true);
   $("#loader").show();
 

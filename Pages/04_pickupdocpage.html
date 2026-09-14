@@ -3,11 +3,11 @@
     <h2><i class="fa-duotone fa-stamp"></i> ลงหนังสือ</h2>
     <ul class="breadcrumb">
       <li>
-        <a>ลงรับหนังสือ</a>
+        <a role="button" onclick="backFromDocDetail()" style="cursor: pointer;">ลงรับหนังสือ</a>
       </li>
       <li><i class="fa-regular fa-chevron-right"></i></li>
       <li>
-        <a class="active" id="pickupbreadcrumb1"></a>
+        <a class="active" id="pickupbreadcrumb1" role="button" onclick="backFromDocDetail()" style="cursor: pointer;"></a>
       </li>
       <li style="display:none" id="pickupbreadcrumb2"><i class="fa-regular fa-chevron-right"></i></li>
       <li>
@@ -244,7 +244,7 @@
   <div class="container-fluid">
     <div class="head mb-4">
       <h5 id="detailDocumant"><i class="fa-solid fa-file-import"></i> รายละเอียดหนังสือ</h5>
-      <a class="btn btn-blue btn-sm rounded-pill px-3" onclick="changePageSenddoc(4)"> 
+      <a class="btn btn-blue btn-sm rounded-pill px-3" onclick="backFromDocDetail()" role="button" style="cursor: pointer;"> 
         <i class="fa-solid fa-arrow-left-long"></i>
         <span class="text">กลับ</span>
       </a>
