@@ -3167,7 +3167,11 @@ img.inverted-color.active {
   ::-webkit-scrollbar-thumb {
     display: none;
   }
-  
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* ============================================================ */
 /* Equipment & Materials Module Styling                         */
 /* ============================================================ */
@@ -3217,35 +3221,36 @@ body.dark .equip-swiper-slide {
   border-color: rgba(255, 255, 255, 0.08);
 }
 .table-equip {
-  border-collapse: separate;
-  border-spacing: 0;
-  width: 100%;
+  width: 100% !important;
+  margin-bottom: 0 !important;
+  vertical-align: middle;
 }
 .table-equip thead th {
-  background: var(--darkback);
-  color: var(--blue);
+  background: var(--darkback) !important;
+  color: var(--blue) !important;
   font-weight: 500;
   font-size: 13px;
-  padding: 12px 10px;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.06);
+  padding: 12px 14px !important;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.06) !important;
   white-space: nowrap;
 }
 body.dark .table-equip thead th {
-  border-bottom-color: rgba(255, 255, 255, 0.1);
-  color: #9daff9;
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+  color: #9daff9 !important;
 }
 .table-equip tbody td {
-  padding: 12px 10px;
+  padding: 12px 14px !important;
   font-size: 13px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+  vertical-align: middle;
 }
 body.dark .table-equip tbody td {
-  border-bottom-color: rgba(255, 255, 255, 0.05);
+  border-bottom-color: rgba(255, 255, 255, 0.05) !important;
 }
 .table-equip tbody tr:hover td {
-  background: rgba(93, 135, 255, 0.04);
+  background: rgba(93, 135, 255, 0.04) !important;
 }
 body.dark .table-equip tbody tr:hover td {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.03) !important;
 }
 </style>
