@@ -879,6 +879,8 @@ const insertDataPedding = (key) => {
         3: "<i class='fa-duotone fa-timer fa-xl' style='color: var(--box3);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='กำลังดำเนินการ'></i>",
         2: "<i class='fa-duotone fa-inboxes fa-xl' style='color: var(--box1);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เตรียมส่ง'></i>",
         4: "<i class='fa-duotone fa-check-to-slot fa-xl' style='color: var(--box2);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เสร็จแล้ว'></i>",
+        5: "<i class='fa-duotone fa-power-off fa-xl' style='color: var(--orange);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ปิดงานแล้ว'></i>",
+        "-1": "<i class='fa-duotone fa-circle-xmark fa-xl' style='color: var(--bs-danger);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ยกเลิกหนังสือ'></i>"
       };
       var status = statusMap[data[i][22]] || '';
       cell9.innerHTML = status;
@@ -1047,6 +1049,7 @@ const insertDataInprogress = (key) => {
         1: `<i class="fa-duotone fa-envelope-open-text fa-xl" style="color: var(--box2)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เปิดแล้ว"></i>`,
         2: '<i class="fa-duotone fa-share-all fa-flip-horizontal fa-xl" style="color: var(--box4)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ส่งตีกลับ"></i>',
         3: '<i class="fa-duotone fa-pencil fa-xl" style="color: var(--box3)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เกษียนแล้ว"></i>',
+        "-1": '<i class="fa-duotone fa-circle-xmark fa-xl text-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ยกเลิกแล้ว"></i>',
       };
 
       const status = statusMap[data[0][i][3]] || '';
@@ -1213,6 +1216,8 @@ const insertDataInside = (key) => {
         3: "<i class='fa-duotone fa-timer fa-xl' style='color: var(--box3);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='กำลังดำเนินการ'></i>",
         2: "<i class='fa-duotone fa-inboxes fa-xl' style='color: var(--box1);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เตรียมส่ง'></i>",
         4: "<i class='fa-duotone fa-check-to-slot fa-xl' style='color: var(--box2);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เสร็จแล้ว'></i>",
+        5: "<i class='fa-duotone fa-power-off fa-xl' style='color: var(--orange);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ปิดงานแล้ว'></i>",
+        "-1": "<i class='fa-duotone fa-circle-xmark fa-xl' style='color: var(--bs-danger);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ยกเลิกหนังสือ'></i>"
       };
  
       const status = statusMap[data[i][22]] || '';
@@ -2200,6 +2205,8 @@ const insertDataDocument = (key) => {
         3: "<i class='fa-duotone fa-timer fa-xl' style='color: var(--box3);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='กำลังดำเนินการ'></i>",
         2: "<i class='fa-duotone fa-inboxes fa-xl' style='color: var(--box1);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เตรียมส่ง'></i>",
         4: "<i class='fa-duotone fa-check-to-slot fa-xl' style='color: var(--box2);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เสร็จแล้ว'></i>",
+        5: "<i class='fa-duotone fa-power-off fa-xl' style='color: var(--orange);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ปิดงานแล้ว'></i>",
+        "-1": "<i class='fa-duotone fa-circle-xmark fa-xl' style='color: var(--bs-danger);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ยกเลิกหนังสือ'></i>"
       };
       var status = statusMap[data[i][22]] || '';
       cell8.innerHTML = status;      
@@ -2213,7 +2220,7 @@ const insertDataDocument = (key) => {
                               <li><a class="dropdown-item" onclick="docEdit(${data[i][0]})"><i class="fa-regular fa-pen-to-square"></i> แก้ไขหนังสือ</a></li>
                               <li><a class="dropdown-item" onclick="docAddfile('${data[i][0]}')"><i class="fa-solid fa-paperclip"></i> แนบหนังสือ</a></li>
                               <li><hr class="dropdown-divider"></li>
-                              <li><a class="dropdown-item text-danger"><i class="fa-regular fa-circle-xmark"></i> ยกเลิกหนังสือ</a></li>
+                              <li><a class="dropdown-item text-danger" onclick="cancelDocsend('${data[i][0]}')"><i class="fa-regular fa-circle-xmark"></i> ยกเลิกหนังสือ</a></li>
                             </ul>
                           </div>`;                
     }
@@ -2392,6 +2399,8 @@ const insertDataOutPedding = (key) => {
         3: "<i class='fa-duotone fa-timer fa-xl' style='color: var(--box3);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='กำลังดำเนินการ'></i>",
         2: "<i class='fa-duotone fa-inboxes fa-xl' style='color: var(--box1);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เตรียมส่ง'></i>",
         4: "<i class='fa-duotone fa-check-to-slot fa-xl' style='color: var(--box2);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เสร็จแล้ว'></i>",
+        5: "<i class='fa-duotone fa-power-off fa-xl' style='color: var(--orange);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ปิดงานแล้ว'></i>",
+        "-1": "<i class='fa-duotone fa-circle-xmark fa-xl' style='color: var(--bs-danger);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ยกเลิกหนังสือ'></i>"
       };
       var status = statusMap[data[i][22]] || '';
       cell9.innerHTML = status;
@@ -2406,7 +2415,7 @@ const insertDataOutPedding = (key) => {
                               <li><a class="dropdown-item" onclick="docAddfile('${data[i][0]}')"><i class="fa-solid fa-paperclip"></i> แนบหนังสือ</a></li>
                               <li><a class="dropdown-item" onclick="selectSendDocument('${data[i][0]}')"><i class="fa-solid fa-paper-plane-top"></i> ส่งหนังสือ</a></li>
                               <li><hr class="dropdown-divider"></li>
-                              <li><a class="dropdown-item text-danger"><i class="fa-regular fa-circle-xmark"></i> ยกเลิกหนังสือ</a></li>
+                              <li><a class="dropdown-item text-danger" onclick="cancelDocsend('${data[i][0]}')"><i class="fa-regular fa-circle-xmark"></i> ยกเลิกหนังสือ</a></li>
                             </ul>
                           </div>`;               
     }

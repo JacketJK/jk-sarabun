@@ -3393,13 +3393,15 @@ const docdetailfile = (key) => {
     0: "<i class='fa-duotone fa-share-all fa-flip-horizontal fa-xl' style='color: var(--box4);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ตีกลับ'></i>",
     3: "<i class='fa-duotone fa-timer fa-xl' style='color: var(--box3);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='กำลังดำเนินการ'></i>",
     2: "<i class='fa-duotone fa-inboxes fa-xl' style='color: var(--box1);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เตรียมส่ง'></i>",
-    4: "<i class='fa-duotone fa-check-to-slot fa-xl' style='color: var(--box2);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เสร็จแล้ว'></i>"
+    4: "<i class='fa-duotone fa-check-to-slot fa-xl' style='color: var(--box2);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เสร็จแล้ว'></i>",
+    5: "<i class='fa-duotone fa-power-off fa-xl' style='color: var(--orange);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ปิดงานแล้ว'></i>",
+    "-1": "<i class='fa-duotone fa-circle-xmark fa-xl' style='color: var(--bs-danger);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ยกเลิกหนังสือ'></i>"
   };
   var status = statusMap[dataArray[0][22]] || '';
   if (dataArray[0][22] == 4 || dataArray[0][22] == 0) {
     $('#offDocDetailBtn').show();
     $('#addFlieDetailBtn').hide();
-  } else if (dataArray[0][22] == 5) {
+  } else if (dataArray[0][22] == 5 || dataArray[0][22] == -1) {
     $('#offDocDetailBtn').hide();
     $('#addFlieDetailBtn').hide();
     $('#user_followBtn').hide();
@@ -3492,9 +3494,79 @@ $('#addFlieDetailBtn').on('click', ()=>{
   docAddfile(key);
 });
 
+let currentCancelDocKey = '';
+
 const cancelDocsend = (keyDoc) => {
+  currentCancelDocKey = keyDoc;
+  $('#cancelDocsendKey').val(keyDoc);
+  $('#noteCancelDocsend').val('');
+
+  let docTitle = '';
+  if (typeof documentAll !== 'undefined' && Array.isArray(documentAll)) {
+    const doc = documentAll.find(r => r[0] == keyDoc);
+    if (doc) {
+      docTitle = `เลขที่หนังสือ: ${doc[2] || '-'} (${doc[6] || doc[1] || ''})`;
+    }
+  }
+  if (docTitle) {
+    $('#cancelDocsendInfo').text(docTitle).show();
+  } else {
+    $('#cancelDocsendInfo').hide();
+  }
+
   $('#cancelDocsendModal').modal('show');
 };
+
+$('#confirmCancelDocBtn').on('click', function () {
+  const key = currentCancelDocKey || $('#cancelDocsendKey').val();
+  if (!key) {
+    toastAlert(0, 'ไม่พบรหัสหนังสือที่ต้องการยกเลิก');
+    $('#cancelDocsendModal').modal('hide');
+    return;
+  }
+
+  const note = $('#noteCancelDocsend').val().trim();
+  $('#cancelDocsendModal').modal('hide');
+  $('#loader').show();
+
+  const obj = {
+    key: key,
+    note: note,
+    publicKey: localStorage.getItem('publicKey')
+  };
+
+  google.script.run
+    .withSuccessHandler(function (res) {
+      $('#loader').hide();
+      toastAlert(1, '🗑️ ยกเลิกหนังสือสำเร็จ');
+
+      const publicKey = localStorage.getItem('publicKey');
+
+      // Refresh all document details cache
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run.withSuccessHandler(function (allDocs) {
+          documentAll = allDocs;
+        }).dataDocAlldetail();
+      }
+
+      // Refresh document tables
+      if (typeof insertDataPedding === 'function') insertDataPedding(publicKey);
+      if (typeof insertDataInprogress === 'function') insertDataInprogress(publicKey);
+      if (typeof insertDataInside === 'function') insertDataInside(publicKey);
+      if (typeof insertDataFollow === 'function') insertDataFollow(publicKey);
+      if (typeof insertDataReturn === 'function') insertDataReturn(publicKey);
+      if (typeof insertDataDocOwner === 'function') insertDataDocOwner(publicKey);
+      if (typeof insertDataDocSend === 'function') insertDataDocSend(publicKey);
+      if (typeof insertDataDocument === 'function') insertDataDocument(publicKey);
+      if (typeof insertDataOutPedding === 'function') insertDataOutPedding(publicKey);
+      if (typeof insertDataOutInside === 'function') insertDataOutInside(publicKey);
+    })
+    .withFailureHandler(function (err) {
+      $('#loader').hide();
+      toastAlert(0, 'เกิดข้อผิดพลาดในการยกเลิกหนังสือ: ' + (err.message || err));
+    })
+    .cancelDocument(obj);
+});
 
 const docAddfile = (key) => {
   changePageSenddoc(7);

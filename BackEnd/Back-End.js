@@ -1355,6 +1355,55 @@ function returnJobDocument(obj) {
     }
   }
 }
+function cancelDocument(obj) {
+  const sheetDoc = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument");
+  const dataDoc = sheetDoc.getRange('A3:A' + sheetDoc.getLastRow()).getValues();
+  const targetKey = obj.key || obj.code || obj.keyDocument;
+  let docNumber = "";
+
+  for (let i = dataDoc.length - 1; i >= 0; i--) {
+    const keyDoc = dataDoc[i][0];
+    if (keyDoc === targetKey) {
+      const rowIndex = i + 3;
+      sheetDoc.getRange(rowIndex, 23).setValue("-1"); // สถานะยกเลิก
+      sheetDoc.getRange(rowIndex, 26).setValue(formatToDateThai(new Date()));
+      
+      if (obj.note) {
+        sheetDoc.getRange(rowIndex, 35).setValue(obj.note);
+      }
+      
+      const curNote = String(sheetDoc.getRange(rowIndex, 15).getValue() || "").trim();
+      const cancelTag = obj.note ? `[ยกเลิก: ${obj.note}]` : "[ยกเลิกหนังสือ]";
+      if (!curNote.includes("[ยกเลิก")) {
+        sheetDoc.getRange(rowIndex, 15).setValue(curNote ? `${curNote} ${cancelTag}` : cancelTag);
+      }
+
+      docNumber = sheetDoc.getRange(rowIndex, 3).getValue();
+      break;
+    }
+  }
+
+  // อัปเดตในตาราง SendDocument (ถ้ามี)
+  try {
+    const sheetSend = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("SendDocument");
+    if (sheetSend) {
+      const dataSend = sheetSend.getDataRange().getValues();
+      for (let s = 1; s < dataSend.length; s++) {
+        if (dataSend[s][1] === targetKey) {
+          sheetSend.getRange(s + 1, 4).setValue("-1");
+          if (obj.note) {
+            sheetSend.getRange(s + 1, 6).setValue("ยกเลิก: " + obj.note);
+          }
+          sheetSend.getRange(s + 1, 7).setValue(formatToDateThai(new Date()));
+        }
+      }
+    }
+  } catch (e) {
+    Logger.log("Error updating SendDocument on cancel: " + e);
+  }
+
+  return { success: true, key: targetKey, docNumber: docNumber };
+}
 
 ///////////////////////////////ProJect System////////////////////////////////
 

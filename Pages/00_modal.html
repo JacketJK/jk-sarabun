@@ -2543,20 +2543,22 @@
   <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
     <div class="modal-content rounded-5">
       <div class="modal-body p-4">
+        <input type="hidden" id="cancelDocsendKey">
         <div class="text-center">
           <h3><i class="fa-duotone fa-triangle-exclamation fa-bounce fa-2xl text-danger"></i></h3>
           <h6 class="mb-0 fw-medium mt-4">คุณต้องการยกเลิกหนังสือหรือไม่?</h6>
+          <div class="mt-2"><span class="badge bg-light text-secondary border px-3 py-2 rounded-pill" id="cancelDocsendInfo" style="display:none;"></span></div>
         </div>
         <div class="mt-3">
           <label for="noteCancelDocsend" class="col-form-label">หมายเหตุการยกเลิก</label>
           <div class="field">
             <i class="fa-duotone fa-note-sticky input-icon fs-5"></i>
-            <textarea class="input-field ms-3" id="noteCancelDocsend" rows="3"></textarea> 
+            <textarea class="input-field ms-3" id="noteCancelDocsend" rows="3" placeholder="ระบุเหตุผลในการยกเลิกหนังสือ..."></textarea> 
           </div>
         </div>
       </div>
       <div class="modal-footer flex-nowrap p-0" style="border-color:var(--grey)">
-        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" id="confirmCancelDocBtn"><strong>ตกลง</strong></button>
+        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end text-danger" id="confirmCancelDocBtn"><strong>ตกลง</strong></button>
         <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal">ยกเลิก</button>
       </div>
     </div>
