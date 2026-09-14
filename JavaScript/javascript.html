@@ -92,6 +92,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   
   if (isLoggedIn === 'true') {
     initAppHashRouter();
+    initGlobalMenuSearch();
     // await changePageProflie(6);
     // await profileManu(6);
 
@@ -527,6 +528,994 @@ function initAppHashRouter() {
       }
     });
   }
+}
+
+// ----------------------------------------------------
+// ระบบค้นหาเมนูและคำสำคัญอัจฉริยะ (Global Menu Search)
+// ----------------------------------------------------
+const appNavigationMenus = [
+  // HOME
+  {
+    title: 'หน้าแรก (Dashboard)',
+    category: 'HOME',
+    icon: 'fa-regular fa-house',
+    keywords: ['หน้าแรก', 'หน้าหลัก', 'dashboard', 'home', 'สรุปภาพรวม', 'เอกสารทั้งหมด', 'สถิติ'],
+    sidebarId: 'sidebarManu1',
+    action: () => changePage(1)
+  },
+  // หนังสือส่งภายใน
+  {
+    title: 'สร้างหนังสือส่งภายใน',
+    category: 'หนังสือส่งภายใน',
+    icon: 'fa-regular fa-paper-plane',
+    keywords: ['สร้างหนังสือส่งภายใน', 'ออกเลขส่งใน', 'ออกเลขหนังสือ', 'บันทึกข้อความ', 'ส่งหนังสือ', 'ส่งภายใน', 'หนังสือเวียน', 'จดหมาย', 'draft', 'สร้างหนังสือ'],
+    sidebarId: 'sidebarManu3',
+    submenuId: 1,
+    action: () => changePageSenddoc(1)
+  },
+  {
+    title: 'หนังสือรอดำเนินการ',
+    category: 'หนังสือส่งภายใน',
+    icon: 'fa-regular fa-clock',
+    keywords: ['หนังสือรอดำเนินการ', 'รอดำเนินการ', 'ส่งภายใน', 'pending', 'รอดำเนินงาน'],
+    sidebarId: 'sidebarManu4',
+    submenuId: 1,
+    action: () => changePageSenddoc(2)
+  },
+  {
+    title: 'หนังสืออยู่ระหว่างดำเนินการ',
+    category: 'หนังสือส่งภายใน',
+    icon: 'fa-regular fa-spinner',
+    keywords: ['หนังสืออยู่ระหว่างดำเนินการ', 'ระหว่างดำเนินการ', 'in progress', 'กำลังดำเนินการ', 'ส่งภายใน'],
+    sidebarId: 'sidebarManu5',
+    submenuId: 1,
+    action: () => changePageSenddoc(3)
+  },
+  {
+    title: 'รายการหนังสือส่งภายใน',
+    category: 'หนังสือส่งภายใน',
+    icon: 'fa-regular fa-list-check',
+    keywords: ['รายการหนังสือส่งภายใน', 'ประวัติหนังสือส่ง', 'ค้นหาหนังสือส่ง', 'รายการส่งภายใน', 'ทั้งหมด', 'ทะเบียนหนังสือส่งภายใน'],
+    sidebarId: 'sidebarManu6',
+    submenuId: 1,
+    action: () => changePageSenddoc(4)
+  },
+  {
+    title: 'หนังสือที่ต้องติดตาม',
+    category: 'หนังสือส่งภายใน',
+    icon: 'fa-regular fa-thumbtack',
+    keywords: ['หนังสือที่ต้องติดตาม', 'ติดตามหนังสือ', 'ส่งภายใน', 'follow up', 'ติดตามงาน'],
+    sidebarId: 'sidebarManu7',
+    submenuId: 1,
+    action: () => changePageSenddoc(5)
+  },
+  {
+    title: 'หนังสือตีกลับ',
+    category: 'หนังสือส่งภายใน',
+    icon: 'fa-regular fa-arrow-rotate-left',
+    keywords: ['หนังสือตีกลับ', 'ตีกลับ', 'แก้ไข', 'ส่งกลับ', 'ส่งภายใน', 'reject', 'returned', 'ยกเลิกหนังสือ'],
+    sidebarId: 'sidebarManu8',
+    submenuId: 1,
+    action: () => changePageSenddoc(6)
+  },
+  // หนังสือ/คำสั่ง/ประกาศ
+  {
+    title: 'บันทึกหนังสือส่ง',
+    category: 'หนังสือ/คำสั่ง/ประกาศ',
+    icon: 'fa-regular fa-inboxes',
+    keywords: ['บันทึกหนังสือส่ง', 'ออกเลขคำสั่ง', 'ออกเลขประกาศ', 'ส่งภายนอก', 'หนังสือส่ง', 'หนังสือราชการ', 'หนังสือภายนอก', 'คำสั่ง', 'ประกาศ'],
+    sidebarId: 'sidebarManu10',
+    submenuId: 8,
+    action: () => changePageBookSend(1)
+  },
+  {
+    title: 'รายงานหนังสือส่ง',
+    category: 'หนังสือ/คำสั่ง/ประกาศ',
+    icon: 'fa-regular fa-file-chart-column',
+    keywords: ['รายงานหนังสือส่ง', 'รายงานคำสั่ง', 'รายงานประกาศ', 'สรุปหนังสือส่ง', 'ทะเบียนคำสั่ง', 'ทะเบียนประกาศ', 'report'],
+    sidebarId: 'sidebarManu11',
+    submenuId: 8,
+    action: () => changePageBookSend(2)
+  },
+  // รับหนังสือ
+  {
+    title: 'รับหนังสือ (ภายใน)',
+    category: 'รับหนังสือ',
+    icon: 'fa-regular fa-stamp',
+    keywords: ['รับหนังสือภายใน', 'ลงรับภายใน', 'รับเอกสาร', 'เกษียนหนังสือ', 'รับหนังสือ'],
+    sidebarId: 'sidebarManu13',
+    submenuId: 2,
+    action: () => changePageGetDoc(1)
+  },
+  {
+    title: 'รับหนังสือ (ภายนอก)',
+    category: 'รับหนังสือ',
+    icon: 'fa-regular fa-envelope-open-text',
+    keywords: ['รับหนังสือภายนอก', 'ลงรับภายนอก', 'หนังสือจากหน่วยงานอื่น', 'หนังสือเข้า', 'รับเอกสารภายนอก'],
+    sidebarId: 'sidebarManu14',
+    submenuId: 2,
+    action: () => changePageGetDoc(2)
+  },
+  {
+    title: 'รายการติดตามหนังสือรับ',
+    category: 'รับหนังสือ',
+    icon: 'fa-regular fa-timeline',
+    keywords: ['รายการติดตามหนังสือรับ', 'ติดตามหนังสือรับ', 'ประวัติการรับหนังสือ', 'รายการหนังสือรับ'],
+    sidebarId: 'sidebarManu15',
+    submenuId: 2,
+    action: () => changePageGetDoc(3)
+  },
+  // ลงรับหนังสือ (หนังสือส่งภายนอก)
+  {
+    title: 'ลงทะเบียนหนังสือส่งภายนอก',
+    category: 'ลงรับหนังสือ',
+    icon: 'fa-regular fa-file-export',
+    keywords: ['ลงทะเบียนหนังสือส่งภายนอก', 'ส่งภายนอก', 'ออกเลขหนังสือภายนอก', 'ทะเบียนหนังสือส่ง'],
+    sidebarId: 'sidebarManu17',
+    submenuId: 9,
+    action: () => changePageDocOut(1)
+  },
+  {
+    title: 'หนังสือส่งภายนอก (รอดำเนินการ)',
+    category: 'ลงรับหนังสือ',
+    icon: 'fa-regular fa-clock',
+    keywords: ['หนังสือส่งภายนอก', 'รอดำเนินการ', 'หนังสือออก', 'pending'],
+    sidebarId: 'sidebarManu18',
+    submenuId: 9,
+    action: () => changePageDocOut(2)
+  },
+  {
+    title: 'หนังสือส่งภายนอก (อยู่ระหว่างดำเนินการ)',
+    category: 'ลงรับหนังสือ',
+    icon: 'fa-regular fa-spinner',
+    keywords: ['หนังสือส่งภายนอก', 'อยู่ระหว่างดำเนินการ', 'หนังสือออก', 'กำลังดำเนินการ'],
+    sidebarId: 'sidebarManu19',
+    submenuId: 9,
+    action: () => changePageDocOut(3)
+  },
+  {
+    title: 'รายการหนังสือส่งภายนอก',
+    category: 'ลงรับหนังสือ',
+    icon: 'fa-regular fa-list-check',
+    keywords: ['รายการหนังสือส่งภายนอก', 'ทะเบียนหนังสือส่งภายนอก', 'ประวัติหนังสือส่งภายนอก'],
+    sidebarId: 'sidebarManu20',
+    submenuId: 9,
+    action: () => changePageDocOut(4)
+  },
+  {
+    title: 'หนังสือส่งภายนอก (ที่ต้องติดตาม)',
+    category: 'ลงรับหนังสือ',
+    icon: 'fa-regular fa-thumbtack',
+    keywords: ['หนังสือส่งภายนอก', 'ติดตาม', 'ติดตามหนังสือส่งภายนอก'],
+    sidebarId: 'sidebarManu21',
+    submenuId: 9,
+    action: () => changePageDocOut(5)
+  },
+  {
+    title: 'หนังสือส่งภายนอก (ตีกลับ)',
+    category: 'ลงรับหนังสือ',
+    icon: 'fa-regular fa-arrow-rotate-left',
+    keywords: ['หนังสือส่งภายนอกตีกลับ', 'ส่งภายนอก', 'reject', 'ตีกลับแก้ไข'],
+    sidebarId: 'sidebarManu22',
+    submenuId: 9,
+    action: () => changePageDocOut(6)
+  },
+  // บริหารบุคลากร HRM
+  {
+    title: 'เพิ่มข้อมูลบุคลากร (HRM)',
+    category: 'บริหารบุคลากร HRM',
+    icon: 'fa-regular fa-user-tie',
+    keywords: ['เพิ่มข้อมูลบุคลากร', 'บุคลากร', 'เจ้าหน้าที่', 'พนักงาน', 'ทะเบียนประวัติ', 'hrm', 'hr', 'เพิ่มพนักงาน'],
+    sidebarId: 'sidebarManu24',
+    submenuId: 3,
+    action: () => changePageHrm(1)
+  },
+  {
+    title: 'รายงานข้อมูลบุคลากร (HRM)',
+    category: 'บริหารบุคลากร HRM',
+    icon: 'fa-regular fa-address-card',
+    keywords: ['รายงานข้อมูลบุคลากร', 'รายชื่อเจ้าหน้าที่', 'รายชื่อบุคลากร', 'สรุปบุคลากร', 'ผังองค์กร', 'hrm'],
+    sidebarId: 'sidebarManu25',
+    submenuId: 3,
+    action: () => changePageHrm(2)
+  },
+  {
+    title: 'ประวัติการทำงาน (HRM)',
+    category: 'บริหารบุคลากร HRM',
+    icon: 'fa-regular fa-history',
+    keywords: ['ประวัติการทำงาน', 'บุคลากร', 'ย้ายตำแหน่ง', 'เลื่อนขั้น', 'ผลงาน', 'hrm'],
+    sidebarId: 'sidebarManu26',
+    submenuId: 3,
+    action: () => changePageHrm(3)
+  },
+  // อุทิศที่ดิน
+  {
+    title: 'บันทึกข้อมูลอุทิศที่ดิน',
+    category: 'อุทิศที่ดิน',
+    icon: 'fa-regular fa-landmark',
+    keywords: ['บันทึกข้อมูลอุทิศที่ดิน', 'อุทิศที่ดิน', 'ที่ดิน', 'บริจาคที่ดิน', 'โฉนด', 'ที่สาธารณะ'],
+    sidebarId: 'sidebarManu28',
+    submenuId: 4,
+    action: () => changePageLand(1)
+  },
+  {
+    title: 'รายงานการอุทิศที่ดิน',
+    category: 'อุทิศที่ดิน',
+    icon: 'fa-regular fa-map-location-dot',
+    keywords: ['รายงานการอุทิศที่ดิน', 'สรุปที่ดิน', 'แผนที่ที่ดิน', 'ประวัติอุทิศที่ดิน'],
+    sidebarId: 'sidebarManu29',
+    submenuId: 4,
+    action: () => changePageLand(2)
+  },
+  // Check Bin ขยะ
+  {
+    title: 'บันทึกข้อมูลถังขยะ',
+    category: 'Check Bin ขยะ',
+    icon: 'fa-regular fa-trash-can',
+    keywords: ['บันทึกข้อมูลถังขยะ', 'ถังขยะ', 'ขยะ', 'เช็คถังขยะ', 'check bin', 'เพิ่มถังขยะ', 'จุดทิ้งขยะ'],
+    sidebarId: 'sidebarManu31',
+    submenuId: 5,
+    action: () => changePageCheckBin(1)
+  },
+  {
+    title: 'รายงานข้อมูลถังขยะ',
+    category: 'Check Bin ขยะ',
+    icon: 'fa-regular fa-clipboard-list-check',
+    keywords: ['รายงานข้อมูลถังขยะ', 'สรุปถังขยะ', 'รายการถังขยะ', 'ทั้งหมด'],
+    sidebarId: 'sidebarManu32',
+    submenuId: 5,
+    action: () => changePageCheckBin(2)
+  },
+  {
+    title: 'แผนที่ถังขยะ',
+    category: 'Check Bin ขยะ',
+    icon: 'fa-regular fa-map-pin',
+    keywords: ['แผนที่ถังขยะ', 'ตำแหน่งถังขยะ', 'พิกัดถังขยะ', 'map bin'],
+    sidebarId: 'sidebarManu33',
+    submenuId: 5,
+    action: () => changePageCheckBin(3)
+  },
+  {
+    title: 'สถิติและรายงานขยะ',
+    category: 'Check Bin ขยะ',
+    icon: 'fa-regular fa-chart-pie',
+    keywords: ['สถิติและรายงานขยะ', 'สถิติถังขยะ', 'กราฟขยะ', 'ปริมาณขยะ'],
+    sidebarId: 'sidebarManu34',
+    submenuId: 5,
+    action: () => changePageCheckBin(4)
+  },
+  // สลิปเงินเดือน
+  {
+    title: 'บันทึกสลิปเงินเดือน',
+    category: 'สลิปเงินเดือน (e-Salary)',
+    icon: 'fa-regular fa-money-bill-wave',
+    keywords: ['บันทึกสลิปเงินเดือน', 'สลิปเงินเดือน', 'เงินเดือน', 'ค่าจ้าง', 'e-salary', 'payslip', 'เงินได้'],
+    sidebarId: 'sidebarManu36',
+    submenuId: 6,
+    action: () => changePageESalary(1)
+  },
+  {
+    title: 'รายงานสลิปเงินเดือน',
+    category: 'สลิปเงินเดือน (e-Salary)',
+    icon: 'fa-regular fa-receipt',
+    keywords: ['รายงานสลิปเงินเดือน', 'ประวัติสลิปเงินเดือน', 'ค้นหาสลิป', 'พิมพ์สลิปเงินเดือน'],
+    sidebarId: 'sidebarManu37',
+    submenuId: 6,
+    action: () => changePageESalary(2)
+  },
+  {
+    title: 'ส่งสลิปเงินเดือน (Line/Email)',
+    category: 'สลิปเงินเดือน (e-Salary)',
+    icon: 'fa-regular fa-paper-plane',
+    keywords: ['ส่งสลิปเงินเดือน', 'ส่งสลิป', 'line', 'email', 'แจ้งเตือนเงินเดือน'],
+    sidebarId: 'sidebarManu38',
+    submenuId: 6,
+    action: () => changePageESalary(3)
+  },
+  // วัสดุ-ครุภัณฑ์
+  {
+    title: 'บันทึกเบิกพัสดุ',
+    category: 'วัสดุ-ครุภัณฑ์',
+    icon: 'fa-regular fa-boxes-stacked',
+    keywords: ['บันทึกเบิกพัสดุ', 'เบิกพัสดุ', 'ขอเบิก', 'เบิกของ', 'เบิกวัสดุ', 'อุปกรณ์', 'พัสดุ', 'ครุภัณฑ์'],
+    sidebarId: 'sidebarManu40',
+    submenuId: 16,
+    action: () => changePageEquip(1)
+  },
+  {
+    title: 'บันทึกคืนพัสดุ',
+    category: 'วัสดุ-ครุภัณฑ์',
+    icon: 'fa-regular fa-arrow-turn-down-left',
+    keywords: ['บันทึกคืนพัสดุ', 'คืนพัสดุ', 'ส่งคืนพัสดุ', 'คืนของ', 'คืนครุภัณฑ์'],
+    sidebarId: 'sidebarManu41',
+    submenuId: 16,
+    action: () => changePageEquip(2)
+  },
+  {
+    title: 'รายการเบิก-คืนพัสดุ',
+    category: 'วัสดุ-ครุภัณฑ์',
+    icon: 'fa-regular fa-rectangle-history',
+    keywords: ['รายการเบิก-คืนพัสดุ', 'ประวัติการเบิกคืน', 'รายการเบิก', 'รายการคืน', 'สถานะการเบิก'],
+    sidebarId: 'sidebarManu42',
+    submenuId: 16,
+    action: () => changePageEquip(3)
+  },
+  {
+    title: 'อนุมัติการเบิกพัสดุ',
+    category: 'วัสดุ-ครุภัณฑ์',
+    icon: 'fa-regular fa-clipboard-check',
+    keywords: ['อนุมัติการเบิกพัสดุ', 'อนุมัติเบิกพัสดุ', 'หัวหน้าอนุมัติ', 'รออนุมัติพัสดุ'],
+    sidebarId: 'sidebarManu43',
+    submenuId: 16,
+    action: () => changePageEquip(4)
+  },
+  {
+    title: 'ทะเบียนวัสดุ-ครุภัณฑ์',
+    category: 'วัสดุ-ครุภัณฑ์',
+    icon: 'fa-regular fa-warehouse',
+    keywords: ['ทะเบียนวัสดุ-ครุภัณฑ์', 'ครุภัณฑ์', 'สต๊อกพัสดุ', 'คลังวัสดุ', 'เพิ่มครุภัณฑ์', 'รหัสครุภัณฑ์', 'สินทรัพย์', 'stock'],
+    sidebarId: 'sidebarManu44',
+    submenuId: 16,
+    action: () => changePageEquip(5)
+  },
+  // การขอใช้รถ
+  {
+    title: 'ขอใช้รถส่วนกลาง',
+    category: 'การขอใช้รถ',
+    icon: 'fa-regular fa-car',
+    keywords: ['ขอใช้รถส่วนกลาง', 'จองรถ', 'ขอใช้รถ', 'ขอรถ', 'เดินทาง', 'ไปราชการ', 'ยานพาหนะ', 'รถตู้', 'รถยนต์'],
+    sidebarId: 'sidebarManu46',
+    submenuId: 15,
+    action: () => changePageCarReserve(1)
+  },
+  {
+    title: 'รายการขอใช้รถส่วนกลาง',
+    category: 'การขอใช้รถ',
+    icon: 'fa-regular fa-calendar-lines',
+    keywords: ['รายการขอใช้รถส่วนกลาง', 'ตารางการใช้รถ', 'คิวรถ', 'ประวัติการขอใช้รถ'],
+    sidebarId: 'sidebarManu47',
+    submenuId: 15,
+    action: () => changePageCarReserve(2)
+  },
+  {
+    title: 'อนุมัติการขอใช้รถส่วนกลาง',
+    category: 'การขอใช้รถ',
+    icon: 'fa-regular fa-shield-check',
+    keywords: ['อนุมัติการขอใช้รถส่วนกลาง', 'อนุมัติใช้รถ', 'อนุมัติรถ', 'รออนุมัติรถ', 'ผู้มีอำนาจอนุมัติ'],
+    sidebarId: 'sidebarManu48',
+    submenuId: 15,
+    action: () => changePageCarReserve(3)
+  },
+  {
+    title: 'รายงานการใช้รถส่วนกลาง',
+    category: 'การขอใช้รถ',
+    icon: 'fa-regular fa-file-chart-pie',
+    keywords: ['รายงานการใช้รถส่วนกลาง', 'สรุปการใช้รถ', 'เลขไมล์', 'ค่าน้ำมัน', 'ระยะทาง'],
+    sidebarId: 'sidebarManu49',
+    submenuId: 15,
+    action: () => changePageCarReserve(4)
+  },
+  // ปฏิทินกิจกรรม
+  {
+    title: 'ปฏิทินกิจกรรม / นัดหมาย',
+    category: 'ปฏิทินกิจกรรม',
+    icon: 'fa-regular fa-calendar-days',
+    keywords: ['ปฏิทินกิจกรรม', 'นัดหมาย', 'กิจกรรม', 'ตารางงาน', 'calendar', 'วันสำคัญ', 'งานราชการ'],
+    sidebarId: 'sidebarManu51',
+    submenuId: 14,
+    action: () => changePageCalendar(1)
+  },
+  {
+    title: 'เพิ่มกิจกรรม / นัดหมาย',
+    category: 'ปฏิทินกิจกรรม',
+    icon: 'fa-regular fa-calendar-plus',
+    keywords: ['เพิ่มกิจกรรม', 'นัดหมายใหม่', 'สร้างนัดหมาย', 'ลงปฏิทิน'],
+    sidebarId: 'sidebarManu52',
+    submenuId: 14,
+    action: () => changePageCalendar(2)
+  },
+  {
+    title: 'รายการกิจกรรมทั้งหมด',
+    category: 'ปฏิทินกิจกรรม',
+    icon: 'fa-regular fa-calendar-week',
+    keywords: ['รายการกิจกรรมทั้งหมด', 'สรุปนัดหมาย', 'ค้นหากิจกรรม'],
+    sidebarId: 'sidebarManu53',
+    submenuId: 14,
+    action: () => changePageCalendar(3)
+  },
+  // การขออนุญาตลา
+  {
+    title: 'ยื่นใบลา (ขออนุญาตลา)',
+    category: 'การขออนุญาตลา',
+    icon: 'fa-regular fa-file-signature',
+    keywords: ['ยื่นใบลา', 'ขออนุญาตลา', 'ลาป่วย', 'ลากิจ', 'ลาพักร้อน', 'ลาคลอด', 'ลาอุปสมบท', 'ขอลา', 'ลางาน', 'leave'],
+    sidebarId: 'sidebarManu55',
+    submenuId: 17,
+    action: () => changePageLeave(1)
+  },
+  {
+    title: 'ประวัติการลาของฉัน',
+    category: 'การขออนุญาตลา',
+    icon: 'fa-regular fa-calendar-clock',
+    keywords: ['ประวัติการลาของฉัน', 'วันลาคงเหลือ', 'สถิติการลา', 'ตรวจสอบวันลา', 'ประวัติใบลา'],
+    sidebarId: 'sidebarManu56',
+    submenuId: 17,
+    action: () => changePageLeave(2)
+  },
+  {
+    title: 'อนุมัติการลา (หัวหน้างาน)',
+    category: 'การขออนุญาตลา',
+    icon: 'fa-regular fa-user-check',
+    keywords: ['อนุมัติการลา', 'หัวหน้างาน', 'อนุมัติใบลา', 'ชั้นต้น', 'ตรวจสอบการลา'],
+    sidebarId: 'sidebarManu57',
+    submenuId: 17,
+    action: () => changePageLeave(3)
+  },
+  {
+    title: 'อนุมัติการลา (ผู้บังคับบัญชา)',
+    category: 'การขออนุญาตลา',
+    icon: 'fa-regular fa-clipboard-user',
+    keywords: ['อนุมัติการลา', 'ผู้บังคับบัญชา', 'ผอ.', 'ปลัด', 'นายก', 'อนุมัติลา'],
+    sidebarId: 'sidebarManu58',
+    submenuId: 17,
+    action: () => changePageLeave(4)
+  },
+  {
+    title: 'รายงานสรุปการลา',
+    category: 'การขออนุญาตลา',
+    icon: 'fa-regular fa-file-chart-column',
+    keywords: ['รายงานสรุปการลา', 'สรุปวันลา', 'ข้อมูลการลา', 'สถิติการลาประจำปี'],
+    sidebarId: 'sidebarManu59',
+    submenuId: 17,
+    action: () => changePageLeave(5)
+  },
+  {
+    title: 'ตั้งค่าสิทธิ์วันลา',
+    category: 'การขออนุญาตลา',
+    icon: 'fa-regular fa-sliders',
+    keywords: ['ตั้งค่าสิทธิ์วันลา', 'โควตาวันลา', 'วันลาพักผ่อนสะสม', 'วันลาประจำปี'],
+    sidebarId: 'sidebarManu60',
+    submenuId: 17,
+    action: () => changePageLeave(6)
+  },
+  // รายงานหมู่บ้าน
+  {
+    title: 'รายงานหมู่บ้าน (Dashboard)',
+    category: 'รายงานหมู่บ้าน',
+    icon: 'fa-regular fa-map',
+    keywords: ['รายงานหมู่บ้าน', 'ชุมชน', 'แผนที่หมู่บ้าน', 'สรุปข้อมูลหมู่บ้าน'],
+    sidebarId: 'sidebarManu62',
+    submenuId: 18,
+    action: () => changePageReport(1)
+  },
+  {
+    title: 'เพิ่มรายงานหมู่บ้าน',
+    category: 'รายงานหมู่บ้าน',
+    icon: 'fa-regular fa-file-circle-plus',
+    keywords: ['เพิ่มรายงานหมู่บ้าน', 'บันทึกข้อมูลหมู่บ้าน', 'สำรวจหมู่บ้าน'],
+    sidebarId: 'sidebarManu63',
+    submenuId: 18,
+    action: () => changePageReport(2)
+  },
+  {
+    title: 'ประวัติการรายงานหมู่บ้าน',
+    category: 'รายงานหมู่บ้าน',
+    icon: 'fa-regular fa-clock-rotate-left',
+    keywords: ['ประวัติการรายงานหมู่บ้าน', 'รายงานย้อนหลัง', 'ชุมชน'],
+    sidebarId: 'sidebarManu64',
+    submenuId: 18,
+    action: () => changePageReport(3)
+  },
+  // เสนอโครงการ
+  {
+    title: 'เพิ่มโครงการ (เสนอโครงการ)',
+    category: 'เสนอโครงการ',
+    icon: 'fa-regular fa-house-building',
+    keywords: ['เพิ่มโครงการ', 'เสนอโครงการ', 'เขียนโครงการ', 'ของบประมาณ', 'แผนงาน', 'project'],
+    sidebarId: 'sidebarManu66',
+    submenuId: 7,
+    action: () => changePageProject(1)
+  },
+  {
+    title: 'ตรวจสอบโครงการ',
+    category: 'เสนอโครงการ',
+    icon: 'fa-regular fa-ballot-check',
+    keywords: ['ตรวจสอบโครงการ', 'ติดตามโครงการ', 'อนุมัติโครงการ', 'สถานะโครงการ'],
+    sidebarId: 'sidebarManu67',
+    submenuId: 7,
+    action: () => changePageProject(2)
+  },
+  // จองห้องประชุม
+  {
+    title: 'ห้องประชุม (ข้อมูล/ผัง)',
+    category: 'จองห้องประชุม',
+    icon: 'fa-regular fa-projector',
+    keywords: ['ห้องประชุม', 'ผังห้องประชุม', 'ข้อมูลห้องประชุม', 'จองห้อง'],
+    sidebarId: 'sidebarManu69',
+    submenuId: 13,
+    action: () => changePageMeeting(1)
+  },
+  {
+    title: 'เพิ่มข้อมูลการจองห้องประชุม',
+    category: 'จองห้องประชุม',
+    icon: 'fa-regular fa-calendar-plus',
+    keywords: ['เพิ่มข้อมูลการจองห้องประชุม', 'จองห้องประชุม', 'ขอใช้ห้องประชุม', 'meeting room'],
+    sidebarId: 'sidebarManu70',
+    submenuId: 13,
+    action: () => changePageMeeting(2)
+  },
+  {
+    title: 'อนุมัติการจองห้องประชุม',
+    category: 'จองห้องประชุม',
+    icon: 'fa-regular fa-calendar-check',
+    keywords: ['อนุมัติการจองห้องประชุม', 'อนุมัติห้องประชุม', 'ตรวจสอบการจองห้อง'],
+    sidebarId: 'sidebarManu71',
+    submenuId: 13,
+    action: () => changePageMeeting(3)
+  },
+  // USER
+  {
+    title: 'ผู้ใช้งานระบบ',
+    category: 'ผู้ใช้งานระบบ',
+    icon: 'fa-regular fa-users-gear',
+    keywords: ['ผู้ใช้งานระบบ', 'จัดการผู้ใช้', 'user', 'account', 'บัญชีผู้ใช้งาน', 'สมาชิก', 'รายชื่อผู้ใช้'],
+    sidebarId: 'sidebarManu72',
+    action: () => changePage(11)
+  },
+  {
+    title: 'เพิ่มผู้ใช้งานระบบ',
+    category: 'ผู้ใช้งานระบบ',
+    icon: 'fa-regular fa-user-plus',
+    keywords: ['เพิ่มผู้ใช้งาน', 'เพิ่มสมาชิก', 'สร้างบัญชี', 'สมัครผู้ใช้', 'new user', 'register'],
+    sidebarId: 'sidebarManu73',
+    action: () => changePage(12)
+  },
+  // แจ้งเตือน Line
+  {
+    title: 'บันทึกประกาศแจ้งเตือน Line',
+    category: 'แจ้งเตือนผ่าน Line',
+    icon: 'fa-regular fa-bullhorn',
+    keywords: ['บันทึกประกาศแจ้งเตือน', 'แจ้งเตือนผ่าน Line', 'ส่งไลน์', 'broadcast', 'line notify'],
+    sidebarId: 'sidebarManu75',
+    submenuId: 10,
+    action: () => changePageNotify(1)
+  },
+  {
+    title: 'รายการประกาศแจ้งเตือน Line',
+    category: 'แจ้งเตือนผ่าน Line',
+    icon: 'fa-regular fa-messages',
+    keywords: ['รายการประกาศแจ้งเตือน', 'ประวัติการแจ้งเตือน', 'line notify'],
+    sidebarId: 'sidebarManu76',
+    submenuId: 10,
+    action: () => changePageNotify(2)
+  },
+  {
+    title: 'ตรวจสอบ Line Token',
+    category: 'แจ้งเตือนผ่าน Line',
+    icon: 'fa-regular fa-key',
+    keywords: ['ตรวจสอบ Line Token', 'ตั้งค่าไลน์', 'line notify token', 'เชื่อมต่อไลน์'],
+    sidebarId: 'sidebarManu77',
+    submenuId: 10,
+    action: () => changePageNotify(3)
+  },
+  // ตั้งค่าหน่วยงาน
+  {
+    title: 'ตั้งค่าหน่วยงาน',
+    category: 'ตั้งค่าหน่วยงาน',
+    icon: 'fa-regular fa-gear',
+    keywords: ['ตั้งค่าหน่วยงาน', 'ข้อมูลหน่วยงาน', 'องค์กร', 'เทศบาล', 'อบต.', 'โลโก้', 'ชื่อหน่วยงาน'],
+    sidebarId: 'sidebarManu79',
+    submenuId: 11,
+    action: () => changePageSetAgency(1)
+  },
+  {
+    title: 'ตั้งค่าแผนก/กอง',
+    category: 'ตั้งค่าหน่วยงาน',
+    icon: 'fa-regular fa-sitemap',
+    keywords: ['ตั้งค่าแผนก', 'ตั้งค่ากอง', 'ฝ่าย', 'สำนัก', 'ส่วนงาน'],
+    sidebarId: 'sidebarManu80',
+    submenuId: 11,
+    action: () => changePageSetAgency(2)
+  },
+  {
+    title: 'ตั้งค่าตำแหน่ง',
+    category: 'ตั้งค่าหน่วยงาน',
+    icon: 'fa-regular fa-id-badge',
+    keywords: ['ตั้งค่าตำแหน่ง', 'สายงาน', 'ระดับตำแหน่ง'],
+    sidebarId: 'sidebarManu81',
+    submenuId: 11,
+    action: () => changePageSetAgency(3)
+  },
+  {
+    title: 'ตั้งค่าบัตรประจำตัว',
+    category: 'ตั้งค่าหน่วยงาน',
+    icon: 'fa-regular fa-id-card',
+    keywords: ['ตั้งค่าบัตรประจำตัว', 'บัตรพนักงาน', 'บัตรข้าราชการ', 'badge card'],
+    sidebarId: 'sidebarManu82',
+    submenuId: 11,
+    action: () => changePageSetAgency(9)
+  },
+  // ข้อมูลอ้างอิง
+  {
+    title: 'ข้อมูลอ้างอิง - หน่วยงาน',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-database',
+    keywords: ['ข้อมูลอ้างอิง', 'หน่วยงานที่เกี่ยวข้อง', 'หน่วยงานภายนอก', 'กระทรวง', 'กรม'],
+    sidebarId: 'sidebarManu84',
+    submenuId: 12,
+    action: () => changePageDatabase(1)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - หมวดหนังสือ',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-folder-tree',
+    keywords: ['ข้อมูลอ้างอิง', 'หมวดหนังสือ', 'ประเภทหนังสือ', 'รหัสหมวด'],
+    sidebarId: 'sidebarManu85',
+    submenuId: 12,
+    action: () => changePageDatabase(2)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - วัตถุประสงค์หนังสือ',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-bullseye',
+    keywords: ['ข้อมูลอ้างอิง', 'วัตถุประสงค์', 'เพื่อโปรดทราบ', 'เพื่อพิจารณา', 'เพื่อดำเนินการ'],
+    sidebarId: 'sidebarManu86',
+    submenuId: 12,
+    action: () => changePageDatabase(3)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - ชั้นความเร็ว',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-bolt',
+    keywords: ['ข้อมูลอ้างอิง', 'ชั้นความเร็ว', 'ด่วนที่สุด', 'ด่วนมาก', 'ด่วน', 'ปกติ', 'speed'],
+    sidebarId: 'sidebarManu87',
+    submenuId: 12,
+    action: () => changePageDatabase(4)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - ชั้นความลับ',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-user-secret',
+    keywords: ['ข้อมูลอ้างอิง', 'ชั้นความลับ', 'ลับที่สุด', 'ลับมาก', 'ลับ', 'ปกติ', 'secret'],
+    sidebarId: 'sidebarManu88',
+    submenuId: 12,
+    action: () => changePageDatabase(5)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - สถานะการตอบรับ',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-reply-clock',
+    keywords: ['ข้อมูลอ้างอิง', 'สถานะการตอบรับ', 'ตอบรับแล้ว', 'รอตอบรับ'],
+    sidebarId: 'sidebarManu89',
+    submenuId: 12,
+    action: () => changePageDatabase(6)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - คำบันทึกงาน',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-memo-pad',
+    keywords: ['ข้อมูลอ้างอิง', 'คำบันทึกงาน', 'ข้อความสำเร็จรูป', 'คำสั่งการ'],
+    sidebarId: 'sidebarManu90',
+    submenuId: 12,
+    action: () => changePageDatabase(7)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - หมู่บ้าน',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-house-chimney-window',
+    keywords: ['ข้อมูลอ้างอิง', 'หมู่บ้าน', 'ชุมชน', 'รายชื่อหมู่บ้าน'],
+    sidebarId: 'sidebarManu91',
+    submenuId: 12,
+    action: () => changePageDatabase(8)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - รถส่วนกลาง',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-van-shuttle',
+    keywords: ['ข้อมูลอ้างอิง', 'รถส่วนกลาง', 'ทะเบียนรถ', 'รถตู้', 'ยานพาหนะ'],
+    sidebarId: 'sidebarManu92',
+    submenuId: 12,
+    action: () => changePageDatabase(9)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - ห้องประชุม',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-screen-users',
+    keywords: ['ข้อมูลอ้างอิง', 'ห้องประชุม', 'รายชื่อห้องประชุม', 'ขนาดห้อง'],
+    sidebarId: 'sidebarManu93',
+    submenuId: 12,
+    action: () => changePageDatabase(10)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - ประเภทตำแหน่ง',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-id-badge',
+    keywords: ['ข้อมูลอ้างอิง', 'ประเภทตำแหน่ง', 'ข้าราชการ', 'พนักงานจ้าง', 'ลูกจ้าง'],
+    sidebarId: 'sidebarManu94',
+    submenuId: 12,
+    action: () => changePageDatabase(11)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - รายรับของเดือน',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-circle-dollar',
+    keywords: ['ข้อมูลอ้างอิง', 'รายรับของเดือน', 'เงินเดือน', 'ค่าครองชีพ', 'โบนัส', 'รายได้'],
+    sidebarId: 'sidebarManu95',
+    submenuId: 12,
+    action: () => changePageDatabase(12)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - รายการหักของเดือน',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-circle-minus',
+    keywords: ['ข้อมูลอ้างอิง', 'รายการหักของเดือน', 'ภาษี', 'ประกันสังคม', 'กบข.', 'สหกรณ์', 'หักเงิน'],
+    sidebarId: 'sidebarManu96',
+    submenuId: 12,
+    action: () => changePageDatabase(13)
+  },
+  // SETTING & LICENSE
+  {
+    title: 'สิทธิการใช้งาน',
+    category: 'SETTING',
+    icon: 'fa-regular fa-file-certificate',
+    keywords: ['สิทธิการใช้งาน', 'กำหนดสิทธิ์', 'permission', 'บทบาท', 'หน้าที่', 'จัดการสิทธิ์การเข้าถึง'],
+    sidebarId: 'sidebarManu97',
+    action: () => changePage(19)
+  },
+  {
+    title: 'ตั้งค่าระบบ',
+    category: 'SETTING',
+    icon: 'fa-regular fa-wrench',
+    keywords: ['ตั้งค่าระบบ', 'system settings', 'ค่าเริ่มต้น', 'ระบบทั่วไป'],
+    sidebarId: 'sidebarManu98',
+    action: () => changePage(16)
+  },
+  // PROFILE
+  {
+    title: 'ข้อมูลโปรไฟล์ของฉัน',
+    category: 'โปรไฟล์',
+    icon: 'fa-regular fa-user',
+    keywords: ['โปรไฟล์', 'ข้อมูลส่วนตัว', 'บัญชีฉัน', 'แก้ไขประวัติ', 'รหัสผ่าน', 'profile', 'account'],
+    action: () => changePageProflie(1)
+  },
+  {
+    title: 'ข้อมูลหน่วยงานของฉัน',
+    category: 'โปรไฟล์',
+    icon: 'fa-regular fa-building-flag',
+    keywords: ['หน่วยงานของฉัน', 'สังกัด', 'กอง', 'สำนัก', 'หน่วยงาน'],
+    action: () => changePageProflie(2)
+  },
+  {
+    title: 'บัตรประจำตัวเจ้าหน้าที่',
+    category: 'โปรไฟล์',
+    icon: 'fa-regular fa-id-card-clip',
+    keywords: ['บัตรประจำตัว', 'บัตรเจ้าหน้าที่', 'บัตรพนักงาน', 'พิมพ์บัตร'],
+    action: () => changePageProflie(3)
+  }
+];
+
+function navigateToAppMenu(item) {
+  if (!item || typeof item.action !== 'function') return;
+
+  // 1. ซ่อนผลลัพธ์และเคลียร์ช่องค้นหา
+  const $results = $('#menuSearchResults');
+  const $input = $('#globalMenuSearch');
+  $results.addClass('d-none').empty();
+  $input.val('');
+  $input.blur();
+
+  // 2. เรียกใช้งานฟังก์ชันนำทางของเมนู
+  item.action();
+
+  // 3. ปรับสถานะ Active บน Sidebar
+  if (item.sidebarId) {
+    $('#sidebar .side-menu.top li').removeClass('active');
+    $(`#${item.sidebarId}`).addClass('active');
+  }
+
+  // 4. เปิด Submenu อัตโนมัติหากมี
+  if (item.submenuId) {
+    for (let j = 1; j <= 20; j++) {
+      $(`#submenu${j}`).removeClass('show').addClass('none');
+      $(`#fasubmane${j}`).removeClass('show click');
+    }
+    $(`#submenu${item.submenuId}`).addClass('show').removeClass('none');
+    $(`#fasubmane${item.submenuId}`).addClass('show click');
+  }
+
+  // 5. แจ้งเตือนสั้นๆ
+  toastAlert(4, '🧭 ไปที่: ' + item.title);
+}
+
+function initGlobalMenuSearch() {
+  const searchInput = document.getElementById('globalMenuSearch');
+  const resultsContainer = document.getElementById('menuSearchResults');
+  const searchBtn = document.getElementById('globalMenuSearchBtn');
+  if (!searchInput || !resultsContainer) return;
+
+  let currentResults = [];
+  let selectedIndex = -1;
+
+  function escapeStr(text) {
+    return String(text || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function renderList(items, headerText, queryText = '') {
+    currentResults = items;
+    selectedIndex = -1;
+
+    if (!items || items.length === 0) {
+      resultsContainer.innerHTML = `
+        <div class="p-3 text-center text-muted" style="font-size: 13px;">
+          <i class="fa-regular fa-circle-question me-1 text-secondary"></i>
+          ไม่พบเมนูหรือคำที่ตรงกับ "<strong>${escapeStr(queryText)}</strong>"
+        </div>
+      `;
+      resultsContainer.classList.remove('d-none');
+      return;
+    }
+
+    let html = `<div class="menu-search-header">${headerText} (${items.length})</div>`;
+    items.forEach((item, index) => {
+      let matchedKeywordHtml = '';
+      if (queryText) {
+        const qLower = queryText.toLowerCase();
+        const matchedKw = (item.keywords || []).find(k => k.toLowerCase().includes(qLower) && !item.title.toLowerCase().includes(k.toLowerCase()));
+        if (matchedKw) {
+          matchedKeywordHtml = `<span class="menu-search-match-badge"><i class="fa-regular fa-tag me-1"></i>ตรงกับ: ${escapeStr(matchedKw)}</span>`;
+        }
+      }
+
+      html += `
+        <div class="menu-search-item" data-index="${index}">
+          <div class="menu-search-icon"><i class="${item.icon || 'fa-regular fa-compass'}"></i></div>
+          <div class="menu-search-info">
+            <div class="menu-search-title">${escapeStr(item.title)}</div>
+            <div class="menu-search-category">
+              <span>${escapeStr(item.category)}</span>
+              ${matchedKeywordHtml}
+            </div>
+          </div>
+          <i class="fa-solid fa-arrow-turn-down-left text-muted small ms-auto opacity-50"></i>
+        </div>
+      `;
+    });
+
+    resultsContainer.innerHTML = html;
+    resultsContainer.classList.remove('d-none');
+
+    // ผูกเหตุการณ์คลิกเลือกรายการ
+    const itemEls = resultsContainer.querySelectorAll('.menu-search-item');
+    itemEls.forEach(el => {
+      el.addEventListener('click', function () {
+        const idx = parseInt(this.getAttribute('data-index'), 10);
+        if (currentResults[idx]) {
+          navigateToAppMenu(currentResults[idx]);
+        }
+      });
+      el.addEventListener('mouseenter', function () {
+        itemEls.forEach(item => item.classList.remove('active'));
+        this.classList.add('active');
+        selectedIndex = parseInt(this.getAttribute('data-index'), 10);
+      });
+    });
+  }
+
+  function doSearch(query) {
+    const q = (query || '').trim().toLowerCase();
+    if (!q) {
+      // เมนูยอดนิยม / แนะนำเริ่มต้นเมื่อกดช่องค้นหา
+      const recommended = appNavigationMenus.filter(m => 
+        ['หน้าแรก (Dashboard)', 'สร้างหนังสือส่งภายใน', 'รายการหนังสือส่งภายใน', 'บันทึกเบิกพัสดุ', 'ขอใช้รถส่วนกลาง', 'ยื่นใบลา (ขออนุญาตลา)', 'ผู้ใช้งานระบบ'].includes(m.title)
+      );
+      renderList(recommended.length ? recommended : appNavigationMenus.slice(0, 8), '⚡ เมนูแนะนำด่วน');
+      return;
+    }
+
+    // กรองค้นหาจากชื่อเมนู, หมวดหมู่, และคำสำคัญ
+    const matches = [];
+    appNavigationMenus.forEach(item => {
+      const titleMatch = item.title.toLowerCase().includes(q);
+      const categoryMatch = item.category.toLowerCase().includes(q);
+      const keywordMatch = (item.keywords || []).some(k => k.toLowerCase().includes(q));
+
+      if (titleMatch || categoryMatch || keywordMatch) {
+        let score = 0;
+        if (item.title.toLowerCase() === q) score += 100;
+        else if (item.title.toLowerCase().startsWith(q)) score += 50;
+        else if (titleMatch) score += 30;
+        else if (keywordMatch) score += 20;
+        else if (categoryMatch) score += 10;
+
+        matches.push({ item, score });
+      }
+    });
+
+    // เรียงลำดับความตรงกันจากมากไปน้อย
+    matches.sort((a, b) => b.score - a.score);
+    const topItems = matches.slice(0, 10).map(m => m.item);
+    renderList(topItems, '🔍 ผลการค้นหาเมนู', query);
+  }
+
+  // Event Listeners
+  searchInput.addEventListener('input', function () {
+    doSearch(this.value);
+  });
+
+  searchInput.addEventListener('focus', function () {
+    doSearch(this.value);
+  });
+
+  if (searchBtn) {
+    searchBtn.addEventListener('click', function () {
+      searchInput.focus();
+      doSearch(searchInput.value);
+    });
+  }
+
+  // ควบคุมผ่านแป้นพิมพ์ ArrowUp, ArrowDown, Enter, Esc
+  searchInput.addEventListener('keydown', function (e) {
+    const itemEls = resultsContainer.querySelectorAll('.menu-search-item');
+    if (resultsContainer.classList.contains('d-none') || itemEls.length === 0) {
+      if (e.key === 'ArrowDown' || e.key === 'Enter') {
+        doSearch(this.value);
+      }
+      return;
+    }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      selectedIndex = (selectedIndex + 1) % itemEls.length;
+      updateActiveItem(itemEls);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      selectedIndex = (selectedIndex - 1 + itemEls.length) % itemEls.length;
+      updateActiveItem(itemEls);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (selectedIndex >= 0 && currentResults[selectedIndex]) {
+        navigateToAppMenu(currentResults[selectedIndex]);
+      } else if (currentResults.length > 0) {
+        navigateToAppMenu(currentResults[0]);
+      }
+    } else if (e.key === 'Escape') {
+      resultsContainer.classList.add('d-none');
+    }
+  });
+
+  function updateActiveItem(itemEls) {
+    itemEls.forEach((el, idx) => {
+      if (idx === selectedIndex) {
+        el.classList.add('active');
+        el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      } else {
+        el.classList.remove('active');
+      }
+    });
+  }
+
+  // ปิด Dropdown เมื่อคลิกนอกพื้นที่
+  document.addEventListener('click', function (e) {
+    const form = document.getElementById('menuSearchForm');
+    if (form && !form.contains(e.target)) {
+      resultsContainer.classList.add('d-none');
+    }
+  });
+
+  // คีย์ลัดระดับ Global: Ctrl+K หรือ Cmd+K เพื่อเปิดค้นหาเมนูได้ทันทีจากทุกหน้า
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+      doSearch(searchInput.value);
+    }
+  });
 }
 
 const changePage = (data, skipHash) => {

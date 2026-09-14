@@ -23,7 +23,12 @@
     <nav>
       <i class='fa-solid fa-xmark fa-lg' id="onsideManu"></i>
       <a href="https://www.youtube.com/playlist?list=PLehRw2H1NDea1WlbOJ6WDyxRRz4rikOGb" target="_blank" class="nav-link text-nowrap"><i class="fa-duotone fa-book"></i> คู่มือการใช้งาน</a>
-      <form action="#">
+      <form action="#" id="menuSearchForm" onsubmit="return false;" class="position-relative">
+        <div class="form-input position-relative">
+          <input type="search" id="globalMenuSearch" placeholder="ค้นหาเมนูหรือคำที่เกี่ยวข้อง... (Ctrl+K)" autocomplete="off" aria-label="ค้นหาเมนู">
+          <button type="button" id="globalMenuSearchBtn" class="search-btn"><i class='fa-solid fa-magnifying-glass'></i></button>
+        </div>
+        <div id="menuSearchResults" class="menu-search-results shadow-lg d-none"></div>
       </form>
       
       <div class="dropdown">
