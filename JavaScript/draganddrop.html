@@ -9,6 +9,9 @@ const setEditSetAgency = (obj) => {
     google.script.run.withSuccessHandler((res) => {
       $('#xsaveNewActivityBtn').click();
       toastAlert(2, '🎉 แก้ไขข้อมูลสำเร็จ');
+      if (obj && obj.dataSetAgency10) {
+        setAgencyBackgroundCss(obj.dataSetAgency10.value || obj.dataSetAgency10);
+      }
       getAgencyData();
     }).setEditSetAgency(obj)
   };

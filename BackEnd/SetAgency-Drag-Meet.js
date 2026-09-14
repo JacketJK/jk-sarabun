@@ -16,6 +16,18 @@ const setEditSetAgency = (obj) => {
 
   var range = sheet.getRange('C3:C12');
   range.setValues(valuesToSet);
+  try {
+    CacheService.getScriptCache().remove('ALL_DROPDOWN_DATA');
+  } catch (e) {}
+}
+
+const updateAgencyBackgroundUrl = (bgUrl) => {
+  const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("Institute");
+  sheet.getRange('C12').setValue(bgUrl);
+  try {
+    CacheService.getScriptCache().remove('ALL_DROPDOWN_DATA');
+  } catch (e) {}
+  return bgUrl;
 }
 const getCarSet = () => {
   const ss = SpreadsheetApp.openById(sheetCarReq);

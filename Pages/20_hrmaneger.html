@@ -88,11 +88,16 @@
 
 <div class="data-contianer" id="hrmPage1" style="display: none;">
   <div class="datacontent">
-    <div class="head mb-3">
-      <h5><i class="fa-duotone fa-list-check"></i> การจัดการบุคลากรในหน่วยงาน</h5>
-      <button class="btn btn-outline-green rounded-4 btn-sm px-3" onclick="changePage(12)">
-        <i class="fa-solid fa-plus"></i> เพิ่มบุคลากรในหน่วยงาน
-      </button>
+    <div class="head mb-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <h5 class="mb-0"><i class="fa-duotone fa-list-check"></i> การจัดการบุคลากรในหน่วยงาน</h5>
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-warning rounded-4 btn-sm px-3" onclick="openEditAgencyBgModal()">
+          <i class="fa-duotone fa-image"></i> แก้ไขรูปพื้นหลัง
+        </button>
+        <button type="button" class="btn btn-outline-green rounded-4 btn-sm px-3" onclick="changePage(12)">
+          <i class="fa-solid fa-plus"></i> เพิ่มบุคลากรในหน่วยงาน
+        </button>
+      </div>
     </div>
 
     <div class="container-fluid">

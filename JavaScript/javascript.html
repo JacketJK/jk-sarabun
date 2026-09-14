@@ -2435,11 +2435,9 @@ const settingPage = async () => {
     $("#loginpage_agency, #watermark_agency").html(`${data[1][2]}`);
     $("#watermark_date").html(formatThaiDateTimeFull(new Date()));
 
-    $("#loginpage_container").css({
-      "background-image": `url(${data[9][2]})`,
-      "background-size": "cover",
-      "background-position": "center"
-    });
+    if (data && data[9] && data[9][2]) {
+      setAgencyBackgroundCss(data[9][2]);
+    }
     $("#loader").hide();
   }).getInstitute();
 };
@@ -2528,6 +2526,82 @@ const backMainpage = () => {
   const regictor_data1 = document.getElementById('regictor_data1');
   regictor_data1.addEventListener('keypress', allowOnlyEnglish);
 }
+
+let currentAgencyBgUrl = '';
+
+const setAgencyBackgroundCss = (url) => {
+  if (!url || typeof url !== 'string' || url.trim() === '') return;
+  currentAgencyBgUrl = url.trim();
+  document.documentElement.style.setProperty('--agency-bg', `url("${currentAgencyBgUrl}")`);
+  $('#showDataSetbg').css({
+    'background-image': `url("${currentAgencyBgUrl}")`,
+    'background-size': 'cover',
+    'background-position': 'center'
+  });
+  $('#loginpage_container').css({
+    'background-image': `url("${currentAgencyBgUrl}")`,
+    'background-size': 'cover',
+    'background-position': 'center'
+  });
+  if ($('#editAgencyBgInput').length) {
+    $('#editAgencyBgInput').val(currentAgencyBgUrl);
+  }
+  if ($('#editAgencyBgPreviewBox').length) {
+    $('#editAgencyBgPreviewBox').css('background-image', `url("${currentAgencyBgUrl}")`);
+    $('#editAgencyBgPlaceholder').addClass('d-none');
+  }
+  if ($('#dataSetAgency10').length) {
+    $('#dataSetAgency10').val(currentAgencyBgUrl);
+  }
+};
+
+const openEditAgencyBgModal = () => {
+  const currentUrl = currentAgencyBgUrl || $('#dataSetAgency10').val() || '';
+  $('#editAgencyBgInput').val(currentUrl);
+  previewAgencyBgInput(currentUrl);
+  $('#editAgencyBgModal').modal('show');
+};
+
+const previewAgencyBgInput = (url) => {
+  if (url && url.trim() !== '') {
+    $('#editAgencyBgPreviewBox').css('background-image', `url("${url.trim()}")`);
+    $('#editAgencyBgPlaceholder').addClass('d-none');
+  } else {
+    $('#editAgencyBgPreviewBox').css('background-image', 'none');
+    $('#editAgencyBgPlaceholder').removeClass('d-none');
+  }
+};
+
+const saveAgencyBackground = (e) => {
+  if (e) e.preventDefault();
+  const bgUrl = $('#editAgencyBgInput').val().trim();
+  if (!bgUrl) {
+    toastAlert(0, 'กรุณาระบุ URL รูปพื้นหลัง');
+    return;
+  }
+
+  $('#loader').show();
+  $('#saveAgencyBgBtn').prop('disabled', true);
+
+  google.script.run
+    .withSuccessHandler((res) => {
+      $('#loader').hide();
+      $('#saveAgencyBgBtn').prop('disabled', false);
+      $('#editAgencyBgModal').modal('hide');
+      
+      setAgencyBackgroundCss(bgUrl);
+      toastAlert(1, '🎉 บันทึกรูปพื้นหลังหน่วยงานเรียบร้อยแล้ว');
+      
+      $('#dataSetAgency10').val(bgUrl);
+    })
+    .withFailureHandler((err) => {
+      $('#loader').hide();
+      $('#saveAgencyBgBtn').prop('disabled', false);
+      toastAlert(0, 'เกิดข้อผิดพลาดในการบันทึก: ' + (err.message || err));
+    })
+    .updateAgencyBackgroundUrl(bgUrl);
+};
+
 const getAgencyData = async () => {
   google.script.run.withSuccessHandler((data) =>{
     for (let i = 0; i <= 6; i++) {
@@ -2547,7 +2621,7 @@ const getAgencyData = async () => {
       $('#showDataSet' + (j + 1)).text(data[j][2]);  
     }
     $('#showDataSetlg').prop('src', data[8][2]);
-    $('#showDataSetbg').css('background-image', 'url(' + data[9][2] + ')');
+    setAgencyBackgroundCss(data[9][2]);
   }).getInstitute();
   google.script.run.withSuccessHandler((res) => {
     const now = new Date();

@@ -2611,6 +2611,54 @@
   </div>
 </div>
 
+<!-- Modal แก้ไขรูปพื้นหลังหน่วยงาน / บุคลากร -->
+<div class="modal fade" id="editAgencyBgModal" tabindex="-1" aria-labelledby="editAgencyBgModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow border-0" style="background-color: var(--light); color: var(--dark);">
+      <div class="modal-header border-bottom-0 pb-0">
+        <h5 class="modal-title fw-bold" id="editAgencyBgModalLabel">
+          <i class="fa-duotone fa-image text-warning"></i> แก้ไขรูปพื้นหลัง
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-3">
+        <p class="text-secondary small mb-3">
+          รูปพื้นหลังนี้จะใช้ร่วมกันระหว่าง <b>การจัดการบุคลากรในหน่วยงาน</b> และ <b>รูปพื้นหลังหน่วยงาน</b>
+        </p>
+        
+        <div class="mb-3">
+          <label class="form-label small fw-medium d-block">ตัวอย่างรูปพื้นหลัง :</label>
+          <div class="rounded-4 overflow-hidden border shadow-sm mx-auto position-relative" style="height: 150px; background-color: var(--grey); background-size: cover; background-position: center;" id="editAgencyBgPreviewBox">
+            <div id="editAgencyBgPlaceholder" class="d-flex align-items-center justify-content-center h-100 text-muted small">
+              <i class="fa-duotone fa-image fa-2x me-2"></i> กำลังโหลดตัวอย่างรูปภาพ...
+            </div>
+          </div>
+        </div>
+
+        <form id="editAgencyBgForm" onsubmit="saveAgencyBackground(event)">
+          <div class="mb-3">
+            <label for="editAgencyBgInput" class="form-label small fw-medium">ลิงก์ URL รูปพื้นหลังหน่วยงาน :</label>
+            <div class="field-input">
+              <i class="fa-duotone fa-link input-icon"></i>
+              <input type="url" class="input-field" id="editAgencyBgInput" placeholder="https://example.com/background.jpg" required oninput="previewAgencyBgInput(this.value)">
+            </div>
+            <div class="form-text small text-muted mt-1">
+              ใช้ลิงก์รูปภาพแนวราบ เช่น .png, .jpg, .webp หรือ Google Drive Direct Link
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="button" class="btn btn-secondary rounded-4 px-3 btn-sm" data-bs-dismiss="modal">ยกเลิก</button>
+            <button type="submit" class="btn btn-warning rounded-4 px-4 btn-sm fw-medium" id="saveAgencyBgBtn">
+              <i class="fa-solid fa-cloud-arrow-up"></i> บันทึกพื้นหลัง
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Cancel Doc -->
 <div class="modal fade" id="stampDocModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width: 350px;">
