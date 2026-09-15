@@ -381,6 +381,10 @@ const refreshDocOwnerTable = (btn) => {
 
 const insertDataDocSend = (key) => {
   initHomepageFilters();
+  const tableBody = document.getElementById("docsendTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="4"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
   google.script.run.withSuccessHandler(function(data) {
     $('#refreshDocSendBtn i').removeClass('fa-spin');
     if (!data || !data[1] || data[1].length === 0) {
@@ -424,11 +428,18 @@ const insertDataDocSend = (key) => {
   }).withFailureHandler(function(err) {
     $('#refreshDocSendBtn i').removeClass('fa-spin');
     console.error("Error loading DocSend:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-center p-4 text-danger" colspan="4"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).dataDocInprogress(key);
 };
 
 const insertDataDocOwner = (key) => {
   initHomepageFilters();
+  const tableBody = document.getElementById("docOwnerTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="4"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
   google.script.run.withSuccessHandler(function(data) {
     $('#refreshDocOwnerBtn i').removeClass('fa-spin');
     if (!data || !Array.isArray(data) || data.length === 0) {
@@ -456,7 +467,7 @@ const insertDataDocOwner = (key) => {
       ownerList.push({
         docId: row[0],
         docNum: row[2] || '',
-        date: row[9] ? formatThaiDateTime(new Date(row[9])) : '',
+        date: row[24] || '',
         subject: row[7] || '',
         fromName: row[3] || '',
         fromOrg: row[4] || '',
@@ -477,14 +488,20 @@ const insertDataDocOwner = (key) => {
   }).withFailureHandler(function(err) {
     $('#refreshDocOwnerBtn i').removeClass('fa-spin');
     console.error("Error loading DocOwner:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-center p-4 text-danger" colspan="4"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).dataDocInside(key);
 };  
 function insertActiveData(user) {
   var tableBody = document.getElementById("historyActiveTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="5"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
   
   google.script.run.withSuccessHandler(function(data) {
 
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
       var noDataRow = document.createElement("tr");
       var noDataCell = document.createElement("td");
       
@@ -497,13 +514,10 @@ function insertActiveData(user) {
       return;
     }
 
+    tableBody.innerHTML = "";
+
     for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+      var row = tableBody.insertRow(i);
       
       var cell = row.insertCell(0);
       let num = i + 1;
@@ -535,14 +549,22 @@ function insertActiveData(user) {
         tableBody.rows[i].deleteCell(tableBody.rows[i].cells.length - 1);
       }
     }
+  }).withFailureHandler(function(err) {
+    console.error("Error loading ActiveData:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="5"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).checkActive(user); 
 }
 function insertHistoryData(user) {
   var tableBody = document.getElementById("historyEditTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="6"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
   
   google.script.run.withSuccessHandler(function(data) {
 
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
       var noDataRow = document.createElement("tr");
       var noDataCell = document.createElement("td");
       
@@ -555,13 +577,10 @@ function insertHistoryData(user) {
       return;
     }
 
+    tableBody.innerHTML = "";
+
     for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+      var row = tableBody.insertRow(i);
       
       var cell = row.insertCell(0);
       let num = i + 1;
@@ -590,14 +609,22 @@ function insertHistoryData(user) {
         tableBody.rows[i].deleteCell(tableBody.rows[i].cells.length - 1);
       }
     }
+  }).withFailureHandler(function(err) {
+    console.error("Error loading HistoryData:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="6"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).checkHistory(user); 
 }
 function insertPositionData(user) {
   var tableBody = document.getElementById("positionActiveTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="5"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
   
   google.script.run.withSuccessHandler(function(data) {
 
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
       var noDataRow = document.createElement("tr");
       var noDataCell = document.createElement("td");
       
@@ -610,13 +637,10 @@ function insertPositionData(user) {
       return;
     }
 
+    tableBody.innerHTML = "";
+
     for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+      var row = tableBody.insertRow(i);
       
       var cell = row.insertCell(0);
       let num = i + 1;
@@ -643,14 +667,22 @@ function insertPositionData(user) {
         tableBody.rows[i].deleteCell(tableBody.rows[i].cells.length - 1);
       }
     }
+  }).withFailureHandler(function(err) {
+    console.error("Error loading PositionData:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="5"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).checkPosition(user); 
 }
 const insertDataBroadcast = async () => {
   var tableBody = document.getElementById("broadcastTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="4"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
 
   google.script.run.withSuccessHandler(function(data) {
 
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     var noDataRow = document.createElement("tr");
     var noDataCell = document.createElement("td");
     
@@ -660,10 +692,11 @@ const insertDataBroadcast = async () => {
 
     noDataRow.appendChild(noDataCell);
     tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
+    tableBody.appendChild(noDataRow);
     return;
   }
 
+  tableBody.innerHTML = "";
   var filteredData = [];
   for (var j = 0; j < data.length; j++) { 
       var tokenValue = data[j][14]; 
@@ -675,12 +708,7 @@ const insertDataBroadcast = async () => {
   filteredData.sort((a, b) => a[8].localeCompare(b[8]));
 
     for (var i = 0; i < filteredData.length; i++) { 
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+      var row = tableBody.insertRow(i);
         
       var cell = row.insertCell(0);
       let num = i + 1;
@@ -712,17 +740,25 @@ const insertDataBroadcast = async () => {
         tableBody.rows[i].deleteCell(tableBody.rows[i].cells.length - 1);
       }
     }
+  }).withFailureHandler(function(err) {
+    console.error("Error loading Broadcast:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="4"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).getDataUser();  
 }
 let dataBaordCast;
 
 const insertDataReportcast = async () => {
   var tableBody = document.getElementById("reportcastTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="4"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
 
   google.script.run.withSuccessHandler(function(data) {
     dataBaordCast = data;
 
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     var noDataRow = document.createElement("tr");
     var noDataCell = document.createElement("td");
     
@@ -732,9 +768,10 @@ const insertDataReportcast = async () => {
 
     noDataRow.appendChild(noDataCell);
     tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
+    tableBody.appendChild(noDataRow);
     return;
   }
+  tableBody.innerHTML = "";
   data.sort((a, b) => a[4].localeCompare(b[4]));
 
     for (let i = 0; i < data.length; i++) {
@@ -797,35 +834,39 @@ const insertDataReportcast = async () => {
       $("#pictureModalBtn").click();
       $("#imageModal").attr('src', url);
     }
+  }).withFailureHandler(function(err) {
+    console.error("Error loading Reportcast:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="4"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).getDataBaordcast();
 }
 const insertDataNotify = async () => {
   var tableBody = document.getElementById("notifyTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="6"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
 
   google.script.run.withSuccessHandler(function(data) {
 
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     var noDataRow = document.createElement("tr");
     var noDataCell = document.createElement("td");
     
     noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
     noDataCell.className = "fw-bold text-danger text-center p-4";
-    noDataCell.colSpan = "5"; 
+    noDataCell.colSpan = "6"; 
 
     noDataRow.appendChild(noDataCell);
     tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
+    tableBody.appendChild(noDataRow);
     return;
   }
+  tableBody.innerHTML = "";
   data.sort((a, b) => a[8].localeCompare(b[8]));
     
   for (var i = 0; i < data.length; i++) { 
-    var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+    var row = tableBody.insertRow(i);
       
     var cell = row.insertCell(0);
     let num = i + 1;
@@ -921,14 +962,22 @@ const insertDataNotify = async () => {
         }
       });
     });
+  }).withFailureHandler(function(err) {
+    console.error("Error loading Notify:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="6"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).getDataUser();  
 }
 const insertDataUser = async () => {
   var tableBody = document.getElementById("userTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="9"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
 
   google.script.run.withSuccessHandler(function(data) {
 
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
       var noDataRow = document.createElement("tr");
       var noDataCell = document.createElement("td");
       
@@ -941,6 +990,7 @@ const insertDataUser = async () => {
       return;
     }
 
+  tableBody.innerHTML = "";
   var countingUserNo1 = 0;
   var countingUserNo2 = 0;
   var countingUserNo3 = 0;
@@ -957,12 +1007,7 @@ const insertDataUser = async () => {
         countingUserNo3++; 
         uniqueValues[value] = true; 
       }
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+      var row = tableBody.insertRow(i);
       var publicKey = data[i][0];
       var username = data[i][1];
       var allowuser = data[i][15];
@@ -1075,6 +1120,11 @@ const insertDataUser = async () => {
   $('#countingUserNo2').text(countingUserNo2);
   $('#countingUserNo3').text(countingUserNo3);
   $('#countingUserNo4').text(countingUserNo4);
+  }).withFailureHandler(function(err) {
+    console.error("Error loading Users:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="9"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).getDataUser();
 }
 let dataDocument;
@@ -4519,10 +4569,13 @@ const insertDataOutCanceled = window.insertDataOutCanceled = (key, userLevel) =>
 <script>
 const insertAllHistoryCar = async () => {
   var tableBody = document.getElementById("tableCarHistory-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="12"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
 
   google.script.run.withSuccessHandler(function(data) {
 
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
       var noDataRow = document.createElement("tr");
       var noDataCell = document.createElement("td");
       
@@ -4536,13 +4589,10 @@ const insertAllHistoryCar = async () => {
       return;
     }
 
+    tableBody.innerHTML = "";
+
     for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+      var row = tableBody.insertRow(i);
 
       var cell0 = row.insertCell(0);
       let num = i + 1;
@@ -4642,13 +4692,22 @@ const insertAllHistoryCar = async () => {
         }
       });
     });
+  }).withFailureHandler(function(err) {
+    console.error("Error loading CarHistory:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="12"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).getDataAllHistory();
 }  
 
 const insertAllCalendar = (key) => {
   var tableBody = document.getElementById("tableEditCld-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="8"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
 
   google.script.run.withSuccessHandler(function(data) {
+    if (!data || !data[0]) data = [[], []];
     getDataAllCalendar = data[0];
     if (data[0].length === 0) {
       var noDataRow = document.createElement("tr");
@@ -4664,13 +4723,10 @@ const insertAllCalendar = (key) => {
       return;
     }
 
+    tableBody.innerHTML = "";
+
     for (var i = 0; i < data[0].length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+      var row = tableBody.insertRow(i);
 
       var cell0 = row.insertCell(0);
       let num = i + 1;
@@ -4761,14 +4817,23 @@ const insertAllCalendar = (key) => {
         }
       });
     });
+  }).withFailureHandler(function(err) {
+    console.error("Error loading Calendar:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="8"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).getDataAllCalendar(key);
 } 
 </script>
 <script>
 const insertAllHistoryLeave = (key) => {
   var tableBody = document.getElementById("tableLeaveHistory-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="8"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
 
   google.script.run.withSuccessHandler(function(data) {
+    if (!data) data = [];
     data.reverse();
     if (data.length === 0) {
       var noDataRow = document.createElement("tr");
@@ -4783,13 +4848,10 @@ const insertAllHistoryLeave = (key) => {
       return;
     }
 
+    tableBody.innerHTML = "";
+
     for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+      var row = tableBody.insertRow(i);
 
       var cell0 = row.insertCell(0);
       let num = i + 1;
@@ -4883,6 +4945,11 @@ const insertAllHistoryLeave = (key) => {
     });
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+  }).withFailureHandler(function(err) {
+    console.error("Error loading LeaveHistory:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="8"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).getDataLeaveAll(key);
 } 
 
@@ -5075,10 +5142,13 @@ const insertAllHistoryReport = (key) => {
 }
 const insertDataReportSend = (key) => {
   var tableBody = document.getElementById("reportSentTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="4"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
 
   google.script.run.withSuccessHandler(function(data) {
 
-    if (data[1].length === 0) {
+    if (!data || !data[1] || data[1].length === 0) {
       var noDataRow = document.createElement("tr");
       var noDataCell = document.createElement("td");
       
@@ -5092,15 +5162,11 @@ const insertDataReportSend = (key) => {
       return;
     }
 
+    tableBody.innerHTML = "";
     data[1].sort((a, b) => b[0].localeCompare(a[0]));
 
     for (var i = 0; i < data[1].length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+      var row = tableBody.insertRow(i);
       
       var cell0 = row.insertCell(0);
       cell0.innerHTML = `<div class="d-flex flex-column">
@@ -5138,6 +5204,11 @@ const insertDataReportSend = (key) => {
     }
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+  }).withFailureHandler(function(err) {
+    console.error("Error loading ReportSend:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="4"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).dataReportInprogress(key);
 } 
 const insertTableReportDetail = (data) => {
@@ -5213,10 +5284,13 @@ const insertTableReportDetail = (data) => {
 <script>
 const insertDataProjectSend = (key) => {
   var tableBody = document.getElementById("projectSentTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="4"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
 
   google.script.run.withSuccessHandler(function(data) {
 
-    if (data[1].length === 0) {
+    if (!data || !data[1] || data[1].length === 0) {
       var noDataRow = document.createElement("tr");
       var noDataCell = document.createElement("td");
       
@@ -5230,15 +5304,11 @@ const insertDataProjectSend = (key) => {
       return;
     }
 
+    tableBody.innerHTML = "";
     data[1].sort((a, b) => b[0].localeCompare(a[0]));
 
     for (var i = 0; i < data[1].length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+      var row = tableBody.insertRow(i);
       
       var cell0 = row.insertCell(0);
       cell0.innerHTML = `<div class="d-flex flex-column">
@@ -5274,6 +5344,11 @@ const insertDataProjectSend = (key) => {
     }
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+  }).withFailureHandler(function(err) {
+    console.error("Error loading ProjectSend:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="4"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).dataProjectInprogress(key);
 }   
 const insertTableProjectDetail = (data) => {
@@ -6147,9 +6222,12 @@ const insertMeetingRoomSet = async (data) => {
 }
 const insertLicenseSet = (key) => {
   var tableBody = document.getElementById("licenseSetTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="5"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
 
   google.script.run.withSuccessHandler((data) => {
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
       var noDataRow = document.createElement("tr");
       var noDataCell = document.createElement("td");
       
@@ -6163,13 +6241,10 @@ const insertLicenseSet = (key) => {
       return;
     }
 
+    tableBody.innerHTML = "";
+
     for (let i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+      var row = tableBody.insertRow(i);
 
       var cell0 = row.insertCell(0);
       let num = i + 1;
@@ -6207,14 +6282,22 @@ const insertLicenseSet = (key) => {
         tableBody.rows[i].deleteCell(tableBody.rows[i].cells.length - 1);
       }
     }
+  }).withFailureHandler((err) => {
+    console.error("Error loading LicenseSet:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="5"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).getLicenseData(key);
 }
 const insertStatusHrm = () => {
   var tableBody = document.getElementById("statusHrmTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="7"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
   counting1 = counting2 = counting3 = counting4 = 0; 
 
   google.script.run.withSuccessHandler(function(data) {
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
       var noDataRow = document.createElement("tr");
       var noDataCell = document.createElement("td");
       
@@ -6227,15 +6310,12 @@ const insertStatusHrm = () => {
       tableBody.appendChild(noDataRow);
       return;
     }
+
+    tableBody.innerHTML = "";
     data.sort((a, b) => a[5].localeCompare(b[5]));
 
     for (let i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+      var row = tableBody.insertRow(i);
 
       var cell0 = row.insertCell(0);
       cell0.innerHTML = `
@@ -6337,6 +6417,11 @@ const insertStatusHrm = () => {
       pageList: [10, 20, 50,],
       fixedScroll: true
     });
+  }).withFailureHandler(function(err) {
+    console.error("Error loading StatusHrm:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="7"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).getAlldataHrmStatus();
 }
 const insertDataSaveland = (data) =>{
@@ -6398,9 +6483,12 @@ const insertDataSaveland = (data) =>{
 <script>
 const insertTrashtable = () => {
   var tableBody = document.getElementById("trashTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="4"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
 
   google.script.run.withSuccessHandler((data) => {
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
       var noDataRow = document.createElement("tr");
       var noDataCell = document.createElement("td");
       
@@ -6414,15 +6502,11 @@ const insertTrashtable = () => {
       return;
     }
     
+    tableBody.innerHTML = "";
     data.sort((a, b) => a[0].localeCompare(b[0]));
     let uniqueValues = new Set();
     for (let i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+      var row = tableBody.insertRow(i);
       uniqueValues.add(data[i][0]);
 
       var cell0 = row.insertCell(0);
@@ -6455,13 +6539,21 @@ const insertTrashtable = () => {
       fixedScroll: true
     });
     $('#countingCheckBin1').text(uniqueValues.size);
+  }).withFailureHandler((err) => {
+    console.error("Error loading TrashTable:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="4"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).getDataCheckBin();
 }
 const insertTrashEdittable = () => {
   var tableBody = document.getElementById("trashEditTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="5"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
   
   google.script.run.withSuccessHandler((data) => {
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
       var noDataRow = document.createElement("tr");
       var noDataCell = document.createElement("td");
       
@@ -6475,15 +6567,11 @@ const insertTrashEdittable = () => {
       return;
     }
     
+    tableBody.innerHTML = "";
     data.sort((a, b) => a[0].localeCompare(b[0]));
 
     for (let i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+      var row = tableBody.insertRow(i);
 
       var cell0 = row.insertCell(0);
       cell0.innerHTML = data[i][0];
@@ -6517,16 +6605,24 @@ const insertTrashEdittable = () => {
       pageList: [6, 20, 50, 100],
       fixedScroll: true
     });
+  }).withFailureHandler((err) => {
+    console.error("Error loading TrashEditTable:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="5"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
   }).getDataCheckBin();
 }
 const insertTrashFeetable = () => {
   var tableBody = document.getElementById("trashFeeTable-body");
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td class="text-center py-4 text-muted" colspan="10"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`;
+  }
   const year = $('#feeTrashfilter1').val();
   const month = $('#feeTrashfilter2').val();
 
   google.script.run.withSuccessHandler((data) => {
 
-    if (data[0].length === 0) {
+    if (!data || !data[0] || data[0].length === 0) {
       var noDataRow = document.createElement("tr");
       var noDataCell = document.createElement("td");
       
@@ -6539,13 +6635,11 @@ const insertTrashFeetable = () => {
       tableBody.appendChild(noDataRow);
       return;
     }
+
+    tableBody.innerHTML = "";
+
     for (let i = 0; i < data[0].length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
-      }
+      var row = tableBody.insertRow(i);
 
       var cell0 = row.insertCell(0);
       cell0.innerHTML = i + 1;
@@ -6669,6 +6763,12 @@ const insertTrashFeetable = () => {
     $('.loadContianer').addClass('d-none');
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+  }).withFailureHandler((err) => {
+    console.error("Error loading TrashFeeTable:", err);
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="10"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    }
+    $('.loadContianer').addClass('d-none');
   }).getfeeTrashData(year, month);
 }
 

@@ -531,6 +531,7 @@ function loadEquipmentTable() {
   };
 
   $('#loader').show();
+  $('#equipmentTable-body').html(`<tr><td class="text-center py-4 text-muted" colspan="8"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`);
   google.script.run
     .withSuccessHandler(function (list) {
       $('#loader').hide();
@@ -539,6 +540,7 @@ function loadEquipmentTable() {
     })
     .withFailureHandler(function (err) {
       $('#loader').hide();
+      $('#equipmentTable-body').html(`<tr><td class="text-danger text-center p-4" colspan="8"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`);
       toastAlert(0, '⚠️ โหลดข้อมูลครุภัณฑ์ล้มเหลว: ' + err.message);
     })
     .getEquipmentList(filter);
@@ -823,6 +825,7 @@ function loadMaterialTable() {
   };
 
   $('#loader').show();
+  $('#parcelmentTable-body').html(`<tr><td class="text-center py-4 text-muted" colspan="8"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`);
   google.script.run
     .withSuccessHandler(function (list) {
       $('#loader').hide();
@@ -831,6 +834,7 @@ function loadMaterialTable() {
     })
     .withFailureHandler(function (err) {
       $('#loader').hide();
+      $('#parcelmentTable-body').html(`<tr><td class="text-danger text-center p-4" colspan="8"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`);
       toastAlert(0, '⚠️ โหลดข้อมูลวัสดุล้มเหลว: ' + err.message);
     })
     .getMaterialList(filter);
@@ -1088,6 +1092,7 @@ function loadBorrowTable() {
   };
 
   $('#loader').show();
+  $('#borrowTable-body').html(`<tr><td class="text-center py-4 text-muted" colspan="11"><div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...</td></tr>`);
   google.script.run
     .withSuccessHandler(function (list) {
       $('#loader').hide();
@@ -1096,6 +1101,7 @@ function loadBorrowTable() {
     })
     .withFailureHandler(function (err) {
       $('#loader').hide();
+      $('#borrowTable-body').html(`<tr><td class="text-danger text-center p-4" colspan="11"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`);
       toastAlert(0, '⚠️ โหลดข้อมูลการยืม/คืนล้มเหลว: ' + err.message);
     })
     .getBorrowList(filter);
