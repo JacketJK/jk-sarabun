@@ -102,7 +102,7 @@ function renderHomeDocSendTable() {
     }
     if (homeDocSendState.searchTerm) {
       const q = homeDocSendState.searchTerm.toLowerCase().trim();
-      const statusTextMap = { 0: 'ยังไม่ได้เปิด', 1: 'เปิดแล้ว', 2: 'ส่งตีกลับ', 3: 'เกษียนแล้ว' };
+      const statusTextMap = { 0: 'ยังไม่ได้เปิด', 1: 'เปิดแล้ว', 2: 'ส่งตีกลับ', 3: 'เกษียนแล้ว', '-1': 'ยกเลิกแล้ว' };
       const sendType = item.isOriginal ? 'ส่งต้นฉบับ' : 'ไม่ส่งต้นฉบับ';
       const textToSearch = `${item.docNum} ${item.subject} ${item.senderName} ${item.senderAgency} ${item.dateStr} ${sendType} ${statusTextMap[item.status] || ''}`.toLowerCase();
       if (!textToSearch.includes(q)) return false;
@@ -136,6 +136,7 @@ function renderHomeDocSendTable() {
       1: '<i class="fa-duotone fa-envelope-open-text fa-xl" style="color: var(--box2)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เปิดแล้ว"></i>',
       2: '<i class="fa-duotone fa-share-all fa-flip-horizontal fa-xl" style="color: var(--box4)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ส่งตีกลับ"></i>',
       3: '<i class="fa-duotone fa-pencil fa-xl" style="color: var(--box3)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="เกษียนแล้ว"></i>',
+      '-1': '<i class="fa-duotone fa-circle-xmark fa-xl text-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ยกเลิกแล้ว"></i>',
     };
 
     let html = '';
@@ -205,7 +206,8 @@ function renderHomeDocOwnerTable() {
         3: 'กำลังดำเนินการ',
         2: 'เตรียมส่ง',
         4: 'เสร็จแล้ว',
-        5: 'ปิดงานแล้ว'
+        5: 'ปิดงานแล้ว',
+        '-1': 'ยกเลิกหนังสือ'
       };
       const sendType = item.isOriginal ? 'ส่งต้นฉบับ' : 'ไม่ส่งต้นฉบับ';
       const textToSearch = `${item.docNum} ${item.subject} ${item.fromName} ${item.fromOrg} ${item.toName} ${item.toOrg} ${item.date} ${sendType} ${statusTextMap[item.status] || ''}`.toLowerCase();
@@ -242,6 +244,7 @@ function renderHomeDocOwnerTable() {
       2: "<i class='fa-duotone fa-inboxes fa-xl' style='color: var(--box1);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เตรียมส่ง'></i>",
       4: "<i class='fa-duotone fa-check-to-slot fa-xl' style='color: var(--box2);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='เสร็จแล้ว'></i>",
       5: "<i class='fa-duotone fa-power-off fa-xl' style='color: var(--orange);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ปิดงานแล้ว'></i>",
+      '-1': "<i class='fa-duotone fa-circle-xmark fa-xl' style='color: var(--bs-danger);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ยกเลิกหนังสือ'></i>"
     };
 
     let html = '';
