@@ -6668,4 +6668,38 @@ const populateDataDriverlist = (data) => {
       datalist.appendChild(option);
   });
 };
+
+/**
+ * showConfirmModal - แสดง Modal ยืนยันการดำเนินการ (แทน confirm)
+ * @param {string} message - ข้อความที่ต้องการแสดง
+ * @param {Function} onConfirm - callback เมื่อกดยืนยัน
+ */
+function showConfirmModal(message, onConfirm) {
+  var msgEl = document.getElementById('confirmActionMessage');
+  var btnEl = document.getElementById('confirmActionBtn');
+  if (msgEl) msgEl.textContent = message;
+  var modalEl = document.getElementById('confirmActionModal');
+  var modal = new bootstrap.Modal(modalEl);
+  // clone & replace เพื่อลบ event listener เก่า
+  var newBtn = btnEl.cloneNode(true);
+  btnEl.parentNode.replaceChild(newBtn, btnEl);
+  newBtn.addEventListener('click', function() {
+    modal.hide();
+    if (typeof onConfirm === 'function') onConfirm();
+  });
+  modal.show();
+}
+
+/**
+ * showAlertModal - แสดง Modal ข้อความแจ้งเตือน (แทน alert)
+ * @param {string} message - ข้อความที่ต้องการแสดง
+ */
+function showAlertModal(message) {
+  var msgEl = document.getElementById('infoAlertMessage');
+  if (msgEl) msgEl.textContent = message;
+  var modalEl = document.getElementById('infoAlertModal');
+  var modal = new bootstrap.Modal(modalEl);
+  modal.show();
+}
+
 </script>

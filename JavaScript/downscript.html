@@ -1657,7 +1657,7 @@ $('#confirmEditCalendarBtn').on('click', ()=>{
     $('#xEditCalendarModalBtn').click();
     toastAlert(1, '🌟 แก้ไขข้อมูลสำเร็จ');
     insertAllCalendar(localStorage.getItem('publicKey'));
-    alert(res)
+    showAlertModal(res)
   }).editActivityCalendar(obj);
 });
 const deleteActivity = (key) => {

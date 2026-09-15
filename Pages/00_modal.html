@@ -3103,3 +3103,89 @@
     </div>
   </div>
 </div>
+
+<!-- Sub-Equipment Prompt Modal (แทน prompt ×4) -->
+<div class="modal fade" id="subEquipPromptModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+    <div class="modal-content rounded-5">
+      <div class="modal-body p-4">
+        <h5 class="text-center mb-4">
+          <i class="fa-duotone fa-box-open-full fa-xl text-primary me-2"></i> เพิ่มรายการทรัพย์สินย่อย
+        </h5>
+        <form id="subEquipPromptForm">
+          <div class="mb-3">
+            <label class="form-label small fw-medium" for="subEquipGfmis">หมายเลขครุภัณฑ์ GFMIS (ถ้ามี)</label>
+            <div class="field-input">
+              <i class="fa-duotone fa-barcode input-icon fs-5"></i>
+              <input type="text" class="form-field" id="subEquipGfmis" placeholder="เช่น 7440-009-0001">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-medium" for="subEquipNumber">หมายเลขครุภัณฑ์ย่อย</label>
+            <div class="field-input">
+              <i class="fa-duotone fa-hashtag input-icon fs-5"></i>
+              <input type="text" class="form-field" id="subEquipNumber" placeholder="เช่น SUB-001">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-medium" for="subEquipName">ชื่อรายการทรัพย์สินย่อย</label>
+            <div class="field-input">
+              <i class="fa-duotone fa-tag input-icon fs-5"></i>
+              <input type="text" class="form-field" id="subEquipName" placeholder="เช่น จอมอนิเตอร์ Dell 24 นิ้ว">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-medium" for="subEquipPrice">มูลค่าสุทธิ (บาท)</label>
+            <div class="field-input">
+              <i class="fa-duotone fa-coins input-icon fs-5"></i>
+              <input type="number" class="form-field" id="subEquipPrice" placeholder="0.00" min="0" step="0.01">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer flex-nowrap p-0" style="border-color:var(--grey)">
+        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" id="confirmSubEquipBtn">
+          <strong><i class="fa-solid fa-check me-1"></i> ตกลง</strong>
+        </button>
+        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal">
+          <i class="fa-solid fa-xmark me-1"></i> ยกเลิก
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Action Modal (แทน confirm) -->
+<div class="modal fade" id="confirmActionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
+    <div class="modal-content rounded-5">
+      <div class="modal-body p-4 text-center">
+        <h1><i class="mb-2 fa-solid fa-triangle-exclamation fa-bounce fa-2xl" style="color: var(--yellow);"></i></h1>
+        <h5 class="mb-0 fw-medium" id="confirmActionMessage">ยืนยันการดำเนินการหรือไม่?</h5>
+      </div>
+      <div class="modal-footer flex-nowrap p-0" style="border-color:var(--grey)">
+        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" id="confirmActionBtn">
+          <strong>ยืนยัน</strong>
+        </button>
+        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal">ยกเลิก</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Info Alert Modal (แทน alert) -->
+<div class="modal fade" id="infoAlertModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
+    <div class="modal-content rounded-5">
+      <div class="modal-body p-4 text-center">
+        <h1><i class="mb-2 fa-duotone fa-circle-check fa-2xl" style="color: var(--green);"></i></h1>
+        <p class="mb-0 fw-medium" id="infoAlertMessage"></p>
+      </div>
+      <div class="modal-footer flex-nowrap p-0" style="border-color:var(--grey)">
+        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-12 py-3 m-0 rounded-0" data-bs-dismiss="modal">
+          <strong>ตกลง</strong>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -420,30 +420,48 @@ function resetEquipmentForm() {
 }
 
 function handleAddSubEquipmentPrompt() {
-  const gfmis = prompt('ระบุหมายเลขครุภัณฑ์ GFMIS (ถ้ามี):', '') || '';
-  const number = prompt('ระบุหมายเลขครุภัณฑ์ย่อย:', '') || '';
-  const name = prompt('ระบุชื่อรายการทรัพย์สินย่อย:', '') || '';
-  const price = prompt('ระบุมูลค่าสุทธิ (บาท):', '0') || '0';
+  // เคลียร์ฟอร์มก่อนเปิด Modal
+  $('#subEquipGfmis').val('');
+  $('#subEquipNumber').val('');
+  $('#subEquipName').val('');
+  $('#subEquipPrice').val('');
 
-  if (!name && !number) {
-    return;
-  }
+  var modalEl = document.getElementById('subEquipPromptModal');
+  var modal = new bootstrap.Modal(modalEl);
 
-  $('#emptySubEquipRow').remove();
-  const rowHtml = `
-    <tr class="sub-equip-row text-center">
-      <td class="sub-gfmis">${gfmis}</td>
-      <td class="sub-number">${number}</td>
-      <td class="sub-name text-start">${name}</td>
-      <td class="sub-price text-end">${Number(price).toLocaleString()}</td>
-      <td>
-        <button type="button" class="btn btn-outline-danger btn-sm rounded-circle" onclick="$(this).closest('tr').remove()">
-          <i class="fa-solid fa-trash-can"></i>
-        </button>
-      </td>
-    </tr>
-  `;
-  $('#subEquipmentTable-body').append(rowHtml);
+  // clone & replace ปุ่มเพื่อลบ event listener เก่า
+  var oldBtn = document.getElementById('confirmSubEquipBtn');
+  var newBtn = oldBtn.cloneNode(true);
+  oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+
+  newBtn.addEventListener('click', function() {
+    var gfmis = $('#subEquipGfmis').val().trim();
+    var number = $('#subEquipNumber').val().trim();
+    var name = $('#subEquipName').val().trim();
+    var price = $('#subEquipPrice').val().trim() || '0';
+
+    if (!name && !number) {
+      toastAlert(0, '⚠️ กรุณาระบุชื่อหรือหมายเลขครุภัณฑ์ย่อย');
+      return;
+    }
+
+    modal.hide();
+    $('#emptySubEquipRow').remove();
+    var rowHtml = '<tr class="sub-equip-row text-center">' +
+      '<td class="sub-gfmis">' + gfmis + '</td>' +
+      '<td class="sub-number">' + number + '</td>' +
+      '<td class="sub-name text-start">' + name + '</td>' +
+      '<td class="sub-price text-end">' + Number(price).toLocaleString() + '</td>' +
+      '<td>' +
+        '<button type="button" class="btn btn-outline-danger btn-sm rounded-circle" onclick="$(this).closest(\'tr\').remove()">' +
+          '<i class="fa-solid fa-trash-can"></i>' +
+        '</button>' +
+      '</td>' +
+    '</tr>';
+    $('#subEquipmentTable-body').append(rowHtml);
+  });
+
+  modal.show();
 }
 
 function editEquipmentByKey(key) {
@@ -787,27 +805,25 @@ function deleteEquipmentByKey(key) {
   const item = currentEquipmentList.find(e => e.key === key);
   const name = item ? item.itemName : key;
 
-  if (!confirm(`คุณต้องการลบข้อมูลครุภัณฑ์ "${name}" ใช่หรือไม่? การกระทำนี้ไม่สามารถเรียกคืนได้`)) {
-    return;
-  }
-
-  $('#loader').show();
-  google.script.run
-    .withSuccessHandler(function (res) {
-      $('#loader').hide();
-      if (res && res.status) {
-        toastAlert(1, '🗑️ ลบข้อมูลเรียบร้อยแล้ว');
-        loadEquipmentTable();
-        loadEquipmentDashboard();
-      } else {
-        toastAlert(0, '⚠️ ลบข้อมูลไม่สำเร็จ: ' + (res ? res.message : ''));
-      }
-    })
-    .withFailureHandler(function (err) {
-      $('#loader').hide();
-      toastAlert(0, '⚠️ เกิดข้อผิดพลาด: ' + err.message);
-    })
-    .deleteEquipment(key);
+  showConfirmModal('คุณต้องการลบข้อมูลครุภัณฑ์ "' + name + '" ใช่หรือไม่? การกระทำนี้ไม่สามารถเรียกคืนได้', function() {
+    $('#loader').show();
+    google.script.run
+      .withSuccessHandler(function (res) {
+        $('#loader').hide();
+        if (res && res.status) {
+          toastAlert(1, '🗑️ ลบข้อมูลเรียบร้อยแล้ว');
+          loadEquipmentTable();
+          loadEquipmentDashboard();
+        } else {
+          toastAlert(0, '⚠️ ลบข้อมูลไม่สำเร็จ: ' + (res ? res.message : ''));
+        }
+      })
+      .withFailureHandler(function (err) {
+        $('#loader').hide();
+        toastAlert(0, '⚠️ เกิดข้อผิดพลาด: ' + err.message);
+      })
+      .deleteEquipment(key);
+  });
 }
 
 /**
@@ -1057,27 +1073,25 @@ function deleteMaterialByKey(key) {
   const item = currentMaterialList.find(m => m.key === key);
   const name = item ? item.matName : key;
 
-  if (!confirm(`คุณต้องการลบข้อมูลวัสดุ "${name}" ใช่หรือไม่?`)) {
-    return;
-  }
-
-  $('#loader').show();
-  google.script.run
-    .withSuccessHandler(function (res) {
-      $('#loader').hide();
-      if (res && res.status) {
-        toastAlert(1, '🗑️ ลบข้อมูลวัสดุสำเร็จ');
-        loadMaterialTable();
-        loadEquipmentDashboard();
-      } else {
-        toastAlert(0, '⚠️ ลบข้อมูลไม่สำเร็จ: ' + (res ? res.message : ''));
-      }
-    })
-    .withFailureHandler(function (err) {
-      $('#loader').hide();
-      toastAlert(0, '⚠️ เกิดข้อผิดพลาด: ' + err.message);
-    })
-    .deleteMaterial(key);
+  showConfirmModal('คุณต้องการลบข้อมูลวัสดุ "' + name + '" ใช่หรือไม่?', function() {
+    $('#loader').show();
+    google.script.run
+      .withSuccessHandler(function (res) {
+        $('#loader').hide();
+        if (res && res.status) {
+          toastAlert(1, '🗑️ ลบข้อมูลวัสดุสำเร็จ');
+          loadMaterialTable();
+          loadEquipmentDashboard();
+        } else {
+          toastAlert(0, '⚠️ ลบข้อมูลไม่สำเร็จ: ' + (res ? res.message : ''));
+        }
+      })
+      .withFailureHandler(function (err) {
+        $('#loader').hide();
+        toastAlert(0, '⚠️ เกิดข้อผิดพลาด: ' + err.message);
+      })
+      .deleteMaterial(key);
+  });
 }
 
 /**
