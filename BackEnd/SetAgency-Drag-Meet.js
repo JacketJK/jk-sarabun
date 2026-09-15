@@ -305,50 +305,70 @@ const _ensureAndGetDataSet = (sheetName, defaultItems) => {
   return sheet.getRange("B3:C" + lastRow).getValues();
 };
 
-const getEquipCategorySet = () => _ensureAndGetDataSet("EquipCategory", [
-  'ครุภัณฑ์สำนักงาน', 'ครุภัณฑ์คอมพิวเตอร์', 'ครุภัณฑ์ยานพาหนะและขนส่ง', 
-  'ครุภัณฑ์การเกษตร', 'ครุภัณฑ์โฆษณาและเผยแพร่', 'ครุภัณฑ์งานบ้านงานครัว', 
-  'ครุภัณฑ์วิทยาศาสตร์และการแพทย์', 'ครุภัณฑ์สำรวจ', 'ครุภัณฑ์ดนตรีและนาฏศิลป์', 'ครุภัณฑ์อื่น ๆ'
-]);
+function getEquipCategorySet() {
+  return _ensureAndGetDataSet("EquipCategory", [
+    'ครุภัณฑ์สำนักงาน', 'ครุภัณฑ์คอมพิวเตอร์', 'ครุภัณฑ์ยานพาหนะและขนส่ง', 
+    'ครุภัณฑ์การเกษตร', 'ครุภัณฑ์โฆษณาและเผยแพร่', 'ครุภัณฑ์งานบ้านงานครัว', 
+    'ครุภัณฑ์วิทยาศาสตร์และการแพทย์', 'ครุภัณฑ์สำรวจ', 'ครุภัณฑ์ดนตรีและนาฏศิลป์', 'ครุภัณฑ์อื่น ๆ'
+  ]);
+}
 
-const getEquipTypeSet = () => _ensureAndGetDataSet("EquipType", [
-  'เครื่องปรับอากาศ', 'คอมพิวเตอร์และอุปกรณ์', 'เครื่องพิมพ์/สแกนเนอร์', 'โต๊ะ/เก้าอี้สำนักงาน', 
-  'ตู้เก็บเอกสาร', 'กล้องถ่ายภาพ/วิดีโอ', 'โทรทัศน์/จอภาพ', 'ยานพาหนะ', 'เครื่องสำรองไฟฟ้า', 'อุปกรณ์เครือข่าย'
-]);
+function getEquipTypeSet() {
+  return _ensureAndGetDataSet("EquipType", [
+    'เครื่องปรับอากาศ', 'คอมพิวเตอร์และอุปกรณ์', 'เครื่องพิมพ์/สแกนเนอร์', 'โต๊ะ/เก้าอี้สำนักงาน', 
+    'ตู้เก็บเอกสาร', 'กล้องถ่ายภาพ/วิดีโอ', 'โทรทัศน์/จอภาพ', 'ยานพาหนะ', 'เครื่องสำรองไฟฟ้า', 'อุปกรณ์เครือข่าย'
+  ]);
+}
 
-const getEquipStatusSet = () => _ensureAndGetDataSet("EquipStatus", [
-  'พร้อมใช้งาน', 'กำลังใช้งาน', 'ชำรุด', 'รอซ่อม', 'รอจำหน่าย', 'ตัดจำหน่าย'
-]);
+function getEquipStatusSet() {
+  return _ensureAndGetDataSet("EquipStatus", [
+    'พร้อมใช้งาน', 'กำลังใช้งาน', 'ชำรุด', 'รอซ่อม', 'รอจำหน่าย', 'ตัดจำหน่าย'
+  ]);
+}
 
-const getEquipAcquireSet = () => _ensureAndGetDataSet("EquipAcquire", [
-  'ตกลงราคา', 'สอบราคา', 'ประกวดราคา', 'วิธีเฉพาะเจาะจง', 'คัดเลือก', 'รับบริจาค'
-]);
+function getEquipAcquireSet() {
+  return _ensureAndGetDataSet("EquipAcquire", [
+    'ตกลงราคา', 'สอบราคา', 'ประกวดราคา', 'วิธีเฉพาะเจาะจง', 'คัดเลือก', 'รับบริจาค'
+  ]);
+}
 
-const getEquipExpenseSet = () => _ensureAndGetDataSet("EquipExpense", [
-  'งบลงทุน', 'งบดำเนินงาน', 'เงินอุดหนุน', 'เงินนอกงบประมาณ'
-]);
+function getEquipExpenseSet() {
+  return _ensureAndGetDataSet("EquipExpense", [
+    'งบลงทุน', 'งบดำเนินงาน', 'เงินอุดหนุน', 'เงินนอกงบประมาณ'
+  ]);
+}
 
-const getEquipVendorSet = () => _ensureAndGetDataSet("EquipVendor", [
-  'ห้างหุ้นส่วนจำกัด/บริษัททั่วไป', 'ร้านค้าท้องถิ่น', 'ผู้จัดจำหน่ายส่วนกลาง', 'ผู้บริจาค'
-]);
+function getEquipVendorSet() {
+  return _ensureAndGetDataSet("EquipVendor", [
+    'ห้างหุ้นส่วนจำกัด/บริษัททั่วไป', 'ร้านค้าท้องถิ่น', 'ผู้จัดจำหน่ายส่วนกลาง', 'ผู้บริจาค'
+  ]);
+}
 
-const getMatCategorySet = () => _ensureAndGetDataSet("MatCategory", [
-  'วัสดุสำนักงาน', 'วัสดุคอมพิวเตอร์', 'วัสดุไฟฟ้าและวิทยุ', 'วัสดุงานบ้านงานครัว',
-  'วัสดุยานพาหนะและขนส่ง', 'วัสดุการเกษตร', 'วัสดุก่อสร้าง', 'วัสดุอื่น ๆ'
-]);
+function getMatCategorySet() {
+  return _ensureAndGetDataSet("MatCategory", [
+    'วัสดุสำนักงาน', 'วัสดุคอมพิวเตอร์', 'วัสดุไฟฟ้าและวิทยุ', 'วัสดุงานบ้านงานครัว',
+    'วัสดุยานพาหนะและขนส่ง', 'วัสดุการเกษตร', 'วัสดุก่อสร้าง', 'วัสดุอื่น ๆ'
+  ]);
+}
 
-const getMatTypeSet = () => _ensureAndGetDataSet("MatType", [
-  'กระดาษและสิ่งพิมพ์', 'เครื่องเขียนและอุปกรณ์', 'หมึกพิมพ์และโทนเนอร์', 'อุปกรณ์บันทึกข้อมูล',
-  'อุปกรณ์ทำความสะอาด', 'หลอดไฟและอุปกรณ์ไฟฟ้า', 'อะไหล่และอุปกรณ์ซ่อมบำรุง'
-]);
+function getMatTypeSet() {
+  return _ensureAndGetDataSet("MatType", [
+    'กระดาษและสิ่งพิมพ์', 'เครื่องเขียนและอุปกรณ์', 'หมึกพิมพ์และโทนเนอร์', 'อุปกรณ์บันทึกข้อมูล',
+    'อุปกรณ์ทำความสะอาด', 'หลอดไฟและอุปกรณ์ไฟฟ้า', 'อะไหล่และอุปกรณ์ซ่อมบำรุง'
+  ]);
+}
 
-const getEquipUnitSet = () => _ensureAndGetDataSet("EquipUnit", [
-  'เครื่อง', 'ชุด', 'คัน', 'หลัง', 'ตัว', 'ชิ้น', 'อัน', 'รีม', 'กล่อง', 'เล่ม', 'แพ็ค', 'ม้วน', 'แผ่น'
-]);
+function getEquipUnitSet() {
+  return _ensureAndGetDataSet("EquipUnit", [
+    'เครื่อง', 'ชุด', 'คัน', 'หลัง', 'ตัว', 'ชิ้น', 'อัน', 'รีม', 'กล่อง', 'เล่ม', 'แพ็ค', 'ม้วน', 'แผ่น'
+  ]);
+}
 
-const getEquipLocationSet = () => _ensureAndGetDataSet("EquipLocation", [
-  'ห้องพัสดุกลาง', 'ห้องสำนักงานปลัด', 'ห้องกองคลัง', 'ห้องกองช่าง', 'ห้องประชุมสภา', 'ห้องศูนย์ข้อมูล/เซิร์ฟเวอร์', 'อาคารจอดรถ'
-]);
+function getEquipLocationSet() {
+  return _ensureAndGetDataSet("EquipLocation", [
+    'ห้องพัสดุกลาง', 'ห้องสำนักงานปลัด', 'ห้องกองคลัง', 'ห้องกองช่าง', 'ห้องประชุมสภา', 'ห้องศูนย์ข้อมูล/เซิร์ฟเวอร์', 'อาคารจอดรถ'
+  ]);
+}
 
 const saveOrderJobWord = (order) => {
   const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("JobWord"); 
@@ -775,16 +795,16 @@ const saveOrderDataSet = (sheetName, order) => {
   }
 };
 
-const saveOrderEquipCategory = (order) => saveOrderDataSet('EquipCategory', order);
-const saveOrderEquipType = (order) => saveOrderDataSet('EquipType', order);
-const saveOrderEquipStatus = (order) => saveOrderDataSet('EquipStatus', order);
-const saveOrderEquipAcquire = (order) => saveOrderDataSet('EquipAcquire', order);
-const saveOrderEquipExpense = (order) => saveOrderDataSet('EquipExpense', order);
-const saveOrderEquipVendor = (order) => saveOrderDataSet('EquipVendor', order);
-const saveOrderMatCategory = (order) => saveOrderDataSet('MatCategory', order);
-const saveOrderMatType = (order) => saveOrderDataSet('MatType', order);
-const saveOrderEquipUnit = (order) => saveOrderDataSet('EquipUnit', order);
-const saveOrderEquipLocation = (order) => saveOrderDataSet('EquipLocation', order);
+function saveOrderEquipCategory(order) { return saveOrderDataSet('EquipCategory', order); }
+function saveOrderEquipType(order) { return saveOrderDataSet('EquipType', order); }
+function saveOrderEquipStatus(order) { return saveOrderDataSet('EquipStatus', order); }
+function saveOrderEquipAcquire(order) { return saveOrderDataSet('EquipAcquire', order); }
+function saveOrderEquipExpense(order) { return saveOrderDataSet('EquipExpense', order); }
+function saveOrderEquipVendor(order) { return saveOrderDataSet('EquipVendor', order); }
+function saveOrderMatCategory(order) { return saveOrderDataSet('MatCategory', order); }
+function saveOrderMatType(order) { return saveOrderDataSet('MatType', order); }
+function saveOrderEquipUnit(order) { return saveOrderDataSet('EquipUnit', order); }
+function saveOrderEquipLocation(order) { return saveOrderDataSet('EquipLocation', order); }
 
 
 //////////////////////////// Setting //////////////////////////////
