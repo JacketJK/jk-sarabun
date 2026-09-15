@@ -172,7 +172,10 @@ allSideMenu.forEach(item => {
 
 for (let i = 1; i <= 20; i++) {
   $(`#aheadsubmane${i}, #fasubmane${i}`).click(function(e) {
-    e.stopPropagation();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     const isSubMenuOpen = $(`#submenu${i}`).hasClass("show");
 
     for (let j = 1; j <= 20; j++) {
@@ -186,6 +189,16 @@ for (let i = 1; i <= 20; i++) {
     }
   });
 }
+
+// คลิกบนแถว headsubmane เพื่อเปิด/ปิดเมนูย่อยทันทีโดยไม่ต้องโหลดหน้า
+$('#sidebar').on('click', '.headsubmane', function(e) {
+  if (e) {
+    e.preventDefault();
+  }
+  if (e.target === this) {
+    $(this).find('a[id^="aheadsubmane"]').trigger('click');
+  }
+});
 
 const menuBar = document.getElementById('onsideManu');
 const sidebar = document.getElementById('sidebar');
@@ -511,7 +524,6 @@ function syncSidebarActive(page, sub) {
 function restorePageFromHash(targetHash) {
   const hash = targetHash || getAppHash();
   if (!hash) {
-    changePage(1, true);
     return;
   }
 
@@ -677,8 +689,6 @@ function restorePageFromHash(targetHash) {
     }
   } else if (page && page >= 1 && page <= 30) {
     changePage(page, true);
-  } else {
-    changePage(1, true);
   }
 }
 
@@ -687,23 +697,24 @@ function initAppHashRouter() {
   const initialHash = getAppHash();
   if (initialHash) {
     restorePageFromHash(initialHash);
+  } else {
+    changePage(1, true);
   }
 
   if (typeof google !== 'undefined' && google.script && google.script.url) {
     google.script.url.getLocation(function (loc) {
       if (loc && loc.hash) {
         restorePageFromHash(loc.hash);
-      } else if (!initialHash) {
-        restorePageFromHash();
       }
     });
-  } else if (!initialHash) {
-    restorePageFromHash();
   }
 
   // Listen for browser Back / Forward buttons and manual hash changes
   window.addEventListener('hashchange', function () {
-    restorePageFromHash();
+    const curHash = getAppHash();
+    if (curHash) {
+      restorePageFromHash(curHash);
+    }
   });
 
   if (typeof google !== 'undefined' && google.script && google.script.history) {
