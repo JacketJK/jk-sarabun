@@ -311,17 +311,6 @@ function getMooBanSet() {
   return _safeGetRangeValues("MooBan", "A", "C");
 }
 
-const _getSettingSS = () => {
-  if (typeof sheetSetting !== 'undefined' && sheetSetting && sheetSetting.trim() !== '') {
-    try {
-      return SpreadsheetApp.openById(sheetSetting);
-    } catch (e) {
-      Logger.log('Could not open sheetSetting, fallback to active spreadsheet: ' + e);
-    }
-  }
-  return SpreadsheetApp.getActiveSpreadsheet();
-};
-
 const _ensureAndGetDataSet = (sheetName, defaultItems) => {
   const ss = _getSettingSS();
   let sheet = ss.getSheetByName(sheetName);
