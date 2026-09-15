@@ -716,7 +716,7 @@ const insertDataBroadcast = async () => {
       }
   }
 
-  filteredData.sort((a, b) => a[8].localeCompare(b[8]));
+  filteredData.sort((a, b) => String(a[8] || "").localeCompare(String(b[8] || "")));
 
     for (var i = 0; i < filteredData.length; i++) { 
       var row = tableBody.insertRow(i);
@@ -783,7 +783,7 @@ const insertDataReportcast = async () => {
     return;
   }
   tableBody.innerHTML = "";
-  data.sort((a, b) => a[4].localeCompare(b[4]));
+  data.sort((a, b) => String(a[4] || "").localeCompare(String(b[4] || "")));
 
     for (let i = 0; i < data.length; i++) {
       const row = tableBody.insertRow(i);
@@ -874,7 +874,7 @@ const insertDataNotify = async () => {
     return;
   }
   tableBody.innerHTML = "";
-  data.sort((a, b) => a[8].localeCompare(b[8]));
+  data.sort((a, b) => String(a[8] || "").localeCompare(String(b[8] || "")));
     
   for (var i = 0; i < data.length; i++) { 
     var row = tableBody.insertRow(i);
@@ -1008,7 +1008,7 @@ const insertDataUser = async () => {
   var countingUserNo4 = 0;
   var uniqueValues = {};
 
-  data.sort((a, b) => a[8].localeCompare(b[8]));
+  data.sort((a, b) => String(a[8] || "").localeCompare(String(b[8] || "")));
     
     for (var i = 0; i < data.length; i++) {
 
@@ -1176,7 +1176,7 @@ const insertDataPedding = (key) => {
         return;
       }
 
-      data.sort((a, b) => b[0].localeCompare(a[0]));
+      data.sort((a, b) => String(b[0] || "").localeCompare(String(a[0] || "")));
       
       tableBody.innerHTML = "";
       for (var i = 0; i < data.length; i++) {
@@ -1199,7 +1199,7 @@ const insertDataPedding = (key) => {
                         </div>`;
 
       var cell2 = row.insertCell(2);
-      cell2.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(new Date((data[i][9])))}</span>`;
+      cell2.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(data[i][9])}</span>`;
 
       var cell3 = row.insertCell(3);
       cell3.innerHTML =`<div class="d-flex flex-column">
@@ -1397,7 +1397,7 @@ const insertDataInprogress = (key) => {
                           ${send}</div>`;
 
       var cell2 = row.insertCell(2);
-      cell2.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(new Date((data[1][i][9])))}</span>`;  
+      cell2.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(data[1][i][9])}</span>`;  
 
       var cell3 = row.insertCell(3);
       var form = data[1][i][4];
@@ -1555,7 +1555,7 @@ const insertDataInside = (key) => {
         return;
       }
 
-      data.sort((a, b) => b[0].localeCompare(a[0]));
+      data.sort((a, b) => String(b[0] || "").localeCompare(String(a[0] || "")));
 
       data = data.filter((row) =>{
         return row[22] < 5;
@@ -1593,7 +1593,7 @@ const insertDataInside = (key) => {
                         </div>`;
 
       var cell2 = row.insertCell(2);
-      cell2.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(new Date((data[i][9])))}</span>`;
+      cell2.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(data[i][9])}</span>`;
 
       var cell3 = row.insertCell(3);
       var form = data[i][4];
@@ -1755,7 +1755,7 @@ const insertDataFollow = (key) => {
         return;
       }
 
-      data.sort((a, b) => b[0].localeCompare(a[0]));
+      data.sort((a, b) => String(b[0] || "").localeCompare(String(a[0] || "")));
       
       data = data.filter((row) =>{
         return row[22] < 5;
@@ -1797,7 +1797,7 @@ const insertDataFollow = (key) => {
                         </div>`;
 
       var cell2 = row.insertCell(2);
-      cell2.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(new Date((data[i][9])))}</span>`;
+      cell2.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(data[i][9])}</span>`;
 
       var cell3 = row.insertCell(3);
       var form = data[i][4];
@@ -1943,7 +1943,7 @@ const insertDataReturn = (key) => {
         return;
       }
 
-      data.sort((a, b) => b[0].localeCompare(a[0]));
+      data.sort((a, b) => String(b[0] || "").localeCompare(String(a[0] || "")));
       
       tableBody.innerHTML = "";
       for (var i = 0; i < data.length; i++) {
@@ -1966,7 +1966,7 @@ const insertDataReturn = (key) => {
                         </div>`;
 
       var cell2 = row.insertCell(2);
-      cell2.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(new Date((data[i][9])))}</span>`;
+      cell2.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(data[i][9])}</span>`;
 
       var cell3 = row.insertCell(3);
       var form = data[i][4];
@@ -2137,7 +2137,7 @@ const insertDataCanceled = window.insertDataCanceled = (key, userLevel) => {
         // ลงวันที่
         var cell2 = row.insertCell(2);
         cell2.className = "text-center";
-        var dateFormatted = data[i][9] ? formatThaiDateTime(new Date(data[i][9])) : '-';
+        var dateFormatted = data[i][9] ? formatThaiDateTime(data[i][9]) : '-';
         cell2.innerHTML = `<span style="font-size:13px;" class="text-muted">${dateFormatted}</span>`;
 
         // เรื่อง / หมายเหตุที่ยกเลิก
@@ -2352,7 +2352,7 @@ const insertDataBookSendCanceled = window.insertDataBookSendCanceled = (key, use
         // ลงวันที่
         var cell2 = row.insertCell(2);
         cell2.className = "text-center";
-        var dateFormatted = data[i][9] ? formatThaiDateTime(new Date(data[i][9])) : '-';
+        var dateFormatted = data[i][9] ? formatThaiDateTime(data[i][9]) : '-';
         cell2.innerHTML = `<span style="font-size:13px;" class="text-muted">${dateFormatted}</span>`;
 
         // เรื่อง / หมายเหตุที่ยกเลิก
@@ -2554,7 +2554,7 @@ const insertDataPickupDocCanceled = window.insertDataPickupDocCanceled = (key, u
         // ลงวันที่
         var cell2 = row.insertCell(2);
         cell2.className = "text-center";
-        var dateFormatted = data[i][9] ? formatThaiDateTime(new Date(data[i][9])) : '-';
+        var dateFormatted = data[i][9] ? formatThaiDateTime(data[i][9]) : '-';
         cell2.innerHTML = `<span style="font-size:13px;" class="text-muted">${dateFormatted}</span>`;
 
         // เรื่อง / หมายเหตุที่ยกเลิก
@@ -2875,7 +2875,7 @@ const insertDataGetDocIn = (key) => {
                         </div>`;
 
       var cell3 = row.insertCell(3);  
-      cell3.innerHTML = formatThaiDateTime(new Date((data[1][i][9])));
+      cell3.innerHTML = formatThaiDateTime(data[1][i][9]);
 
       var cell4 = row.insertCell(4);  
       cell4.innerHTML = `<div class="d-flex flex-column">
@@ -3015,7 +3015,7 @@ const insertDataGetDocOut = (key) => {
                         </div>`;
 
       var cell3 = row.insertCell(3);  
-      cell3.innerHTML = formatThaiDateTime(new Date((data[1][i][9])));
+      cell3.innerHTML = formatThaiDateTime(data[1][i][9]);
 
       var cell4 = row.insertCell(4);  
       cell4.innerHTML = `<div class="d-flex flex-column">
@@ -3155,7 +3155,7 @@ const insertDataGetDocFollow = (key) => {
                         </div>`;
 
       var cell3 = row.insertCell(3);  
-      cell3.innerHTML = formatThaiDateTime(new Date((data[1][i][9])));
+      cell3.innerHTML = formatThaiDateTime(data[1][i][9]);
 
       var cell4 = row.insertCell(4);  
       cell4.innerHTML = `<div class="d-flex flex-column">
@@ -3265,7 +3265,7 @@ const insertDataDocument = (key) => {
         return;
       }
 
-      data.sort((a, b) => b[0].localeCompare(a[0]));
+      data.sort((a, b) => String(b[0] || "").localeCompare(String(a[0] || "")));
 
       tableBody.innerHTML = "";
       for (var i = 0; i < data.length; i++) {
@@ -3288,7 +3288,7 @@ const insertDataDocument = (key) => {
                         </div>`;
 
       var cell2 = row.insertCell(2);
-      cell2.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(new Date((data[i][9])))}</span>`;   
+      cell2.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(data[i][9])}</span>`;   
 
       var cell3 = row.insertCell(3);
       cell3.innerHTML = `<span style="font-size:14px;">${data[i][1]}</span>`;                
@@ -3455,7 +3455,7 @@ const insertDataOutPedding = (key) => {
         return;
       }
 
-      data.sort((a, b) => b[0].localeCompare(a[0]));
+      data.sort((a, b) => String(b[0] || "").localeCompare(String(a[0] || "")));
       
       tableBody.innerHTML = "";
       for (var i = 0; i < data.length; i++) {
@@ -3484,7 +3484,7 @@ const insertDataOutPedding = (key) => {
                         </div>`;
 
       var cell3 = row.insertCell(3);
-      cell3.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(new Date((data[i][9])))}</span>`;
+      cell3.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(data[i][9])}</span>`;
 
       var cell4 = row.insertCell(4);
       cell4.innerHTML =`<div class="d-flex flex-column">
@@ -3688,7 +3688,7 @@ const insertDataOutInprogress = (key) => {
                         </div>`;
 
       var cell3 = row.insertCell(3);
-      cell3.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(new Date((data[0][i][9])))}</span>`;  
+      cell3.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(data[0][i][9])}</span>`;  
 
       var cell4 = row.insertCell(4);
       cell4.innerHTML =`<div class="d-flex flex-column"> 
@@ -3840,7 +3840,7 @@ const insertDataOutInside = (key) => {
         return;
       }
 
-      data.sort((a, b) => b[0].localeCompare(a[0]));
+      data.sort((a, b) => String(b[0] || "").localeCompare(String(a[0] || "")));
 
       data = data.filter((row) =>{
         return row[22] < 5;
@@ -3885,7 +3885,7 @@ const insertDataOutInside = (key) => {
                         </div>`;
                         
       var cell3 = row.insertCell(3);
-      cell3.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(new Date((data[i][9])))}</span>`;
+      cell3.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(data[i][9])}</span>`;
 
       var cell4 = row.insertCell(4);
       cell4.innerHTML =`<div class="d-flex flex-column">
@@ -4039,7 +4039,7 @@ const insertDataOutFollow = (key) => {
         return;
       }
 
-      data.sort((a, b) => b[0].localeCompare(a[0]));
+      data.sort((a, b) => String(b[0] || "").localeCompare(String(a[0] || "")));
       
       data = data.filter((row) =>{
         return row[22] < 5;
@@ -4084,7 +4084,7 @@ const insertDataOutFollow = (key) => {
                         </div>`;
                         
       var cell3 = row.insertCell(3);
-      cell3.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(new Date((data[i][9])))}</span>`;
+      cell3.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(data[i][9])}</span>`;
 
       var cell4 = row.insertCell(4);
       cell4.innerHTML =`<div class="d-flex flex-column">
@@ -4230,7 +4230,7 @@ const insertDataOutReturn = (key) => {
         return;
       }
 
-      data.sort((a, b) => b[0].localeCompare(a[0]));
+      data.sort((a, b) => String(b[0] || "").localeCompare(String(a[0] || "")));
       
       tableBody.innerHTML = "";
       for (var i = 0; i < data.length; i++) {
@@ -4259,7 +4259,7 @@ const insertDataOutReturn = (key) => {
                         </div>`;
                         
       var cell3 = row.insertCell(3);
-      cell3.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(new Date((data[i][9])))}</span>`;
+      cell3.innerHTML = `<span style="font-size:14px;">${formatThaiDateTime(data[i][9])}</span>`;
 
       var cell4 = row.insertCell(4);
       cell4.innerHTML =`<div class="d-flex flex-column">
@@ -4441,7 +4441,7 @@ const insertDataOutCanceled = window.insertDataOutCanceled = (key, userLevel) =>
         // ลงวันที่
         var cell3 = row.insertCell(3);
         cell3.className = "text-center";
-        var dateFormatted = data[i][9] ? formatThaiDateTime(new Date(data[i][9])) : '-';
+        var dateFormatted = data[i][9] ? formatThaiDateTime(data[i][9]) : '-';
         cell3.innerHTML = `<span style="font-size:13px;" class="text-muted">${dateFormatted}</span>`;
 
         // เรื่อง / หมายเหตุที่ยกเลิก
@@ -4754,14 +4754,14 @@ const insertAllCalendar = (key) => {
       const dateStart = data[0][i][2] ? String(data[0][i][2]).split('T') : ['', ''];
       var cell2 = row.insertCell(2);
       cell2.innerHTML = `<div class="d-flex flex-column">
-                          <div><span style="font-size: 14px;">${dateStart[0] ? formatThaiDateTime(new Date(dateStart[0])) : '-'}</span></div>  
+                          <div><span style="font-size: 14px;">${dateStart[0] ? formatThaiDateTime(dateStart[0]) : '-'}</span></div>  
                           <div><span class="text-primary" style="font-size:12px;">เวลา ${dateStart[1] || '-'} น.</span></div>
                         </div>`;
 
       const dateEnd = data[0][i][3] ? String(data[0][i][3]).split('T') : ['', ''];
       var cell3 = row.insertCell(3);
       cell3.innerHTML = `<div class="d-flex flex-column">
-                          <div><span style="font-size: 14px;">${dateEnd[0] ? formatThaiDateTime(new Date(dateEnd[0])) : '-'}</span></div>  
+                          <div><span style="font-size: 14px;">${dateEnd[0] ? formatThaiDateTime(dateEnd[0]) : '-'}</span></div>  
                           <div><span class="text-primary" style="font-size:12px;">เวลา ${dateEnd[1] || '-'} น.</span></div>
                         </div>`;
 
@@ -6328,7 +6328,7 @@ const insertStatusHrm = () => {
     }
 
     tableBody.innerHTML = "";
-    data.sort((a, b) => a[5].localeCompare(b[5]));
+    data.sort((a, b) => String(a[5] || "").localeCompare(String(b[5] || "")));
 
     for (let i = 0; i < data.length; i++) {
       var row = tableBody.insertRow(i);
@@ -6519,7 +6519,7 @@ const insertTrashtable = () => {
     }
     
     tableBody.innerHTML = "";
-    data.sort((a, b) => a[0].localeCompare(b[0]));
+    data.sort((a, b) => String(a[0] || "").localeCompare(String(b[0] || "")));
     let uniqueValues = new Set();
     for (let i = 0; i < data.length; i++) {
       var row = tableBody.insertRow(i);
@@ -6584,7 +6584,7 @@ const insertTrashEdittable = () => {
     }
     
     tableBody.innerHTML = "";
-    data.sort((a, b) => a[0].localeCompare(b[0]));
+    data.sort((a, b) => String(a[0] || "").localeCompare(String(b[0] || "")));
 
     for (let i = 0; i < data.length; i++) {
       var row = tableBody.insertRow(i);
