@@ -101,15 +101,15 @@ document.addEventListener("DOMContentLoaded", async function () {
     await loginsuccess(user);
     await sidemantLicense(user.level);
 
-    await reviewdivprofile();
-    await insertDataUser();
-    await insertDataNotify();
-    await insertDataBroadcast();
-    await insertDataReportcast();
-    await getAgencyData();
-    await insertAllHistoryCar();
-    await getSetting();
-    await updateCardProfile(user.publicKey);
+    if (typeof reviewdivprofile === 'function') await reviewdivprofile();
+    if (typeof insertDataUser === 'function') await insertDataUser();
+    if (typeof insertDataNotify === 'function') await insertDataNotify();
+    if (typeof insertDataBroadcast === 'function') await insertDataBroadcast();
+    if (typeof insertDataReportcast === 'function') await insertDataReportcast();
+    if (typeof getAgencyData === 'function') await getAgencyData();
+    if (typeof insertAllHistoryCar === 'function') await insertAllHistoryCar();
+    if (typeof getSetting === 'function') await getSetting();
+    if (typeof updateCardProfile === 'function') await updateCardProfile(user.publicKey);
   } else {
     backMainpage(); 
   }
@@ -1834,9 +1834,9 @@ const changePage = (data, skipHash, sub) => {
     }
     const publicKey = localStorage.getItem('publicKey');
     if (data == 1) {
-      insertDataDocSend(publicKey);
-      insertDataDocOwner(publicKey);
-      displayNotifications(publicKey);
+      if (typeof insertDataDocSend === 'function') insertDataDocSend(publicKey);
+      if (typeof insertDataDocOwner === 'function') insertDataDocOwner(publicKey);
+      if (typeof displayNotifications === 'function') displayNotifications(publicKey);
     }
     $("#loader").hide();
   }, 500); 
@@ -2559,10 +2559,10 @@ const loginsuccess = async (user) => {
     $("#sidebar").show();
     $("#content").show();
     
-    insertActiveData(user.username);
-    insertHistoryData(user.username);
-    getDataSlipBase(user.publicKey);
-    insertYear();
+    if (typeof insertActiveData === 'function') insertActiveData(user.username);
+    if (typeof insertHistoryData === 'function') insertHistoryData(user.username);
+    if (typeof getDataSlipBase === 'function') getDataSlipBase(user.publicKey);
+    if (typeof insertYear === 'function') insertYear();
 
     getSetting_lineNotify(user);
 
@@ -2573,7 +2573,7 @@ const loginsuccess = async (user) => {
       statuss = '<span class="badge badge-danger"><i class="fa-solid fa-xmark"></i> ระงับการใช้งาน</span>';
     }
 
-    tableSalaryAll();
+    if (typeof tableSalaryAll === 'function') tableSalaryAll();
 
     $("#dataProfile1").attr("src", user.profile);
     $("#dataProfile2").val(user.username);
@@ -2686,18 +2686,18 @@ async function logoutSystem() {
 
 const runAllTable = async (publicKey) => {
   try {
-    await insertDataDocSend(publicKey);
-    await insertDataDocOwner(publicKey);
+    if (typeof insertDataDocSend === 'function') await insertDataDocSend(publicKey);
+    if (typeof insertDataDocOwner === 'function') await insertDataDocOwner(publicKey);
 
-    await insertPositionData(publicKey);
+    if (typeof insertPositionData === 'function') await insertPositionData(publicKey);
 
-    await insertAllCalendar(publicKey);
-    await insertAllHistoryLeave(publicKey);
+    if (typeof insertAllCalendar === 'function') await insertAllCalendar(publicKey);
+    if (typeof insertAllHistoryLeave === 'function') await insertAllHistoryLeave(publicKey);
 
-    await insertAllHistoryReport(publicKey);
-    await insertDataReportSend(publicKey);
+    if (typeof insertAllHistoryReport === 'function') await insertAllHistoryReport(publicKey);
+    if (typeof insertDataReportSend === 'function') await insertDataReportSend(publicKey);
 
-    await insertDataProjectSend(publicKey);
+    if (typeof insertDataProjectSend === 'function') await insertDataProjectSend(publicKey);
   } catch (error) {
     console.error(error);
   }
@@ -2907,8 +2907,8 @@ const updataSetCardSave = (obj, event) => {
 
 document.addEventListener('DOMContentLoaded', function() {
   google.script.url.getLocation(location => {
-    let code = location.parameter.code;
-    let state = location.parameter.state;
+    let code = location && location.parameter ? location.parameter.code : null;
+    let state = location && location.parameter ? location.parameter.state : null;
 
     if (code && state) {
       $('#loader').show();

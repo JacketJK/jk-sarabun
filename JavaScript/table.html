@@ -1735,7 +1735,7 @@ const insertDataFollow = (key) => {
       var cell3 = row.insertCell(3);
       var form = data[i][4];
       var to = data[i][6];
-      cell3.innerHTML =`<div class="d-flex flex-column">
+      cell3.innerHTML = `<div class="d-flex flex-column">
                           <span style="font-size:14px; font-weight: 500;">${data[i][7]}</span>   
                           <div><span class="text-primary" style="font-size:12px;">จาก : </span><span style="font-size:12px;">${data[i][4]}</span></div>  
                           <div><span class="text-primary" style="font-size:12px;">ถึง : </span><span style="font-size:12px;">${data[i][6]}</span></div>
@@ -1747,12 +1747,12 @@ const insertDataFollow = (key) => {
 
       for (let j = 26; j <= 30; j++) {
         if (data[i][j] !== "") {
-          file += `<a href='${data[i][j]}' class='ms-1' target='_blank'><img src='${imgdoc}' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='หนังสือแนบ ${j - 25}' width='25'></a>`;
+          file += `<a href="${data[i][j]}" class="ms-1" target="_blank"><img src="${imgdoc}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="หนังสือแนบ ${j - 25}" width="25"></a>`;
         }
       }
 
       if (file === '') {
-        file = `<i class='fa-solid fa-ban' style='color: #db0000;' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ไม่มีหนังสือแนบ'></i>`;
+        file = `<i class="fa-solid fa-ban" style="color: #db0000;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ไม่มีหนังสือแนบ"></i>`;
       }
 
       cell4.innerHTML = `<div class="row">
@@ -1765,12 +1765,12 @@ const insertDataFollow = (key) => {
 
       for (let j = 31; j <= 33; j++) {
         if (data[i][j] !== "") {
-          link += `<a href='${data[i][j]}' class='ms-1' target='_blank'><img src='${imglink}' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ลิงก์แนบ ${j - 30}' width='20'></a>`;
+          link += `<a href="${data[i][j]}" class="ms-1" target="_blank"><img src="${imglink}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ลิงก์แนบ ${j - 30}" width="20"></a>`;
         }
       }
 
       if (link === '') {
-        link = `<i class='fa-solid fa-ban' style='color: #db0000;' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ไม่มีลิงก์แนบ'></i>`;
+        link = `<i class="fa-solid fa-ban" style="color: #db0000;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="ไม่มีลิงก์แนบ"></i>`;
       }
 
       cell5.innerHTML = `<div class="row">
@@ -6669,5 +6669,35 @@ const insertTrashFeetable = () => {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
   }).getfeeTrashData(year, month);
+}
+
+// Export functions to window object for global availability
+if (typeof window !== 'undefined') {
+  window.insertDataDocSend = typeof insertDataDocSend !== 'undefined' ? insertDataDocSend : undefined;
+  window.insertActiveData = typeof insertActiveData !== 'undefined' ? insertActiveData : undefined;
+  window.insertDataDocOwner = typeof insertDataDocOwner !== 'undefined' ? insertDataDocOwner : undefined;
+  window.insertPositionData = typeof insertPositionData !== 'undefined' ? insertPositionData : undefined;
+  window.insertAllCalendar = typeof insertAllCalendar !== 'undefined' ? insertAllCalendar : undefined;
+  window.insertAllHistoryLeave = typeof insertAllHistoryLeave !== 'undefined' ? insertAllHistoryLeave : undefined;
+  window.insertAllHistoryReport = typeof insertAllHistoryReport !== 'undefined' ? insertAllHistoryReport : undefined;
+  window.insertDataReportSend = typeof insertDataReportSend !== 'undefined' ? insertDataReportSend : undefined;
+  window.insertDataProjectSend = typeof insertDataProjectSend !== 'undefined' ? insertDataProjectSend : undefined;
+  window.insertDataPedding = typeof insertDataPedding !== 'undefined' ? insertDataPedding : undefined;
+  window.insertDataInprogress = typeof insertDataInprogress !== 'undefined' ? insertDataInprogress : undefined;
+  window.insertDataInside = typeof insertDataInside !== 'undefined' ? insertDataInside : undefined;
+  window.insertDataFollow = typeof insertDataFollow !== 'undefined' ? insertDataFollow : undefined;
+  window.insertDataReturn = typeof insertDataReturn !== 'undefined' ? insertDataReturn : undefined;
+  window.insertDataCanceled = typeof insertDataCanceled !== 'undefined' ? insertDataCanceled : undefined;
+  window.insertDataBookSendCanceled = typeof insertDataBookSendCanceled !== 'undefined' ? insertDataBookSendCanceled : undefined;
+  window.insertDataPickupDocCanceled = typeof insertDataPickupDocCanceled !== 'undefined' ? insertDataPickupDocCanceled : undefined;
+  window.insertDataGetDocIn = typeof insertDataGetDocIn !== 'undefined' ? insertDataGetDocIn : undefined;
+  window.insertDataGetDocOut = typeof insertDataGetDocOut !== 'undefined' ? insertDataGetDocOut : undefined;
+  window.insertDataGetDocFollow = typeof insertDataGetDocFollow !== 'undefined' ? insertDataGetDocFollow : undefined;
+  window.insertDataOutPedding = typeof insertDataOutPedding !== 'undefined' ? insertDataOutPedding : undefined;
+  window.insertDataOutInprogress = typeof insertDataOutInprogress !== 'undefined' ? insertDataOutInprogress : undefined;
+  window.insertDataOutInside = typeof insertDataOutInside !== 'undefined' ? insertDataOutInside : undefined;
+  window.insertDataOutFollow = typeof insertDataOutFollow !== 'undefined' ? insertDataOutFollow : undefined;
+  window.insertDataOutReturn = typeof insertDataOutReturn !== 'undefined' ? insertDataOutReturn : undefined;
+  window.insertDataOutCanceled = typeof insertDataOutCanceled !== 'undefined' ? insertDataOutCanceled : undefined;
 }
 </script>
