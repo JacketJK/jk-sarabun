@@ -635,7 +635,17 @@ function getAllDropdownData() {
       responseStatus: getSheetData("Response", "C"),
       jobWord: getSheetData("JobWord", "C"),
       typeEmployee: getSheetData("TypeEmployee", "C"),
-      mooBan: getSheetData("MooBan", "C")
+      mooBan: getSheetData("MooBan", "C"),
+      equipCategory: getSheetData("EquipCategory", "C"),
+      equipType: getSheetData("EquipType", "C"),
+      equipStatus: getSheetData("EquipStatus", "C"),
+      equipAcquire: getSheetData("EquipAcquire", "C"),
+      equipExpense: getSheetData("EquipExpense", "C"),
+      equipVendor: getSheetData("EquipVendor", "C"),
+      matCategory: getSheetData("MatCategory", "C"),
+      matType: getSheetData("MatType", "C"),
+      equipUnit: getSheetData("EquipUnit", "C"),
+      equipLocation: getSheetData("EquipLocation", "C")
     };
 
     try {

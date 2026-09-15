@@ -272,6 +272,84 @@ const getMooBanSet = () => {
   const data = sheet.getRange("A3:C" + sheet.getLastRow()).getValues();
   return data;
 }
+
+const _getSettingSS = () => {
+  if (typeof sheetSetting !== 'undefined' && sheetSetting && sheetSetting.trim() !== '') {
+    try {
+      return SpreadsheetApp.openById(sheetSetting);
+    } catch (e) {
+      Logger.log('Could not open sheetSetting, fallback to active spreadsheet: ' + e);
+    }
+  }
+  return SpreadsheetApp.getActiveSpreadsheet();
+};
+
+const _ensureAndGetDataSet = (sheetName, defaultItems) => {
+  const ss = _getSettingSS();
+  let sheet = ss.getSheetByName(sheetName);
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+    sheet.appendRow(['#', 'รหัส', 'รายการ']);
+    sheet.appendRow(['', '', '']);
+    if (Array.isArray(defaultItems) && defaultItems.length > 0) {
+      const rows = defaultItems.map((item, idx) => {
+        const rowNum = idx + 1;
+        const code = genCodeData(sheetName, rowNum + 1);
+        return [rowNum, code, item];
+      });
+      sheet.getRange(3, 1, rows.length, 3).setValues(rows);
+    }
+  }
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  return sheet.getRange("B3:C" + lastRow).getValues();
+};
+
+const getEquipCategorySet = () => _ensureAndGetDataSet("EquipCategory", [
+  'ครุภัณฑ์สำนักงาน', 'ครุภัณฑ์คอมพิวเตอร์', 'ครุภัณฑ์ยานพาหนะและขนส่ง', 
+  'ครุภัณฑ์การเกษตร', 'ครุภัณฑ์โฆษณาและเผยแพร่', 'ครุภัณฑ์งานบ้านงานครัว', 
+  'ครุภัณฑ์วิทยาศาสตร์และการแพทย์', 'ครุภัณฑ์สำรวจ', 'ครุภัณฑ์ดนตรีและนาฏศิลป์', 'ครุภัณฑ์อื่น ๆ'
+]);
+
+const getEquipTypeSet = () => _ensureAndGetDataSet("EquipType", [
+  'เครื่องปรับอากาศ', 'คอมพิวเตอร์และอุปกรณ์', 'เครื่องพิมพ์/สแกนเนอร์', 'โต๊ะ/เก้าอี้สำนักงาน', 
+  'ตู้เก็บเอกสาร', 'กล้องถ่ายภาพ/วิดีโอ', 'โทรทัศน์/จอภาพ', 'ยานพาหนะ', 'เครื่องสำรองไฟฟ้า', 'อุปกรณ์เครือข่าย'
+]);
+
+const getEquipStatusSet = () => _ensureAndGetDataSet("EquipStatus", [
+  'พร้อมใช้งาน', 'กำลังใช้งาน', 'ชำรุด', 'รอซ่อม', 'รอจำหน่าย', 'ตัดจำหน่าย'
+]);
+
+const getEquipAcquireSet = () => _ensureAndGetDataSet("EquipAcquire", [
+  'ตกลงราคา', 'สอบราคา', 'ประกวดราคา', 'วิธีเฉพาะเจาะจง', 'คัดเลือก', 'รับบริจาค'
+]);
+
+const getEquipExpenseSet = () => _ensureAndGetDataSet("EquipExpense", [
+  'งบลงทุน', 'งบดำเนินงาน', 'เงินอุดหนุน', 'เงินนอกงบประมาณ'
+]);
+
+const getEquipVendorSet = () => _ensureAndGetDataSet("EquipVendor", [
+  'ห้างหุ้นส่วนจำกัด/บริษัททั่วไป', 'ร้านค้าท้องถิ่น', 'ผู้จัดจำหน่ายส่วนกลาง', 'ผู้บริจาค'
+]);
+
+const getMatCategorySet = () => _ensureAndGetDataSet("MatCategory", [
+  'วัสดุสำนักงาน', 'วัสดุคอมพิวเตอร์', 'วัสดุไฟฟ้าและวิทยุ', 'วัสดุงานบ้านงานครัว',
+  'วัสดุยานพาหนะและขนส่ง', 'วัสดุการเกษตร', 'วัสดุก่อสร้าง', 'วัสดุอื่น ๆ'
+]);
+
+const getMatTypeSet = () => _ensureAndGetDataSet("MatType", [
+  'กระดาษและสิ่งพิมพ์', 'เครื่องเขียนและอุปกรณ์', 'หมึกพิมพ์และโทนเนอร์', 'อุปกรณ์บันทึกข้อมูล',
+  'อุปกรณ์ทำความสะอาด', 'หลอดไฟและอุปกรณ์ไฟฟ้า', 'อะไหล่และอุปกรณ์ซ่อมบำรุง'
+]);
+
+const getEquipUnitSet = () => _ensureAndGetDataSet("EquipUnit", [
+  'เครื่อง', 'ชุด', 'คัน', 'หลัง', 'ตัว', 'ชิ้น', 'อัน', 'รีม', 'กล่อง', 'เล่ม', 'แพ็ค', 'ม้วน', 'แผ่น'
+]);
+
+const getEquipLocationSet = () => _ensureAndGetDataSet("EquipLocation", [
+  'ห้องพัสดุกลาง', 'ห้องสำนักงานปลัด', 'ห้องกองคลัง', 'ห้องกองช่าง', 'ห้องประชุมสภา', 'ห้องศูนย์ข้อมูล/เซิร์ฟเวอร์', 'อาคารจอดรถ'
+]);
+
 const saveOrderJobWord = (order) => {
   const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("JobWord"); 
   const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
@@ -449,6 +527,16 @@ const genCodeData = (...data) => {
     Position: 'PT',
     Car: 'CAR',
     MeetingRoom: 'MR',
+    EquipCategory: 'EQC',
+    EquipType: 'EQT',
+    EquipStatus: 'EQS',
+    EquipAcquire: 'EQA',
+    EquipExpense: 'EQE',
+    EquipVendor: 'EQV',
+    MatCategory: 'MTC',
+    MatType: 'MTT',
+    EquipUnit: 'UNT',
+    EquipLocation: 'LOC',
   };
 
   const prefix = prefixMap[sheetName] || '';
@@ -615,15 +703,28 @@ const deleteMooBanSet = (obj) => {
   return sheet.getRange("A3:C" + sheet.getLastRow()).getValues();  
 }
 const addDataSet = (obj) => {
-  const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName(obj.sheetname); 
+  const ss = _getSettingSS();
+  let sheet = ss.getSheetByName(obj.sheetname);
+  if (!sheet) {
+    sheet = ss.insertSheet(obj.sheetname);
+    sheet.appendRow(['#', 'รหัส', 'รายการ']);
+    sheet.appendRow(['', '', '']);
+  }
   var lastRow = sheet.getLastRow();
-  var genCode = genCodeData(obj.sheetname, lastRow)
+  if (lastRow < 2) {
+    sheet.appendRow(['#', 'รหัส', 'รายการ']);
+    sheet.appendRow(['', '', '']);
+    lastRow = 2;
+  }
+  var genCode = genCodeData(obj.sheetname, lastRow + 1);
   const rowData = [parseInt(lastRow) - 1, genCode, obj.list];
   sheet.appendRow(rowData);
+  try { CacheService.getScriptCache().remove('ALL_DROPDOWN_DATA'); } catch (e) {}
   return sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
 }
+
 const editDataSet = (obj) => {
-  const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName(obj.sheetname); 
+  const sheet = _getSettingSS().getSheetByName(obj.sheetname); 
   const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
 
   for (let i = 0; i < data.length; i++) {
@@ -633,11 +734,12 @@ const editDataSet = (obj) => {
       break;
     }
   }
-
+  try { CacheService.getScriptCache().remove('ALL_DROPDOWN_DATA'); } catch (e) {}
   return sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
 }
+
 const deleteDataSet = (obj) => {
-  const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName(obj.sheetname); 
+  const sheet = _getSettingSS().getSheetByName(obj.sheetname); 
   const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
 
   for (let i = 0; i < data.length; i++) {
@@ -647,9 +749,43 @@ const deleteDataSet = (obj) => {
       break;
     }
   }
-
+  try { CacheService.getScriptCache().remove('ALL_DROPDOWN_DATA'); } catch (e) {}
   return sheet.getRange("B3:C" + sheet.getLastRow()).getValues();  
 }
+
+const saveOrderDataSet = (sheetName, order) => {
+  const sheet = _getSettingSS().getSheetByName(sheetName);
+  if (!sheet) return;
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return;
+  const data = sheet.getRange("B3:C" + lastRow).getValues();
+  var newData = [];
+
+  order.forEach(function(id) {
+    data.forEach(function(row) {
+      if (row[0] === id) {
+        newData.push(row);
+      }
+    });
+  });
+
+  if (newData.length > 0) {
+    sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+    try { CacheService.getScriptCache().remove('ALL_DROPDOWN_DATA'); } catch (e) {}
+  }
+};
+
+const saveOrderEquipCategory = (order) => saveOrderDataSet('EquipCategory', order);
+const saveOrderEquipType = (order) => saveOrderDataSet('EquipType', order);
+const saveOrderEquipStatus = (order) => saveOrderDataSet('EquipStatus', order);
+const saveOrderEquipAcquire = (order) => saveOrderDataSet('EquipAcquire', order);
+const saveOrderEquipExpense = (order) => saveOrderDataSet('EquipExpense', order);
+const saveOrderEquipVendor = (order) => saveOrderDataSet('EquipVendor', order);
+const saveOrderMatCategory = (order) => saveOrderDataSet('MatCategory', order);
+const saveOrderMatType = (order) => saveOrderDataSet('MatType', order);
+const saveOrderEquipUnit = (order) => saveOrderDataSet('EquipUnit', order);
+const saveOrderEquipLocation = (order) => saveOrderDataSet('EquipLocation', order);
+
 
 //////////////////////////// Setting //////////////////////////////
 

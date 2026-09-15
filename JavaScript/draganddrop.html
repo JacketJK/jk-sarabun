@@ -701,6 +701,148 @@ const modalMoobanPageSet = (...data) => {
 }
 </script>  
 <script>
+// -----------------------------------------------------------------------------
+// Reference Datasets for Materials & Equipment (Pages 14-23)
+// -----------------------------------------------------------------------------
+let dataEquipCategorySet = [];
+let dataEquipTypeSet = [];
+let dataEquipStatusSet = [];
+let dataEquipAcquireSet = [];
+let dataEquipExpenseSet = [];
+let dataEquipVendorSet = [];
+let dataMatCategorySet = [];
+let dataMatTypeSet = [];
+let dataEquipUnitSet = [];
+let dataEquipLocationSet = [];
+
+const _populateSortableListGeneric = (listId, data, saveOrderFunc) => {
+  const list = document.getElementById(listId);
+  if (!list) return;
+  list.innerHTML = '';
+  if (!Array.isArray(data)) return;
+  data.forEach(function(row) {
+    const li = document.createElement('li');
+    li.className = 'p-2';
+    li.innerHTML = `<i class='fa-solid fa-bars fa-lg me-3'></i> ${row[1] || ''}`;
+    li.setAttribute('data-id', row[0]);
+    list.appendChild(li);
+  });
+  if (typeof Sortable !== 'undefined') {
+    new Sortable(list, {
+      onEnd: function() {
+        const items = list.getElementsByTagName('li');
+        const order = [];
+        for (let i = 0; i < items.length; i++) {
+          order.push(items[i].getAttribute('data-id'));
+        }
+        if (typeof saveOrderFunc === 'function') {
+          saveOrderFunc(order);
+        }
+      }
+    });
+  }
+};
+
+const getEquipCategorySet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataEquipCategorySet = data;
+    populateListEquipCategory(data);
+    if (typeof insertEquipCategorySet === 'function') insertEquipCategorySet(data);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  }).getEquipCategorySet();
+};
+const populateListEquipCategory = (data) => _populateSortableListGeneric('sortableEquipCategory-list', data, (order) => google.script.run.saveOrderEquipCategory(order));
+
+const getEquipTypeSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataEquipTypeSet = data;
+    populateListEquipType(data);
+    if (typeof insertEquipTypeSet === 'function') insertEquipTypeSet(data);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  }).getEquipTypeSet();
+};
+const populateListEquipType = (data) => _populateSortableListGeneric('sortableEquipType-list', data, (order) => google.script.run.saveOrderEquipType(order));
+
+const getEquipStatusSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataEquipStatusSet = data;
+    populateListEquipStatus(data);
+    if (typeof insertEquipStatusSet === 'function') insertEquipStatusSet(data);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  }).getEquipStatusSet();
+};
+const populateListEquipStatus = (data) => _populateSortableListGeneric('sortableEquipStatus-list', data, (order) => google.script.run.saveOrderEquipStatus(order));
+
+const getEquipAcquireSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataEquipAcquireSet = data;
+    populateListEquipAcquire(data);
+    if (typeof insertEquipAcquireSet === 'function') insertEquipAcquireSet(data);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  }).getEquipAcquireSet();
+};
+const populateListEquipAcquire = (data) => _populateSortableListGeneric('sortableEquipAcquire-list', data, (order) => google.script.run.saveOrderEquipAcquire(order));
+
+const getEquipExpenseSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataEquipExpenseSet = data;
+    populateListEquipExpense(data);
+    if (typeof insertEquipExpenseSet === 'function') insertEquipExpenseSet(data);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  }).getEquipExpenseSet();
+};
+const populateListEquipExpense = (data) => _populateSortableListGeneric('sortableEquipExpense-list', data, (order) => google.script.run.saveOrderEquipExpense(order));
+
+const getEquipVendorSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataEquipVendorSet = data;
+    populateListEquipVendor(data);
+    if (typeof insertEquipVendorSet === 'function') insertEquipVendorSet(data);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  }).getEquipVendorSet();
+};
+const populateListEquipVendor = (data) => _populateSortableListGeneric('sortableEquipVendor-list', data, (order) => google.script.run.saveOrderEquipVendor(order));
+
+const getMatCategorySet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataMatCategorySet = data;
+    populateListMatCategory(data);
+    if (typeof insertMatCategorySet === 'function') insertMatCategorySet(data);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  }).getMatCategorySet();
+};
+const populateListMatCategory = (data) => _populateSortableListGeneric('sortableMatCategory-list', data, (order) => google.script.run.saveOrderMatCategory(order));
+
+const getMatTypeSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataMatTypeSet = data;
+    populateListMatType(data);
+    if (typeof insertMatTypeSet === 'function') insertMatTypeSet(data);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  }).getMatTypeSet();
+};
+const populateListMatType = (data) => _populateSortableListGeneric('sortableMatType-list', data, (order) => google.script.run.saveOrderMatType(order));
+
+const getEquipUnitSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataEquipUnitSet = data;
+    populateListEquipUnit(data);
+    if (typeof insertEquipUnitSet === 'function') insertEquipUnitSet(data);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  }).getEquipUnitSet();
+};
+const populateListEquipUnit = (data) => _populateSortableListGeneric('sortableEquipUnit-list', data, (order) => google.script.run.saveOrderEquipUnit(order));
+
+const getEquipLocationSet = async () => {
+  google.script.run.withSuccessHandler((data) => {
+    dataEquipLocationSet = data;
+    populateListEquipLocation(data);
+    if (typeof insertEquipLocationSet === 'function') insertEquipLocationSet(data);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  }).getEquipLocationSet();
+};
+const populateListEquipLocation = (data) => _populateSortableListGeneric('sortableEquipLocation-list', data, (order) => google.script.run.saveOrderEquipLocation(order));
+
 const modalDataPageSet = (...data) => {
   $('#dataSetModal').modal('show');
   var dataset = '';
@@ -724,6 +866,26 @@ const modalDataPageSet = (...data) => {
     dataset = dataRevenueSet;
   } else if (data[1] === 'Expenses') {
     dataset = dataExpensesSet;
+  } else if (data[1] === 'EquipCategory') {
+    dataset = dataEquipCategorySet;
+  } else if (data[1] === 'EquipType') {
+    dataset = dataEquipTypeSet;
+  } else if (data[1] === 'EquipStatus') {
+    dataset = dataEquipStatusSet;
+  } else if (data[1] === 'EquipAcquire') {
+    dataset = dataEquipAcquireSet;
+  } else if (data[1] === 'EquipExpense') {
+    dataset = dataEquipExpenseSet;
+  } else if (data[1] === 'EquipVendor') {
+    dataset = dataEquipVendorSet;
+  } else if (data[1] === 'MatCategory') {
+    dataset = dataMatCategorySet;
+  } else if (data[1] === 'MatType') {
+    dataset = dataMatTypeSet;
+  } else if (data[1] === 'EquipUnit') {
+    dataset = dataEquipUnitSet;
+  } else if (data[1] === 'EquipLocation') {
+    dataset = dataEquipLocationSet;
   }
   
   if (data[0] === 'add') {
@@ -840,6 +1002,56 @@ const runSuccessSet = (...data) => {
     dataExpensesSet = dataSet;
     populateListExpenses(dataSet);
     insertExpensesSet(dataSet);
+  } else if (sheetName === 'EquipCategory') {
+    dataEquipCategorySet = dataSet;
+    populateListEquipCategory(dataSet);
+    insertEquipCategorySet(dataSet);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  } else if (sheetName === 'EquipType') {
+    dataEquipTypeSet = dataSet;
+    populateListEquipType(dataSet);
+    insertEquipTypeSet(dataSet);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  } else if (sheetName === 'EquipStatus') {
+    dataEquipStatusSet = dataSet;
+    populateListEquipStatus(dataSet);
+    insertEquipStatusSet(dataSet);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  } else if (sheetName === 'EquipAcquire') {
+    dataEquipAcquireSet = dataSet;
+    populateListEquipAcquire(dataSet);
+    insertEquipAcquireSet(dataSet);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  } else if (sheetName === 'EquipExpense') {
+    dataEquipExpenseSet = dataSet;
+    populateListEquipExpense(dataSet);
+    insertEquipExpenseSet(dataSet);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  } else if (sheetName === 'EquipVendor') {
+    dataEquipVendorSet = dataSet;
+    populateListEquipVendor(dataSet);
+    insertEquipVendorSet(dataSet);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  } else if (sheetName === 'MatCategory') {
+    dataMatCategorySet = dataSet;
+    populateListMatCategory(dataSet);
+    insertMatCategorySet(dataSet);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  } else if (sheetName === 'MatType') {
+    dataMatTypeSet = dataSet;
+    populateListMatType(dataSet);
+    insertMatTypeSet(dataSet);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  } else if (sheetName === 'EquipUnit') {
+    dataEquipUnitSet = dataSet;
+    populateListEquipUnit(dataSet);
+    insertEquipUnitSet(dataSet);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
+  } else if (sheetName === 'EquipLocation') {
+    dataEquipLocationSet = dataSet;
+    populateListEquipLocation(dataSet);
+    insertEquipLocationSet(dataSet);
+    if (typeof initEquipFormDropdowns === 'function') initEquipFormDropdowns();
   }
 }
 </script> 

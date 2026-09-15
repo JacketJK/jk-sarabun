@@ -411,7 +411,17 @@ const SIDEBAR_PAGE_MAP = {
       10: 'sidebarManu93',
       11: 'sidebarManu94',
       12: 'sidebarManu95',
-      13: 'sidebarManu96'
+      13: 'sidebarManu96',
+      14: 'sidebarManu99',
+      15: 'sidebarManu100',
+      16: 'sidebarManu101',
+      17: 'sidebarManu102',
+      18: 'sidebarManu103',
+      19: 'sidebarManu104',
+      20: 'sidebarManu105',
+      21: 'sidebarManu106',
+      22: 'sidebarManu107',
+      23: 'sidebarManu108'
     },
     defaultSidebarId: 'sidebarManu84'
   },
@@ -1464,6 +1474,96 @@ const appNavigationMenus = [
     submenuId: 12,
     action: () => changePageDatabase(13)
   },
+  {
+    title: 'ข้อมูลอ้างอิง - หมวดหมู่ครุภัณฑ์',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-folder-tree',
+    keywords: ['ข้อมูลอ้างอิง', 'หมวดหมู่ครุภัณฑ์', 'ครุภัณฑ์', 'หมวดหมู่', 'equipment category'],
+    sidebarId: 'sidebarManu99',
+    submenuId: 12,
+    action: () => changePageDatabase(14)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - ประเภทครุภัณฑ์',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-layer-group',
+    keywords: ['ข้อมูลอ้างอิง', 'ประเภทครุภัณฑ์', 'ครุภัณฑ์', 'ประเภท', 'equipment type'],
+    sidebarId: 'sidebarManu100',
+    submenuId: 12,
+    action: () => changePageDatabase(15)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - สถานะการใช้งานครุภัณฑ์',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-circle-dot',
+    keywords: ['ข้อมูลอ้างอิง', 'สถานะครุภัณฑ์', 'สถานะการใช้งาน', 'ชำรุด', 'พร้อมใช้งาน'],
+    sidebarId: 'sidebarManu101',
+    submenuId: 12,
+    action: () => changePageDatabase(16)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - วิธีได้มาครุภัณฑ์',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-cart-flatbed',
+    keywords: ['ข้อมูลอ้างอิง', 'วิธีได้มา', 'จัดซื้อ', 'ตกลงราคา', 'ประกวดราคา', 'บริจาค'],
+    sidebarId: 'sidebarManu102',
+    submenuId: 12,
+    action: () => changePageDatabase(17)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - ประเภทรายจ่ายครุภัณฑ์',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-money-check-dollar',
+    keywords: ['ข้อมูลอ้างอิง', 'ประเภทรายจ่าย', 'งบลงทุน', 'งบดำเนินงาน', 'แหล่งเงิน'],
+    sidebarId: 'sidebarManu103',
+    submenuId: 12,
+    action: () => changePageDatabase(18)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - ผู้ขาย / ผู้จัดจำหน่าย',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-shop',
+    keywords: ['ข้อมูลอ้างอิง', 'ผู้ขาย', 'ผู้จัดจำหน่าย', 'ผู้รับจ้าง', 'ร้านค้า', 'vendor'],
+    sidebarId: 'sidebarManu104',
+    submenuId: 12,
+    action: () => changePageDatabase(19)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - หมวดหมู่วัสดุ',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-boxes-stacked',
+    keywords: ['ข้อมูลอ้างอิง', 'หมวดหมู่วัสดุ', 'พัสดุ', 'วัสดุ', 'material category'],
+    sidebarId: 'sidebarManu105',
+    submenuId: 12,
+    action: () => changePageDatabase(20)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - ประเภทวัสดุ',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-box',
+    keywords: ['ข้อมูลอ้างอิง', 'ประเภทวัสดุ', 'วัสดุสิ้นเปลือง', 'กระดาษ', 'เครื่องเขียน'],
+    sidebarId: 'sidebarManu106',
+    submenuId: 12,
+    action: () => changePageDatabase(21)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - หน่วยนับ (ครุภัณฑ์/วัสดุ)',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-cubes',
+    keywords: ['ข้อมูลอ้างอิง', 'หน่วยนับ', 'เครื่อง', 'ชิ้น', 'อัน', 'รีม', 'กล่อง'],
+    sidebarId: 'sidebarManu107',
+    submenuId: 12,
+    action: () => changePageDatabase(22)
+  },
+  {
+    title: 'ข้อมูลอ้างอิง - สถานที่จัดเก็บ / ที่ตั้ง',
+    category: 'ข้อมูลอ้างอิงระบบ',
+    icon: 'fa-regular fa-location-dot',
+    keywords: ['ข้อมูลอ้างอิง', 'สถานที่จัดเก็บ', 'ที่ตั้ง', 'คลังพัสดุ', 'ห้องเก็บของ', 'location'],
+    sidebarId: 'sidebarManu108',
+    submenuId: 12,
+    action: () => changePageDatabase(23)
+  },
   // SETTING & LICENSE
   {
     title: 'สิทธิการใช้งาน',
@@ -2301,15 +2401,50 @@ const changePageDatabase = (data, skipHash) => {
     11: 'ประเภทตำแหน่งของพนักงาน',
     12: 'รายการรายรับต่อเดือน',
     13: 'รายการหักเงินเดือน',
+    14: 'หมวดหมู่ครุภัณฑ์',
+    15: 'ประเภทครุภัณฑ์',
+    16: 'สถานะการใช้งานครุภัณฑ์',
+    17: 'วิธีได้มาครุภัณฑ์',
+    18: 'ประเภทรายจ่ายครุภัณฑ์',
+    19: 'ผู้ขาย / ผู้จัดจำหน่าย',
+    20: 'หมวดหมู่วัสดุ',
+    21: 'ประเภทวัสดุ',
+    22: 'หน่วยนับ (ครุภัณฑ์/วัสดุ)',
+    23: 'สถานที่จัดเก็บ / ที่ตั้ง'
   };
   changePage(15, true, data);
   $("#loader").show();
 
   setTimeout(() => {
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 1; i <= 25; i++) {
       $("#datasetPage" + i).toggle(data == i);
     }
     $("#datasetbreadcrumb1").text(textMap[data]);
+
+    // On-demand load and render for Equipment & Material reference pages
+    if (data >= 14 && data <= 23) {
+      const loaderMap = {
+        14: { ds: typeof dataEquipCategorySet !== 'undefined' ? dataEquipCategorySet : null, load: typeof getEquipCategorySet === 'function' ? getEquipCategorySet : null, insert: typeof insertEquipCategorySet === 'function' ? insertEquipCategorySet : null },
+        15: { ds: typeof dataEquipTypeSet !== 'undefined' ? dataEquipTypeSet : null, load: typeof getEquipTypeSet === 'function' ? getEquipTypeSet : null, insert: typeof insertEquipTypeSet === 'function' ? insertEquipTypeSet : null },
+        16: { ds: typeof dataEquipStatusSet !== 'undefined' ? dataEquipStatusSet : null, load: typeof getEquipStatusSet === 'function' ? getEquipStatusSet : null, insert: typeof insertEquipStatusSet === 'function' ? insertEquipStatusSet : null },
+        17: { ds: typeof dataEquipAcquireSet !== 'undefined' ? dataEquipAcquireSet : null, load: typeof getEquipAcquireSet === 'function' ? getEquipAcquireSet : null, insert: typeof insertEquipAcquireSet === 'function' ? insertEquipAcquireSet : null },
+        18: { ds: typeof dataEquipExpenseSet !== 'undefined' ? dataEquipExpenseSet : null, load: typeof getEquipExpenseSet === 'function' ? getEquipExpenseSet : null, insert: typeof insertEquipExpenseSet === 'function' ? insertEquipExpenseSet : null },
+        19: { ds: typeof dataEquipVendorSet !== 'undefined' ? dataEquipVendorSet : null, load: typeof getEquipVendorSet === 'function' ? getEquipVendorSet : null, insert: typeof insertEquipVendorSet === 'function' ? insertEquipVendorSet : null },
+        20: { ds: typeof dataMatCategorySet !== 'undefined' ? dataMatCategorySet : null, load: typeof getMatCategorySet === 'function' ? getMatCategorySet : null, insert: typeof insertMatCategorySet === 'function' ? insertMatCategorySet : null },
+        21: { ds: typeof dataMatTypeSet !== 'undefined' ? dataMatTypeSet : null, load: typeof getMatTypeSet === 'function' ? getMatTypeSet : null, insert: typeof insertMatTypeSet === 'function' ? insertMatTypeSet : null },
+        22: { ds: typeof dataEquipUnitSet !== 'undefined' ? dataEquipUnitSet : null, load: typeof getEquipUnitSet === 'function' ? getEquipUnitSet : null, insert: typeof insertEquipUnitSet === 'function' ? insertEquipUnitSet : null },
+        23: { ds: typeof dataEquipLocationSet !== 'undefined' ? dataEquipLocationSet : null, load: typeof getEquipLocationSet === 'function' ? getEquipLocationSet : null, insert: typeof insertEquipLocationSet === 'function' ? insertEquipLocationSet : null }
+      };
+      const item = loaderMap[data];
+      if (item) {
+        if (!item.ds || item.ds.length === 0) {
+          if (item.load) item.load();
+        } else if (item.insert) {
+          item.insert(item.ds);
+        }
+      }
+    }
+
     $("#loader").hide();
   }, 500); 
 }

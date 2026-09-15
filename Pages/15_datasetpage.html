@@ -695,3 +695,483 @@
     </div>
   </div>
 </div>
+
+<!-- 14. หมวดหมู่ครุภัณฑ์ -->
+<div class="data-contianer" id="datasetPage14" style="display: none;">
+  <div class="datacontent" id="datasetPage14_1">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-folder-tree text-primary"></i> หมวดหมู่ครุภัณฑ์</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'EquipCategory')"><i class="fa-solid fa-plus"></i> เพิ่มหมวดหมู่ครุภัณฑ์</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(14, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงหมวดหมู่ครุภัณฑ์</button>
+      </div>
+    </div>
+    <div class="table-responsive mt-4">
+      <table id="equipCategoryDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">หมวดหมู่ครุภัณฑ์</th>
+          </tr>
+        </thead>
+        <tbody id="equipCategoryDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="4"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> 
+  </div>
+  <div class="datacontent" id="datasetPage14_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงหมวดหมู่ครุภัณฑ์</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(14, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <ul id="sortableEquipCategory-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 15. ประเภทครุภัณฑ์ -->
+<div class="data-contianer" id="datasetPage15" style="display: none;">
+  <div class="datacontent" id="datasetPage15_1">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-layer-group text-primary"></i> ประเภทครุภัณฑ์</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'EquipType')"><i class="fa-solid fa-plus"></i> เพิ่มประเภทครุภัณฑ์</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(15, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงประเภทครุภัณฑ์</button>
+      </div>
+    </div>
+    <div class="table-responsive mt-4">
+      <table id="equipTypeDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">ประเภทครุภัณฑ์</th>
+          </tr>
+        </thead>
+        <tbody id="equipTypeDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="4"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> 
+  </div>
+  <div class="datacontent" id="datasetPage15_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงประเภทครุภัณฑ์</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(15, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <ul id="sortableEquipType-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 16. สถานะการใช้งานครุภัณฑ์ -->
+<div class="data-contianer" id="datasetPage16" style="display: none;">
+  <div class="datacontent" id="datasetPage16_1">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-circle-dot text-primary"></i> สถานะการใช้งานครุภัณฑ์</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'EquipStatus')"><i class="fa-solid fa-plus"></i> เพิ่มสถานะครุภัณฑ์</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(16, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงสถานะครุภัณฑ์</button>
+      </div>
+    </div>
+    <div class="table-responsive mt-4">
+      <table id="equipStatusDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">สถานะการใช้งาน</th>
+          </tr>
+        </thead>
+        <tbody id="equipStatusDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="4"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> 
+  </div>
+  <div class="datacontent" id="datasetPage16_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงสถานะครุภัณฑ์</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(16, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <ul id="sortableEquipStatus-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 17. วิธีได้มาครุภัณฑ์ -->
+<div class="data-contianer" id="datasetPage17" style="display: none;">
+  <div class="datacontent" id="datasetPage17_1">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-cart-flatbed text-primary"></i> วิธีได้มาครุภัณฑ์</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'EquipAcquire')"><i class="fa-solid fa-plus"></i> เพิ่มวิธีได้มา</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(17, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงวิธีได้มา</button>
+      </div>
+    </div>
+    <div class="table-responsive mt-4">
+      <table id="equipAcquireDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">วิธีได้มา</th>
+          </tr>
+        </thead>
+        <tbody id="equipAcquireDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="4"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> 
+  </div>
+  <div class="datacontent" id="datasetPage17_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงวิธีได้มา</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(17, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <ul id="sortableEquipAcquire-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 18. ประเภทรายจ่ายครุภัณฑ์ -->
+<div class="data-contianer" id="datasetPage18" style="display: none;">
+  <div class="datacontent" id="datasetPage18_1">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-money-check-dollar text-primary"></i> ประเภทรายจ่ายครุภัณฑ์</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'EquipExpense')"><i class="fa-solid fa-plus"></i> เพิ่มประเภทรายจ่าย</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(18, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงประเภทรายจ่าย</button>
+      </div>
+    </div>
+    <div class="table-responsive mt-4">
+      <table id="equipExpenseDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">ประเภทรายจ่าย</th>
+          </tr>
+        </thead>
+        <tbody id="equipExpenseDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="4"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> 
+  </div>
+  <div class="datacontent" id="datasetPage18_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงประเภทรายจ่าย</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(18, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <ul id="sortableEquipExpense-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 19. ผู้ขาย / ผู้จัดจำหน่าย -->
+<div class="data-contianer" id="datasetPage19" style="display: none;">
+  <div class="datacontent" id="datasetPage19_1">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-shop text-primary"></i> ผู้ขาย / ผู้จัดจำหน่าย</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'EquipVendor')"><i class="fa-solid fa-plus"></i> เพิ่มผู้ขาย/ผู้จัดจำหน่าย</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(19, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงผู้ขาย</button>
+      </div>
+    </div>
+    <div class="table-responsive mt-4">
+      <table id="equipVendorDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">ผู้ขาย / ผู้รับจ้าง / ผู้บริจาค</th>
+          </tr>
+        </thead>
+        <tbody id="equipVendorDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="4"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> 
+  </div>
+  <div class="datacontent" id="datasetPage19_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงผู้ขาย</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(19, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <ul id="sortableEquipVendor-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 20. หมวดหมู่วัสดุ -->
+<div class="data-contianer" id="datasetPage20" style="display: none;">
+  <div class="datacontent" id="datasetPage20_1">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-boxes-stacked text-primary"></i> หมวดหมู่วัสดุ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'MatCategory')"><i class="fa-solid fa-plus"></i> เพิ่มหมวดหมู่วัสดุ</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(20, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงหมวดหมู่วัสดุ</button>
+      </div>
+    </div>
+    <div class="table-responsive mt-4">
+      <table id="matCategoryDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">หมวดหมู่วัสดุ</th>
+          </tr>
+        </thead>
+        <tbody id="matCategoryDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="4"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> 
+  </div>
+  <div class="datacontent" id="datasetPage20_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงหมวดหมู่วัสดุ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(20, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <ul id="sortableMatCategory-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 21. ประเภทวัสดุ -->
+<div class="data-contianer" id="datasetPage21" style="display: none;">
+  <div class="datacontent" id="datasetPage21_1">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-box text-primary"></i> ประเภทวัสดุ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'MatType')"><i class="fa-solid fa-plus"></i> เพิ่มประเภทวัสดุ</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(21, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงประเภทวัสดุ</button>
+      </div>
+    </div>
+    <div class="table-responsive mt-4">
+      <table id="matTypeDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">ประเภทวัสดุ</th>
+          </tr>
+        </thead>
+        <tbody id="matTypeDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="4"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> 
+  </div>
+  <div class="datacontent" id="datasetPage21_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงประเภทวัสดุ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(21, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <ul id="sortableMatType-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 22. หน่วยนับ (ครุภัณฑ์/วัสดุ) -->
+<div class="data-contianer" id="datasetPage22" style="display: none;">
+  <div class="datacontent" id="datasetPage22_1">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-cubes text-primary"></i> หน่วยนับ (ครุภัณฑ์/วัสดุ)</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'EquipUnit')"><i class="fa-solid fa-plus"></i> เพิ่มหน่วยนับ</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(22, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงหน่วยนับ</button>
+      </div>
+    </div>
+    <div class="table-responsive mt-4">
+      <table id="equipUnitDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">หน่วยนับ</th>
+          </tr>
+        </thead>
+        <tbody id="equipUnitDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="4"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> 
+  </div>
+  <div class="datacontent" id="datasetPage22_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงหน่วยนับ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(22, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <ul id="sortableEquipUnit-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 23. สถานที่จัดเก็บ / ที่ตั้ง -->
+<div class="data-contianer" id="datasetPage23" style="display: none;">
+  <div class="datacontent" id="datasetPage23_1">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-location-dot text-primary"></i> สถานที่จัดเก็บ / ที่ตั้ง</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-green btn-sm rounded-4 px-3" onclick="modalDataPageSet('add', 'EquipLocation')"><i class="fa-solid fa-plus"></i> เพิ่มสถานที่จัดเก็บ</button>
+        <button class="btn btn-outline-blue btn-sm rounded-4 px-3 ms-2" onclick="switchPageSet(23, 2)"><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงสถานที่จัดเก็บ</button>
+      </div>
+    </div>
+    <div class="table-responsive mt-4">
+      <table id="equipLocationDragTable" class="table table-sm">
+        <thead class="text-center">
+          <tr>
+            <th scope="col" rowspan="2">#</th>
+            <th scope="col" colspan="2">รายการ</th>
+            <th scope="col" rowspan="2">ตัวเลือก</th>
+          </tr>
+          <tr>
+            <th scope="col">รหัส</th>
+            <th scope="col">สถานที่จัดเก็บ / ที่ตั้ง</th>
+          </tr>
+        </thead>
+        <tbody id="equipLocationDragTable-body">
+          <tr>
+            <td class="text-center p-4" colspan="4"><i class="fa-solid fa-info-circle text-danger"></i>&nbsp;<span class="text-danger">ไม่มีข้อมูล</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> 
+  </div>
+  <div class="datacontent" id="datasetPage23_2" style="display: none;">
+    <div class="head mb-3">
+      <h5><i class="fa-duotone fa-arrow-up-right-and-arrow-down-left-from-center"></i> จัดเรียงสถานที่จัดเก็บ</h5>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-warning btn-sm rounded-4 px-3" onclick="switchPageSet(23, 1)"><i class="fa-regular fa-circle-arrow-left"></i> ย้อนกลับ</button>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <ul id="sortableEquipLocation-list" class="sortable-list"></ul>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+</div>

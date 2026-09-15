@@ -6772,8 +6772,59 @@ const insertTrashFeetable = () => {
   }).getfeeTrashData(year, month);
 }
 
+// -----------------------------------------------------------------------------
+// Reference Data Table Renderers for Materials & Equipment (Pages 14-23)
+// -----------------------------------------------------------------------------
+const _renderGenericDataSetTable = (tableBodyId, sheetName, data) => {
+  const tableBody = document.getElementById(tableBodyId);
+  if (!tableBody) return;
+  if (!data || data.length === 0) {
+    tableBody.innerHTML = `<tr><td class="text-center text-danger p-4" colspan="4"><i class="fa-solid fa-circle-info me-1"></i> ไม่พบข้อมูล!</td></tr>`;
+    return;
+  }
+  let html = '';
+  for (let i = 0; i < data.length; i++) {
+    const num = i + 1;
+    const code = data[i][0] || '';
+    const name = data[i][1] || '';
+    html += `
+      <tr>
+        <td class="text-center align-middle">${num}</td>
+        <td class="text-center align-middle"><span class="badge text-bg-primary-subtle border border-primary-subtle text-primary-emphasis px-2 py-1">${code}</span></td>
+        <td class="align-middle"><span class="fw-medium text-dark">${name}</span></td>
+        <td class="text-center align-middle">
+          <button class="btn btn-outline-blue btn-sm rounded-3" onclick="modalDataPageSet('edit', '${sheetName}', '${code}')"><i class="fa-regular fa-pen-to-square"></i> แก้ไข</button>
+          <button class="btn btn-outline-danger btn-sm rounded-3 ms-2" onclick="modalDataPageSet('delete', '${sheetName}', '${code}')"><i class="fa-regular fa-trash"></i> ลบ</button>
+        </td>
+      </tr>
+    `;
+  }
+  tableBody.innerHTML = html;
+};
+
+const insertEquipCategorySet = async (data) => _renderGenericDataSetTable("equipCategoryDragTable-body", "EquipCategory", data);
+const insertEquipTypeSet = async (data) => _renderGenericDataSetTable("equipTypeDragTable-body", "EquipType", data);
+const insertEquipStatusSet = async (data) => _renderGenericDataSetTable("equipStatusDragTable-body", "EquipStatus", data);
+const insertEquipAcquireSet = async (data) => _renderGenericDataSetTable("equipAcquireDragTable-body", "EquipAcquire", data);
+const insertEquipExpenseSet = async (data) => _renderGenericDataSetTable("equipExpenseDragTable-body", "EquipExpense", data);
+const insertEquipVendorSet = async (data) => _renderGenericDataSetTable("equipVendorDragTable-body", "EquipVendor", data);
+const insertMatCategorySet = async (data) => _renderGenericDataSetTable("matCategoryDragTable-body", "MatCategory", data);
+const insertMatTypeSet = async (data) => _renderGenericDataSetTable("matTypeDragTable-body", "MatType", data);
+const insertEquipUnitSet = async (data) => _renderGenericDataSetTable("equipUnitDragTable-body", "EquipUnit", data);
+const insertEquipLocationSet = async (data) => _renderGenericDataSetTable("equipLocationDragTable-body", "EquipLocation", data);
+
 // Export functions to window object for global availability
 if (typeof window !== 'undefined') {
+  window.insertEquipCategorySet = insertEquipCategorySet;
+  window.insertEquipTypeSet = insertEquipTypeSet;
+  window.insertEquipStatusSet = insertEquipStatusSet;
+  window.insertEquipAcquireSet = insertEquipAcquireSet;
+  window.insertEquipExpenseSet = insertEquipExpenseSet;
+  window.insertEquipVendorSet = insertEquipVendorSet;
+  window.insertMatCategorySet = insertMatCategorySet;
+  window.insertMatTypeSet = insertMatTypeSet;
+  window.insertEquipUnitSet = insertEquipUnitSet;
+  window.insertEquipLocationSet = insertEquipLocationSet;
   window.insertDataDocSend = typeof insertDataDocSend !== 'undefined' ? insertDataDocSend : undefined;
   window.insertActiveData = typeof insertActiveData !== 'undefined' ? insertActiveData : undefined;
   window.insertDataDocOwner = typeof insertDataDocOwner !== 'undefined' ? insertDataDocOwner : undefined;

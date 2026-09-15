@@ -112,27 +112,65 @@ function bindEquipmentEvents() {
  * Initialize dropdowns across forms & filters
  */
 function initEquipFormDropdowns() {
-  const agencies = [
+  const defaultAgencies = [
     'สำนักปลัด', 'กองคลัง', 'กองช่าง', 'กองการศึกษา', 'กองสาธารณสุขและสิ่งแวดล้อม',
     'กองสวัสดิการสังคม', 'กองยุทธศาสตร์และงบประมาณ', 'หน่วยตรวจสอบภายใน'
   ];
-  const categories = [
+  const defaultCategories = [
     'ครุภัณฑ์สำนักงาน', 'ครุภัณฑ์คอมพิวเตอร์', 'ครุภัณฑ์ยานพาหนะและขนส่ง', 
     'ครุภัณฑ์การเกษตร', 'ครุภัณฑ์โฆษณาและเผยแพร่', 'ครุภัณฑ์งานบ้านงานครัว', 
     'ครุภัณฑ์วิทยาศาสตร์และการแพทย์', 'ครุภัณฑ์สำรวจ', 'ครุภัณฑ์ดนตรีและนาฏศิลป์', 'ครุภัณฑ์อื่น ๆ'
   ];
-  const types = [
+  const defaultTypes = [
     'เครื่องปรับอากาศ', 'คอมพิวเตอร์และอุปกรณ์', 'เครื่องพิมพ์/สแกนเนอร์', 'โต๊ะ/เก้าอี้สำนักงาน', 
     'ตู้เก็บเอกสาร', 'กล้องถ่ายภาพ/วิดีโอ', 'โทรทัศน์/จอภาพ', 'ยานพาหนะ', 'เครื่องสำรองไฟฟ้า', 'อุปกรณ์เครือข่าย'
   ];
-  const statuses = ['พร้อมใช้งาน', 'กำลังใช้งาน', 'ชำรุด', 'รอซ่อม', 'รอจำหน่าย', 'ตัดจำหน่าย'];
-  const acquireMethods = ['ตกลงราคา', 'สอบราคา', 'ประกวดราคา', 'วิธีเฉพาะเจาะจง', 'คัดเลือก', 'รับบริจาค'];
-  const expenseTypes = ['งบลงทุน', 'งบดำเนินงาน', 'เงินอุดหนุน', 'เงินนอกงบประมาณ'];
-  const vendors = ['ห้างหุ้นส่วนจำกัด/บริษัททั่วไป', 'ร้านค้าท้องถิ่น', 'ผู้จัดจำหน่ายส่วนกลาง', 'ผู้บริจาค'];
+  const defaultStatuses = ['พร้อมใช้งาน', 'กำลังใช้งาน', 'ชำรุด', 'รอซ่อม', 'รอจำหน่าย', 'ตัดจำหน่าย'];
+  const defaultAcquireMethods = ['ตกลงราคา', 'สอบราคา', 'ประกวดราคา', 'วิธีเฉพาะเจาะจง', 'คัดเลือก', 'รับบริจาค'];
+  const defaultExpenseTypes = ['งบลงทุน', 'งบดำเนินงาน', 'เงินอุดหนุน', 'เงินนอกงบประมาณ'];
+  const defaultVendors = ['ห้างหุ้นส่วนจำกัด/บริษัททั่วไป', 'ร้านค้าท้องถิ่น', 'ผู้จัดจำหน่ายส่วนกลาง', 'ผู้บริจาค'];
+  const defaultMatCategories = [
+    'วัสดุสำนักงาน', 'วัสดุคอมพิวเตอร์', 'วัสดุไฟฟ้าและวิทยุ', 'วัสดุงานบ้านงานครัว',
+    'วัสดุยานพาหนะและขนส่ง', 'วัสดุการเกษตร', 'วัสดุก่อสร้าง', 'วัสดุอื่น ๆ'
+  ];
+  const defaultMatTypes = [
+    'กระดาษและสิ่งพิมพ์', 'เครื่องเขียนและอุปกรณ์', 'หมึกพิมพ์และโทนเนอร์', 'อุปกรณ์บันทึกข้อมูล',
+    'อุปกรณ์ทำความสะอาด', 'หลอดไฟและอุปกรณ์ไฟฟ้า', 'อะไหล่และอุปกรณ์ซ่อมบำรุง'
+  ];
+  const defaultUnits = [
+    'เครื่อง', 'ชุด', 'คัน', 'หลัง', 'ตัว', 'ชิ้น', 'อัน', 'รีม', 'กล่อง', 'เล่ม', 'แพ็ค', 'ม้วน', 'แผ่น'
+  ];
+  const defaultLocations = [
+    'ห้องพัสดุกลาง', 'ห้องสำนักงานปลัด', 'ห้องกองคลัง', 'ห้องกองช่าง', 'ห้องประชุมสภา', 'ห้องศูนย์ข้อมูล/เซิร์ฟเวอร์', 'อาคารจอดรถ'
+  ];
 
   // Current budget years (Thai BE)
   const currentBE = new Date().getFullYear() + 543;
   const years = [currentBE + 1, currentBE, currentBE - 1, currentBE - 2, currentBE - 3];
+
+  // Helper to extract names from reference dataset [[code, name], ...]
+  const getDatasetNames = (ds, fallback) => {
+    if (Array.isArray(ds) && ds.length > 0) {
+      const names = ds.map(r => Array.isArray(r) ? (r[1] || r[0]) : r).filter(Boolean);
+      if (names.length > 0) return names;
+    }
+    return fallback;
+  };
+
+  const agencies = (typeof dataDepartMentSet !== 'undefined' && Array.isArray(dataDepartMentSet) && dataDepartMentSet.length > 0)
+    ? dataDepartMentSet.map(d => d[1]).filter(Boolean)
+    : defaultAgencies;
+
+  const categories = getDatasetNames(typeof dataEquipCategorySet !== 'undefined' ? dataEquipCategorySet : null, defaultCategories);
+  const types = getDatasetNames(typeof dataEquipTypeSet !== 'undefined' ? dataEquipTypeSet : null, defaultTypes);
+  const statuses = getDatasetNames(typeof dataEquipStatusSet !== 'undefined' ? dataEquipStatusSet : null, defaultStatuses);
+  const acquireMethods = getDatasetNames(typeof dataEquipAcquireSet !== 'undefined' ? dataEquipAcquireSet : null, defaultAcquireMethods);
+  const expenseTypes = getDatasetNames(typeof dataEquipExpenseSet !== 'undefined' ? dataEquipExpenseSet : null, defaultExpenseTypes);
+  const vendors = getDatasetNames(typeof dataEquipVendorSet !== 'undefined' ? dataEquipVendorSet : null, defaultVendors);
+  const matCategories = getDatasetNames(typeof dataMatCategorySet !== 'undefined' ? dataMatCategorySet : null, defaultMatCategories);
+  const matTypes = getDatasetNames(typeof dataMatTypeSet !== 'undefined' ? dataMatTypeSet : null, defaultMatTypes);
+  const units = getDatasetNames(typeof dataEquipUnitSet !== 'undefined' ? dataEquipUnitSet : null, defaultUnits);
+  const locations = getDatasetNames(typeof dataEquipLocationSet !== 'undefined' ? dataEquipLocationSet : null, defaultLocations);
 
   populateSelectOptions('#equipAddData3, #equipfilter1, #matAgency, #borrowerAgency', agencies, true);
   populateSelectOptions('#equipAddData4, #equipfilter2', categories, true);
@@ -143,17 +181,26 @@ function initEquipFormDropdowns() {
   populateSelectOptions('#equipAddData19', expenseTypes, false);
   populateSelectOptions('#equipAddData20', vendors, false);
 
+  // Materials Category and Type dropdowns
+  populateSelectOptions('#parcelfilter2, #matCategory', matCategories, true);
+  populateSelectOptions('#parcelfilter3, #matType', matTypes, true);
+
   // Lifespan options (1 to 20 years)
   const lifeSpanOptions = Array.from({ length: 20 }, (_, i) => `${i + 1} ปี`);
   populateSelectOptions('#equipAddData26', lifeSpanOptions, false);
 
-  // Load backend departments if available
-  if (typeof dataDepartMentSet !== 'undefined' && Array.isArray(dataDepartMentSet) && dataDepartMentSet.length > 0) {
-    const deptNames = dataDepartMentSet.map(d => d[1]).filter(Boolean);
-    if (deptNames.length > 0) {
-      populateSelectOptions('#equipAddData3, #equipfilter1, #matAgency, #borrowerAgency', deptNames, true);
-    }
-  }
+  // Populate Datalists for Location & Unit
+  populateDatalistOptions('#matLocationList', locations);
+  populateDatalistOptions('#equipUnitList', units);
+}
+
+function populateDatalistOptions(selector, items) {
+  const $datalist = $(selector);
+  if ($datalist.length === 0) return;
+  $datalist.empty();
+  items.forEach(item => {
+    $datalist.append(`<option value="${item}"></option>`);
+  });
 }
 
 function populateSelectOptions(selector, items, includeAllOption) {
@@ -920,6 +967,7 @@ function renderMaterialTable(list) {
 }
 
 function openAddMaterialModal() {
+  initEquipFormDropdowns();
   $('#matKey').val('');
   $('#matNumber').val('');
   $('#matName').val('');
@@ -936,6 +984,7 @@ function openAddMaterialModal() {
 }
 
 function editMaterialByKey(key) {
+  initEquipFormDropdowns();
   const item = currentMaterialList.find(m => m.key === key);
   if (!item) return;
 

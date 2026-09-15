@@ -2894,11 +2894,11 @@
           <div class="row">
             <div class="col-6 mb-2">
               <label class="col-form-label fw-bold">หมวดหมู่วัสดุ</label>
-              <input type="text" class="form-control rounded-3" id="matCategory" placeholder="เช่น วัสดุสำนักงาน">
+              <select class="form-select rounded-3" id="matCategory"></select>
             </div>
             <div class="col-6 mb-2">
               <label class="col-form-label fw-bold">ประเภทวัสดุ</label>
-              <input type="text" class="form-control rounded-3" id="matType" placeholder="เช่น กระดาษและสิ่งพิมพ์">
+              <select class="form-select rounded-3" id="matType"></select>
             </div>
           </div>
           <div class="row">
@@ -2908,7 +2908,8 @@
             </div>
             <div class="col-6 mb-2">
               <label class="col-form-label fw-bold">สถานที่เก็บ</label>
-              <input type="text" class="form-control rounded-3" id="matLocation" placeholder="เช่น ห้องพัสดุ ตู้ A">
+              <input type="text" class="form-control rounded-3" id="matLocation" list="matLocationList" placeholder="เช่น ห้องพัสดุ ตู้ A">
+              <datalist id="matLocationList"></datalist>
             </div>
           </div>
           <div class="row">
@@ -2918,7 +2919,8 @@
             </div>
             <div class="col-4 mb-2">
               <label class="col-form-label fw-bold">หน่วยนับ</label>
-              <input type="text" class="form-control rounded-3" id="matUnit" placeholder="เช่น รีม, กล่อง, เล่ม">
+              <input type="text" class="form-control rounded-3" id="matUnit" list="equipUnitList" placeholder="เช่น รีม, กล่อง, เล่ม">
+              <datalist id="equipUnitList"></datalist>
             </div>
             <div class="col-4 mb-2">
               <label class="col-form-label fw-bold">ราคา/หน่วย</label>
