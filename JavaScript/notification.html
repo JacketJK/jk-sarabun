@@ -7,13 +7,17 @@ const createNotificationElement = (item, data, index, clickHandler) => {
   const notifyFunction = item[5];
   const notifyParam = item[6];
 
+  const safeFunc = (notifyFunction && typeof notifyFunction === 'string') ? notifyFunction.replace(/[^a-zA-Z0-9_$]/g, '') : '';
+  const safeParam = (notifyParam !== undefined && notifyParam !== null) ? String(notifyParam).replace(/'/g, "\\'") : '';
+  const clickAttr = safeFunc ? `onclick="${safeFunc}('${safeParam}')"` : '';
+
   const container = document.createElement('a');
   container.className = "py-2 px-3 d-flex align-items-center dropdown-item notify-container";
   container.innerHTML = `
     <span class="me-3">
       <img src="${profilePic}" alt="user" class="rounded-circle" width="48" height="48">
     </span>
-    <div class="w-75 d-inline-block v-middle ${isRead ? '' : 'opacity-25'}" onclick="${notifyFunction}('${notifyParam}')">
+    <div class="w-75 d-inline-block v-middle ${isRead ? '' : 'opacity-25'}" ${clickAttr}>
       <h6 class="mb-0 fw-semibold lh-base limited-text">${title}</h6>
       <span class="d-block limited-text">${message}</span>
     </div>

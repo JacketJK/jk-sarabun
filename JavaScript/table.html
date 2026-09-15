@@ -3362,7 +3362,7 @@ const insertDataDocument = (key) => {
                               ตัวเลือก
                             </button>
                             <ul class="dropdown-menu rounded-4">
-                              <li><a class="dropdown-item" onclick="docEdit(${data[i][0]})"><i class="fa-regular fa-pen-to-square"></i> แก้ไขหนังสือ</a></li>
+                              <li><a class="dropdown-item" onclick="docEdit('${data[i][0]}')"><i class="fa-regular fa-pen-to-square"></i> แก้ไขหนังสือ</a></li>
                               <li><a class="dropdown-item" onclick="docAddfile('${data[i][0]}')"><i class="fa-solid fa-paperclip"></i> แนบหนังสือ</a></li>
                               <li><hr class="dropdown-divider"></li>
                               <li><a class="dropdown-item text-danger" onclick="cancelDocsend('${data[i][0]}')"><i class="fa-regular fa-circle-xmark"></i> ยกเลิกหนังสือ</a></li>
@@ -3569,7 +3569,7 @@ const insertDataOutPedding = (key) => {
                               ตัวเลือก
                             </button>
                             <ul class="dropdown-menu rounded-4">
-                              <li><a class="dropdown-item" onclick="docEdit(${data[i][0]})"><i class="fa-regular fa-pen-to-square"></i> แก้ไขหนังสือ</a></li>
+                              <li><a class="dropdown-item" onclick="docEdit('${data[i][0]}')"><i class="fa-regular fa-pen-to-square"></i> แก้ไขหนังสือ</a></li>
                               <li><a class="dropdown-item" onclick="docAddfile('${data[i][0]}')"><i class="fa-solid fa-paperclip"></i> แนบหนังสือ</a></li>
                               <li><a class="dropdown-item" onclick="selectSendDocument('${data[i][0]}')"><i class="fa-solid fa-paper-plane-top"></i> ส่งหนังสือ</a></li>
                               <li><hr class="dropdown-divider"></li>

@@ -494,18 +494,19 @@ function handleAddSubEquipmentPrompt() {
 
     modal.hide();
     $('#emptySubEquipRow').remove();
-    var rowHtml = '<tr class="sub-equip-row text-center">' +
+    var $row = $('<tr class="sub-equip-row text-center">' +
       '<td class="sub-gfmis">' + gfmis + '</td>' +
       '<td class="sub-number">' + number + '</td>' +
       '<td class="sub-name text-start">' + name + '</td>' +
       '<td class="sub-price text-end">' + Number(price).toLocaleString() + '</td>' +
       '<td>' +
-        '<button type="button" class="btn btn-outline-danger btn-sm rounded-circle" onclick="$(this).closest(\'tr\').remove()">' +
+        '<button type="button" class="btn btn-outline-danger btn-sm rounded-circle btn-remove-sub-equip" title="ลบรายการ">' +
           '<i class="fa-solid fa-trash-can"></i>' +
         '</button>' +
       '</td>' +
-    '</tr>';
-    $('#subEquipmentTable-body').append(rowHtml);
+    '</tr>');
+    $row.find('.btn-remove-sub-equip').on('click', function() { $(this).closest('tr').remove(); });
+    $('#subEquipmentTable-body').append($row);
   });
 
   modal.show();
