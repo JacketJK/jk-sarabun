@@ -1080,36 +1080,46 @@ const insertDataUser = async () => {
 let dataDocument;
 const insertDataPedding = (key) => {
   var tableBody = document.getElementById("tablePending-body");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center py-4 text-muted" colspan="11">
+        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-  google.script.run.withSuccessHandler((data) => {
-    dataDocument = data;
-
-    data = data.filter((row) =>{
-      return row[1] === "หนังสือส่งภายใน" || row[1] === "หนังสือส่งภายใน (แจ้งเวียน)";
+  google.script.run
+    .withFailureHandler((err) => {
+      console.error("Error loading pending docs:", err);
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="11"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
     })
+    .withSuccessHandler((data) => {
+      dataDocument = data;
+      if (!data) data = [];
 
-    if (data.length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "11"; 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
-      return;
-    }
+      data = data.filter((row) =>{
+        return row[1] === "หนังสือส่งภายใน" || row[1] === "หนังสือส่งภายใน (แจ้งเวียน)";
+      })
 
-    data.sort((a, b) => b[0].localeCompare(a[0]));
-    
-    for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
+      if (data.length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "11"; 
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
       }
+
+      data.sort((a, b) => b[0].localeCompare(a[0]));
+      
+      tableBody.innerHTML = "";
+      for (var i = 0; i < data.length; i++) {
+        var row = tableBody.insertRow(i);
 
       var cell = row.insertCell(0);
       let num = i + 1;
@@ -1273,32 +1283,42 @@ const insertDataPedding = (key) => {
 }
 const insertDataInprogress = (key) => {
   var tableBody = document.getElementById("tableInprogress-body");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center py-4 text-muted" colspan="12">
+        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-  google.script.run.withSuccessHandler((data) => {
-    data[1] = data[1].filter((row) =>{
-      return row[1] === "หนังสือส่งภายใน"|| row[1] === "หนังสือส่งภายใน (แจ้งเวียน)";
+  google.script.run
+    .withFailureHandler((err) => {
+      console.error("Error loading inprogress docs:", err);
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="12"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
     })
+    .withSuccessHandler((data) => {
+      if (!data || !data[1]) data = [[], []];
+      data[1] = data[1].filter((row) =>{
+        return row[1] === "หนังสือส่งภายใน"|| row[1] === "หนังสือส่งภายใน (แจ้งเวียน)";
+      })
 
-    if (data[1].length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "12"; 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
-      return;
-    }
-
-    for (var i = 0; i < data[1].length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
+      if (data[1].length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "12"; 
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
       }
+
+      tableBody.innerHTML = "";
+      for (var i = 0; i < data[1].length; i++) {
+        var row = tableBody.insertRow(i);
 
       var cell = row.insertCell(0);
       let num = i + 1;
@@ -1439,38 +1459,60 @@ const insertDataInprogress = (key) => {
 }
 const insertDataInside = (key) => {
   var tableBody = document.getElementById("tableInsideDoc-body");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center py-4 text-muted" colspan="10">
+        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-  google.script.run.withSuccessHandler((data) => {
-    data = data.filter((row) =>{
-      return row[1] === "หนังสือส่งภายใน"|| row[1] === "หนังสือส่งภายใน (แจ้งเวียน)";
+  google.script.run
+    .withFailureHandler((err) => {
+      console.error("Error loading inside docs:", err);
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="10"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
     })
+    .withSuccessHandler((data) => {
+      if (!data) data = [];
+      data = data.filter((row) =>{
+        return row[1] === "หนังสือส่งภายใน"|| row[1] === "หนังสือส่งภายใน (แจ้งเวียน)";
+      })
 
-    if (data.length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "9"; 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
-      return;
-    }
-
-    data.sort((a, b) => b[0].localeCompare(a[0]));
-
-    data = data.filter((row) =>{
-      return row[22] < 5;
-    });
-    
-    for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
+      if (data.length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "10"; 
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
       }
+
+      data.sort((a, b) => b[0].localeCompare(a[0]));
+
+      data = data.filter((row) =>{
+        return row[22] < 5;
+      });
+
+      if (data.length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "10";
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
+      }
+      
+      tableBody.innerHTML = "";
+      for (var i = 0; i < data.length; i++) {
+        var row = tableBody.insertRow(i);
 
       var cell = row.insertCell(0);
       let num = i + 1;
@@ -1616,38 +1658,60 @@ const insertDataInside = (key) => {
 }
 const insertDataFollow = (key) => {
   var tableBody = document.getElementById("tableFollowDoc-body");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center py-4 text-muted" colspan="10">
+        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-  google.script.run.withSuccessHandler((data) => {
-    data = data.filter((row) =>{
-      return row[1] === "หนังสือส่งภายใน"|| row[1] === "หนังสือส่งภายใน (แจ้งเวียน)";
+  google.script.run
+    .withFailureHandler((err) => {
+      console.error("Error loading follow docs:", err);
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="10"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
     })
+    .withSuccessHandler((data) => {
+      if (!data) data = [];
+      data = data.filter((row) =>{
+        return row[1] === "หนังสือส่งภายใน"|| row[1] === "หนังสือส่งภายใน (แจ้งเวียน)";
+      })
 
-    if (data.length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "9"; 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
-      return;
-    }
-
-    data.sort((a, b) => b[0].localeCompare(a[0]));
-    
-    data = data.filter((row) =>{
-      return row[22] < 5;
-    });
-  
-    for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
+      if (data.length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "10"; 
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
       }
+
+      data.sort((a, b) => b[0].localeCompare(a[0]));
+      
+      data = data.filter((row) =>{
+        return row[22] < 5;
+      });
+
+      if (data.length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "10";
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
+      }
+    
+      tableBody.innerHTML = "";
+      for (var i = 0; i < data.length; i++) {
+        var row = tableBody.insertRow(i);
 
       var cell = row.insertCell(0);
       let num = i + 1;
@@ -1780,35 +1844,44 @@ const insertDataFollow = (key) => {
 
 const insertDataReturn = (key) => {
   var tableBody = document.getElementById("tableReturnDoc-body");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center py-4 text-muted" colspan="9">
+        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-  google.script.run.withSuccessHandler((data) => {
-
-    data = data.filter((row) =>{
-      return row[1] === "หนังสือส่งภายใน"|| row[1] === "หนังสือส่งภายใน (แจ้งเวียน)";
+  google.script.run
+    .withFailureHandler((err) => {
+      console.error("Error loading return docs:", err);
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="9"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
     })
+    .withSuccessHandler((data) => {
+      if (!data) data = [];
+      data = data.filter((row) =>{
+        return row[1] === "หนังสือส่งภายใน"|| row[1] === "หนังสือส่งภายใน (แจ้งเวียน)";
+      })
 
-    if (data.length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "9"; 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
-      return;
-    }
-
-    data.sort((a, b) => b[0].localeCompare(a[0]));
-    
-    for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
+      if (data.length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "9"; 
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
       }
+
+      data.sort((a, b) => b[0].localeCompare(a[0]));
+      
+      tableBody.innerHTML = "";
+      for (var i = 0; i < data.length; i++) {
+        var row = tableBody.insertRow(i);
 
       var cell = row.insertCell(0);
       let num = i + 1;
@@ -2671,32 +2744,42 @@ const insertTableSaveDetail = (data) => {
 <script>
 const insertDataGetDocIn = (key) => {
   var tableBody = document.getElementById("tablePickupDoc-body");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center py-4 text-muted" colspan="10">
+        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-  google.script.run.withSuccessHandler(function(data) {
-    data[1] = data[1].filter((row) =>{
-      return row[1] === "หนังสือส่งภายใน"|| row[1] === "หนังสือส่งภายใน (แจ้งเวียน)";
+  google.script.run
+    .withFailureHandler((err) => {
+      console.error("Error loading pickup in docs:", err);
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="10"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
     })
+    .withSuccessHandler(function(data) {
+      if (!data || !data[1]) data = [[], []];
+      data[1] = data[1].filter((row) =>{
+        return row[1] === "หนังสือส่งภายใน"|| row[1] === "หนังสือส่งภายใน (แจ้งเวียน)";
+      })
 
-    if (data[1].length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "9"; 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
-      return;
-    }
-
-    for (var i = 0; i < data[1].length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
+      if (data[1].length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "10"; 
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
       }
+
+      tableBody.innerHTML = "";
+      for (var i = 0; i < data[1].length; i++) {
+        var row = tableBody.insertRow(i);
       
       var cell0 = row.insertCell(0);
       cell0.innerHTML = i + 1; 
@@ -2801,32 +2884,42 @@ const insertDataGetDocIn = (key) => {
 } 
 const insertDataGetDocOut = (key) => {
   var tableBody = document.getElementById("tablePickupDocOut-body");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center py-4 text-muted" colspan="10">
+        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-  google.script.run.withSuccessHandler(function(data) {
-    data[1] = data[1].filter((row) =>{
-      return row[1] === "ลงรับภายนอก";
+  google.script.run
+    .withFailureHandler((err) => {
+      console.error("Error loading pickup out docs:", err);
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="10"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
     })
+    .withSuccessHandler(function(data) {
+      if (!data || !data[1]) data = [[], []];
+      data[1] = data[1].filter((row) =>{
+        return row[1] === "ลงรับภายนอก";
+      })
 
-    if (data[1].length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "9"; 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
-      return;
-    }
-
-    for (var i = 0; i < data[1].length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
+      if (data[1].length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "10"; 
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
       }
+
+      tableBody.innerHTML = "";
+      for (var i = 0; i < data[1].length; i++) {
+        var row = tableBody.insertRow(i);
       
       var cell0 = row.insertCell(0);
       cell0.innerHTML = i + 1; 
@@ -2931,33 +3024,43 @@ const insertDataGetDocOut = (key) => {
 }  
 const insertDataGetDocFollow = (key) => {
   var tableBody = document.getElementById("tablePickupFollow-body");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center py-4 text-muted" colspan="10">
+        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-  google.script.run.withSuccessHandler(function(data) {
-    data[0] = data[0].filter((row) =>{
-      return row[9] == 1;
+  google.script.run
+    .withFailureHandler((err) => {
+      console.error("Error loading pickup follow docs:", err);
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="10"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
     })
+    .withSuccessHandler(function(data) {
+      if (!data || !data[0]) data = [[], []];
+      data[0] = data[0].filter((row) =>{
+        return row[9] == 1;
+      })
 
-    if (data[0].length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "9"; 
+      if (data[0].length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "10"; 
 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
-      return;
-    }
-
-    for (var i = 0; i < data[0].length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
       }
+
+      tableBody.innerHTML = "";
+      for (var i = 0; i < data[0].length; i++) {
+        var row = tableBody.insertRow(i);
       
       var cell0 = row.insertCell(0);
       cell0.innerHTML = i + 1; 
@@ -3061,36 +3164,45 @@ const insertDataGetDocFollow = (key) => {
 } 
 const insertDataDocument = (key) => {
   var tableBody = document.getElementById("tableDocument-body");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center py-4 text-muted" colspan="10">
+        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-  google.script.run.withSuccessHandler((data) => {
-
-    data = data.filter((row) =>{
-      return row[1] === "หนังสือส่ง" || row[1] === "คำสั่ง" || row[1] === "ประกาศ" || row[1] === "หนังสือรับรอง";
+  google.script.run
+    .withFailureHandler((err) => {
+      console.error("Error loading document report:", err);
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="10"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
     })
+    .withSuccessHandler((data) => {
+      if (!data) data = [];
+      data = data.filter((row) =>{
+        return row[1] === "หนังสือส่ง" || row[1] === "คำสั่ง" || row[1] === "ประกาศ" || row[1] === "หนังสือรับรอง";
+      })
 
-    if (data.length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "10"; 
+      if (data.length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "10"; 
 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
-      return;
-    }
-
-    data.sort((a, b) => b[0].localeCompare(a[0]));
-
-    for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
       }
+
+      data.sort((a, b) => b[0].localeCompare(a[0]));
+
+      tableBody.innerHTML = "";
+      for (var i = 0; i < data.length; i++) {
+        var row = tableBody.insertRow(i);
 
       var cell0 = row.insertCell(0);
       let num = i + 1;
@@ -3242,36 +3354,45 @@ const insertDataDocument = (key) => {
 }
 const insertDataOutPedding = (key) => {
   var tableBody = document.getElementById("tableDocoutPending-body");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center py-4 text-muted" colspan="11">
+        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-  google.script.run.withSuccessHandler((data) => {
-
-    data = data.filter((row) =>{
-      return row[1] === "ลงรับภายนอก" || row[1] === "ลงรับภายใน" && row[22] != 5;
+  google.script.run
+    .withFailureHandler((err) => {
+      console.error("Error loading pending out docs:", err);
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="11"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
     })
+    .withSuccessHandler((data) => {
+      if (!data) data = [];
+      data = data.filter((row) =>{
+        return row[1] === "ลงรับภายนอก" || row[1] === "ลงรับภายใน" && row[22] != 5;
+      })
 
-    if (data.length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "11"; 
+      if (data.length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "11"; 
 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
-      return;
-    }
-
-    data.sort((a, b) => b[0].localeCompare(a[0]));
-    
-    for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
       }
+
+      data.sort((a, b) => b[0].localeCompare(a[0]));
+      
+      tableBody.innerHTML = "";
+      for (var i = 0; i < data.length; i++) {
+        var row = tableBody.insertRow(i);
 
       var cell0 = row.insertCell(0);
       let num = i + 1;
@@ -3438,34 +3559,44 @@ const insertDataOutPedding = (key) => {
 }   
 const insertDataOutInprogress = (key) => {
   var tableBody = document.getElementById("tableDocOutInprogress-body");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center py-4 text-muted" colspan="12">
+        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-  google.script.run.withSuccessHandler((data) => {
-    data[0] = data[0].filter((row) =>{
-      return row[22] > 3;
+  google.script.run
+    .withFailureHandler((err) => {
+      console.error("Error loading inprogress out docs:", err);
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="12"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
     })
-    if (data[0].length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "12"; 
+    .withSuccessHandler((data) => {
+      if (!data || !data[0]) data = [[], []];
+      data[0] = data[0].filter((row) =>{
+        return row[22] > 3;
+      })
+      if (data[0].length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "12"; 
 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
-      return;
-    }
-
-    data[0].sort((a, b) => b[0].localeCompare(a[0]));
-
-    for (var i = 0; i < data[0].length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
       }
+
+      data[0].sort((a, b) => b[0].localeCompare(a[0]));
+
+      tableBody.innerHTML = "";
+      for (var i = 0; i < data[0].length; i++) {
+        var row = tableBody.insertRow(i);
 
       var cell0 = row.insertCell(0);
       let num = i + 1;
@@ -3608,39 +3739,61 @@ const insertDataOutInprogress = (key) => {
 }
 const insertDataOutInside = (key) => {
   var tableBody = document.getElementById("tableInsideDocOut-body");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center py-4 text-muted" colspan="10">
+        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-  google.script.run.withSuccessHandler((data) => {
-    data = data.filter((row) =>{
-      return row[1] === "ลงรับภายนอก" || row[1] === "ลงรับภายใน";
+  google.script.run
+    .withFailureHandler((err) => {
+      console.error("Error loading inside out docs:", err);
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="10"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
     })
+    .withSuccessHandler((data) => {
+      if (!data) data = [];
+      data = data.filter((row) =>{
+        return row[1] === "ลงรับภายนอก" || row[1] === "ลงรับภายใน";
+      })
 
-    if (data.length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "10"; 
+      if (data.length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "10"; 
 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
-      return;
-    }
-
-    data.sort((a, b) => b[0].localeCompare(a[0]));
-
-    data = data.filter((row) =>{
-      return row[22] < 5;
-    });
-    
-    for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
       }
+
+      data.sort((a, b) => b[0].localeCompare(a[0]));
+
+      data = data.filter((row) =>{
+        return row[22] < 5;
+      });
+
+      if (data.length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "10";
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
+      }
+      
+      tableBody.innerHTML = "";
+      for (var i = 0; i < data.length; i++) {
+        var row = tableBody.insertRow(i);
 
       var cell0 = row.insertCell(0);
       let num = i + 1;
@@ -3785,39 +3938,61 @@ const insertDataOutInside = (key) => {
 }
 const insertDataOutFollow = (key) => {
   var tableBody = document.getElementById("tableFollowDocOut-body");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center py-4 text-muted" colspan="9">
+        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-  google.script.run.withSuccessHandler((data) => {
-    data = data.filter((row) =>{
-      return row[1] === "ลงรับภายนอก" || row[1] === "ลงรับภายใน";
+  google.script.run
+    .withFailureHandler((err) => {
+      console.error("Error loading follow out docs:", err);
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="9"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
     })
+    .withSuccessHandler((data) => {
+      if (!data) data = [];
+      data = data.filter((row) =>{
+        return row[1] === "ลงรับภายนอก" || row[1] === "ลงรับภายใน";
+      })
 
-    if (data.length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "10"; 
+      if (data.length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "9"; 
 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
-      return;
-    }
-
-    data.sort((a, b) => b[0].localeCompare(a[0]));
-    
-    data = data.filter((row) =>{
-      return row[22] < 5;
-    });
-  
-    for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
       }
+
+      data.sort((a, b) => b[0].localeCompare(a[0]));
+      
+      data = data.filter((row) =>{
+        return row[22] < 5;
+      });
+
+      if (data.length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "9";
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
+      }
+    
+      tableBody.innerHTML = "";
+      for (var i = 0; i < data.length; i++) {
+        var row = tableBody.insertRow(i);
 
       var cell0 = row.insertCell(0);
       let num = i + 1;
@@ -3954,36 +4129,45 @@ const insertDataOutFollow = (key) => {
 }
 const insertDataOutReturn = (key) => {
   var tableBody = document.getElementById("tableReturnDocOut-body");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center py-4 text-muted" colspan="10">
+        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-  google.script.run.withSuccessHandler((data) => {
-
-    data = data.filter((row) =>{
-      return row[1] === "ลงรับภายนอก" || row[1] === "ลงรับภายใน";
+  google.script.run
+    .withFailureHandler((err) => {
+      console.error("Error loading return out docs:", err);
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="10"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
     })
+    .withSuccessHandler((data) => {
+      if (!data) data = [];
+      data = data.filter((row) =>{
+        return row[1] === "ลงรับภายนอก" || row[1] === "ลงรับภายใน";
+      })
 
-    if (data.length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "10"; 
+      if (data.length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "10"; 
 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
-      return;
-    }
-
-    data.sort((a, b) => b[0].localeCompare(a[0]));
-    
-    for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
       }
+
+      data.sort((a, b) => b[0].localeCompare(a[0]));
+      
+      tableBody.innerHTML = "";
+      for (var i = 0; i < data.length; i++) {
+        var row = tableBody.insertRow(i);
 
       var cell0 = row.insertCell(0);
       let num = i + 1;
@@ -4772,30 +4956,40 @@ const insertTableLeaveDetail = (data) => {
 
 const insertAllHistoryReport = (key) => {
   var tableBody = document.getElementById("tableReportHistory-body");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td class="text-center py-4 text-muted" colspan="10">
+        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div> กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-  google.script.run.withSuccessHandler(function(data) {
-    data.reverse();
-    if (data.length === 0) {
-      var noDataRow = document.createElement("tr");
-      var noDataCell = document.createElement("td");
-      
-      noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
-      noDataCell.className = "text-danger text-center p-4";
-      noDataCell.colSpan = "9"; 
+  google.script.run
+    .withFailureHandler((err) => {
+      console.error("Error loading history reports:", err);
+      tableBody.innerHTML = `<tr><td class="text-danger text-center p-4" colspan="10"><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</td></tr>`;
+    })
+    .withSuccessHandler(function(data) {
+      if (!data) data = [];
+      data.reverse();
+      if (data.length === 0) {
+        var noDataRow = document.createElement("tr");
+        var noDataCell = document.createElement("td");
+        
+        noDataCell.innerHTML = "<i class='fa-solid fa-circle-info text-danger'></i> ไม่พบข้อมูล!";
+        noDataCell.className = "text-danger text-center p-4";
+        noDataCell.colSpan = "10"; 
 
-      noDataRow.appendChild(noDataCell);
-      tableBody.innerHTML = "";
-      tableBody.appendChild(noDataRow);
-      return;
-    }
-
-    for (var i = 0; i < data.length; i++) {
-      var row;
-      if (i < tableBody.rows.length) {
-        row = tableBody.rows[i];
-      } else {
-        row = tableBody.insertRow(i);
+        noDataRow.appendChild(noDataCell);
+        tableBody.innerHTML = "";
+        tableBody.appendChild(noDataRow);
+        return;
       }
+
+      tableBody.innerHTML = "";
+      for (var i = 0; i < data.length; i++) {
+        var row = tableBody.insertRow(i);
 
       var cell0 = row.insertCell(0);
       let num = i + 1;
