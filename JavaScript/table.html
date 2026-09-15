@@ -1709,6 +1709,9 @@ const insertDataFollow = (key) => {
         return;
       }
     
+      const imgdoc = "https://cdn.jsdelivr.net/gh/JacketJK/image/upload.png";
+      const imglink = "https://cdn.jsdelivr.net/gh/JacketJK/image/link_url.png";
+
       tableBody.innerHTML = "";
       for (var i = 0; i < data.length; i++) {
         var row = tableBody.insertRow(i);
@@ -1742,7 +1745,6 @@ const insertDataFollow = (key) => {
                         </div>`;
 
       var cell4 = row.insertCell(4);
-      var imgdoc = 'https://cdn.jsdelivr.net/gh/JacketJK/image/upload.png';
       var file = '';
 
       for (let j = 26; j <= 30; j++) {
@@ -1760,7 +1762,6 @@ const insertDataFollow = (key) => {
                         </div>`;  
 
       var cell5 = row.insertCell(5);
-      var imglink = 'https://cdn.jsdelivr.net/gh/JacketJK/image/link_url.png';
       var link = '';
 
       for (let j = 31; j <= 33; j++) {
