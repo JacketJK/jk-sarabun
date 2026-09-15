@@ -905,9 +905,35 @@ function dataDocReturn(key) {
   })
   return data;  
 }
+function _getDocuMentSS() {
+  if (!sheetDocuMent) _refreshGlobals();
+  if (sheetDocuMent) {
+    try { return SpreadsheetApp.openById(sheetDocuMent); } catch (e) {}
+  }
+  return SpreadsheetApp.getActiveSpreadsheet();
+}
+
+function _getUserSS() {
+  if (!sheetUseds) _refreshGlobals();
+  if (sheetUseds) {
+    try { return SpreadsheetApp.openById(sheetUseds); } catch (e) {}
+  }
+  return SpreadsheetApp.getActiveSpreadsheet();
+}
+
+function _getSettingSS() {
+  if (!sheetSetting) _refreshGlobals();
+  if (sheetSetting) {
+    try { return SpreadsheetApp.openById(sheetSetting); } catch (e) {}
+  }
+  return SpreadsheetApp.getActiveSpreadsheet();
+}
+
 function dataDocInside(key) {
   try {
-    const sheet = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument"); 
+    const ss = _getDocuMentSS();
+    if (!ss) return [];
+    const sheet = ss.getSheetByName("DataDocument"); 
     if (!sheet) return [];
     const lastRow = sheet.getLastRow();
     if (lastRow < 3) return [];
@@ -1221,7 +1247,8 @@ function openDocument(key) {
 }
 function dataDocInprogress(key) {
   try {
-    const ssDoc = SpreadsheetApp.openById(sheetDocuMent);
+    const ssDoc = _getDocuMentSS();
+    if (!ssDoc) return [[], []];
     const sheet = ssDoc.getSheetByName("SendDocument");
     const sheetDoc = ssDoc.getSheetByName("DataDocument");
     if (!sheet || !sheetDoc) return [[], []];
@@ -1253,10 +1280,12 @@ function dataDocInprogress(key) {
 }
 function dataDocInprogressOut(key) {
   try {
-    const ssDoc = SpreadsheetApp.openById(sheetDocuMent);
+    const ssDoc = _getDocuMentSS();
+    const ssUser = _getUserSS();
+    if (!ssDoc || !ssUser) return [[], [], []];
     const sheet = ssDoc.getSheetByName("SendDocument");
     const sheetDoc = ssDoc.getSheetByName("DataDocument");
-    const sheetUser = SpreadsheetApp.openById(sheetUseds).getSheetByName("User");
+    const sheetUser = ssUser.getSheetByName("User");
     if (!sheet || !sheetDoc || !sheetUser) return [[], [], []];
 
     const lastRowSend = sheet.getLastRow();

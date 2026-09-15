@@ -13,23 +13,37 @@ function _loadSystemSettings() {
     const cache = CacheService.getScriptCache();
     const cached = cache.get('SYSTEM_SETTINGS_ARRAY');
     if (cached) {
-      return JSON.parse(cached);
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed) && parsed.length >= 8 && (parsed[0] || parsed[6] || parsed[7])) {
+        return parsed;
+      }
     }
   } catch (e) {}
 
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName('Setting');
-    const values = sheet.getRange('B1:B36').getDisplayValues();
-    const flat = values.map(function(r) { return r[0]; });
-    try {
-      CacheService.getScriptCache().put('SYSTEM_SETTINGS_ARRAY', JSON.stringify(flat), 21600);
-    } catch (e) {}
-    return flat;
+    if (ss) {
+      const sheet = ss.getSheetByName('Setting');
+      if (sheet) {
+        const lastRow = sheet.getLastRow();
+        if (lastRow >= 1) {
+          const numRows = Math.min(Math.max(lastRow, 1), 36);
+          const values = sheet.getRange(1, 2, numRows, 1).getDisplayValues();
+          const flat = values.map(function(r) { return r[0]; });
+          while (flat.length < 36) flat.push('');
+          if (flat[0] || flat[6] || flat[7]) {
+            try {
+              CacheService.getScriptCache().put('SYSTEM_SETTINGS_ARRAY', JSON.stringify(flat), 1800);
+            } catch (e) {}
+          }
+          return flat;
+        }
+      }
+    }
   } catch (err) {
     Logger.log('Error loading system settings: ' + err);
-    return new Array(36).fill('');
   }
+  return new Array(36).fill('');
 }
 
 function clearSystemSettingsCache() {
@@ -38,39 +52,74 @@ function clearSystemSettingsCache() {
     cache.remove('SYSTEM_SETTINGS_ARRAY');
     cache.remove('SYSTEM_SETTINGS_MAP');
   } catch (e) {}
+  _refreshGlobals();
 }
 
-const _systemSettings = _loadSystemSettings();
-const nameSystem = _systemSettings[0] || '';
-const logoSystem = _systemSettings[1] || '';
-const userFolder = _systemSettings[2] || '';
-const baordCastFolder = _systemSettings[3] || '';
-const documentFolder = _systemSettings[4] || '';
-const carReqFolder = _systemSettings[5] || '';
-const sheetSetting = _systemSettings[6] || '';
-const sheetDocuMent = _systemSettings[7] || '';
-const sheetCarReq = _systemSettings[8] || '';
-const sheetCalendar = _systemSettings[15] || '';
-const sheetLeave = _systemSettings[16] || '';
-const sheetReport = _systemSettings[17] || '';
-const sheetProject = _systemSettings[18] || '';
-const sheetBroadCast = _systemSettings[19] || '';
-const sheetNotify = _systemSettings[20] || '';
-const sheetMeet = _systemSettings[21] || '';
-const meetFolder = _systemSettings[22] || '';
-const sheetHrm = _systemSettings[23] || '';
-const hrmFolder = _systemSettings[24] || '';
-const sheetLand = _systemSettings[25] || '';
-const landFolder = _systemSettings[26] || '';
-const sheetBin = _systemSettings[27] || '';
-const binFolder = _systemSettings[28] || '';
-const sheetEquip = _systemSettings[29] || '';
-const equipFolder = _systemSettings[30] || '';
-const sheetUseds = _systemSettings[31] || '';
-const sheetChat = _systemSettings[32] || '';
-const ChannelAccessToken = _systemSettings[33] || '';
-const LineMesAPI = _systemSettings[34] || '';
-const LinkWebApp = _systemSettings[35] || '';
+var _systemSettings = _loadSystemSettings();
+var nameSystem = _systemSettings[0] || '';
+var logoSystem = _systemSettings[1] || '';
+var userFolder = _systemSettings[2] || '';
+var baordCastFolder = _systemSettings[3] || '';
+var documentFolder = _systemSettings[4] || '';
+var carReqFolder = _systemSettings[5] || '';
+var sheetSetting = _systemSettings[6] || '';
+var sheetDocuMent = _systemSettings[7] || '';
+var sheetCarReq = _systemSettings[8] || '';
+var sheetCalendar = _systemSettings[15] || '';
+var sheetLeave = _systemSettings[16] || '';
+var sheetReport = _systemSettings[17] || '';
+var sheetProject = _systemSettings[18] || '';
+var sheetBroadCast = _systemSettings[19] || '';
+var sheetNotify = _systemSettings[20] || '';
+var sheetMeet = _systemSettings[21] || '';
+var meetFolder = _systemSettings[22] || '';
+var sheetHrm = _systemSettings[23] || '';
+var hrmFolder = _systemSettings[24] || '';
+var sheetLand = _systemSettings[25] || '';
+var landFolder = _systemSettings[26] || '';
+var sheetBin = _systemSettings[27] || '';
+var binFolder = _systemSettings[28] || '';
+var sheetEquip = _systemSettings[29] || '';
+var equipFolder = _systemSettings[30] || '';
+var sheetUseds = _systemSettings[31] || '';
+var sheetChat = _systemSettings[32] || '';
+var ChannelAccessToken = _systemSettings[33] || '';
+var LineMesAPI = _systemSettings[34] || '';
+var LinkWebApp = _systemSettings[35] || '';
+
+function _refreshGlobals() {
+  _systemSettings = _loadSystemSettings();
+  nameSystem = _systemSettings[0] || '';
+  logoSystem = _systemSettings[1] || '';
+  userFolder = _systemSettings[2] || '';
+  baordCastFolder = _systemSettings[3] || '';
+  documentFolder = _systemSettings[4] || '';
+  carReqFolder = _systemSettings[5] || '';
+  sheetSetting = _systemSettings[6] || '';
+  sheetDocuMent = _systemSettings[7] || '';
+  sheetCarReq = _systemSettings[8] || '';
+  sheetCalendar = _systemSettings[15] || '';
+  sheetLeave = _systemSettings[16] || '';
+  sheetReport = _systemSettings[17] || '';
+  sheetProject = _systemSettings[18] || '';
+  sheetBroadCast = _systemSettings[19] || '';
+  sheetNotify = _systemSettings[20] || '';
+  sheetMeet = _systemSettings[21] || '';
+  meetFolder = _systemSettings[22] || '';
+  sheetHrm = _systemSettings[23] || '';
+  hrmFolder = _systemSettings[24] || '';
+  sheetLand = _systemSettings[25] || '';
+  landFolder = _systemSettings[26] || '';
+  sheetBin = _systemSettings[27] || '';
+  binFolder = _systemSettings[28] || '';
+  sheetEquip = _systemSettings[29] || '';
+  equipFolder = _systemSettings[30] || '';
+  sheetUseds = _systemSettings[31] || '';
+  sheetChat = _systemSettings[32] || '';
+  ChannelAccessToken = _systemSettings[33] || '';
+  LineMesAPI = _systemSettings[34] || '';
+  LinkWebApp = _systemSettings[35] || '';
+}
 
 const getLineNotifyToken = (code, state) => {
   try {
