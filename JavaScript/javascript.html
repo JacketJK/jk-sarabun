@@ -3147,10 +3147,7 @@ const addToken_linenotify = () => {
   }).addToken_linenotify(obj)
 }
 </script>  
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getDatabase, set, push, ref, onValue, off } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
+<script>
   const firebaseConfig = {
     apiKey: "AIzaSyCwaPggFSCPq8milsNRodinivrx006q3io",
     authDomain: "app-chat-khongphai.firebaseapp.com",
@@ -3162,16 +3159,35 @@ const addToken_linenotify = () => {
   };
 
 let currentRoomChat = null;
+let _fbModuleCache = null;
 
-const initializeChat = (roomChat) => {
+async function getFirebaseModules() {
+  if (!_fbModuleCache) {
+    const fbApp = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
+    const fbDb = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js");
+    const app = fbApp.initializeApp(firebaseConfig);
+    const db = fbDb.getDatabase(app);
+    _fbModuleCache = {
+      app,
+      db,
+      set: fbDb.set,
+      push: fbDb.push,
+      ref: fbDb.ref,
+      onValue: fbDb.onValue,
+      off: fbDb.off
+    };
+  }
+  return _fbModuleCache;
+}
+
+const initializeChat = async (roomChat) => {
+  const { db, set, push, ref, onValue, off } = await getFirebaseModules();
   const btnSend = document.querySelector('#chat-submit');
   const newBtnSend = btnSend.cloneNode(true);
   btnSend.parentNode.replaceChild(newBtnSend, btnSend);
 
   $('#headerRoomchat').val(roomChat);
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
   const publicKey = localStorage.getItem('publicKey');
   const user = localStorage.getItem('name_1') + localStorage.getItem('name_2') + ' ' + localStorage.getItem('name_3');
   const profile = localStorage.getItem('profile');

@@ -357,7 +357,7 @@ function considerCarRequrst(obj) {
   }
   
   // var token = [obj.userSender];
-  // var msg = '📣มีผู้ขอใช้รถ🚗\n' + '\n⚙️รหัสคำขอ: ' + obj.consider4 + '\n🧑‍✈️ผู้ขอใช้: ' + usercar2 + '\n🏢ตำแหน่ง: ' + usercar3 + '\n🚘รถที่ขอใช้: ' + usercar1 + '\n---------------------------------\n                 📎รายละเอียด\n' +  '\n📌ไปที่: ' + usercar4 + '\n✨เพื่อใช้: ' + usercar5 + '\n📅ใน' + usercar8 + '\n📅ถึง' + usercar9 + '\n🗾เขตพื้นที่: ' + usercar6 + '\n🪑มีผู้นั่งไปด้วย จำนวน ' + usercar7 + ' คน' +'\n🧑‍✈️พลขับ: ' + usercar10 + '\n\n---------------------------------\n' + '🪧ข้อพิจารณา: ' + obj.consider5 + '\n🤫ผู้เสนอ: ' + obj.consider1;
+  // var msg = '📣มีผู้ขอใช้รถ🚗\n' + '\n⚙️รหัสคำขอ: ' + obj.consider4 + '\n🧑✈️ผู้ขอใช้: ' + usercar2 + '\n🏢ตำแหน่ง: ' + usercar3 + '\n🚘รถที่ขอใช้: ' + usercar1 + '\n---------------------------------\n                 📎รายละเอียด\n' +  '\n📌ไปที่: ' + usercar4 + '\n✨เพื่อใช้: ' + usercar5 + '\n📅ใน' + usercar8 + '\n📅ถึง' + usercar9 + '\n🗾เขตพื้นที่: ' + usercar6 + '\n🪑มีผู้นั่งไปด้วย จำนวน ' + usercar7 + ' คน' +'\n🧑✈️พลขับ: ' + usercar10 + '\n\n---------------------------------\n' + '🪧ข้อพิจารณา: ' + obj.consider5 + '\n🤫ผู้เสนอ: ' + obj.consider1;
 
   var token = obj.userSender;
   var alt = "การเสนอพิจารณาขอใช้รถ " + usercar1;
@@ -701,7 +701,7 @@ function approveCarRequrst(obj) {
   }
 
   // var token = tokens;
-  // var msg = '📣มีผู้ขอใช้รถ🚗\n' + '\n⚙️รหัสคำขอ: ' + obj.approve4 + '\n🧑‍✈️ผู้ขอใช้: ' + usercar2 + '\n🏢ตำแหน่ง: ' + usercar3 + '\n🚘รถที่ขอใช้: ' + usercar1 + '\n---------------------------------\n                 📎รายละเอียด\n' +  '\n📌ไปที่: ' + usercar4 + '\n✨เพื่อใช้: ' + usercar5 + '\n📅ใน' + usercar8 + '\n📅ถึง' + usercar9 + '\n🗾เขตพื้นที่: ' + usercar6 + '\n🪑มีผู้นั่งไปด้วย จำนวน ' + usercar7 + ' คน' +'\n🧑‍✈️พลขับ: ' + usercar10 + '\n\n---------------------------------\n' + '🪧ข้อพิจารณา: ' + consider5 + '\n🤫ผู้เสนอ: ' + consider1 + '\n🎀ผลการพิจารณา: ' + 
+  // var msg = '📣มีผู้ขอใช้รถ🚗\n' + '\n⚙️รหัสคำขอ: ' + obj.approve4 + '\n🧑✈️ผู้ขอใช้: ' + usercar2 + '\n🏢ตำแหน่ง: ' + usercar3 + '\n🚘รถที่ขอใช้: ' + usercar1 + '\n---------------------------------\n                 📎รายละเอียด\n' +  '\n📌ไปที่: ' + usercar4 + '\n✨เพื่อใช้: ' + usercar5 + '\n📅ใน' + usercar8 + '\n📅ถึง' + usercar9 + '\n🗾เขตพื้นที่: ' + usercar6 + '\n🪑มีผู้นั่งไปด้วย จำนวน ' + usercar7 + ' คน' +'\n🧑✈️พลขับ: ' + usercar10 + '\n\n---------------------------------\n' + '🪧ข้อพิจารณา: ' + consider5 + '\n🤫ผู้เสนอ: ' + consider1 + '\n🎀ผลการพิจารณา: ' + 
   // obj.approve5 + '\n🏡ผู้พิจารณา: ' + obj.approve1;
 
   var token = tokens;
@@ -1047,7 +1047,7 @@ function returnCarRequrst(obj) {
       break;
     }
   }
-  // var msg = '📣ขอคืนรถ🚗\n' + '\n⚙️รหัสคำขอ: ' + obj.returnData1 + '\n🧑‍✈️ผู้ขอใช้: ' + usercar2 + '\n🏢ตำแหน่ง: ' + usercar3 + '\n🚘รถที่ขอใช้: ' + usercar1 + '\n---------------------------------\n                 📎รายละเอียด\n' +  '\n📌ไปที่: ' + usercar4 + '\n✨เพื่อใช้: ' + usercar5 + '\n📅ใน' + usercar8 + '\n📅ถึง' + usercar9 + '\n🗾เขตพื้นที่: ' + usercar6 + '\n🪑มีผู้นั่งไปด้วย จำนวน ' + usercar7 + ' คน' +'\n🧑‍✈️พลขับ: ' + usercar10 + '\n\n---------------------------------\n' + '🕛เลขไมล์ก่อนไป: ' + milebefor + '\n🕛เลขไมล์ปัจจุบัน: ' + obj.returnData2 + '\n🧭ระยะทาง: ' + obj.returnData4 + ' กิโลเมตร\n⛽น้ำมันคงเหลือ: ' + obj.returnData3 + ' %';
+  // var msg = '📣ขอคืนรถ🚗\n' + '\n⚙️รหัสคำขอ: ' + obj.returnData1 + '\n🧑✈️ผู้ขอใช้: ' + usercar2 + '\n🏢ตำแหน่ง: ' + usercar3 + '\n🚘รถที่ขอใช้: ' + usercar1 + '\n---------------------------------\n                 📎รายละเอียด\n' +  '\n📌ไปที่: ' + usercar4 + '\n✨เพื่อใช้: ' + usercar5 + '\n📅ใน' + usercar8 + '\n📅ถึง' + usercar9 + '\n🗾เขตพื้นที่: ' + usercar6 + '\n🪑มีผู้นั่งไปด้วย จำนวน ' + usercar7 + ' คน' +'\n🧑✈️พลขับ: ' + usercar10 + '\n\n---------------------------------\n' + '🕛เลขไมล์ก่อนไป: ' + milebefor + '\n🕛เลขไมล์ปัจจุบัน: ' + obj.returnData2 + '\n🧭ระยะทาง: ' + obj.returnData4 + ' กิโลเมตร\n⛽น้ำมันคงเหลือ: ' + obj.returnData3 + ' %';
 
   var mile = "" + obj.returnData2; 
   var tokens = [tokens1, tokens2, tokens3];
