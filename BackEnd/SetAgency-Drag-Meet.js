@@ -29,89 +29,129 @@ const updateAgencyBackgroundUrl = (bgUrl) => {
   } catch (e) {}
   return bgUrl;
 }
-const getCarSet = () => {
-  const ss = SpreadsheetApp.openById(sheetCarReq);
-  const sheet = ss.getSheetByName("Car"); 
-  const data = sheet.getDataRange().getValues().slice(1);
-  return data;
+function getCarSet() {
+  try {
+    const ss = SpreadsheetApp.openById(sheetCarReq);
+    if (!ss) return [];
+    const sheet = ss.getSheetByName("Car"); 
+    if (!sheet) return [];
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 2) return [];
+    return sheet.getDataRange().getValues().slice(1);
+  } catch (e) {
+    return [];
+  }
 }
 const saveOrderCar = (order) => {
-  const sheet = SpreadsheetApp.openById(sheetCarReq).getSheetByName("Car"); 
-  const data = sheet.getDataRange().getValues().slice(1);
-  var newData = [];
+  try {
+    const ss = SpreadsheetApp.openById(sheetCarReq);
+    if (!ss) return;
+    const sheet = ss.getSheetByName("Car"); 
+    if (!sheet) return;
+    const data = sheet.getDataRange().getValues().slice(1);
+    var newData = [];
 
-  order.forEach(function(id) {
-    data.forEach(function(row) {
-      if (row[0] === id) {
-        newData.push(row);
-      }
+    order.forEach(function(id) {
+      data.forEach(function(row) {
+        if (row[0] === id) {
+          newData.push(row);
+        }
+      });
     });
-  });
 
-  sheet.getRange(2, 1, newData.length, newData[0].length).setValues(newData);
+    if (newData.length > 0) {
+      sheet.getRange(2, 1, newData.length, newData[0].length).setValues(newData);
+    }
+  } catch (e) {}
 }
-const getMeetingRoomSet = () => {
-  const ss = SpreadsheetApp.openById(sheetMeet);
-  const sheet = ss.getSheetByName("MeetingRoom"); 
-  const data = sheet.getDataRange().getValues().slice(1);
-  return data;
+function getMeetingRoomSet() {
+  try {
+    const ss = SpreadsheetApp.openById(sheetMeet);
+    if (!ss) return [];
+    const sheet = ss.getSheetByName("MeetingRoom"); 
+    if (!sheet) return [];
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 2) return [];
+    return sheet.getDataRange().getValues().slice(1);
+  } catch (e) {
+    return [];
+  }
 }
 const saveOrderMeetingRoom = (order) => {
-  const sheet = SpreadsheetApp.openById(sheetMeet).getSheetByName("MeetingRoom"); 
-  const data = sheet.getDataRange().getValues().slice(1);
-  var newData = [];
+  try {
+    const ss = SpreadsheetApp.openById(sheetMeet);
+    if (!ss) return;
+    const sheet = ss.getSheetByName("MeetingRoom"); 
+    if (!sheet) return;
+    const data = sheet.getDataRange().getValues().slice(1);
+    var newData = [];
 
-  order.forEach(function(id) {
-    data.forEach(function(row) {
-      if (row[0] === id) {
-        newData.push(row);
-      }
+    order.forEach(function(id) {
+      data.forEach(function(row) {
+        if (row[0] === id) {
+          newData.push(row);
+        }
+      });
     });
-  });
 
-  sheet.getRange(2, 1, newData.length, newData[0].length).setValues(newData);
+    if (newData.length > 0) {
+      sheet.getRange(2, 1, newData.length, newData[0].length).setValues(newData);
+    }
+  } catch (e) {}
 }
-const getDepartMentSet = () => {
-  const ss = SpreadsheetApp.openById(sheetSetting);
-  const sheet = ss.getSheetByName("DepartMent"); 
-  const data = sheet.getRange("B3:F" + sheet.getLastRow()).getValues();
-  return data;
+function getDepartMentSet() {
+  return _safeGetRangeValues("DepartMent", "B", "F");
 }
 const saveOrderDepartMent = (order) => {
-  const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("DepartMent"); 
-  const data = sheet.getRange("B3:F" + sheet.getLastRow()).getValues();
-  var newData = [];
+  try {
+    const ss = _getSettingSS();
+    if (!ss) return;
+    const sheet = ss.getSheetByName("DepartMent"); 
+    if (!sheet) return;
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 3) return;
+    const data = sheet.getRange("B3:F" + lastRow).getValues();
+    var newData = [];
 
-  order.forEach(function(id) {
-    data.forEach(function(row) {
-      if (row[0] === id) {
-        newData.push(row);
-      }
+    order.forEach(function(id) {
+      data.forEach(function(row) {
+        if (row[0] === id) {
+          newData.push(row);
+        }
+      });
     });
-  });
 
-  sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+    if (newData.length > 0) {
+      sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+    }
+  } catch (e) {}
 }
-const getPositionSet = () => {
-  const ss = SpreadsheetApp.openById(sheetSetting);
-  const sheet = ss.getSheetByName("Position"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
-  return data;
+function getPositionSet() {
+  return _safeGetRangeValues("Position", "B", "C");
 }
 const saveOrderPosition = (order) => {
-  const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("Position"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
-  var newData = [];
+  try {
+    const ss = _getSettingSS();
+    if (!ss) return;
+    const sheet = ss.getSheetByName("Position"); 
+    if (!sheet) return;
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 3) return;
+    const data = sheet.getRange("B3:C" + lastRow).getValues();
+    var newData = [];
 
-  order.forEach(function(id) {
-    data.forEach(function(row) {
-      if (row[0] === id) {
-        newData.push(row);
-      }
+    order.forEach(function(id) {
+      data.forEach(function(row) {
+        if (row[0] === id) {
+          newData.push(row);
+        }
+      });
     });
-  });
 
-  sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+    if (newData.length > 0) {
+      sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+    }
+  } catch (e) {}
 }
 const addDepartMentSet = (obj) => {
   const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName(obj.sheetname); 
@@ -154,16 +194,32 @@ const deleteDepartMentSet = (obj) => {
 }
 /////////////////////////// DataSet ////////////////////////////
 
-const getAngecySet = () => {
-  const ss = SpreadsheetApp.openById(sheetSetting);
-  const sheet = ss.getSheetByName("Agency"); 
-  const data = sheet.getRange("A3:C" + sheet.getLastRow()).getValues();
-  return data;
+function _safeGetRangeValues(sheetName, startCol, endCol) {
+  try {
+    const ss = _getSettingSS();
+    if (!ss) return [];
+    const sheet = ss.getSheetByName(sheetName);
+    if (!sheet) return [];
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 3) return [];
+    return sheet.getRange(startCol + "3:" + endCol + lastRow).getValues();
+  } catch (err) {
+    Logger.log("Error reading sheet " + sheetName + ": " + err);
+    return [];
+  }
+}
+
+function getAngecySet() {
+  return _safeGetRangeValues("Agency", "A", "C");
 }
 
 const saveOrderAgency = (order) => {
-  const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("Agency"); 
-  const data = sheet.getRange("A3:C" + sheet.getLastRow()).getValues();
+  const ss = _getSettingSS();
+  const sheet = ss ? ss.getSheetByName("Agency") : null; 
+  if (!sheet) return;
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return;
+  const data = sheet.getRange("A3:C" + lastRow).getValues();
   var newData = [];
 
   order.forEach(function(id) {
@@ -174,17 +230,25 @@ const saveOrderAgency = (order) => {
     });
   });
 
-  sheet.getRange(3, 1, newData.length, newData[0].length).setValues(newData);
+  if (newData.length > 0) {
+    sheet.getRange(3, 1, newData.length, newData[0].length).setValues(newData);
+  }
 }
 const addAgencySet = (obj) => {
-  const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("Agency"); 
+  const ss = _getSettingSS();
+  const sheet = ss ? ss.getSheetByName("Agency") : null; 
+  if (!sheet) return [];
   const rowData = [obj.key, obj.name, obj.boss];
   sheet.appendRow(rowData);
-  return sheet.getRange("A3:C" + sheet.getLastRow()).getValues();
+  return _safeGetRangeValues("Agency", "A", "C");
 }
 const editAgencySet = (obj) => {
-  const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("Agency"); 
-  const data = sheet.getRange("A3:C" + sheet.getLastRow()).getValues();
+  const ss = _getSettingSS();
+  const sheet = ss ? ss.getSheetByName("Agency") : null; 
+  if (!sheet) return [];
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  const data = sheet.getRange("A3:C" + lastRow).getValues();
 
   for (let i = 0; i < data.length; i++) {
     var keyValue = data[i][0];
@@ -195,11 +259,15 @@ const editAgencySet = (obj) => {
     }
   }
 
-  return sheet.getRange("A3:C" + sheet.getLastRow()).getValues();
+  return _safeGetRangeValues("Agency", "A", "C");
 }
 const deleteAgencySet = (obj) => {
-  const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("Agency"); 
-  const data = sheet.getRange("A3:C" + sheet.getLastRow()).getValues();
+  const ss = _getSettingSS();
+  const sheet = ss ? ss.getSheetByName("Agency") : null; 
+  if (!sheet) return [];
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return [];
+  const data = sheet.getRange("A3:C" + lastRow).getValues();
 
   for (let i = 0; i < data.length; i++) {
     var keyValue = data[i][0];
@@ -209,68 +277,38 @@ const deleteAgencySet = (obj) => {
     }
   }
 
-  return sheet.getRange("A3:C" + sheet.getLastRow()).getValues();  
+  return _safeGetRangeValues("Agency", "A", "C");  
 }
 
-const getCategorySet = () => {
-  const ss = SpreadsheetApp.openById(sheetSetting);
-  const sheet = ss.getSheetByName("DocCategory"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
-  return data;
+function getCategorySet() {
+  return _safeGetRangeValues("DocCategory", "B", "C");
 }
-const getObjectiveSet = () => {
-  const ss = SpreadsheetApp.openById(sheetSetting);
-  const sheet = ss.getSheetByName("Objective"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
-  return data;
+function getObjectiveSet() {
+  return _safeGetRangeValues("Objective", "B", "C");
 }
-const getClassSpeedSet = () => {
-  const ss = SpreadsheetApp.openById(sheetSetting);
-  const sheet = ss.getSheetByName("ClassSpeed"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
-  return data;
+function getClassSpeedSet() {
+  return _safeGetRangeValues("ClassSpeed", "B", "C");
 }
-const getClassSecretSet = () => {
-  const ss = SpreadsheetApp.openById(sheetSetting);
-  const sheet = ss.getSheetByName("ClassSecret"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
-  return data;
+function getClassSecretSet() {
+  return _safeGetRangeValues("ClassSecret", "B", "C");
 }
-const getResponseSet = () => {
-  const ss = SpreadsheetApp.openById(sheetSetting);
-  const sheet = ss.getSheetByName("Response"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
-  return data;
+function getResponseSet() {
+  return _safeGetRangeValues("Response", "B", "C");
 }
-const getJobWordSet = () => {
-  const ss = SpreadsheetApp.openById(sheetSetting);
-  const sheet = ss.getSheetByName("JobWord"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
-  return data;
+function getJobWordSet() {
+  return _safeGetRangeValues("JobWord", "B", "C");
 }
-const getTypeEmployeeSet = () => {
-  const ss = SpreadsheetApp.openById(sheetSetting);
-  const sheet = ss.getSheetByName("TypeEmployee"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
-  return data;
+function getTypeEmployeeSet() {
+  return _safeGetRangeValues("TypeEmployee", "B", "C");
 }
-const getRevenueSet = () => {
-  const ss = SpreadsheetApp.openById(sheetSetting);
-  const sheet = ss.getSheetByName("Revenue"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
-  return data;
+function getRevenueSet() {
+  return _safeGetRangeValues("Revenue", "B", "C");
 }
-const getExpensesSet = () => {
-  const ss = SpreadsheetApp.openById(sheetSetting);
-  const sheet = ss.getSheetByName("Expenses"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
-  return data;
+function getExpensesSet() {
+  return _safeGetRangeValues("Expenses", "B", "C");
 }
-const getMooBanSet = () => {
-  const ss = SpreadsheetApp.openById(sheetSetting);
-  const sheet = ss.getSheetByName("MooBan"); 
-  const data = sheet.getRange("A3:C" + sheet.getLastRow()).getValues();
-  return data;
+function getMooBanSet() {
+  return _safeGetRangeValues("MooBan", "A", "C");
 }
 
 const _getSettingSS = () => {
