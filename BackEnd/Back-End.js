@@ -1279,10 +1279,8 @@ function dataDocuMentSave(key) {
     filteredStatus.push(...matchingRows);
     for (const rowUser of matchingRows) {
       const userCode = rowUser[2];
-      const matchingUser = userMap.get(userCode);
-      if (matchingUser) {
-        filteredData.push(matchingUser);
-      }
+      const matchingUser = userMap.get(userCode) || [];
+      filteredData.push(matchingUser);
     }
   }
   

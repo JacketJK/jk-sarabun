@@ -3624,4 +3624,307 @@ body.dark .home-table-footer .footer-info {
 tr.doc-cancelled {
   opacity: 0.5 !important;
 }
+
+/* ========================================================
+   แบบพิมพ์ใบปะหน้าและบันทึกการส่ง-รับและเกษียนหนังสือราชการ (Print Routing Sheet)
+   ======================================================== */
+.routing-print-sheet {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 16mm 18mm;
+  background: #ffffff !important;
+  color: #111827 !important;
+  font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  box-sizing: border-box;
+  margin: 0 auto;
+  line-height: 1.45;
+  font-size: 13.5px;
+  border-radius: 4px;
+}
+
+.routing-print-sheet * {
+  color: #111827;
+}
+
+.routing-header {
+  text-align: center;
+  border-bottom: 2px solid #111827;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.routing-header-logo {
+  height: 60px;
+  max-width: 140px;
+  object-fit: contain;
+  margin-bottom: 6px;
+}
+
+.routing-header h4 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+
+.routing-header .routing-sub {
+  font-size: 13px;
+  color: #4b5563 !important;
+  margin: 0;
+}
+
+.routing-header .routing-print-date {
+  font-size: 11px;
+  color: #6b7280 !important;
+  text-align: right;
+  margin-top: 4px;
+}
+
+.routing-section-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #1e3a8a !important;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 4px;
+  margin-top: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ตารางข้อมูลหนังสือ */
+.routing-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+
+.routing-info-table td {
+  padding: 4px 8px;
+  vertical-align: top;
+}
+
+.routing-info-table td.label-td {
+  width: 15%;
+  font-weight: 600;
+  color: #374151 !important;
+  white-space: nowrap;
+}
+
+.routing-info-table td.val-td {
+  width: 35%;
+  color: #111827 !important;
+}
+
+/* ตารางประวัติการส่ง / ผู้รับ */
+.routing-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 14px;
+  font-size: 12.5px;
+}
+
+.routing-table th,
+.routing-table td {
+  border: 1px solid #94a3b8;
+  padding: 6px 8px;
+  vertical-align: middle;
+}
+
+.routing-table thead th {
+  background-color: #f1f5f9 !important;
+  font-weight: 600;
+  text-align: center;
+  color: #1e293b !important;
+}
+
+/* บล็อคข้อความการเกษียนหนังสือ */
+.routing-endorse-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.endorse-card {
+  border: 1px solid #94a3b8;
+  border-radius: 6px;
+  padding: 12px 14px;
+  background-color: #ffffff;
+  page-break-inside: avoid;
+}
+
+.endorse-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed #cbd5e1;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+  font-size: 12.5px;
+}
+
+.endorse-card-header .badge-resp {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 12px;
+  border: 1px solid #0284c7;
+  color: #0369a1 !important;
+  background-color: #f0f9ff;
+}
+
+.endorse-card-body {
+  font-size: 13.5px;
+  margin-bottom: 10px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: #111827 !important;
+  padding: 4px 8px;
+  background: #f8fafc;
+  border-left: 3px solid #3b82f6;
+  border-radius: 0 4px 4px 0;
+}
+
+.endorse-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  text-align: center;
+  margin-top: 6px;
+}
+
+.endorse-sig-box {
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.endorse-sig-img {
+  max-height: 52px;
+  max-width: 180px;
+  object-fit: contain;
+  margin-bottom: 4px;
+}
+
+.endorse-sig-name {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.endorse-sig-pos {
+  font-size: 12px;
+  color: #4b5563 !important;
+  margin: 0;
+}
+
+.endorse-sig-date {
+  font-size: 11.5px;
+  color: #6b7280 !important;
+  margin-top: 2px;
+}
+
+/* บล็อคเกษียนแบบว่างสำหรับลงนามด้วยมือ (Fallback) */
+.endorse-blank-box {
+  border: 1px dashed #94a3b8;
+  border-radius: 6px;
+  padding: 16px;
+  background-color: #fafafa;
+  margin-top: 10px;
+  page-break-inside: avoid;
+}
+
+/* Media Print Rules */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  /* ซ่อนทุกอย่างของระบบ */
+  body, html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #modalPrintDocRouting,
+  #modalPrintDocRouting .modal-dialog,
+  #modalPrintDocRouting .modal-content,
+  #modalPrintDocRouting .modal-body,
+  #printableDocRoutingSheet,
+  #printableDocRoutingSheet * {
+    visibility: visible !important;
+  }
+
+  #modalPrintDocRouting {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    overflow: visible !important;
+  }
+
+  #modalPrintDocRouting .modal-dialog {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #modalPrintDocRouting .modal-content {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  #modalPrintDocRouting .modal-header,
+  #modalPrintDocRouting .modal-footer,
+  .modal-backdrop,
+  .btn,
+  #sidebar,
+  #header,
+  nav {
+    display: none !important;
+  }
+
+  #modalPrintDocRouting .modal-body {
+    padding: 0 !important;
+    background: transparent !important;
+    display: block !important;
+  }
+
+  #printableDocRoutingSheet {
+    width: 100% !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+  }
+
+  .routing-print-sheet {
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  .endorse-card {
+    page-break-inside: avoid !important;
+  }
+}
 </style>

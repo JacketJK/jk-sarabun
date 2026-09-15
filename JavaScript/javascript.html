@@ -4758,8 +4758,32 @@ const docdetailOpenfile = (...key) => {
     }
   }).openDocument(key[1]);
 }
+
+let currentDocDetailData = null;
+let currentDocDetailKey = null;
+
+/**
+ * ดึงข้อมูลและเปิด Modal พิมพ์ใบปะหน้าและบันทึกการส่ง-รับและเกษียนหนังสือ
+ */
+const openPrintDocRoutingModal = (key) => {
+  $('#loader').show();
+  google.script.run.withSuccessHandler((res) => {
+    $('#loader').hide();
+    currentDocDetailData = res;
+    currentDocDetailKey = key;
+    renderPrintDocRouting(res);
+    const modalEl = document.getElementById('modalPrintDocRouting');
+    const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+    modal.show();
+  }).withFailureHandler((err) => {
+    $('#loader').hide();
+    toastAlert(0, '❌ ไม่สามารถโหลดข้อมูลพิมพ์เอกสารได้');
+  }).dataDocuMentSave(key);
+};
+
 const docdetailfile = (key) => {  
   changePageGetDoc(4);
+  currentDocDetailKey = key;
 
   $('#saveDocDetailBtn').hide();
   $('#backDocDetailBtn').hide();
@@ -4770,6 +4794,7 @@ const docdetailfile = (key) => {
   $("#pickupbreadcrumb2").show();
   
    google.script.run.withSuccessHandler((res) => {
+    currentDocDetailData = res;
     insertTableSaveDetail(res);
     insertTableFileDetail(res);
   }).dataDocuMentSave(key);
@@ -4896,6 +4921,20 @@ $('#detail_followBtn').on('click', ()=>{
 $('#addFlieDetailBtn').on('click', ()=>{
   const key = $('#docDetailKey').text();
   docAddfile(key);
+});
+
+$('#printDocDetailBtn').on('click', () => {
+  const key = $('#docDetailKey').text() || currentDocDetailKey;
+  if (currentDocDetailData && currentDocDetailData[0] && currentDocDetailData[0][0] && currentDocDetailData[0][0][0] === key) {
+    renderPrintDocRouting(currentDocDetailData);
+    const modalEl = document.getElementById('modalPrintDocRouting');
+    const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+    modal.show();
+  } else if (key) {
+    openPrintDocRoutingModal(key);
+  } else {
+    toastAlert(0, '⚠️ ไม่พบข้อมูลเอกสารสำหรับพิมพ์');
+  }
 });
 
 let currentCancelDocKey = '';

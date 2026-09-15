@@ -501,5 +501,280 @@ const slipSalary_Print = () => {
   };
 };
 
+/**
+ * ฟังก์ชันสร้างและเรนเดอร์เอกสารสำหรับพิมพ์ใบปะหน้าและบันทึกการส่ง-รับและเกษียนหนังสือราชการ
+ */
+const renderPrintDocRouting = (data) => {
+  const container = document.getElementById("printableDocRoutingSheet");
+  if (!container) return;
 
+  const esc = (s) => (typeof escapeHtml === 'function' ? escapeHtml(s) : (s ? String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]) : ''));
+
+  if (!data || !data[0] || data[0].length === 0) {
+    container.innerHTML = '<div class="text-center py-5 text-danger"><i class="fa fa-info-circle me-1"></i> ไม่พบข้อมูลเอกสาร</div>';
+    return;
+  }
+
+  const doc = data[0][0];
+  const sends = data[1] || [];
+  const users = data[2] || [];
+
+  const logo = $('#logoSystem').attr('src') || 'https://cdn.jsdelivr.net/gh/JacketJK/image/logo-Project.png';
+  const agencyName = $('#showDataSet2').text() || 'ระบบสารบรรณอิเล็กทรอนิกส์';
+
+  // แปลงวันที่ลงหนังสือ
+  let docDateStr = '-';
+  if (doc[9]) {
+    try {
+      docDateStr = typeof formatThaiDateTime === 'function' ? formatThaiDateTime(new Date(doc[9])) : new Date(doc[9]).toLocaleDateString('th-TH');
+    } catch(e) {
+      docDateStr = doc[9];
+    }
+  }
+
+  // สถานะหลักของหนังสือ
+  const mainStatusMap = {
+    1: 'ลงทะเบียน',
+    0: 'ตีกลับ',
+    3: 'กำลังดำเนินการ',
+    2: 'เตรียมส่ง',
+    4: 'เสร็จแล้ว',
+    5: 'ปิดงานแล้ว',
+    '-1': 'ยกเลิกหนังสือ'
+  };
+  const mainStatusText = mainStatusMap[doc[22]] || 'ปกติ';
+
+  // ส่งต้นฉบับ
+  const originalText = doc[16] == 1 ? '<span style="color:#16a34a; font-weight:600;">ส่งต้นฉบับ</span>' : '<span style="color:#dc2626; font-weight:600;">ไม่ส่งต้นฉบับ</span>';
+
+  // วันที่พิมพ์ปัจจุบัน
+  let printNowStr = '';
+  try {
+    printNowStr = (typeof formatThaiDateTimeFull === 'function' ? formatThaiDateTimeFull(new Date()) : new Date().toLocaleDateString('th-TH')) + ' เวลา ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.';
+  } catch(e) {
+    printNowStr = new Date().toLocaleString('th-TH');
+  }
+
+  // 1. ตารางรายชื่อผู้รับหนังสือและสถานะรับทราบ
+  let recipientRowsHtml = '';
+  if (sends.length === 0) {
+    recipientRowsHtml = `<tr><td colspan="5" class="text-center py-3 text-muted">ไม่มีรายการส่งหนังสือถึงบุคคลใด</td></tr>`;
+  } else {
+    for (let i = 0; i < sends.length; i++) {
+      const s = sends[i];
+      const u = users[i] || [];
+      const prefix = u[3] || '';
+      const fname = u[4] || '';
+      const lname = u[5] || '';
+      const fullName = (prefix + fname + ' ' + lname).trim() || 'ไม่ระบุชื่อ';
+      const pos = u[6] || '-';
+      const agency = u[7] || '-';
+
+      // สถานะการส่ง/รับ
+      let statusBadge = '';
+      const st = String(s[3]);
+      if (st === '3') {
+        statusBadge = '<span style="color:#15803d; font-weight:600;">เกษียนแล้ว</span>';
+      } else if (st === '1') {
+        statusBadge = '<span style="color:#0284c7; font-weight:600;">เปิดอ่านแล้ว (รับทราบ)</span>';
+      } else if (st === '2') {
+        statusBadge = '<span style="color:#b91c1c; font-weight:600;">ส่งตีกลับ</span>';
+      } else if (st === '-1') {
+        statusBadge = '<span style="color:#dc2626; font-weight:600;">ยกเลิก</span>';
+      } else {
+        statusBadge = '<span style="color:#d97706; font-weight:600;">ยังไม่ได้เปิด</span>';
+      }
+
+      // สถานะตอบรับ (response)
+      const responseText = s[5] && s[5] !== 'รอตอบรับ' ? `(${esc(s[5])})` : '';
+
+      recipientRowsHtml += `<tr>
+        <td style="text-align:center; width:40px;">${i + 1}</td>
+        <td>
+          <div style="font-weight:600;">${esc(fullName)}</div>
+          <div style="font-size:11.5px; color:#4b5563;">ตำแหน่ง: ${esc(pos)} | สังกัด: ${esc(agency)}</div>
+        </td>
+        <td style="text-align:center; width:130px; font-size:12px;">${esc(s[4] || '-')}</td>
+        <td style="text-align:center; width:160px;">
+          ${statusBadge} ${responseText ? '<br><small style="color:#475569;">' + responseText + '</small>' : ''}
+        </td>
+        <td style="text-align:center; width:130px; font-size:12px;">${esc(s[6] || '-')}</td>
+      </tr>`;
+    }
+  }
+
+  // 2. บันทึกการเกษียนหนังสือ พร้อมลายเซ็นต์ดิจิทัล ชื่อ-สกุล ตำแหน่ง
+  let endorseHtml = '';
+  let endorsedCount = 0;
+
+  for (let i = 0; i < sends.length; i++) {
+    const s = sends[i];
+    const u = users[i] || [];
+    const st = String(s[3]);
+    const jobWord = s[7] ? String(s[7]).trim() : '';
+    const response = s[5] ? String(s[5]).trim() : '';
+    const replaceText = s[8] ? String(s[8]).trim() : '';
+
+    // เป็นรายการเกษียนเมื่อ: status == 3 หรือมีข้อความ jobWord หรือ response ไม่ใช่ 'รอตอบรับ'
+    const isEndorsed = st === '3' || (response && response !== 'รอตอบรับ') || (jobWord && jobWord !== '');
+    if (isEndorsed) {
+      endorsedCount++;
+      const prefix = u[3] || '';
+      const fname = u[4] || '';
+      const lname = u[5] || '';
+      const fullName = (prefix + fname + ' ' + lname).trim() || 'ไม่ระบุชื่อ';
+      const pos = u[6] || '';
+      const sigUrl = u[12] || '';
+      const actionDate = s[6] || s[4] || '-';
+
+      // กล่องลายเซ็นต์ดิจิทัล
+      let sigDisplay = '';
+      if (sigUrl && sigUrl !== '') {
+        sigDisplay = `<img src="${sigUrl}" class="endorse-sig-img" alt="ลายเซ็นต์ดิจิทัล" onerror="this.style.display='none'">`;
+      } else {
+        sigDisplay = `<div style="height:32px; border-bottom:1px dotted #64748b; width:140px; margin-bottom:4px;"></div>`;
+      }
+
+      // ข้อความรักษาการแทน
+      let actingText = '';
+      if (replaceText) {
+        actingText = `<div style="font-size:12px; color:#475569;">(${esc(replaceText)})</div>`;
+      }
+
+      endorseHtml += `
+      <div class="endorse-card">
+        <div class="endorse-card-header">
+          <div>
+            <strong style="color:#0f172a;"><i class="fa-solid fa-pen-nib text-primary me-1"></i> ลำดับที่ ${endorsedCount}</strong>
+            ${response ? `<span class="badge-resp ms-2">${esc(response)}</span>` : ''}
+          </div>
+          <div style="color:#64748b; font-size:12px;">
+            <i class="fa-regular fa-clock me-1"></i> เมื่อวันที่ ${esc(actionDate)}
+          </div>
+        </div>
+        <div class="endorse-card-body">
+          ${esc(jobWord || response || 'รับทราบ')}
+        </div>
+        <div class="endorse-card-footer">
+          <div class="endorse-sig-box">
+            ${sigDisplay}
+            <div class="endorse-sig-name">( ${esc(fullName)} )</div>
+            <div class="endorse-sig-pos">${esc(pos)}</div>
+            ${actingText}
+            <div class="endorse-sig-date">${esc(actionDate)}</div>
+          </div>
+        </div>
+      </div>`;
+    }
+  }
+
+  // หากไม่มีผู้ใดเกษียนเลย
+  if (endorsedCount === 0) {
+    endorseHtml = `
+      <div class="endorse-blank-box text-center">
+        <p class="text-muted mb-2"><i class="fa-solid fa-hourglass-half text-warning me-1"></i> ยังไม่มีรายการบันทึกการเกษียนหนังสือในระบบ (อยู่ระหว่างดำเนินการ)</p>
+        <div class="mt-4 pt-2 d-flex justify-content-end">
+          <div style="min-width:240px; text-align:center;">
+            <div style="margin-bottom: 40px;">(ลงชื่อ)............................................................</div>
+            <div>( ............................................................ )</div>
+            <div class="mt-1" style="font-size:12px; color:#64748b;">ตำแหน่ง............................................................</div>
+            <div class="mt-1" style="font-size:12px; color:#64748b;">วันที่ ......./......./...........</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // 3. รวมเนื้อหาทั้งแผ่นเอกสาร
+  const html = `
+    <!-- ส่วนหัวกระดาษ -->
+    <div class="routing-header">
+      <img src="${logo}" class="routing-header-logo" alt="Logo">
+      <h4>ใบปะหน้าและบันทึกการส่ง - รับและเกษียนหนังสือราชการ</h4>
+      <div class="routing-sub">${esc(agencyName)} | งานสารบรรณอิเล็กทรอนิกส์</div>
+      <div class="routing-print-date">พิมพ์เมื่อ: ${esc(printNowStr)}</div>
+    </div>
+
+    <!-- ส่วนข้อมูลรายละเอียดหนังสือ -->
+    <div class="routing-section-title">
+      <i class="fa-solid fa-file-lines"></i> ข้อมูลหนังสือราชการ
+    </div>
+    <table class="routing-info-table">
+      <tr>
+        <td class="label-td">เลขที่หนังสือ :</td>
+        <td class="val-td"><strong style="color:#1d4ed8; font-size:14px;">${esc(doc[2] || '-')}</strong></td>
+        <td class="label-td">ลงวันที่ :</td>
+        <td class="val-td">${esc(docDateStr)}</td>
+      </tr>
+      <tr>
+        <td class="label-td">จาก :</td>
+        <td class="val-td">${esc(doc[4] || '')} ${doc[3] ? `(${esc(doc[3])})` : ''}</td>
+        <td class="label-td">ถึง :</td>
+        <td class="val-td">${esc(doc[6] || '')} ${doc[5] ? `(${esc(doc[5])})` : ''}</td>
+      </tr>
+      <tr>
+        <td class="label-td">เรื่อง :</td>
+        <td class="val-td" colspan="3"><strong style="font-size:14px;">${esc(doc[7] || '-')}</strong></td>
+      </tr>
+      ${doc[8] ? `
+      <tr>
+        <td class="label-td">รายละเอียด :</td>
+        <td class="val-td" colspan="3">${esc(doc[8])}</td>
+      </tr>` : ''}
+      <tr>
+        <td class="label-td">ประเภทหนังสือ :</td>
+        <td class="val-td">${esc(doc[1] || '-')}</td>
+        <td class="label-td">หมวดเอกสาร :</td>
+        <td class="val-td">${esc(doc[12] || '-')}</td>
+      </tr>
+      <tr>
+        <td class="label-td">ชั้นความเร็ว :</td>
+        <td class="val-td">${esc(doc[10] || 'ปกติ')}</td>
+        <td class="label-td">ชั้นความลับ :</td>
+        <td class="val-td">${esc(doc[11] || 'ปกติ')}</td>
+      </tr>
+      <tr>
+        <td class="label-td">ต้นฉบับ :</td>
+        <td class="val-td">${originalText}</td>
+        <td class="label-td">สถานะหนังสือ :</td>
+        <td class="val-td"><span style="font-weight:600;">${mainStatusText}</span></td>
+      </tr>
+    </table>
+
+    <!-- ส่วนที่ 1: รายการส่งหนังสือและผู้รับทราบ -->
+    <div class="routing-section-title">
+      <i class="fa-solid fa-users"></i> ๑. รายการส่งหนังสือและผู้รับทราบ (${sends.length} รายการ)
+    </div>
+    <table class="routing-table">
+      <thead>
+        <tr>
+          <th style="width:40px;">ลำดับ</th>
+          <th>ผู้รับหนังสือ (ชื่อ-สกุล / ตำแหน่ง / สังกัด)</th>
+          <th style="width:130px;">วันที่ส่ง</th>
+          <th style="width:160px;">สถานะการรับทราบ</th>
+          <th style="width:130px;">วันที่ดำเนินการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${recipientRowsHtml}
+      </tbody>
+    </table>
+
+    <!-- ส่วนที่ 2: บันทึกการเกษียนหนังสือ / คำสั่งการ -->
+    <div class="routing-section-title">
+      <i class="fa-solid fa-signature"></i> ๒. บันทึกการเกษียนหนังสือและความเห็น (${endorsedCount} รายการ)
+    </div>
+    <div class="routing-endorse-grid">
+      ${endorseHtml}
+    </div>
+  `;
+
+  container.innerHTML = html;
+};
+
+/**
+ * สั่งพิมพ์เอกสาร
+ */
+const printDocRoutingSheet = () => {
+  window.print();
+};
 </script>
