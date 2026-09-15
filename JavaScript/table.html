@@ -148,8 +148,11 @@ function renderHomeDocSendTable() {
 
       const fromText = `${item.senderName} (${item.senderAgency})`;
       const statusIcon = statusMap[item.status] || '';
+      const isCancelled = String(item.status) === '-1';
+      const rowClass = isCancelled ? ' class="doc-cancelled"' : '';
+      const rowStyle = isCancelled ? ' style="opacity: 0.5;"' : '';
 
-      html += `<tr>
+      html += `<tr${rowClass}${rowStyle}>
         <td>
           <div class="d-flex flex-column">
             <span class="text-primary text-nowrap" style="font-size:14px; cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด" onclick="docdetailOpenfile('${item.docId}', '${item.receiptId}', '${item.receiptParam9}')">
@@ -257,8 +260,11 @@ function renderHomeDocOwnerTable() {
       const fromText = `${item.fromName} (${item.fromOrg})`;
       const toText = `${item.toName} (${item.toOrg})`;
       const statusIcon = statusMap[item.status] || '';
+      const isCancelled = String(item.status) === '-1';
+      const rowClass = isCancelled ? ' class="doc-cancelled"' : '';
+      const rowStyle = isCancelled ? ' style="opacity: 0.5;"' : '';
 
-      html += `<tr>
+      html += `<tr${rowClass}${rowStyle}>
         <td>
           <div class="d-flex flex-column">
             <span class="text-primary text-nowrap" style="font-size:14px; cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="คลิกเพื่อเปิด" onclick="docdetailfile('${item.docId}')">
@@ -1199,6 +1205,10 @@ const insertDataPedding = (key) => {
       };
       var status = statusMap[data[i][22]] || '';
       cell9.innerHTML = status;
+      if (String(data[i][22]) === '-1') {
+        row.classList.add('doc-cancelled');
+        row.style.opacity = '0.5';
+      }
 
       var cell10 = row.insertCell(10); 
       cell10.innerHTML = `<div class="btn-group">
@@ -1368,7 +1378,11 @@ const insertDataInprogress = (key) => {
       };
 
       const status = statusMap[data[0][i][3]] || '';
-      cell10.innerHTML = status;  
+      cell10.innerHTML = status;
+      if (String(data[0][i][3]) === '-1') {
+        row.classList.add('doc-cancelled');
+        row.style.opacity = '0.5';
+      }
 
       var cell11 = row.insertCell(11); 
       cell11.innerHTML = `<button class="btn btn-green btn-sm rounded-4" style="font-size: 12px;" onclick="docdetailOpenfile('${data[1][i][0]}', '${data[0][i][0]}', '${data[0][i][9]}')"><i class="fa-solid fa-envelope-open-text"></i> เปิด</button>`; 
@@ -1536,7 +1550,11 @@ const insertDataInside = (key) => {
       };
  
       const status = statusMap[data[i][22]] || '';
-      cell7.innerHTML = status;    
+      cell7.innerHTML = status;
+      if (String(data[i][22]) === '-1') {
+        row.classList.add('doc-cancelled');
+        row.style.opacity = '0.5';
+      }
 
       var cell8 = row.insertCell(8); 
       cell8.innerHTML = `<div class="btn-group">
@@ -3153,7 +3171,11 @@ const insertDataDocument = (key) => {
         "-1": "<i class='fa-duotone fa-circle-xmark fa-xl' style='color: var(--bs-danger);' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-custom-class='custom-tooltip' data-bs-title='ยกเลิกหนังสือ'></i>"
       };
       var status = statusMap[data[i][22]] || '';
-      cell8.innerHTML = status;      
+      cell8.innerHTML = status;
+      if (String(data[i][22]) === '-1') {
+        row.classList.add('doc-cancelled');
+        row.style.opacity = '0.5';
+      }
 
       var cell9 = row.insertCell(9); 
       cell9.innerHTML = `<div class="btn-group">
@@ -3348,6 +3370,10 @@ const insertDataOutPedding = (key) => {
       };
       var status = statusMap[data[i][22]] || '';
       cell9.innerHTML = status;
+      if (String(data[i][22]) === '-1') {
+        row.classList.add('doc-cancelled');
+        row.style.opacity = '0.5';
+      }
 
       var cell10 = row.insertCell(10); 
       cell10.innerHTML = `<div class="btn-group">
