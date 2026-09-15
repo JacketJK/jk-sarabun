@@ -1953,13 +1953,16 @@ const changePageSenddoc = (data, skipHash) => {
     9: 'หนังสือที่ถูกยกเลิก',
   };
 
-  const insertData = {
-    2: insertDataPedding,
-    3: insertDataInprogress,
-    4: insertDataInside,
-    5: insertDataFollow,
-    6: insertDataReturn,
-    9: insertDataCanceled,
+  const callInsertData = (sub, key, level) => {
+    if (sub == 2 && typeof insertDataPedding === 'function') insertDataPedding(key, level);
+    else if (sub == 3 && typeof insertDataInprogress === 'function') insertDataInprogress(key, level);
+    else if (sub == 4 && typeof insertDataInside === 'function') insertDataInside(key, level);
+    else if (sub == 5 && typeof insertDataFollow === 'function') insertDataFollow(key, level);
+    else if (sub == 6 && typeof insertDataReturn === 'function') insertDataReturn(key, level);
+    else if (sub == 9) {
+      if (typeof insertDataCanceled === 'function') insertDataCanceled(key, level);
+      else if (typeof window.insertDataCanceled === 'function') window.insertDataCanceled(key, level);
+    }
   };
 
   if (data !== 7 && data !== 8) {
@@ -1980,9 +1983,7 @@ const changePageSenddoc = (data, skipHash) => {
     }
     const publicKey = localStorage.getItem('publicKey');
     const userLevel = localStorage.getItem('level') || '5';
-    if (insertData[data]) {
-      insertData[data](publicKey, userLevel);
-    }
+    callInsertData(data, publicKey, userLevel);
 
     $("#sendDoc").text(textMap[data]);
   }, 500);
@@ -2034,12 +2035,15 @@ const changePageGetDoc = (data, skipHash) => {
     4: (lastActiveDocPage && lastActiveDocPage.page === 4 && textMapPickup[lastActiveDocPage.sub]) || 'รายละเอียด',
     9: 'หนังสือที่ถูกยกเลิก',
   };
-  const insertData = {
-    1: insertDataGetDocIn,
-    2: insertDataGetDocOut,
-    3: insertDataGetDocFollow,
-    9: insertDataPickupDocCanceled,
-  };  
+  const callInsertData = (sub, key, level) => {
+    if (sub == 1 && typeof insertDataGetDocIn === 'function') insertDataGetDocIn(key, level);
+    else if (sub == 2 && typeof insertDataGetDocOut === 'function') insertDataGetDocOut(key, level);
+    else if (sub == 3 && typeof insertDataGetDocFollow === 'function') insertDataGetDocFollow(key, level);
+    else if (sub == 9) {
+      if (typeof insertDataPickupDocCanceled === 'function') insertDataPickupDocCanceled(key, level);
+      else if (typeof window.insertDataPickupDocCanceled === 'function') window.insertDataPickupDocCanceled(key, level);
+    }
+  };
 
   if (data !== 4) {
     lastActiveDocPage = { page: 4, sub: data };
@@ -2055,9 +2059,7 @@ const changePageGetDoc = (data, skipHash) => {
     }
     const publicKey = localStorage.getItem('publicKey');
     const userLevel = localStorage.getItem('level') || '5';
-    if (insertData[data]) {
-      insertData[data](publicKey, userLevel);
-    }
+    callInsertData(data, publicKey, userLevel);
     $("#pickupbreadcrumb1").text(textMap[data] || 'รับหนังสือ');
   }, 500);
 }
@@ -2076,13 +2078,16 @@ const changePageDocOut = (data, skipHash) => {
     8: 'ส่งเอกสาร',
     9: 'หนังสือที่ถูกยกเลิก',
   };
-  const insertData = {
-    2: insertDataOutPedding,
-    3: insertDataOutInprogress,
-    4: insertDataOutInside,
-    5: insertDataOutFollow,
-    6: insertDataOutReturn,
-    9: insertDataOutCanceled,
+  const callInsertData = (sub, key, level) => {
+    if (sub == 2 && typeof insertDataOutPedding === 'function') insertDataOutPedding(key, level);
+    else if (sub == 3 && typeof insertDataOutInprogress === 'function') insertDataOutInprogress(key, level);
+    else if (sub == 4 && typeof insertDataOutInside === 'function') insertDataOutInside(key, level);
+    else if (sub == 5 && typeof insertDataOutFollow === 'function') insertDataOutFollow(key, level);
+    else if (sub == 6 && typeof insertDataOutReturn === 'function') insertDataOutReturn(key, level);
+    else if (sub == 9) {
+      if (typeof insertDataOutCanceled === 'function') insertDataOutCanceled(key, level);
+      else if (typeof window.insertDataOutCanceled === 'function') window.insertDataOutCanceled(key, level);
+    }
   };
 
   if (data !== 7 && data !== 8) {
@@ -2099,9 +2104,7 @@ const changePageDocOut = (data, skipHash) => {
     }
     const publicKey = localStorage.getItem('publicKey');
     const userLevel = localStorage.getItem('level') || '5';
-    if (insertData[data]) {
-      insertData[data](publicKey, userLevel);
-    }
+    callInsertData(data, publicKey, userLevel);
     $("#receivebreadcrumb1").text(textMap[data])
   }, 500);
 }

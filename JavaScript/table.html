@@ -1999,7 +1999,7 @@ const insertDataReturn = (key) => {
   }).dataDocReturn(key)
 }
 
-const insertDataCanceled = (key, userLevel) => {
+const insertDataCanceled = window.insertDataCanceled = (key, userLevel) => {
   var tableBody = document.getElementById("tableCanceledDoc-body");
   if (!tableBody) return;
 
@@ -2213,7 +2213,7 @@ const insertDataCanceled = (key, userLevel) => {
 // ==========================================
 // รายการหนังสือที่ถูกยกเลิก: เมนู หนังสือ/คำสั่ง/ประกาศ (เมนู 2)
 // ==========================================
-const insertDataBookSendCanceled = (key, userLevel) => {
+const insertDataBookSendCanceled = window.insertDataBookSendCanceled = (key, userLevel) => {
   var tableBody = document.getElementById("tableCanceledDocAnnonce-body");
   if (!tableBody) return;
 
@@ -2419,7 +2419,7 @@ const insertDataBookSendCanceled = (key, userLevel) => {
 // ==========================================
 // รายการหนังสือที่ถูกยกเลิก: เมนู รับหนังสือ (เมนู 3)
 // ==========================================
-const insertDataPickupDocCanceled = (key, userLevel) => {
+const insertDataPickupDocCanceled = window.insertDataPickupDocCanceled = (key, userLevel) => {
   var tableBody = document.getElementById("tableCanceledPickupDoc-body");
   if (!tableBody) return;
 
@@ -4294,7 +4294,7 @@ const insertDataOutReturn = (key) => {
   }).dataDocReturn(key)
 }
 
-const insertDataOutCanceled = (key, userLevel) => {
+const insertDataOutCanceled = window.insertDataOutCanceled = (key, userLevel) => {
   var tableBody = document.getElementById("tableCanceledDocOut-body");
   if (!tableBody) return;
 
