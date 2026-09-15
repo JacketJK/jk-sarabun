@@ -879,9 +879,9 @@ function dataDocAlldetail() {
     if (!ss) return [];
     const sheet = ss.getSheetByName("DataDocument"); 
     if (!sheet) return [];
-    const lastRow = sheet.getLastRow();
-    if (lastRow < 3) return [];
-    return sheet.getRange(3, 1, lastRow - 2, sheet.getLastColumn()).getDisplayValues();
+    const data = sheet.getDataRange().getValues();
+    if (data.length <= 2) return [];
+    return data.slice(2);
   } catch (err) {
     Logger.log("Error in dataDocAlldetail: " + err);
     return [];
@@ -893,13 +893,13 @@ function dataDocPending(key) {
     if (!ss) return [];
     const sheet = ss.getSheetByName("DataDocument"); 
     if (!sheet) return [];
-    const lastRow = sheet.getLastRow();
-    if (lastRow < 3) return [];
-    var data = sheet.getRange(3, 1, lastRow - 2, sheet.getLastColumn()).getDisplayValues();
+    var data = sheet.getDataRange().getValues().slice(2);
+    const cleanKey = String(key || '').replace(/^'/, '').trim();
 
     data = data.filter((row) => {
-      const st = String(row[22]).trim();
-      return String(row[21]) === String(key) && (st === "1" || st === "2");
+      const rowKey = String(row[21] || '').replace(/^'/, '').trim();
+      const status = String(row[22] || '').trim();
+      return (rowKey === cleanKey && (status === '1' || status === '2' || status === '')) || status === '2';
     });
     return data;
   } catch (err) {
@@ -913,12 +913,13 @@ function dataDocFollow(key) {
     if (!ss) return [];
     const sheet = ss.getSheetByName("DataDocument"); 
     if (!sheet) return [];
-    const lastRow = sheet.getLastRow();
-    if (lastRow < 3) return [];
-    var data = sheet.getRange(3, 1, lastRow - 2, sheet.getLastColumn()).getDisplayValues();
+    var data = sheet.getDataRange().getValues().slice(2);
+    const cleanKey = String(key || '').replace(/^'/, '').trim();
 
     data = data.filter((row) => {
-      return String(row[21]) === String(key) && String(row[15]).trim() === "1";
+      const rowKey = String(row[21] || '').replace(/^'/, '').trim();
+      const follow = String(row[15] || '').trim();
+      return rowKey === cleanKey && follow === '1';
     });
     return data;
   } catch (err) {
@@ -932,12 +933,13 @@ function dataDocReturn(key) {
     if (!ss) return [];
     const sheet = ss.getSheetByName("DataDocument"); 
     if (!sheet) return [];
-    const lastRow = sheet.getLastRow();
-    if (lastRow < 3) return [];
-    var data = sheet.getRange(3, 1, lastRow - 2, sheet.getLastColumn()).getDisplayValues();
+    var data = sheet.getDataRange().getValues().slice(2);
+    const cleanKey = String(key || '').replace(/^'/, '').trim();
 
     data = data.filter((row) => {
-      return String(row[21]) === String(key) && String(row[22]).trim() === "0";
+      const rowKey = String(row[21] || '').replace(/^'/, '').trim();
+      const status = String(row[22] || '').trim();
+      return rowKey === cleanKey && status === '0';
     });
     return data;
   } catch (err) {
@@ -975,12 +977,12 @@ function dataDocInside(key) {
     if (!ss) return [];
     const sheet = ss.getSheetByName("DataDocument"); 
     if (!sheet) return [];
-    const lastRow = sheet.getLastRow();
-    if (lastRow < 3) return [];
-    var data = sheet.getRange(3, 1, lastRow - 2, sheet.getLastColumn()).getDisplayValues();
+    var data = sheet.getDataRange().getValues().slice(2);
+    const cleanKey = String(key || '').replace(/^'/, '').trim();
 
     data = data.filter((row) => {
-      return row[21] === key;
+      const rowKey = String(row[21] || '').replace(/^'/, '').trim();
+      return !cleanKey || rowKey === cleanKey;
     });
     return data;
   } catch (err) {
@@ -1293,44 +1295,42 @@ function dataDocInprogress(key) {
     const sheetDoc = ssDoc.getSheetByName("DataDocument");
     if (!sheet || !sheetDoc) return [[], []];
 
-    const lastRowSend = sheet.getLastRow();
-    const lastRowDoc = sheetDoc.getLastRow();
-    if (lastRowSend < 2 || lastRowDoc < 3) return [[], []];
+    const data = sheet.getDataRange().getValues().slice(1);
+    const dataDoc = sheetDoc.getDataRange().getValues().slice(2);
+    const cleanKey = String(key || '').replace(/^'/, '').trim();
 
-    const dataSend = sheet.getRange(2, 1, lastRowSend - 1, sheet.getLastColumn()).getDisplayValues();
-    const dataDoc = sheetDoc.getRange(3, 1, lastRowDoc - 2, sheetDoc.getLastColumn()).getDisplayValues();
+    const filteredSend = [];
+    const filteredDoc = [];
 
     // Map docId (column A, index 0) -> docRow
     const docMap = new Map();
     for (let d = 0; d < dataDoc.length; d++) {
-      if (dataDoc[d][0]) {
-        docMap.set(String(dataDoc[d][0]), dataDoc[d]);
+      const docRow = dataDoc[d];
+      if (docRow[0]) {
+        docMap.set(String(docRow[0]).replace(/^'/, '').trim(), docRow);
       }
     }
 
-    const matchedSend = [];
-    const matchedDoc = [];
-
-    // Filter send rows where column C (index 2) === key
-    for (let s = 0; s < dataSend.length; s++) {
-      const sendRow = dataSend[s];
-      if (String(sendRow[2]) === String(key)) {
-        const docId = String(sendRow[1]);
+    for (let s = 0; s < data.length; s++) {
+      const sendRow = data[s];
+      const sendKey = String(sendRow[2] || '').replace(/^'/, '').trim();
+      if (!cleanKey || sendKey === cleanKey) {
+        const docId = String(sendRow[1] || '').replace(/^'/, '').trim();
         const docRow = docMap.get(docId);
         if (docRow) {
           const docStatus = Number(docRow[22]);
           if (isNaN(docStatus) || docStatus < 5) {
-            matchedSend.push(sendRow);
-            matchedDoc.push(docRow);
+            filteredSend.push(sendRow);
+            filteredDoc.push(docRow);
           }
         }
       }
     }
 
-    matchedSend.reverse();
-    matchedDoc.reverse();
+    filteredSend.reverse();
+    filteredDoc.reverse();
 
-    return [matchedSend, matchedDoc];
+    return [filteredSend, filteredDoc];
   } catch (err) {
     Logger.log("Error in dataDocInprogress: " + err);
     return [[], []];

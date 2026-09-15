@@ -1594,25 +1594,35 @@ window.calendar_languages['th-TH'] = {
 };
 
 const formatThaiDateTime = (date) => {
+  if (!date) return '-';
+  const d = (date instanceof Date) ? date : new Date(date);
+  if (isNaN(d.getTime())) {
+    return String(date);
+  }
   const thaiMonths = [
       'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม','มิถุนายน',
       'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน','ธันวาคม'
   ];
 
-  const thaiMonth = thaiMonths[date.getMonth()];
-  const thaiYear = date.getFullYear() + 543; 
-  const thaiDate = `${date.getDate()} ${thaiMonth} ${thaiYear}`;
+  const thaiMonth = thaiMonths[d.getMonth()] || '';
+  const thaiYear = d.getFullYear() + 543; 
+  const thaiDate = `${d.getDate()} ${thaiMonth} ${thaiYear}`;
   return `${thaiDate}`;
 }  
 const formatThaiDateTimeFull = (date) => {
+  if (!date) return '-';
+  const d = (date instanceof Date) ? date : new Date(date);
+  if (isNaN(d.getTime())) {
+    return String(date);
+  }
   const thaiMonths = [
       'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม','มิถุนายน',
       'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน','ธันวาคม'
   ];
 
-  const thaiMonth = thaiMonths[date.getMonth()];
-  const thaiYear = date.getFullYear() + 543; 
-  const thaiDate = `${date.getDate()} ${thaiMonth} พ.ศ.${thaiYear}`;
+  const thaiMonth = thaiMonths[d.getMonth()] || '';
+  const thaiYear = d.getFullYear() + 543; 
+  const thaiDate = `${d.getDate()} ${thaiMonth} พ.ศ.${thaiYear}`;
   return `${thaiDate}`;
 } 
 const formatTimeFull = () => {

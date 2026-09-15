@@ -405,6 +405,12 @@ const insertDataDocSend = (key) => {
       if (statusVal == 0) {
         waitingReceive++;
       }
+
+      let dateVal = doc[24] || doc[9] || '';
+      if (dateVal instanceof Date || (typeof dateVal === 'string' && /^\d{4}-\d{2}-\d{2}/.test(dateVal))) {
+        try { dateVal = formatThaiDateTime(dateVal); } catch(e) {}
+      }
+
       pairedList.push({
         docId: doc[0],
         receiptId: receipt[0] || '',
@@ -414,7 +420,7 @@ const insertDataDocSend = (key) => {
         senderName: doc[3] || '',
         senderAgency: doc[4] || '',
         isOriginal: doc[16] == 1,
-        dateStr: doc[24] || '',
+        dateStr: String(dateVal || ''),
         status: statusVal
       });
     }
@@ -464,10 +470,15 @@ const insertDataDocOwner = (key) => {
       if (row[15] == 1 && row[22] <= 4) bounceBook++;
       if (row[22] != 0 && row[22] <= 2) pendingBooks++;
 
+      let dateVal = row[24] || row[9] || '';
+      if (dateVal instanceof Date || (typeof dateVal === 'string' && /^\d{4}-\d{2}-\d{2}/.test(dateVal))) {
+        try { dateVal = formatThaiDateTime(dateVal); } catch(e) {}
+      }
+
       ownerList.push({
         docId: row[0],
         docNum: row[2] || '',
-        date: row[24] || '',
+        date: String(dateVal || ''),
         subject: row[7] || '',
         fromName: row[3] || '',
         fromOrg: row[4] || '',
@@ -1308,9 +1319,10 @@ const insertDataPedding = (key) => {
       var selectedValue3 = $('#paddingDocfilter3').val();
 
       $('#tablePending-body tr').each(function(i) {
-        var rightValue = data[i][24].split(' ');
-        var statusValue = data[i][22];
-        var categoryValue = data[i][12];
+        var dateRaw = data[i] && data[i][24] ? String(data[i][24]) : '';
+        var rightValue = dateRaw ? dateRaw.split(' ') : [];
+        var statusValue = data[i] ? data[i][22] : '';
+        var categoryValue = data[i] ? data[i][12] : '';
 
         if (typeof statusValue === 'string') {
           statusValue = statusValue.trim();
@@ -1482,10 +1494,11 @@ const insertDataInprogress = (key) => {
       var selectedValue4 = $('#InprogressDocfilter4').val();
 
       $('#tableInprogress-body tr').each(function(i) {
-        var rightValue = data[1][i][24].split(' ');
-        var statusValue = data[0][i][3];
-        var speedCValue = data[1][i][10];
-        var categoryValue = data[1][i][12];
+        var dateRaw = (data[1] && data[1][i] && data[1][i][24]) ? String(data[1][i][24]) : '';
+        var rightValue = dateRaw ? dateRaw.split(' ') : [];
+        var statusValue = (data[0] && data[0][i]) ? data[0][i][3] : '';
+        var speedCValue = (data[1] && data[1][i]) ? data[1][i][10] : '';
+        var categoryValue = (data[1] && data[1][i]) ? data[1][i][12] : '';
 
         if (typeof statusValue === 'string') {
           statusValue = statusValue.trim();
@@ -1683,9 +1696,10 @@ const insertDataInside = (key) => {
       var selectedValue3 = $('#insideDocfilter3').val();
 
       $('#tableInsideDoc-body tr').each(function(i) {
-        var rightValue = data[i][24].split(' ');
-        var statusValue = data[i][22];
-        var categoryValue = data[i][12];
+        var dateRaw = data[i] && data[i][24] ? String(data[i][24]) : '';
+        var rightValue = dateRaw ? dateRaw.split(' ') : [];
+        var statusValue = data[i] ? data[i][22] : '';
+        var categoryValue = data[i] ? data[i][12] : '';
 
         if (typeof statusValue === 'string') {
           statusValue = statusValue.trim();
@@ -1869,9 +1883,10 @@ const insertDataFollow = (key) => {
       var selectedValue3 = $('#followDocfilter3').val();
 
       $('#tableFollowDoc-body tr').each(function(i) {
-        var rightValue = data[i][24].split(' ');
-        var statusValue = data[i][22];
-        var categoryValue = data[i][12];
+        var dateRaw = data[i] && data[i][24] ? String(data[i][24]) : '';
+        var rightValue = dateRaw ? dateRaw.split(' ') : [];
+        var statusValue = data[i] ? data[i][22] : '';
+        var categoryValue = data[i] ? data[i][12] : '';
 
         if (typeof statusValue === 'string') {
           statusValue = statusValue.trim();
@@ -2033,7 +2048,8 @@ const insertDataReturn = (key) => {
       var selectedValue1 = $('#returnDocfilter1').val();
 
       $('#tableReturnDoc-body tr').each(function(i) {
-        var rightValue = data[i][24].split(' ');
+        var dateRaw = data[i] && data[i][24] ? String(data[i][24]) : '';
+        var rightValue = dateRaw ? dateRaw.split(' ') : [];
 
         var showByRight = selectedValue1 === "" || rightValue[2] === selectedValue1;
 
