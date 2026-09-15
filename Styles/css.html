@@ -633,7 +633,7 @@ body.dark .menu-search-match-badge {
   justify-content: center;
   align-items: center;
 }
-#content nav::after {
+#content > nav::after {
   content: "";
   display: block;
   height: 100%;
@@ -3277,7 +3277,7 @@ img.inverted-color.active {
   .d-flex.justify-content-center.align-items-center.h-100 {
     display: none;
   }
-  #content nav::after {
+  #content > nav::after {
     background-size: cover !important;
     left: 0;
   }
@@ -3521,6 +3521,26 @@ body.dark .table-equip tbody tr:hover td {
   margin-top: 18px;
   padding-top: 8px;
   border-top: none;
+  background: none !important;
+  background-image: none !important;
+}
+.home-table-footer::before,
+.home-table-footer::after,
+.home-pagination-wrapper::before,
+.home-pagination-wrapper::after,
+.home-pagination::before,
+.home-pagination::after {
+  display: none !important;
+  content: none !important;
+  background-image: none !important;
+}
+.home-pagination-wrapper {
+  background: none !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 .home-table-footer .footer-info {
   font-size: 12px;
