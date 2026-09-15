@@ -873,6 +873,25 @@ function gsAddnewDocument(obj) {
 
   return documentKey;
 }
+function _sanitizeValues(rows) {
+  if (!rows || !Array.isArray(rows)) return [];
+  return rows.map(function(row) {
+    if (!Array.isArray(row)) return [];
+    return row.map(function(cell) {
+      if (cell === null || cell === undefined) return '';
+      if (cell instanceof Date) {
+        if (isNaN(cell.getTime())) return '';
+        try {
+          return formatToDateThai(cell);
+        } catch (e) {
+          return cell.toISOString();
+        }
+      }
+      return String(cell);
+    });
+  });
+}
+
 function dataDocAlldetail() {
   try {
     const ss = _getDocuMentSS();
@@ -881,7 +900,7 @@ function dataDocAlldetail() {
     if (!sheet) return [];
     const data = sheet.getDataRange().getValues();
     if (data.length <= 2) return [];
-    return data.slice(2);
+    return _sanitizeValues(data.slice(2));
   } catch (err) {
     Logger.log("Error in dataDocAlldetail: " + err);
     return [];
@@ -901,7 +920,7 @@ function dataDocPending(key) {
       const status = String(row[22] || '').trim();
       return (rowKey === cleanKey && (status === '1' || status === '2' || status === '')) || status === '2';
     });
-    return data;
+    return _sanitizeValues(data);
   } catch (err) {
     Logger.log("Error in dataDocPending: " + err);
     return [];
@@ -921,7 +940,7 @@ function dataDocFollow(key) {
       const follow = String(row[15] || '').trim();
       return rowKey === cleanKey && follow === '1';
     });
-    return data;
+    return _sanitizeValues(data);
   } catch (err) {
     Logger.log("Error in dataDocFollow: " + err);
     return [];
@@ -941,7 +960,7 @@ function dataDocReturn(key) {
       const status = String(row[22] || '').trim();
       return rowKey === cleanKey && status === '0';
     });
-    return data;
+    return _sanitizeValues(data);
   } catch (err) {
     Logger.log("Error in dataDocReturn: " + err);
     return [];
@@ -984,7 +1003,7 @@ function dataDocInside(key) {
       const rowKey = String(row[21] || '').replace(/^'/, '').trim();
       return !cleanKey || rowKey === cleanKey;
     });
-    return data;
+    return _sanitizeValues(data);
   } catch (err) {
     Logger.log("Error in dataDocInside: " + err);
     return [];
@@ -1330,7 +1349,7 @@ function dataDocInprogress(key) {
     filteredSend.reverse();
     filteredDoc.reverse();
 
-    return [filteredSend, filteredDoc];
+    return [_sanitizeValues(filteredSend), _sanitizeValues(filteredDoc)];
   } catch (err) {
     Logger.log("Error in dataDocInprogress: " + err);
     return [[], []];
