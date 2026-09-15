@@ -906,13 +906,21 @@ function dataDocReturn(key) {
   return data;  
 }
 function dataDocInside(key) {
-  const sheet = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument"); 
-  var data = sheet.getDataRange().getValues().slice(2);
+  try {
+    const sheet = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument"); 
+    if (!sheet) return [];
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 3) return [];
+    var data = sheet.getRange(3, 1, lastRow - 2, sheet.getLastColumn()).getDisplayValues();
 
-  data = data.filter((row) =>{
-    return row[21] === key;
-  })
-  return data;  
+    data = data.filter((row) => {
+      return row[21] === key;
+    });
+    return data;
+  } catch (err) {
+    Logger.log("Error in dataDocInside: " + err);
+    return [];
+  }
 }
 function userActionSendDoc(obj) {
   const sheet = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument"); 
@@ -1212,205 +1220,267 @@ function openDocument(key) {
   }
 }
 function dataDocInprogress(key) {
-  const ssDoc = SpreadsheetApp.openById(sheetDocuMent);
-  const sheet = ssDoc.getSheetByName("SendDocument");
-  const sheetDoc = ssDoc.getSheetByName("DataDocument");
-  const data = sheet.getDataRange().getValues().slice(1);
-  const dataDoc = sheetDoc.getDataRange().getValues().slice(1);
+  try {
+    const ssDoc = SpreadsheetApp.openById(sheetDocuMent);
+    const sheet = ssDoc.getSheetByName("SendDocument");
+    const sheetDoc = ssDoc.getSheetByName("DataDocument");
+    if (!sheet || !sheetDoc) return [[], []];
 
-  const filteredData = data.filter(row => row[2] === key);
-  const filteredDataDoc = [];
+    const lastRowSend = sheet.getLastRow();
+    const lastRowDoc = sheetDoc.getLastRow();
+    if (lastRowSend < 2 || lastRowDoc < 2) return [[], []];
 
-  for (const row of filteredData) {
-    const userCode = row[1];
-    const matchingRows = dataDoc.filter(docRow => docRow[0] === userCode && docRow[22] < 5);
-    filteredDataDoc.push(...matchingRows);
+    const data = sheet.getRange(2, 1, lastRowSend - 1, sheet.getLastColumn()).getDisplayValues();
+    const dataDoc = sheetDoc.getRange(2, 1, lastRowDoc - 1, sheetDoc.getLastColumn()).getDisplayValues();
+
+    const filteredData = data.filter(row => row[2] === key);
+    const filteredDataDoc = [];
+
+    for (const row of filteredData) {
+      const userCode = row[1];
+      const matchingRows = dataDoc.filter(docRow => docRow[0] === userCode && Number(docRow[22]) < 5);
+      filteredDataDoc.push(...matchingRows);
+    }
+
+    filteredDataDoc.reverse();
+    filteredData.reverse();
+    
+    return [filteredData, filteredDataDoc];
+  } catch (err) {
+    Logger.log("Error in dataDocInprogress: " + err);
+    return [[], []];
   }
-
-  filteredDataDoc.reverse();
-  filteredData.reverse();
-  
-  return [filteredData, filteredDataDoc];
 }
 function dataDocInprogressOut(key) {
-  const ssDoc = SpreadsheetApp.openById(sheetDocuMent);
-  const sheet = ssDoc.getSheetByName("SendDocument");
-  const sheetDoc = ssDoc.getSheetByName("DataDocument");
-  const sheetUser = SpreadsheetApp.openById(sheetUseds).getSheetByName("User");
-  const data = sheet.getDataRange().getValues().slice(1);
-  const dataDoc = sheetDoc.getDataRange().getValues().slice(1);
-  const dataUser = sheetUser.getDataRange().getValues().slice(1);
+  try {
+    const ssDoc = SpreadsheetApp.openById(sheetDocuMent);
+    const sheet = ssDoc.getSheetByName("SendDocument");
+    const sheetDoc = ssDoc.getSheetByName("DataDocument");
+    const sheetUser = SpreadsheetApp.openById(sheetUseds).getSheetByName("User");
+    if (!sheet || !sheetDoc || !sheetUser) return [[], [], []];
 
-  const userMap = new Map();
-  for (let u = 0; u < dataUser.length; u++) {
-    userMap.set(dataUser[u][0], dataUser[u]);
-  }
+    const lastRowSend = sheet.getLastRow();
+    const lastRowDoc = sheetDoc.getLastRow();
+    const lastRowUser = sheetUser.getLastRow();
+    if (lastRowDoc < 2) return [[], [], []];
 
-  const filteredData = dataDoc.filter(row => row[21] === key && (row[1] === "ลงรับภายนอก" || row[1] === "ลงรับภายใน"));
-  const filteredDataDoc = [];
-  const filteredDataUser = [];
+    const data = lastRowSend >= 2 ? sheet.getRange(2, 1, lastRowSend - 1, sheet.getLastColumn()).getDisplayValues() : [];
+    const dataDoc = sheetDoc.getRange(2, 1, lastRowDoc - 1, sheetDoc.getLastColumn()).getDisplayValues();
+    const dataUser = lastRowUser >= 2 ? sheetUser.getRange(2, 1, lastRowUser - 1, sheetUser.getLastColumn()).getDisplayValues() : [];
 
-  for (const row of filteredData) {
-    const keyCode = row[0];
-    const matchingRows = data.filter(docRow => docRow[1] === keyCode);
-    filteredDataDoc.push(...matchingRows);
-    for (const rowUser of matchingRows) {
-      const userCode = rowUser[2];
-      const matchingUser = userMap.get(userCode);
-      if (matchingUser) {
-        filteredDataUser.push(matchingUser);
-      }
+    const userMap = new Map();
+    for (let u = 0; u < dataUser.length; u++) {
+      userMap.set(dataUser[u][0], dataUser[u]);
     }
-  }
-  
-  return [filteredData, filteredDataDoc, filteredDataUser];
-}
-function dataDocuMentSave(key) {
-  const ssDoc = SpreadsheetApp.openById(sheetDocuMent);
-  const sheet = ssDoc.getSheetByName("SendDocument");
-  const sheetDoc = ssDoc.getSheetByName("DataDocument");
-  const sheetUser = SpreadsheetApp.openById(sheetUseds).getSheetByName("User");
-  const data = sheet.getDataRange().getValues().slice(1);
-  const dataDoc = sheetDoc.getDataRange().getValues().slice(1);
-  const dataUser = sheetUser.getDataRange().getValues().slice(1);
 
-  const userMap = new Map();
-  for (let u = 0; u < dataUser.length; u++) {
-    userMap.set(dataUser[u][0], dataUser[u]);
-  }
+    const filteredData = dataDoc.filter(row => row[21] === key && (row[1] === "ลงรับภายนอก" || row[1] === "ลงรับภายใน"));
+    const filteredDataDoc = [];
+    const filteredDataUser = [];
 
-  const filteredDataDoc = dataDoc.filter(row => row[0] === key);
-  const filteredData = [];
-  const filteredStatus = [];
-
-  for (const row of filteredDataDoc) {
-    const keyCode = row[0];
-    const matchingRows = data.filter(docRow => docRow[1] === keyCode);
-    filteredStatus.push(...matchingRows);
-    for (const rowUser of matchingRows) {
-      const userCode = rowUser[2];
-      const matchingUser = userMap.get(userCode) || [];
-      filteredData.push(matchingUser);
-    }
-  }
-  
-  return [filteredDataDoc, filteredStatus, filteredData];
-}
-function saveWorkingData(obj) {
-  const sheet = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("SendDocument");
-  const sheetDoc = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument");
-
-  const data = sheet.getDataRange().getValues();
-  const dataDoc = sheetDoc.getRange('A3:A' + sheetDoc.getLastRow()).getValues();
-
-  for (let i = data.length - 1; i >= 0; i--) {
-    const keyValue = data[i][0];
-    const keyDoc = data[i][1];
-
-    if (keyValue === obj.key) {
-      sheet.getRange(i + 1, 4).setValue("3");
-      sheet.getRange(i + 1, 6).setValue(obj.response);
-      sheet.getRange(i + 1, 7).setValue(formatToDateThai(new Date()));
-      sheet.getRange(i + 1, 8).setValue(obj.jobWord);
-      sheet.getRange(i + 1, 9).setValue(obj.replace);
-
-      for (let j = dataDoc.length - 1; j >= 0; j--) {
-        const keyValueDoc = dataDoc[j][0];
-        if (keyValueDoc === keyDoc) {
-          sheetDoc.getRange(j + 3, 23).setValue("4");
-          sheetDoc.getRange(j + 3, 26).setValue(formatToDateThai(new Date()));
-          break;
+    for (const row of filteredData) {
+      const keyCode = row[0];
+      const matchingRows = data.filter(docRow => docRow[1] === keyCode);
+      filteredDataDoc.push(...matchingRows);
+      for (const rowUser of matchingRows) {
+        const userCode = rowUser[2];
+        const matchingUser = userMap.get(userCode);
+        if (matchingUser) {
+          filteredDataUser.push(matchingUser);
         }
       }
-      return data[i][2];
     }
+    
+    return [filteredData, filteredDataDoc, filteredDataUser];
+  } catch (err) {
+    Logger.log("Error in dataDocInprogressOut: " + err);
+    return [[], [], []];
+  }
+}
+function dataDocuMentSave(key) {
+  try {
+    const ssDoc = SpreadsheetApp.openById(sheetDocuMent);
+    const sheet = ssDoc.getSheetByName("SendDocument");
+    const sheetDoc = ssDoc.getSheetByName("DataDocument");
+    const sheetUser = SpreadsheetApp.openById(sheetUseds).getSheetByName("User");
+    if (!sheet || !sheetDoc || !sheetUser) return [[], [], []];
+
+    const lastRowSend = sheet.getLastRow();
+    const lastRowDoc = sheetDoc.getLastRow();
+    const lastRowUser = sheetUser.getLastRow();
+    if (lastRowDoc < 2) return [[], [], []];
+
+    const data = lastRowSend >= 2 ? sheet.getRange(2, 1, lastRowSend - 1, sheet.getLastColumn()).getDisplayValues() : [];
+    const dataDoc = sheetDoc.getRange(2, 1, lastRowDoc - 1, sheetDoc.getLastColumn()).getDisplayValues();
+    const dataUser = lastRowUser >= 2 ? sheetUser.getRange(2, 1, lastRowUser - 1, sheetUser.getLastColumn()).getDisplayValues() : [];
+
+    const userMap = new Map();
+    for (let u = 0; u < dataUser.length; u++) {
+      userMap.set(dataUser[u][0], dataUser[u]);
+    }
+
+    const filteredDataDoc = dataDoc.filter(row => row[0] === key);
+    const filteredData = [];
+    const filteredStatus = [];
+
+    for (const row of filteredDataDoc) {
+      const keyCode = row[0];
+      const matchingRows = data.filter(docRow => docRow[1] === keyCode);
+      filteredStatus.push(...matchingRows);
+      for (const rowUser of matchingRows) {
+        const userCode = rowUser[2];
+        const matchingUser = userMap.get(userCode) || [];
+        filteredData.push(matchingUser);
+      }
+    }
+    
+    return [filteredDataDoc, filteredStatus, filteredData];
+  } catch (err) {
+    Logger.log("Error in dataDocuMentSave: " + err);
+    return [[], [], []];
+  }
+}
+function saveWorkingData(obj) {
+  try {
+    const sheet = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("SendDocument");
+    const sheetDoc = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument");
+    if (!sheet || !sheetDoc) return null;
+
+    const data = sheet.getDataRange().getValues();
+    const lastRowDoc = sheetDoc.getLastRow();
+    const dataDoc = lastRowDoc >= 3 ? sheetDoc.getRange(3, 1, lastRowDoc - 2, 1).getValues() : [];
+
+    for (let i = data.length - 1; i >= 0; i--) {
+      const keyValue = data[i][0];
+      const keyDoc = data[i][1];
+
+      if (keyValue === obj.key) {
+        sheet.getRange(i + 1, 4).setValue("3");
+        sheet.getRange(i + 1, 6).setValue(obj.response);
+        sheet.getRange(i + 1, 7).setValue(formatToDateThai(new Date()));
+        sheet.getRange(i + 1, 8).setValue(obj.jobWord);
+        sheet.getRange(i + 1, 9).setValue(obj.replace);
+
+        for (let j = dataDoc.length - 1; j >= 0; j--) {
+          const keyValueDoc = dataDoc[j][0];
+          if (keyValueDoc === keyDoc) {
+            sheetDoc.getRange(j + 3, 23).setValue("4");
+            sheetDoc.getRange(j + 3, 26).setValue(formatToDateThai(new Date()));
+            break;
+          }
+        }
+        return data[i][2];
+      }
+    }
+  } catch (err) {
+    Logger.log("Error in saveWorkingData: " + err);
+    return null;
   }
 }
 function closeJobDocument(key) {
-  const sheetDoc = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument");
-  const dataDoc = sheetDoc.getRange('A3:A' + sheetDoc.getLastRow()).getValues();
+  try {
+    const sheetDoc = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument");
+    if (!sheetDoc) return;
+    const lastRowDoc = sheetDoc.getLastRow();
+    const dataDoc = lastRowDoc >= 3 ? sheetDoc.getRange(3, 1, lastRowDoc - 2, 1).getValues() : [];
 
-  for (let i = dataDoc.length - 1; i >= 0; i--) {
-    const keyDoc = dataDoc[i][0];
-    if (keyDoc === key) {
+    for (let i = dataDoc.length - 1; i >= 0; i--) {
+      const keyDoc = dataDoc[i][0];
+      if (keyDoc === key) {
         sheetDoc.getRange(i + 3, 23).setValue("5");
         sheetDoc.getRange(i + 3, 26).setValue(formatToDateThai(new Date()));
-      break;
+        break;
+      }
     }
+  } catch (err) {
+    Logger.log("Error in closeJobDocument: " + err);
   }
 }
 function returnJobDocument(obj) {
-  const sheetDoc = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument");
-  const dataDoc = sheetDoc.getRange('A3:A' + sheetDoc.getLastRow()).getValues();
+  try {
+    const sheetDoc = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument");
+    const sheet = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("SendDocument");
+    if (!sheetDoc || !sheet) return null;
 
-  const sheet = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("SendDocument");
-  const data = sheet.getDataRange().getValues();
+    const lastRowDoc = sheetDoc.getLastRow();
+    const dataDoc = lastRowDoc >= 3 ? sheetDoc.getRange(3, 1, lastRowDoc - 2, 1).getValues() : [];
+    const data = sheet.getDataRange().getValues();
 
-  for (let j = dataDoc.length - 1; j >= 0; j--) {
-    const keyDoc = dataDoc[j][0];
-    if (keyDoc === obj.keyDocument) {
-      sheetDoc.getRange(j + 3, 23).setValue("0");
-      sheetDoc.getRange(j + 3, 26).setValue(formatToDateThai(new Date()));
+    for (let j = dataDoc.length - 1; j >= 0; j--) {
+      const keyDoc = dataDoc[j][0];
+      if (keyDoc === obj.keyDocument) {
+        sheetDoc.getRange(j + 3, 23).setValue("0");
+        sheetDoc.getRange(j + 3, 26).setValue(formatToDateThai(new Date()));
+      }
     }
-  }
-  for (let i = data.length - 1; i >= 0; i--) {
-    const keyValue = data[i][0];
-    if (keyValue === obj.codeDocument) {
-      sheet.getRange(i + 1, 4).setValue('2');
-      sheet.getRange(i + 1, 6).setValue(obj.noteDocument);
-      sheet.getRange(i + 1, 7).setValue(formatToDateThai(new Date()));
-      return data[i][2];
+    for (let i = data.length - 1; i >= 0; i--) {
+      const keyValue = data[i][0];
+      if (keyValue === obj.codeDocument) {
+        sheet.getRange(i + 1, 4).setValue('2');
+        sheet.getRange(i + 1, 6).setValue(obj.noteDocument);
+        sheet.getRange(i + 1, 7).setValue(formatToDateThai(new Date()));
+        return data[i][2];
+      }
     }
+  } catch (err) {
+    Logger.log("Error in returnJobDocument: " + err);
+    return null;
   }
 }
 function cancelDocument(obj) {
-  const sheetDoc = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument");
-  const dataDoc = sheetDoc.getRange('A3:A' + sheetDoc.getLastRow()).getValues();
-  const targetKey = obj.key || obj.code || obj.keyDocument;
-  let docNumber = "";
-
-  for (let i = dataDoc.length - 1; i >= 0; i--) {
-    const keyDoc = dataDoc[i][0];
-    if (keyDoc === targetKey) {
-      const rowIndex = i + 3;
-      sheetDoc.getRange(rowIndex, 23).setValue("-1"); // สถานะยกเลิก
-      sheetDoc.getRange(rowIndex, 26).setValue(formatToDateThai(new Date()));
-      
-      if (obj.note) {
-        sheetDoc.getRange(rowIndex, 35).setValue(obj.note);
-      }
-      
-      const curNote = String(sheetDoc.getRange(rowIndex, 15).getValue() || "").trim();
-      const cancelTag = obj.note ? `[ยกเลิก: ${obj.note}]` : "[ยกเลิกหนังสือ]";
-      if (!curNote.includes("[ยกเลิก")) {
-        sheetDoc.getRange(rowIndex, 15).setValue(curNote ? `${curNote} ${cancelTag}` : cancelTag);
-      }
-
-      docNumber = sheetDoc.getRange(rowIndex, 3).getValue();
-      break;
-    }
-  }
-
-  // อัปเดตในตาราง SendDocument (ถ้ามี)
   try {
-    const sheetSend = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("SendDocument");
-    if (sheetSend) {
-      const dataSend = sheetSend.getDataRange().getValues();
-      for (let s = 1; s < dataSend.length; s++) {
-        if (dataSend[s][1] === targetKey) {
-          sheetSend.getRange(s + 1, 4).setValue("-1");
-          if (obj.note) {
-            sheetSend.getRange(s + 1, 6).setValue("ยกเลิก: " + obj.note);
+    const sheetDoc = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("DataDocument");
+    if (!sheetDoc) return null;
+    const lastRowDoc = sheetDoc.getLastRow();
+    const dataDoc = lastRowDoc >= 3 ? sheetDoc.getRange(3, 1, lastRowDoc - 2, 1).getValues() : [];
+    const targetKey = obj.key || obj.code || obj.keyDocument;
+    let docNumber = "";
+
+    for (let i = dataDoc.length - 1; i >= 0; i--) {
+      const keyDoc = dataDoc[i][0];
+      if (keyDoc === targetKey) {
+        const rowIndex = i + 3;
+        sheetDoc.getRange(rowIndex, 23).setValue("-1"); // สถานะยกเลิก
+        sheetDoc.getRange(rowIndex, 26).setValue(formatToDateThai(new Date()));
+        
+        if (obj.note) {
+          sheetDoc.getRange(rowIndex, 35).setValue(obj.note);
+        }
+        
+        const curNote = String(sheetDoc.getRange(rowIndex, 15).getValue() || "").trim();
+        const cancelTag = obj.note ? `[ยกเลิก: ${obj.note}]` : "[ยกเลิกหนังสือ]";
+        if (!curNote.includes("[ยกเลิก")) {
+          sheetDoc.getRange(rowIndex, 15).setValue(curNote ? `${curNote} ${cancelTag}` : cancelTag);
+        }
+
+        docNumber = sheetDoc.getRange(rowIndex, 3).getValue();
+        break;
+      }
+    }
+
+    // อัปเดตในตาราง SendDocument (ถ้ามี)
+    try {
+      const sheetSend = SpreadsheetApp.openById(sheetDocuMent).getSheetByName("SendDocument");
+      if (sheetSend) {
+        const dataSend = sheetSend.getDataRange().getValues();
+        for (let s = 1; s < dataSend.length; s++) {
+          if (dataSend[s][1] === targetKey) {
+            sheetSend.getRange(s + 1, 4).setValue("-1");
+            if (obj.note) {
+              sheetSend.getRange(s + 1, 6).setValue("ยกเลิก: " + obj.note);
+            }
+            sheetSend.getRange(s + 1, 7).setValue(formatToDateThai(new Date()));
           }
-          sheetSend.getRange(s + 1, 7).setValue(formatToDateThai(new Date()));
         }
       }
+    } catch (e) {
+      Logger.log("Error updating SendDocument on cancel: " + e);
     }
-  } catch (e) {
-    Logger.log("Error updating SendDocument on cancel: " + e);
-  }
 
-  return { success: true, key: targetKey, docNumber: docNumber };
+    return docNumber;
+  } catch (err) {
+    Logger.log("Error in cancelDocument: " + err);
+    return null;
+  }
 }
 
 // ฟังก์ชันดึงรายการหนังสือที่ถูกยกเลิก (สถานะ -1)

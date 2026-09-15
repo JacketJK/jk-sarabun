@@ -410,7 +410,10 @@ function getEquipLocationSet() {
 
 const saveOrderJobWord = (order) => {
   const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("JobWord"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
+  if (!sheet) return;
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return;
+  const data = sheet.getRange("B3:C" + lastRow).getValues();
   var newData = [];
 
   order.forEach(function(id) {
@@ -421,11 +424,16 @@ const saveOrderJobWord = (order) => {
     });
   });
 
-  sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  if (newData.length > 0) {
+    sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  }
 }
 const saveOrderTypeEmployee = (order) => {
   const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("TypeEmployee"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
+  if (!sheet) return;
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return;
+  const data = sheet.getRange("B3:C" + lastRow).getValues();
   var newData = [];
 
   order.forEach(function(id) {
@@ -436,12 +444,17 @@ const saveOrderTypeEmployee = (order) => {
     });
   });
 
-  sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  if (newData.length > 0) {
+    sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  }
 }
 
 const saveOrderRevenue = (order) => {
   const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("Revenue"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
+  if (!sheet) return;
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return;
+  const data = sheet.getRange("B3:C" + lastRow).getValues();
   var newData = [];
 
   order.forEach(function(id) {
@@ -452,12 +465,17 @@ const saveOrderRevenue = (order) => {
     });
   });
 
-  sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  if (newData.length > 0) {
+    sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  }
 }
 
 const saveOrderExpenses = (order) => {
   const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("Expenses"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
+  if (!sheet) return;
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return;
+  const data = sheet.getRange("B3:C" + lastRow).getValues();
   var newData = [];
 
   order.forEach(function(id) {
@@ -468,12 +486,17 @@ const saveOrderExpenses = (order) => {
     });
   });
 
-  sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  if (newData.length > 0) {
+    sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  }
 }
 
 const saveOrderCategory = (order) => {
   const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("DocCategory"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
+  if (!sheet) return;
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return;
+  const data = sheet.getRange("B3:C" + lastRow).getValues();
   var newData = [];
 
   order.forEach(function(id) {
@@ -484,11 +507,16 @@ const saveOrderCategory = (order) => {
     });
   });
 
-  sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  if (newData.length > 0) {
+    sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  }
 }
 const saveOrderClassSpeed = (order) => {
   const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("ClassSpeed"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
+  if (!sheet) return;
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return;
+  const data = sheet.getRange("B3:C" + lastRow).getValues();
   var newData = [];
 
   order.forEach(function(id) {
@@ -499,11 +527,16 @@ const saveOrderClassSpeed = (order) => {
     });
   });
 
-  sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  if (newData.length > 0) {
+    sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  }
 }
 const saveOrderClassSecret = (order) => {
   const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("ClassSecret"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
+  if (!sheet) return;
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return;
+  const data = sheet.getRange("B3:C" + lastRow).getValues();
   var newData = [];
 
   order.forEach(function(id) {
@@ -514,11 +547,16 @@ const saveOrderClassSecret = (order) => {
     });
   });
 
-  sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  if (newData.length > 0) {
+    sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  }
 }
 const saveOrderObjective = (order) => {
   const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("Objective"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
+  if (!sheet) return;
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return;
+  const data = sheet.getRange("B3:C" + lastRow).getValues();
   var newData = [];
 
   order.forEach(function(id) {
@@ -529,11 +567,16 @@ const saveOrderObjective = (order) => {
     });
   });
 
-  sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  if (newData.length > 0) {
+    sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  }
 }
 const saveOrderResponse = (order) => {
   const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("Response"); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
+  if (!sheet) return;
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return;
+  const data = sheet.getRange("B3:C" + lastRow).getValues();
   var newData = [];
 
   order.forEach(function(id) {
@@ -544,11 +587,16 @@ const saveOrderResponse = (order) => {
     });
   });
 
-  sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  if (newData.length > 0) {
+    sheet.getRange(3, 2, newData.length, newData[0].length).setValues(newData);
+  }
 }
 const saveOrderMooBan = (order) => {
   const sheet = SpreadsheetApp.openById(sheetSetting).getSheetByName("MooBan"); 
-  const data = sheet.getRange("A3:C" + sheet.getLastRow()).getValues();
+  if (!sheet) return;
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 3) return;
+  const data = sheet.getRange("A3:C" + lastRow).getValues();
   var newData = [];
 
   order.forEach(function(id) {
@@ -559,7 +607,9 @@ const saveOrderMooBan = (order) => {
     });
   });
 
-  sheet.getRange(3, 1, newData.length, newData[0].length).setValues(newData);
+  if (newData.length > 0) {
+    sheet.getRange(3, 1, newData.length, newData[0].length).setValues(newData);
+  }
 }
 const genCodeData = (...data) => {
   if (data.length < 2) {
@@ -778,37 +828,45 @@ const addDataSet = (obj) => {
   const rowData = [parseInt(lastRow) - 1, genCode, obj.list];
   sheet.appendRow(rowData);
   try { CacheService.getScriptCache().remove('ALL_DROPDOWN_DATA'); } catch (e) {}
-  return sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
+  return _safeGetRangeValues(obj.sheetname, 2, 3);
 }
 
 const editDataSet = (obj) => {
   const sheet = _getSettingSS().getSheetByName(obj.sheetname); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
+  if (!sheet) return [];
+  const lastRow = sheet.getLastRow();
+  if (lastRow >= 3) {
+    const data = sheet.getRange("B3:C" + lastRow).getValues();
 
-  for (let i = 0; i < data.length; i++) {
-    var keyValue = data[i][0];
-    if (keyValue === obj.key) {
-      sheet.getRange(i + 3, 3).setValue(obj.list);
-      break;
+    for (let i = 0; i < data.length; i++) {
+      var keyValue = data[i][0];
+      if (keyValue === obj.key) {
+        sheet.getRange(i + 3, 3).setValue(obj.list);
+        break;
+      }
     }
   }
   try { CacheService.getScriptCache().remove('ALL_DROPDOWN_DATA'); } catch (e) {}
-  return sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
+  return _safeGetRangeValues(obj.sheetname, 2, 3);
 }
 
 const deleteDataSet = (obj) => {
   const sheet = _getSettingSS().getSheetByName(obj.sheetname); 
-  const data = sheet.getRange("B3:C" + sheet.getLastRow()).getValues();
+  if (!sheet) return [];
+  const lastRow = sheet.getLastRow();
+  if (lastRow >= 3) {
+    const data = sheet.getRange("B3:C" + lastRow).getValues();
 
-  for (let i = 0; i < data.length; i++) {
-    var keyValue = data[i][0];
-    if (keyValue === obj.key) {
-      sheet.deleteRow(i + 3);
-      break;
+    for (let i = 0; i < data.length; i++) {
+      var keyValue = data[i][0];
+      if (keyValue === obj.key) {
+        sheet.deleteRow(i + 3);
+        break;
+      }
     }
   }
   try { CacheService.getScriptCache().remove('ALL_DROPDOWN_DATA'); } catch (e) {}
-  return sheet.getRange("B3:C" + sheet.getLastRow()).getValues();  
+  return _safeGetRangeValues(obj.sheetname, 2, 3);
 }
 
 const saveOrderDataSet = (sheetName, order) => {
