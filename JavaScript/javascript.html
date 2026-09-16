@@ -1993,27 +1993,27 @@ const toastAlert = (status, text, delay = 3000) => {
     switch (status) {
         case 1:
         textStatus = "<i class='fa-duotone fa-thumbs-up'></i> สำเร็จ";
-        iconStatus = "https://cdn.lordicon.com/oqdmuxru.json";
+        iconStatus = 'https:\/\/cdn.lordicon.com\/oqdmuxru.json';
         bgColorClass = "bg-green";
         break;
         case 0:
         textStatus = "<i class='fa-duotone fa-triangle-exclamation'></i> ผิดพลาด";
-        iconStatus = "https://cdn.lordicon.com/vihyezfv.json";
+        iconStatus = 'https:\/\/cdn.lordicon.com\/vihyezfv.json';
         bgColorClass = "bg-red";
         break;
         case 2:
         textStatus = "<i class='fa-duotone fa-cloud-question'></i> รายละเอียด";
-        iconStatus = "https://cdn.lordicon.com/axteoudt.json";
+        iconStatus = 'https:\/\/cdn.lordicon.com\/axteoudt.json';
         bgColorClass = "bg-violet";
         break;
         case 3:
         textStatus = "<i class='fa-duotone fa-bell'></i> แจ้งเตือน";
-        iconStatus = "https://cdn.lordicon.com/vspbqszr.json";
+        iconStatus = 'https:\/\/cdn.lordicon.com\/vspbqszr.json';
         bgColorClass = "bg-yellow";
         break;
         default:
         textStatus = "<i class='fa-duotone fa-bullhorn'></i> ประกาศ";
-        iconStatus = "https://cdn.lordicon.com/vyqvtrtg.json";
+        iconStatus = 'https:\/\/cdn.lordicon.com\/vyqvtrtg.json';
         bgColorClass = "bg-blue";
     }
 
@@ -3085,7 +3085,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 const getSetting_lineNotify = (user) => {
   if (user.token === "") {
-    const newLink = "https://jacketjk.github.io/MessagingAPI/";
+    const newLink = 'https:\/\/jacketjk.github.io\/MessagingAPI\/';
 
     $("#lineOntifyAdd")
       .attr("href", newLink)
@@ -3104,7 +3104,7 @@ const getSetting_lineNotify = (user) => {
 
 const addFriendLineFn = () => {
   google.script.run.withSuccessHandler((res) => {
-    const newLink = "https://line.me/R/ti/p/" + res.LineMesAPI;
+    const newLink = 'https:\/\/line.me\/R\/ti\/p\/' + res.LineMesAPI;
 
     $("#addFriendLine, #addLineMesApi")
       .attr("href", newLink)
@@ -3931,7 +3931,7 @@ const reviewdivprofile = async () => {
   row.className = "row row-cols-6";
 
   for (let i = 1; i <= 50; i++) {
-    var image = "https://cdn.jsdelivr.net/gh/JacketJK/image/user-" + i + ".png";
+    var image = 'https:\/\/cdn.jsdelivr.net\/gh\/JacketJK\/image\/user-' + i + '.png';
     var col = document.createElement('div');
     col.className = "col p-2";
 
@@ -3942,7 +3942,7 @@ const reviewdivprofile = async () => {
 
     img.addEventListener('click', () => {
       let imgPreview = document.getElementById('regictorPreview');
-      imgPreview.src = "https://cdn.jsdelivr.net/gh/JacketJK/image/user-" + i + ".png";
+      imgPreview.src = 'https:\/\/cdn.jsdelivr.net\/gh\/JacketJK\/image\/user-' + i + '.png';
     });
 
     col.appendChild(img);
