@@ -14,6 +14,7 @@ function _getEquipSS() {
   return SpreadsheetApp.getActiveSpreadsheet();
 }
 
+
 function initEquipmentDatabase() {
   const ss = _getEquipSS();
   
@@ -78,6 +79,52 @@ function _generateEquipKey(prefix) {
   return `${prefix}-${y}${m}${day}-${rnd}`;
 }
 
+// Helper to normalize category names (strip prefix 'ครุภัณฑ์' or 'วัสดุ')
+function _normalizeCat(cat) {
+  if (!cat) return '';
+  return String(cat).trim().replace(/^(ครุภัณฑ์|วัสดุ)\s*/, '').trim();
+}
+
+function seedSampleEquipmentDataIfNeeded(ss) {
+  try {
+    const eqSheet = ss.getSheetByName('Equipment');
+    const matSheet = ss.getSheetByName('Material');
+    if (!eqSheet || !matSheet) return;
+
+    const nowStr = typeof formatToDateThaiFull !== 'undefined' ? formatToDateThaiFull(new Date()) : new Date().toLocaleString('th-TH');
+
+    // If Equipment sheet is empty, seed realistic sample items
+    if (eqSheet.getLastRow() <= 1) {
+      const sampleEquips = [
+        ['EQP-2026-001', 'EQP-6701-001', 'GF-67001', 'สำนักปลัด', 'คอมพิวเตอร์', 'คอมพิวเตอร์และอุปกรณ์', 'ห้องสำนักงานปลัด', 'LOC-01', 'พร้อมใช้งาน', '-', '2567', 'เฉพาะเจาะจง', 'โครงการพัฒนาระบบดิจิทัล', 'จัดซื้ออุปกรณ์', 'จัดซื้อจัดจ้าง', 'CN-67/01', 'PO-6701', '01/10/2566', 'งบประมาณประจำปี', 'งบลงทุน', 'บจก. ไอทีโซลูชั่น', 'เครื่องคอมพิวเตอร์ All-in-One Dell OptiPlex', 'SN-DELL-9981', 'OptiPlex 7400', 'Dell', 28500, '5 ปี', 'เครื่อง', '', '', '1 ปี', '[]', nowStr, 'ผู้ดูแลระบบ'],
+        ['EQP-2026-002', 'EQP-6701-002', 'GF-67002', 'กองคลัง', 'สำนักงาน', 'เครื่องปรับอากาศ', 'ห้องกองคลัง', 'LOC-02', 'กำลังใช้งาน', '-', '2567', 'ตกลงราคา', 'โครงการปรับปรุงสำนักงาน', 'จัดซื้อเครื่องปรับอากาศ', 'จัดซื้อจัดจ้าง', 'CN-67/02', 'PO-6702', '15/10/2566', 'งบประมาณประจำปี', 'งบลงทุน', 'บจก. แอร์เซอร์วิส', 'เครื่องปรับอากาศ Daikin Inverter 24000 BTU', 'SN-DK-2401', 'FTKQ24UV2S', 'Daikin', 32000, '8 ปี', 'เครื่อง', '', '', '1 ปี', '[]', nowStr, 'ผู้ดูแลระบบ'],
+        ['EQP-2026-003', 'EQP-6701-003', 'GF-67003', 'กองช่าง', 'ยานพาหนะและขนส่ง', 'ยานพาหนะ', 'อาคารจอดรถ', 'LOC-03', 'กำลังใช้งาน', '-', '2566', 'ประกวดราคา', 'โครงการยานพาหนะส่วนกลาง', 'จัดซื้อรถส่วนกลาง', 'จัดซื้อจัดจ้าง', 'CN-66/09', 'PO-6609', '20/08/2566', 'งบประมาณประจำปี', 'งบลงทุน', 'บจก. โตโยต้า มอเตอร์', 'รถกระบะบรรทุก Double Cab 4WD', 'SN-TY-4421', 'Hilux Revo', 'Toyota', 750000, '10 ปี', 'คัน', 'กข-1234 กทม', '', '2 ปี', '[]', nowStr, 'ผู้ดูแลระบบ'],
+        ['EQP-2026-004', 'EQP-6701-004', 'GF-67004', 'กองช่าง', 'สำรวจ', 'กล้องถ่ายภาพ/วิดีโอ', 'ห้องกองช่าง', 'LOC-04', 'พร้อมใช้งาน', '-', '2567', 'เฉพาะเจาะจง', 'โครงการสำรวจแผนที่', 'จัดซื้อโดรน', 'จัดซื้อจัดจ้าง', 'CN-67/05', 'PO-6705', '05/11/2566', 'งบประมาณประจำปี', 'งบลงทุน', 'บจก. โดรนเอเชีย', 'โดรนสำรวจภาพถ่ายทางอากาศ DJI Mavic 3 Enterprise', 'SN-DJI-7712', 'Mavic 3E', 'DJI', 125000, '5 ปี', 'ลำ', '', '', '1 ปี', '[]', nowStr, 'ผู้ดูแลระบบ'],
+        ['EQP-2026-005', 'EQP-6701-005', 'GF-67005', 'กองสาธารณสุขและสิ่งแวดล้อม', 'การเกษตร', 'อุปกรณ์เครื่องมือการเกษตร', 'โรงเก็บพัสดุ', 'LOC-05', 'พร้อมใช้งาน', '-', '2567', 'ตกลงราคา', 'โครงการดูแลภูมิทัศน์', 'จัดซื้อเครื่องมือ', 'จัดซื้อจัดจ้าง', 'CN-67/06', 'PO-6706', '12/11/2566', 'งบประมาณประจำปี', 'งบดำเนินงาน', 'ร้านการเกษตรภัณฑ์', 'เครื่องตัดหญ้าสะพายข้อแข็ง 4 จังหวะ', 'SN-HD-5541', 'GX35', 'Honda', 9500, '5 ปี', 'เครื่อง', '', '', '1 ปี', '[]', nowStr, 'ผู้ดูแลระบบ'],
+        ['EQP-2026-006', 'EQP-6701-006', 'GF-67006', 'กองช่าง', 'ก่อสร้าง', 'เครื่องมือก่อสร้าง', 'ห้องกองช่าง', 'LOC-06', 'พร้อมใช้งาน', '-', '2567', 'เฉพาะเจาะจง', 'โครงการซ่อมบำรุงทาง', 'จัดซื้อสว่าน', 'จัดซื้อจัดจ้าง', 'CN-67/07', 'PO-6707', '18/11/2566', 'งบประมาณประจำปี', 'งบดำเนินงาน', 'บจก. ฮาร์ดแวร์ทูลส์', 'สว่านโรตารี่เจาะกระแทกคอนกรีต Bosch GBH 2-28', 'SN-BS-1109', 'GBH 2-28', 'Bosch', 7800, '5 ปี', 'เครื่อง', '', '', '1 ปี', '[]', nowStr, 'ผู้ดูแลระบบ'],
+        ['EQP-2026-007', 'EQP-6701-007', 'GF-67007', 'สำนักปลัด', 'ไฟฟ้าและวิทยุ', 'อุปกรณ์เครือข่าย', 'ห้องวิทยุสื่อสาร', 'LOC-07', 'พร้อมใช้งาน', '-', '2566', 'เฉพาะเจาะจง', 'โครงการระบบสื่อสารฉุกเฉิน', 'จัดซื้อวิทยุสื่อสาร', 'จัดซื้อจัดจ้าง', 'CN-66/12', 'PO-6612', '22/12/2566', 'งบประมาณประจำปี', 'งบดำเนินงาน', 'บจก. สื่อสารโทรคมนาคม', 'วิทยุสื่อสารประจำที่ VHF ICOM IC-2300H', 'SN-ICOM-8832', 'IC-2300H', 'ICOM', 8900, '7 ปี', 'เครื่อง', '', '', '1 ปี', '[]', nowStr, 'ผู้ดูแลระบบ']
+      ];
+      sampleEquips.forEach(row => eqSheet.appendRow(row));
+    }
+
+    // If Material sheet is empty, seed realistic sample items
+    if (matSheet.getLastRow() <= 1) {
+      const sampleMaterials = [
+        ['MAT-2026-001', 'MAT-6701-001', 'กระดาษถ่ายเอกสาร A4 80 แกรม Idea Work', 'สำนักงาน', 'กระดาษและสิ่งพิมพ์', 'สำนักปลัด', 85, 'รีม', 125, 20, 'ห้องพัสดุกลาง', 'พร้อมใช้งาน', nowStr, '[]'],
+        ['MAT-2026-002', 'MAT-6701-002', 'ตลับหมึกพิมพ์ HP LaserJet 85A', 'คอมพิวเตอร์', 'หมึกพิมพ์และโทนเนอร์', 'กองคลัง', 12, 'กล่อง', 2450, 5, 'ห้องศูนย์ข้อมูล/เซิร์ฟเวอร์', 'พร้อมใช้งาน', nowStr, '[]'],
+        ['MAT-2026-003', 'MAT-6701-003', 'หลอดไฟ LED Tube T8 18W Philips', 'ไฟฟ้าและวิทยุ', 'หลอดไฟและอุปกรณ์ไฟฟ้า', 'กองช่าง', 45, 'หลอด', 110, 15, 'ห้องพัสดุกลาง', 'พร้อมใช้งาน', nowStr, '[]'],
+        ['MAT-2026-004', 'MAT-6701-004', 'แบตเตอรี่รถยนต์ 12V 75Ah GS', 'ยานพาหนะและขนส่ง', 'อะไหล่และอุปกรณ์ซ่อมบำรุง', 'กองช่าง', 6, 'ลูก', 2800, 2, 'อาคารจอดรถ', 'พร้อมใช้งาน', nowStr, '[]'],
+        ['MAT-2026-005', 'MAT-6701-005', 'ชุดประแจรวม 14 ชิ้น และเครื่องมือช่าง', 'อะไหล่ทุกชนิด', 'อะไหล่และอุปกรณ์ซ่อมบำรุง', 'กองช่าง', 18, 'ชุด', 650, 5, 'ห้องกองช่าง', 'พร้อมใช้งาน', nowStr, '[]'],
+        ['MAT-2026-006', 'MAT-6701-006', 'น้ำยาทำความสะอาดพื้นอเนกประสงค์ 3.8L', 'งานบ้านงานครัว', 'อุปกรณ์ทำความสะอาด', 'สำนักปลัด', 24, 'แกลลอน', 180, 8, 'ห้องพัสดุกลาง', 'พร้อมใช้งาน', nowStr, '[]'],
+        ['MAT-2026-007', 'MAT-6701-007', 'ปูนซีเมนต์ปอร์ตแลนด์ ผสมเสร็จ 50 กก.', 'ก่อสร้าง', 'วัสดุก่อสร้าง', 'กองช่าง', 30, 'ถุง', 145, 10, 'กองช่าง', 'พร้อมใช้งาน', nowStr, '[]']
+      ];
+      sampleMaterials.forEach(row => matSheet.appendRow(row));
+    }
+  } catch (e) {
+    Logger.log('seedSampleEquipmentDataIfNeeded error: ' + e);
+  }
+}
+
 // -------------------------------------------------------------
 // 1. Dashboard & Statistics
 // -------------------------------------------------------------
@@ -85,7 +132,8 @@ function getEquipmentSummary() {
   try {
     initEquipmentDatabase();
     const ss = _getEquipSS();
-    
+    seedSampleEquipmentDataIfNeeded(ss);
+
     // Equipment stats
     const eqSheet = ss.getSheetByName('Equipment');
     const eqData = eqSheet ? eqSheet.getDataRange().getValues().slice(1) : [];
@@ -100,7 +148,8 @@ function getEquipmentSummary() {
       totalEquip++;
       const val = parseFloat(row[25]) || 0;
       const status = String(row[8] || '').trim();
-      const cat = String(row[4] || 'อื่นๆ').trim();
+      const rawCat = String(row[4] || 'อื่นๆ').trim();
+      const normCat = _normalizeCat(rawCat) || rawCat;
 
       if (status === 'ตัดจำหน่าย' || status === 'จำหน่ายแล้ว') {
         totalDisposed += val;
@@ -108,7 +157,7 @@ function getEquipmentSummary() {
         totalValue += val;
       }
 
-      equipCatMap[cat] = (equipCatMap[cat] || 0) + 1;
+      equipCatMap[normCat] = (equipCatMap[normCat] || 0) + 1;
     });
 
     // Material stats
@@ -121,8 +170,9 @@ function getEquipmentSummary() {
     matData.forEach(row => {
       if (!row[0]) return;
       totalMaterial++;
-      const cat = String(row[3] || 'อื่นๆ').trim();
-      matCatMap[cat] = (matCatMap[cat] || 0) + 1;
+      const rawCat = String(row[3] || 'อื่นๆ').trim();
+      const normCat = _normalizeCat(rawCat) || rawCat;
+      matCatMap[normCat] = (matCatMap[normCat] || 0) + 1;
     });
 
     // Borrow stats
@@ -152,36 +202,86 @@ function getEquipmentSummary() {
     const catSheet = ss.getSheetByName('Category');
     const catData = catSheet ? catSheet.getDataRange().getValues().slice(1) : [];
     const swiperCategories = catData.map(r => {
+      const code = r[0];
       const catName = String(r[1] || '').trim();
-      const count = (equipCatMap[catName] || 0) + (matCatMap[catName] || 0) || (r[4] || 0);
-      return [r[0], r[1], r[2], r[3], count];
+      const type = String(r[2] || '').trim();
+      const icon = r[3];
+      const norm = _normalizeCat(catName);
+
+      let count = 0;
+      if (type === 'ครุภัณฑ์') {
+        count = equipCatMap[norm] || equipCatMap[catName] || 0;
+      } else if (type === 'วัสดุ') {
+        count = matCatMap[norm] || matCatMap[catName] || 0;
+      } else {
+        count = (equipCatMap[norm] || 0) + (matCatMap[norm] || 0);
+      }
+
+      if (count === 0 && r[4] && !isNaN(r[4])) {
+        count = parseInt(r[4]) || 0;
+      }
+
+      return [code, catName, type, icon, count];
     });
+
+    // Chart-ready series and labels
+    const matLabels = Object.keys(matCatMap);
+    const matSeries = matLabels.map(k => matCatMap[k]);
+
+    const equipLabels = Object.keys(equipCatMap);
+    const equipSeries = equipLabels.map(k => equipCatMap[k]);
 
     return {
       totalEquip: totalEquip,
       totalMaterial: totalMaterial,
+      equipCount: totalEquip,
+      matCount: totalMaterial,
       totalValue: totalValue,
       totalDisposed: totalDisposed,
+      disposedValue: totalDisposed,
       borrowingCount: borrowingCount,
       returnedCount: returnedCount,
       overdueCount: overdueCount,
-      equipCategories: equipCatMap,
-      materialCategories: matCatMap,
-      swiperCategories: swiperCategories
+      // Both map and chart formats for compatibility
+      equipCategories: {
+        labels: equipLabels,
+        series: equipSeries,
+        total: totalEquip,
+        map: equipCatMap
+      },
+      matCategories: {
+        labels: matLabels,
+        series: matSeries,
+        total: totalMaterial,
+        map: matCatMap
+      },
+      materialCategories: {
+        labels: matLabels,
+        series: matSeries,
+        total: totalMaterial,
+        map: matCatMap
+      },
+      swiperCategories: swiperCategories,
+      categories: swiperCategories
     };
   } catch (err) {
     Logger.log('Error in getEquipmentSummary: ' + err);
     return {
       totalEquip: 0,
       totalMaterial: 0,
+      equipCount: 0,
+      matCount: 0,
       totalValue: 0,
       totalDisposed: 0,
+      disposedValue: 0,
       borrowingCount: 0,
       returnedCount: 0,
       overdueCount: 0,
-      equipCategories: {},
-      materialCategories: {},
-      swiperCategories: []
+      equipCategories: { labels: [], series: [], total: 0, map: {} },
+      matCategories: { labels: [], series: [], total: 0, map: {} },
+      materialCategories: { labels: [], series: [], total: 0, map: {} },
+      swiperCategories: [],
+      categories: []
     };
   }
 }

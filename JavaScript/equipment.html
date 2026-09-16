@@ -232,59 +232,20 @@ function loadEquipmentDashboard() {
     .withSuccessHandler(function (res) {
       $('#loader').hide();
       if (!res) return;
-
-      // Update counters
-      $('#countingEquipment1').text(Number(res.equipCount || 0).toLocaleString());
-      $('#countingEquipment2').text(Number(res.matCount || 0).toLocaleString());
-      $('#countingEquipment3').text(Number(res.totalValue || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 }));
-      $('#countingEquipment4').text(Number(res.disposedValue || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 }));
-
-      // Update category swiper
-      renderCategorySwiper(res.categories || []);
-
-      // Update ApexCharts
-      renderMaterialChart(res.matCategories || { labels: [], series: [] });
-      renderDurableChart(res.equipCategories || { labels: [], series: [] });
+      if (typeof updateEquipDashboardUI === 'function') {
+        updateEquipDashboardUI(res);
+      }
     })
     .withFailureHandler(function (err) {
       $('#loader').hide();
-      toastAlert(0, '⚠️ ไม่สามารถโหลดข้อมูลสถิติได้: ' + err.message);
+      toastAlert(0, '⚠️ ไม่สามารถโหลดข้อมูลสถิติได้: ' + (err.message || err));
     })
     .getEquipmentSummary();
 }
 
 function renderCategorySwiper(categories) {
-  const container = $('#swiper-wrapper-container');
-  container.empty();
-
-  if (categories.length === 0) {
-    container.append('<div class="swiper-slide p-3 text-muted text-center">ไม่มีข้อมูลหมวดหมู่</div>');
-    return;
-  }
-
-  categories.forEach(cat => {
-    const slideHtml = `
-      <div class="swiper-slide equip-swiper-slide p-3 text-center" style="min-width: 155px; cursor: pointer;" onclick="filterEquipByCategory('${cat.name}')">
-        <div class="d-flex justify-content-center align-items-center mb-2" style="width: 48px; height: 48px; margin: 0 auto; border-radius: 14px; background: rgba(93, 135, 255, 0.1);">
-          <i class="${cat.icon || 'fa-duotone fa-boxes-stacked'} fs-3" style="color: ${cat.color || '#4361ee'}"></i>
-        </div>
-        <h6 class="fw-bold mb-1 fs-6 text-truncate" title="${cat.name}">${cat.name}</h6>
-        <span class="badge rounded-pill text-bg-primary font-size-12 px-3 py-1">${cat.count} รายการ</span>
-      </div>
-    `;
-    container.append(slideHtml);
-  });
-
-  try {
-    new Swiper('.swiper', {
-      slidesPerView: 'auto',
-      spaceBetween: 14,
-      freeMode: true,
-      observer: true,
-      observeParents: true
-    });
-  } catch (e) {
-    console.warn('Swiper init:', e);
+  if (typeof getContentCategoty === 'function') {
+    getContentCategoty(categories);
   }
 }
 
@@ -294,77 +255,15 @@ function filterEquipByCategory(catName) {
 }
 
 function renderMaterialChart(data) {
-  const chartEl = document.querySelector('#chart-Material');
-  if (!chartEl) return;
-  chartEl.innerHTML = '';
-
-  const labels = (data.labels && data.labels.length) ? data.labels : ['ไม่มีข้อมูล'];
-  const series = (data.series && data.series.length) ? data.series : [1];
-
-  const options = {
-    chart: {
-      type: 'donut',
-      width: '100%',
-      height: 280
-    },
-    series: series,
-    labels: labels,
-    colors: ['#4361ee', '#3a0ca3', '#7209b7', '#f72585', '#4cc9f0', '#06d6a0'],
-    legend: {
-      position: 'bottom',
-      fontSize: '12px'
-    },
-    responsive: [{
-      breakpoint: 480,
-      options: {
-        chart: { width: 300 },
-        legend: { position: 'bottom' }
-      }
-    }]
-  };
-
-  if (equipChartMaterial) {
-    equipChartMaterial.destroy();
+  if (typeof chartMaterial === 'function') {
+    chartMaterial(data);
   }
-  equipChartMaterial = new ApexCharts(chartEl, options);
-  equipChartMaterial.render();
 }
 
 function renderDurableChart(data) {
-  const chartEl = document.querySelector('#chart-Durable');
-  if (!chartEl) return;
-  chartEl.innerHTML = '';
-
-  const labels = (data.labels && data.labels.length) ? data.labels : ['ไม่มีข้อมูล'];
-  const series = (data.series && data.series.length) ? data.series : [1];
-
-  const options = {
-    chart: {
-      type: 'donut',
-      width: '100%',
-      height: 280
-    },
-    series: series,
-    labels: labels,
-    colors: ['#2ec4b6', '#e71d36', '#ff9f1c', '#011627', '#9d4edd', '#48bfe3'],
-    legend: {
-      position: 'bottom',
-      fontSize: '12px'
-    },
-    responsive: [{
-      breakpoint: 480,
-      options: {
-        chart: { width: 300 },
-        legend: { position: 'bottom' }
-      }
-    }]
-  };
-
-  if (equipChartDurable) {
-    equipChartDurable.destroy();
+  if (typeof chartDurable === 'function') {
+    chartDurable(data);
   }
-  equipChartDurable = new ApexCharts(chartEl, options);
-  equipChartDurable.render();
 }
 
 /**

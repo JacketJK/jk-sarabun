@@ -1081,89 +1081,266 @@ const insertCompianTrash = () => {
 </script>
 
 <script>
-google.script.run.withSuccessHandler(data => {
-  getContentCategoty(data);
-  chartMaterial();
-  chartDurable();
-}).getContentCategoty();
+let chartMaterialInstance = null;
+let chartDurableInstance = null;
+let swiperCategoryInstance = null;
+
+const chartPaletteColors = [
+  '#FFB22B', '#06d79c', '#745af2', '#ef5350', '#00b4d8', '#ff6b6b',
+  '#9b5de5', '#f15bb5', '#00f5d4', '#fee440', '#3a86ff', '#fb5607',
+  '#4361ee', '#2ec4b6', '#e71d36', '#ff9f1c', '#4cc9f0', '#7209b7'
+];
+
+function updateEquipDashboardUI(res) {
+  if (!res) return;
+
+  const cats = res.swiperCategories || res.categories || (Array.isArray(res) ? res : []);
+  if (Array.isArray(cats) && cats.length > 0) {
+    getContentCategoty(cats);
+  }
+
+  if (res.matCategories) {
+    chartMaterial(res.matCategories);
+  }
+  if (res.equipCategories) {
+    chartDurable(res.equipCategories);
+  }
+
+  if (res.totalEquip !== undefined || res.equipCount !== undefined) {
+    $('#countingEquipment1').text(Number(res.equipCount || res.totalEquip || 0).toLocaleString());
+  }
+  if (res.totalMaterial !== undefined || res.matCount !== undefined) {
+    $('#countingEquipment2').text(Number(res.matCount || res.totalMaterial || 0).toLocaleString());
+  }
+  if (res.totalValue !== undefined) {
+    $('#countingEquipment3').text(Number(res.totalValue || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 }));
+  }
+  if (res.totalDisposed !== undefined || res.disposedValue !== undefined) {
+    $('#countingEquipment4').text(Number(res.disposedValue || res.totalDisposed || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 }));
+  }
+  if (res.borrowingCount !== undefined) {
+    $('#borrowCountBorrowing').text(Number(res.borrowingCount || 0).toLocaleString());
+  }
+  if (res.returnedCount !== undefined) {
+    $('#borrowCountReturned').text(Number(res.returnedCount || 0).toLocaleString());
+  }
+  if (res.overdueCount !== undefined) {
+    $('#borrowCountOverdue').text(Number(res.overdueCount || 0).toLocaleString());
+  }
+}
+
+// Initial fetch real equipment & material database data
+google.script.run
+  .withSuccessHandler(res => {
+    updateEquipDashboardUI(res);
+  })
+  .withFailureHandler(err => {
+    console.error('Error loading equipment data:', err);
+  })
+  .getEquipmentSummary();
 
 
 const getContentCategoty = (data) => {
   const dataContainer = document.getElementById('swiper-wrapper-container');
+  if (!dataContainer) return;
   dataContainer.innerHTML = "";
 
   if (Array.isArray(data)) {
     data.forEach(item => {
       var swiper = document.createElement('div');
       swiper.className = "swiper-slide";
+      const catCode = item[0] || '';
+      const catName = item[1] || '';
+      const catType = item[2] || '';
+      const iconUrl = item[3] || '';
+      const count = item[4] || 0;
+
       swiper.innerHTML = `
-        <div class="position-relative">
-          <img src="${item[3]}" width="100" role="button" class="swiper-img" data-bs-toggle="tooltip" data-bs-placement="bottom"
+        <div class="position-relative" style="cursor: pointer;" onclick="handleCategoryFilterClick('${catName}', '${catType}')">
+          <img src="${iconUrl}" width="100" role="button" class="swiper-img" data-bs-toggle="tooltip" data-bs-placement="bottom"
           data-bs-custom-class="custom-tooltip"
-          data-bs-title="${item[2]}${item[1]}">  
-          <span class="position-absolute equip-num">${item[4]}</span>
+          data-bs-title="${catType}: ${catName} (${count} รายการ)">  
+          <span class="position-absolute equip-num">${count}</span>
         </div>         
         `;
 
       dataContainer.appendChild(swiper);
     });
 
-    var swiper = new Swiper('.swiper', {
-      slidesPerView: 5,
-      loop: true,
-      autoplay: {
-        delay: 2500, 
-        disableOnInteraction: false, 
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-    });
+    if (swiperCategoryInstance && typeof swiperCategoryInstance.destroy === 'function') {
+      try { swiperCategoryInstance.destroy(true, true); } catch(e) {}
+    }
 
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    try {
+      swiperCategoryInstance = new Swiper('.swiper', {
+        slidesPerView: 5,
+        spaceBetween: 10,
+        loop: data.length > 5,
+        autoplay: {
+          delay: 2500, 
+          disableOnInteraction: false, 
+        },
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+        breakpoints: {
+          320: { slidesPerView: 2, spaceBetween: 8 },
+          576: { slidesPerView: 3, spaceBetween: 10 },
+          768: { slidesPerView: 4, spaceBetween: 10 },
+          1024: { slidesPerView: 5, spaceBetween: 12 }
+        }
+      });
+    } catch (e) {
+      console.warn('Swiper init:', e);
+    }
+
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
   } else {
     toastAlert(2, "Data is not an array");
   }
+};
+
+function handleCategoryFilterClick(catName, catType) {
+  if (catType === 'ครุภัณฑ์') {
+    $('#equipfilter2').val(catName);
+    if (typeof changePageEquip === 'function') {
+      changePageEquip(3);
+    }
+  } else if (catType === 'วัสดุ') {
+    $('#parcelfilter2').val(catName);
+    if (typeof changePageEquip === 'function') {
+      changePageEquip(4);
+    }
+  } else {
+    $('#equipfilter2').val(catName);
+    if (typeof changePageEquip === 'function') {
+      changePageEquip(3);
+    }
+  }
 }
 
+const chartMaterial = (data) => {
+  const chartEl = document.querySelector("#chart-Material");
+  if (!chartEl) return;
 
-const chartMaterial = () => {
+  let labels = [];
+  let series = [];
+
+  if (data && Array.isArray(data.labels) && Array.isArray(data.series) && data.series.length > 0) {
+    labels = data.labels;
+    series = data.series.map(Number);
+  } else if (data && data.map && typeof data.map === 'object') {
+    labels = Object.keys(data.map);
+    series = labels.map(k => Number(data.map[k]) || 0);
+  }
+
+  const totalCount = series.reduce((a, b) => a + b, 0);
+  if (totalCount === 0 || series.length === 0) {
+    labels = ['ยังไม่มีข้อมูลวัสดุในระบบ'];
+    series = [0];
+  }
+
+  if (chartMaterialInstance) {
+    try { chartMaterialInstance.destroy(); } catch (e) {}
+    chartMaterialInstance = null;
+  }
+  chartEl.innerHTML = "";
+
   var options = {
-    series: [76, 67, 61, 90],
+    series: series,
+    labels: labels,
     chart: {
       type: 'donut',
       fontFamily: 'Prompt, sans-serif',
-      height: 500, 
-      width: 500  
+      height: 480,
+      width: '100%'
     },
     plotOptions: {
       pie: {
         donut: {
+          size: '65%',
           labels: {
             show: true,
+            name: {
+              show: true,
+              fontSize: '15px',
+              fontFamily: 'Prompt, sans-serif',
+              color: '#6c757d',
+              offsetY: -6
+            },
+            value: {
+              show: true,
+              fontSize: '28px',
+              fontFamily: 'Prompt, sans-serif',
+              fontWeight: 700,
+              color: '#212529',
+              offsetY: 6,
+              formatter: function(val) {
+                return Number(val).toLocaleString();
+              }
+            },
             total: {
               showAlways: true,
-              show: true
+              show: true,
+              label: 'Total',
+              fontSize: '15px',
+              fontFamily: 'Prompt, sans-serif',
+              fontWeight: 600,
+              color: '#6c757d',
+              formatter: function(w) {
+                const sum = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                return sum.toLocaleString();
+              }
             }
           }
         }
       }
     },
-    colors: ['#FFB22B', '#06d79c', '#745af2', '#ef5350'],
-    labels: ['วัสดุคอมพิวเตอร์', 'อะไหล่ทุกชนิด', 'ไฟฟ้าและวิทยุ', 'สำนักงาน'],
+    colors: chartPaletteColors.slice(0, Math.max(labels.length, 1)),
     dataLabels: {
+      enabled: totalCount > 0,
+      formatter: function(val) {
+        return val > 0 ? (val.toFixed(1) + '%') : '';
+      },
       dropShadow: {
-        blur: 5,
-        opacity: 0.1
+        enabled: true,
+        blur: 4,
+        opacity: 0.15
       }
     },
+    legend: {
+      show: true,
+      position: 'right',
+      offsetY: 30,
+      fontSize: '13px',
+      fontFamily: 'Prompt, sans-serif',
+      formatter: function(seriesName, opts) {
+        const val = opts.w.globals.series[opts.seriesIndex];
+        return seriesName + (val !== undefined ? ' (' + val + ')' : '');
+      }
+    },
+    stroke: {
+      width: 2,
+      colors: ['#ffffff']
+    },
     responsive: [{
+      breakpoint: 992,
+      options: {
+        chart: {
+          height: 380
+        },
+        legend: {
+          position: 'bottom',
+          offsetY: 0
+        }
+      }
+    }, {
       breakpoint: 480,
       options: {
         chart: {
-          width: 300 
+          height: 320
         },
         legend: {
           position: 'bottom'
@@ -1172,45 +1349,130 @@ const chartMaterial = () => {
     }]
   };
 
-  var chart = new ApexCharts(document.querySelector("#chart-Material"), options);
-  chart.render();
-}
+  chartMaterialInstance = new ApexCharts(chartEl, options);
+  chartMaterialInstance.render();
+};
 
-const chartDurable = () => {
+const chartDurable = (data) => {
+  const chartEl = document.querySelector("#chart-Durable");
+  if (!chartEl) return;
+
+  let labels = [];
+  let series = [];
+
+  if (data && Array.isArray(data.labels) && Array.isArray(data.series) && data.series.length > 0) {
+    labels = data.labels;
+    series = data.series.map(Number);
+  } else if (data && data.map && typeof data.map === 'object') {
+    labels = Object.keys(data.map);
+    series = labels.map(k => Number(data.map[k]) || 0);
+  }
+
+  const totalCount = series.reduce((a, b) => a + b, 0);
+  if (totalCount === 0 || series.length === 0) {
+    labels = ['ยังไม่มีข้อมูลครุภัณฑ์ในระบบ'];
+    series = [0];
+  }
+
+  if (chartDurableInstance) {
+    try { chartDurableInstance.destroy(); } catch (e) {}
+    chartDurableInstance = null;
+  }
+  chartEl.innerHTML = "";
+
   var options = {
-    series: [6, 6, 5, 9, 12],
+    series: series,
+    labels: labels,
     chart: {
       type: 'donut',
       fontFamily: 'Prompt, sans-serif',
-      height: 500, 
-      width: 500  
+      height: 480,
+      width: '100%'
     },
     plotOptions: {
       pie: {
         donut: {
+          size: '65%',
           labels: {
             show: true,
+            name: {
+              show: true,
+              fontSize: '15px',
+              fontFamily: 'Prompt, sans-serif',
+              color: '#6c757d',
+              offsetY: -6
+            },
+            value: {
+              show: true,
+              fontSize: '28px',
+              fontFamily: 'Prompt, sans-serif',
+              fontWeight: 700,
+              color: '#212529',
+              offsetY: 6,
+              formatter: function(val) {
+                return Number(val).toLocaleString();
+              }
+            },
             total: {
               showAlways: true,
-              show: true
+              show: true,
+              label: 'Total',
+              fontSize: '15px',
+              fontFamily: 'Prompt, sans-serif',
+              fontWeight: 600,
+              color: '#6c757d',
+              formatter: function(w) {
+                const sum = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                return sum.toLocaleString();
+              }
             }
           }
         }
       }
     },
-    colors: ['#06d79c', '#745af2', '#FFB22B', '#FF6600', '#ef5350'],
-    labels: ['คอมพิวเตอร์', 'เครื่องมือก่อสร้าง', 'ยานพาหนะและขนส่ง', 'เครื่องมือการเกษตร', 'สำรวจ'],
+    colors: ['#06d79c', '#745af2', '#FFB22B', '#FF6600', '#ef5350', '#00b4d8', '#3a86ff', '#f15bb5', '#9b5de5', '#2ec4b6', '#e71d36', '#ff9f1c'],
     dataLabels: {
+      enabled: totalCount > 0,
+      formatter: function(val) {
+        return val > 0 ? (val.toFixed(1) + '%') : '';
+      },
       dropShadow: {
-        blur: 5,
-        opacity: 0.1
+        enabled: true,
+        blur: 4,
+        opacity: 0.15
       }
     },
+    legend: {
+      show: true,
+      position: 'right',
+      offsetY: 30,
+      fontSize: '13px',
+      fontFamily: 'Prompt, sans-serif',
+      formatter: function(seriesName, opts) {
+        const val = opts.w.globals.series[opts.seriesIndex];
+        return seriesName + (val !== undefined ? ' (' + val + ')' : '');
+      }
+    },
+    stroke: {
+      width: 2,
+      colors: ['#ffffff']
+    },
     responsive: [{
+      breakpoint: 992,
+      options: {
+        chart: {
+          height: 380
+        },
+        legend: {
+          position: 'bottom',
+          offsetY: 0
+        }
+      }
+    }, {
       breakpoint: 480,
       options: {
         chart: {
-          width: 300 
+          height: 320
         },
         legend: {
           position: 'bottom'
@@ -1219,8 +1481,8 @@ const chartDurable = () => {
     }]
   };
 
-  var chart = new ApexCharts(document.querySelector("#chart-Durable"), options);
-  chart.render();
-}
+  chartDurableInstance = new ApexCharts(chartEl, options);
+  chartDurableInstance.render();
+};
 
 </script>  

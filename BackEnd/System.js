@@ -384,6 +384,9 @@ const compian_success = (obj) => {
 };
 
 const getContentCategoty = () => {
+  if (typeof getEquipmentSummary === 'function') {
+    return getEquipmentSummary();
+  }
   const sheet = SpreadsheetApp.openById(sheetEquip).getSheetByName("Category"); 
   const data = sheet.getDataRange().getValues().slice(1);
   return data;
