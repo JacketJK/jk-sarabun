@@ -24,8 +24,8 @@ function escapeHtml(str) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+    .replace(/\x22/g, '&quot;')
+    .replace(/\x27/g, '&#039;');
 }
 
 function renderPaginationUI(containerId, currentPage, totalPages, onPageChange) {
@@ -795,7 +795,7 @@ const insertDataReportcast = async () => {
       const cell4 = row.insertCell(3);
 
       const num = i + 1;
-      const img = data[i][2] || "https://placehold.co/800x800";  
+      const img = (data[i] && data[i][2]) ? data[i][2] : 'https:\/\/placehold.co\/800x800';
       const text = data[i][1].length > 100 ? data[i][1].substring(0, 100) + '...' : data[i][1]; 
 
       cell1.innerHTML = num;
@@ -1773,8 +1773,8 @@ const insertDataFollow = (key) => {
         return;
       }
     
-      const imgdoc = "https://cdn.jsdelivr.net/gh/JacketJK/image/upload.png";
-      const imglink = "https://cdn.jsdelivr.net/gh/JacketJK/image/link_url.png";
+      const imgdoc = 'https:\/\/cdn.jsdelivr.net\/gh\/JacketJK\/image\/upload.png';
+      const imglink = 'https:\/\/cdn.jsdelivr.net\/gh\/JacketJK\/image\/link_url.png';
 
       tableBody.innerHTML = "";
       for (var i = 0; i < data.length; i++) {
@@ -2200,7 +2200,7 @@ const insertDataCanceled = window.insertDataCanceled = (key, userLevel) => {
         // การจัดการ (สิทธิ์เฉพาะสารบรรณกลาง / แอดมิน)
         var cell8 = row.insertCell(8);
         cell8.className = "text-center";
-        var docNumEsc = String(data[i][2] || '').replace(/'/g, "\\'");
+        var docNumEsc = String(data[i][2] || '').replace(/\x27/g, "\\'");
         var actionButtons = `
           <div class="d-flex align-items-center justify-content-center gap-1">
             <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-2 py-1" onclick="docdetailfile('${data[i][0]}')" data-bs-toggle="tooltip" data-bs-title="เปิดดูเอกสาร">
@@ -2415,7 +2415,7 @@ const insertDataBookSendCanceled = window.insertDataBookSendCanceled = (key, use
         // การจัดการ
         var cell8 = row.insertCell(8);
         cell8.className = "text-center";
-        var docNumEsc = String(data[i][2] || '').replace(/'/g, "\\'");
+        var docNumEsc = String(data[i][2] || '').replace(/\x27/g, "\\'");
         var actionButtons = `
           <div class="d-flex align-items-center justify-content-center gap-1">
             <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-2 py-1" onclick="docdetailfile('${data[i][0]}')" data-bs-toggle="tooltip" data-bs-title="เปิดดูเอกสาร">
@@ -2617,7 +2617,7 @@ const insertDataPickupDocCanceled = window.insertDataPickupDocCanceled = (key, u
         // การจัดการ
         var cell8 = row.insertCell(8);
         cell8.className = "text-center";
-        var docNumEsc = String(data[i][2] || '').replace(/'/g, "\\'");
+        var docNumEsc = String(data[i][2] || '').replace(/\x27/g, "\\'");
         var actionButtons = `
           <div class="d-flex align-items-center justify-content-center gap-1">
             <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-2 py-1" onclick="docdetailfile('${data[i][0]}')" data-bs-toggle="tooltip" data-bs-title="เปิดดูเอกสาร">
@@ -4504,7 +4504,7 @@ const insertDataOutCanceled = window.insertDataOutCanceled = (key, userLevel) =>
         // การจัดการ (สิทธิ์เฉพาะสารบรรณกลาง / แอดมิน)
         var cell9 = row.insertCell(9);
         cell9.className = "text-center";
-        var docNumEsc = String(data[i][2] || '').replace(/'/g, "\\'");
+        var docNumEsc = String(data[i][2] || '').replace(/\x27/g, "\\'");
         var actionButtons = `
           <div class="d-flex align-items-center justify-content-center gap-1">
             <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-2 py-1" onclick="docdetailfile('${data[i][0]}')" data-bs-toggle="tooltip" data-bs-title="เปิดดูเอกสาร">

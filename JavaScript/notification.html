@@ -8,7 +8,7 @@ const createNotificationElement = (item, data, index, clickHandler) => {
   const notifyParam = item[6];
 
   const safeFunc = (notifyFunction && typeof notifyFunction === 'string') ? notifyFunction.replace(/[^a-zA-Z0-9_$]/g, '') : '';
-  const safeParam = (notifyParam !== undefined && notifyParam !== null) ? String(notifyParam).replace(/'/g, "\\'") : '';
+  const safeParam = (notifyParam !== undefined && notifyParam !== null) ? String(notifyParam).replace(/\x27/g, "\\'") : '';
   const clickAttr = safeFunc ? `onclick="${safeFunc}('${safeParam}')"` : '';
 
   const container = document.createElement('a');
@@ -94,7 +94,7 @@ const normalizeDateToYMD = (val) => {
     const d = String(val.getDate()).padStart(2, '0');
     return `${y}-${m}-${d}`;
   }
-  let s = String(val).trim().replace(/^'/, '');
+  let s = String(val).trim().replace(/^\x27/, '');
   const matchYMD = s.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
   if (matchYMD) {
     let y = parseInt(matchYMD[1]);
@@ -248,11 +248,13 @@ const displayMeetingRoom = (targetDate) => {
           }
         }
 
+        const defaultRoomImg = 'https:\/\/placehold.co\/250x250';
+        const roomImg = item[4] || defaultRoomImg;
         const contain = document.createElement('div');
         contain.className = "d-flex position-relative mb-2";
         contain.innerHTML = `
           <div style="width: 250px; height: 250px;" class="z-index-5 rounded-circle border border-5 border-light bg-light shadow flex-shrink-0">
-            <img src="${item[4] || 'https://placehold.co/250x250'}" class="w-100 h-100 object-fit-cover rounded-circle">
+            <img src="${roomImg}" class="w-100 h-100 object-fit-cover rounded-circle">
           </div>
           <div class="position-absolute z-index-0 ms-5 mt-3 d-flex flex-column" style="width: 97%;">
             <div class="p-2 ps-4 rounded-pill bg-opacity-25 ms-5 border border-5 border-light shadow" style="background-color: var(--blue);color: var(--light);">
@@ -376,7 +378,7 @@ $('#addMeetingData1').on('change', function() {
     $('#imageMeetingData').prop('src', imageSrc);
   } else {
     toastAlert(0,'ไม่พบข้อมูลห้องประชุม');
-    $('#imageMeetingData').prop('src', 'https://placehold.co/250x250'); 
+    $('#imageMeetingData').prop('src', 'https:\/\/placehold.co\/250x250'); 
   }
 });
 
