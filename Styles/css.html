@@ -4219,6 +4219,81 @@
     page-break-inside: avoid;
   }
 
+  /* ============================================================
+     Enhanced Modals & Segmented Radios for Equipment & Materials
+     ============================================================ */
+  .modal-custom-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.07) !important;
+    background-color: transparent;
+  }
+
+  body.dark .modal-custom-header {
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .modal-custom-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.07) !important;
+    background-color: transparent;
+  }
+
+  body.dark .modal-custom-footer {
+    border-top-color: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .borrow-type-card {
+    cursor: pointer;
+    background-color: var(--darkback);
+    border: 1.5px solid rgba(0, 0, 0, 0.08) !important;
+    border-radius: 15px !important;
+    padding: 0.65rem 1rem;
+    transition: all 0.2s ease-in-out;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .borrow-type-card:hover {
+    border-color: var(--blue) !important;
+    background-color: rgba(93, 135, 255, 0.04);
+  }
+
+  .borrow-type-card:has(input:checked) {
+    border-color: var(--blue) !important;
+    background: linear-gradient(135deg, rgba(93, 135, 255, 0.12), rgba(93, 135, 255, 0.03));
+    box-shadow: 0 4px 12px rgba(93, 135, 255, 0.14);
+    color: var(--blue) !important;
+  }
+
+  body.dark .borrow-type-card {
+    border-color: rgba(255, 255, 255, 0.12) !important;
+  }
+
+  body.dark .borrow-type-card:has(input:checked) {
+    background: linear-gradient(135deg, rgba(118, 62, 189, 0.25), rgba(118, 62, 189, 0.06));
+    box-shadow: 0 4px 12px rgba(118, 62, 189, 0.25);
+    color: #fff !important;
+  }
+
+  .field-input textarea.form-field {
+    resize: vertical;
+    min-height: 54px;
+  }
+
+  .field-input select.form-field {
+    cursor: pointer;
+  }
+
+  .field-input select.form-field option {
+    background-color: var(--light);
+    color: var(--dark);
+  }
+
+  .field-input input[type="date"].form-field {
+    cursor: pointer;
+    font-family: var(--prompt);
+  }
+
   /* Media Print Rules */
   @media print {
     @page {

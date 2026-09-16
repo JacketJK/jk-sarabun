@@ -2775,16 +2775,20 @@
 <!-- Modal ดูรายละเอียดครุภัณฑ์ -->
 <div class="modal fade" id="modalViewEquipment" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content rounded-4 shadow">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fs-5"><i class="fa-duotone fa-computer text-primary me-2"></i> รายละเอียดครุภัณฑ์</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-content rounded-5 shadow-lg border-0">
+      <div class="modal-header modal-custom-header py-3 px-4">
+        <h5 class="modal-title fw-bold mb-0 text-dark">
+          <i class="fa-duotone fa-computer text-primary me-2"></i> รายละเอียดครุภัณฑ์
+        </h5>
+        <button type="button" class="btn-close rounded-circle p-2" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-4" id="viewEquipmentBody">
         <!-- Content will be injected by JavaScript -->
       </div>
-      <div class="modal-footer border-0">
-        <button type="button" class="btn btn-secondary rounded-4 px-4" data-bs-dismiss="modal">ปิด</button>
+      <div class="modal-footer modal-custom-footer py-3 px-4 justify-content-end">
+        <button type="button" class="btn btn-secondary rounded-pill px-4 py-2 fw-medium shadow-sm" data-bs-dismiss="modal">
+          <i class="fa-solid fa-xmark me-1"></i> ปิด
+        </button>
       </div>
     </div>
   </div>
@@ -2792,30 +2796,41 @@
 
 <!-- Modal อัปเดต GFMIS -->
 <div class="modal fade" id="modalUpdateGFMIS" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-4 shadow">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fs-5"><i class="fa-duotone fa-marker text-warning me-2"></i> อัปเดตหมายเลข GFMIS</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
+    <div class="modal-content rounded-5 shadow-lg border-0">
+      <div class="modal-header modal-custom-header py-3 px-4">
+        <h5 class="modal-title fw-bold mb-0 text-dark">
+          <i class="fa-duotone fa-marker text-warning me-2"></i> อัปเดตหมายเลข GFMIS
+        </h5>
+        <button type="button" class="btn-close rounded-circle p-2" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-4">
         <input type="hidden" id="gfmisEquipKey">
-        <div class="mb-3">
-          <label class="col-form-label fw-bold">รายการครุภัณฑ์:</label>
-          <p id="gfmisEquipName" class="text-body-secondary mb-0"></p>
+        <div class="p-3 rounded-4 mb-3" style="background-color: var(--darkback); border: 1px solid rgba(0,0,0,0.08);">
+          <div class="mb-2">
+            <span class="font-size-12 text-body-secondary fw-medium">รายการครุภัณฑ์</span>
+            <p id="gfmisEquipName" class="text-primary mb-0 fw-semibold"></p>
+          </div>
+          <div>
+            <span class="font-size-12 text-body-secondary fw-medium">หมายเลขครุภัณฑ์เดิม</span>
+            <p id="gfmisEquipNumber" class="text-body-secondary mb-0 fw-medium font-monospace"></p>
+          </div>
         </div>
-        <div class="mb-3">
-          <label class="col-form-label fw-bold">หมายเลขครุภัณฑ์เดิม:</label>
-          <p id="gfmisEquipNumber" class="text-body-secondary mb-0"></p>
-        </div>
-        <div class="mb-3">
-          <label for="inputGFMISCode" class="col-form-label fw-bold">รหัสทรัพย์สิน GFMIS ใหม่:</label>
-          <input type="text" class="form-control rounded-3" id="inputGFMISCode" placeholder="ระบุรหัส GFMIS">
+        <div class="mb-2">
+          <label for="inputGFMISCode" class="form-label font-size-14 fw-medium text-body-secondary mb-1">รหัสทรัพย์สิน GFMIS ใหม่ <span class="text-danger">*</span></label>
+          <div class="field-input">
+            <i class="fa-duotone fa-barcode input-icon fs-5"></i>
+            <input type="text" class="form-field" id="inputGFMISCode" placeholder="ระบุรหัส GFMIS">
+          </div>
         </div>
       </div>
-      <div class="modal-footer border-0">
-        <button type="button" class="btn btn-secondary rounded-4 px-3" data-bs-dismiss="modal">ยกเลิก</button>
-        <button type="button" class="btn btn-warning rounded-4 px-4" id="btnSaveGFMIS"><i class="fa-solid fa-check"></i> บันทึก GFMIS</button>
+      <div class="modal-footer modal-custom-footer py-3 px-4 justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary rounded-pill px-4 py-2 fw-medium shadow-sm" data-bs-dismiss="modal">
+          <i class="fa-solid fa-xmark me-1"></i> ยกเลิก
+        </button>
+        <button type="button" class="btn btn-warning rounded-pill px-4 py-2 fw-medium shadow-sm" id="btnSaveGFMIS">
+          <i class="fa-solid fa-check me-1"></i> บันทึก GFMIS
+        </button>
       </div>
     </div>
   </div>
@@ -2823,29 +2838,39 @@
 
 <!-- Modal ตัดจำหน่ายครุภัณฑ์ -->
 <div class="modal fade" id="modalDisposeEquipment" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-4 shadow">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fs-5 text-danger"><i class="fa-duotone fa-trash-can text-danger me-2"></i> บันทึกตัดจำหน่ายครุภัณฑ์</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
+    <div class="modal-content rounded-5 shadow-lg border-0">
+      <div class="modal-header modal-custom-header py-3 px-4">
+        <h5 class="modal-title fw-bold mb-0 text-danger">
+          <i class="fa-duotone fa-trash-can text-danger me-2"></i> บันทึกตัดจำหน่ายครุภัณฑ์
+        </h5>
+        <button type="button" class="btn-close rounded-circle p-2" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-4">
         <input type="hidden" id="disposeEquipKey">
-        <div class="alert alert-warning rounded-3 fs-6">
-          <i class="fa-solid fa-triangle-exclamation me-1"></i> เมื่อตัดจำหน่ายแล้ว สถานะของครุภัณฑ์นี้จะเปลี่ยนเป็น <strong>"ตัดจำหน่าย"</strong>
+        <div class="alert alert-warning rounded-4 border-0 shadow-sm d-flex align-items-center gap-3 p-3 mb-3">
+          <i class="fa-solid fa-triangle-exclamation fs-3 text-warning"></i>
+          <div class="small">เมื่อตัดจำหน่ายแล้ว สถานะของครุภัณฑ์นี้จะเปลี่ยนเป็น <strong>"ตัดจำหน่าย"</strong></div>
         </div>
-        <div class="mb-3">
-          <label class="col-form-label fw-bold">รายการ:</label>
-          <p id="disposeEquipName" class="text-body-secondary mb-0"></p>
+        <div class="p-3 rounded-4 mb-3" style="background-color: var(--darkback); border: 1px solid rgba(0,0,0,0.08);">
+          <span class="font-size-12 text-body-secondary fw-medium">รายการที่จะตัดจำหน่าย</span>
+          <p id="disposeEquipName" class="text-primary mb-0 fw-bold"></p>
         </div>
-        <div class="mb-3">
-          <label for="disposeReason" class="col-form-label fw-bold">สาเหตุการตัดจำหน่าย:</label>
-          <textarea class="form-control rounded-3" id="disposeReason" rows="3" placeholder="ระบุสาเหตุ เช่น ชำรุดจนไม่สามารถซ่อมแซมได้, สูญหาย, หมดอายุการใช้งาน"></textarea>
+        <div class="mb-2">
+          <label for="disposeReason" class="form-label font-size-14 fw-medium text-body-secondary mb-1">สาเหตุการตัดจำหน่าย <span class="text-danger">*</span></label>
+          <div class="field-input align-items-start pt-2">
+            <i class="fa-duotone fa-comment-pen input-icon fs-5 mt-1"></i>
+            <textarea class="form-field" id="disposeReason" rows="3" placeholder="ระบุสาเหตุ เช่น ชำรุดจนไม่สามารถซ่อมแซมได้, สูญหาย, หมดอายุการใช้งาน"></textarea>
+          </div>
         </div>
       </div>
-      <div class="modal-footer border-0">
-        <button type="button" class="btn btn-secondary rounded-4 px-3" data-bs-dismiss="modal">ยกเลิก</button>
-        <button type="button" class="btn btn-danger rounded-4 px-4" id="btnConfirmDispose"><i class="fa-solid fa-check"></i> ยืนยันตัดจำหน่าย</button>
+      <div class="modal-footer modal-custom-footer py-3 px-4 justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary rounded-pill px-4 py-2 fw-medium shadow-sm" data-bs-dismiss="modal">
+          <i class="fa-solid fa-xmark me-1"></i> ยกเลิก
+        </button>
+        <button type="button" class="btn btn-danger rounded-pill px-4 py-2 fw-medium shadow-sm" id="btnConfirmDispose">
+          <i class="fa-solid fa-check me-1"></i> ยืนยันตัดจำหน่าย
+        </button>
       </div>
     </div>
   </div>
@@ -2854,19 +2879,25 @@
 <!-- Modal QR Code ครุภัณฑ์ -->
 <div class="modal fade" id="modalQREquipment" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-sm text-center">
-    <div class="modal-content rounded-4 shadow">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fs-6 w-100 text-center"><i class="fa-duotone fa-qrcode me-2"></i> QR Code ครุภัณฑ์</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-content rounded-5 shadow-lg border-0">
+      <div class="modal-header modal-custom-header py-3 px-4 justify-content-between">
+        <h5 class="modal-title fw-bold mb-0 text-dark font-size-16">
+          <i class="fa-duotone fa-qrcode text-primary me-2"></i> QR Code ครุภัณฑ์
+        </h5>
+        <button type="button" class="btn-close rounded-circle p-2" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-4 text-center">
-        <div id="qrcodeContainer" class="d-flex justify-content-center p-2 mb-2"></div>
-        <h6 id="qrEquipNumber" class="fw-bold mb-1"></h6>
+        <div id="qrcodeContainer" class="d-flex justify-content-center p-2 mb-3 bg-white rounded-4 shadow-sm mx-auto" style="width: fit-content;"></div>
+        <h6 id="qrEquipNumber" class="fw-bold mb-1 text-primary"></h6>
         <p id="qrEquipName" class="text-body-secondary small mb-0"></p>
       </div>
-      <div class="modal-footer border-0 justify-content-center">
-        <button type="button" class="btn btn-primary btn-sm rounded-4 px-3" onclick="window.print()"><i class="fa-solid fa-print"></i> พิมพ์</button>
-        <button type="button" class="btn btn-secondary btn-sm rounded-4 px-3" data-bs-dismiss="modal">ปิด</button>
+      <div class="modal-footer modal-custom-footer py-3 px-4 justify-content-center gap-2">
+        <button type="button" class="btn btn-primary rounded-pill px-3 py-1 fw-medium shadow-sm" onclick="window.print()">
+          <i class="fa-solid fa-print me-1"></i> พิมพ์
+        </button>
+        <button type="button" class="btn btn-secondary rounded-pill px-3 py-1 fw-medium shadow-sm" data-bs-dismiss="modal">
+          <i class="fa-solid fa-xmark me-1"></i> ปิด
+        </button>
       </div>
     </div>
   </div>
@@ -2874,68 +2905,104 @@
 
 <!-- Modal เพิ่ม/แก้ไข วัสดุ -->
 <div class="modal fade" id="modalAddMaterial" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-4 shadow">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fs-5" id="modalAddMaterialTitle"><i class="fa-duotone fa-box-archive text-success me-2"></i> บันทึกข้อมูลวัสดุ</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 580px;">
+    <div class="modal-content rounded-5 shadow-lg border-0">
+      <div class="modal-header modal-custom-header py-3 px-4">
+        <h5 class="modal-title fw-bold mb-0 text-dark" id="modalAddMaterialTitle">
+          <i class="fa-duotone fa-box-archive text-success me-2"></i> บันทึกข้อมูลวัสดุใหม่
+        </h5>
+        <button type="button" class="btn-close rounded-circle p-2" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-4">
         <form id="formAddMaterial">
           <input type="hidden" id="matKey">
-          <div class="mb-2">
-            <label class="col-form-label fw-bold">หมายเลขวัสดุ <span class="text-danger">*</span></label>
-            <input type="text" class="form-control rounded-3" id="matNumber" required placeholder="เช่น MAT-001">
+          <div class="mb-3">
+            <label class="form-label font-size-14 fw-medium text-body-secondary mb-1" for="matNumber">หมายเลขวัสดุ <span class="text-danger">*</span></label>
+            <div class="field-input">
+              <i class="fa-duotone fa-barcode input-icon fs-5"></i>
+              <input type="text" class="form-field" id="matNumber" required placeholder="เช่น MAT-001">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label font-size-14 fw-medium text-body-secondary mb-1" for="matName">รายการ / ชื่อวัสดุ <span class="text-danger">*</span></label>
+            <div class="field-input">
+              <i class="fa-duotone fa-box-open input-icon fs-5"></i>
+              <input type="text" class="form-field" id="matName" required placeholder="เช่น กระดาษ A4 80 แกรม">
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label font-size-14 fw-medium text-body-secondary mb-1" for="matCategory">หมวดหมู่วัสดุ</label>
+              <div class="field-input">
+                <i class="fa-duotone fa-folder-tree input-icon fs-5"></i>
+                <select class="form-field" id="matCategory"></select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label font-size-14 fw-medium text-body-secondary mb-1" for="matType">ประเภทวัสดุ</label>
+              <div class="field-input">
+                <i class="fa-duotone fa-layer-group input-icon fs-5"></i>
+                <select class="form-field" id="matType"></select>
+              </div>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label font-size-14 fw-medium text-body-secondary mb-1" for="matAgency">หน่วยงาน</label>
+              <div class="field-input">
+                <i class="fa-duotone fa-building input-icon fs-5"></i>
+                <select class="form-field" id="matAgency"></select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label font-size-14 fw-medium text-body-secondary mb-1" for="matLocation">สถานที่เก็บ</label>
+              <div class="field-input">
+                <i class="fa-duotone fa-location-dot input-icon fs-5"></i>
+                <input type="text" class="form-field" id="matLocation" list="matLocationList" placeholder="เช่น ห้องพัสดุ ตู้ A">
+                <datalist id="matLocationList"></datalist>
+              </div>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <label class="form-label font-size-14 fw-medium text-body-secondary mb-1" for="matQty">จำนวนคงเหลือ</label>
+              <div class="field-input">
+                <i class="fa-duotone fa-boxes-stacked input-icon fs-5"></i>
+                <input type="number" class="form-field" id="matQty" value="0" min="0">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label font-size-14 fw-medium text-body-secondary mb-1" for="matUnit">หน่วยนับ</label>
+              <div class="field-input">
+                <i class="fa-duotone fa-scale-balanced input-icon fs-5"></i>
+                <input type="text" class="form-field" id="matUnit" list="equipUnitList" placeholder="เช่น รีม, กล่อง">
+                <datalist id="equipUnitList"></datalist>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label font-size-14 fw-medium text-body-secondary mb-1" for="matPrice">ราคา / หน่วย</label>
+              <div class="field-input">
+                <i class="fa-duotone fa-coins input-icon fs-5"></i>
+                <input type="number" step="0.01" class="form-field" id="matPrice" value="0">
+              </div>
+            </div>
           </div>
           <div class="mb-2">
-            <label class="col-form-label fw-bold">รายการ/ชื่อวัสดุ <span class="text-danger">*</span></label>
-            <input type="text" class="form-control rounded-3" id="matName" required placeholder="เช่น กระดาษ A4 80 แกรม">
-          </div>
-          <div class="row">
-            <div class="col-6 mb-2">
-              <label class="col-form-label fw-bold">หมวดหมู่วัสดุ</label>
-              <select class="form-select rounded-3" id="matCategory"></select>
+            <label class="form-label font-size-14 fw-medium text-body-secondary mb-1" for="matMinStock">จุดสั่งซื้อขั้นต่ำ <span class="font-size-12 text-muted">(เตือนเมื่อใกล้หมด)</span></label>
+            <div class="field-input">
+              <i class="fa-duotone fa-bell-exclamation input-icon fs-5 text-warning"></i>
+              <input type="number" class="form-field" id="matMinStock" value="5" min="0">
             </div>
-            <div class="col-6 mb-2">
-              <label class="col-form-label fw-bold">ประเภทวัสดุ</label>
-              <select class="form-select rounded-3" id="matType"></select>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-6 mb-2">
-              <label class="col-form-label fw-bold">หน่วยงาน</label>
-              <select class="form-select rounded-3" id="matAgency"></select>
-            </div>
-            <div class="col-6 mb-2">
-              <label class="col-form-label fw-bold">สถานที่เก็บ</label>
-              <input type="text" class="form-control rounded-3" id="matLocation" list="matLocationList" placeholder="เช่น ห้องพัสดุ ตู้ A">
-              <datalist id="matLocationList"></datalist>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4 mb-2">
-              <label class="col-form-label fw-bold">จำนวนคงเหลือ</label>
-              <input type="number" class="form-control rounded-3" id="matQty" value="0" min="0">
-            </div>
-            <div class="col-4 mb-2">
-              <label class="col-form-label fw-bold">หน่วยนับ</label>
-              <input type="text" class="form-control rounded-3" id="matUnit" list="equipUnitList" placeholder="เช่น รีม, กล่อง, เล่ม">
-              <datalist id="equipUnitList"></datalist>
-            </div>
-            <div class="col-4 mb-2">
-              <label class="col-form-label fw-bold">ราคา/หน่วย</label>
-              <input type="number" step="0.01" class="form-control rounded-3" id="matPrice" value="0">
-            </div>
-          </div>
-          <div class="mb-2">
-            <label class="col-form-label fw-bold">จุดสั่งซื้อขั้นต่ำ (เตือนเมื่อใกล้หมด)</label>
-            <input type="number" class="form-control rounded-3" id="matMinStock" value="5" min="0">
           </div>
         </form>
       </div>
-      <div class="modal-footer border-0">
-        <button type="button" class="btn btn-secondary rounded-4 px-3" data-bs-dismiss="modal">ยกเลิก</button>
-        <button type="button" class="btn btn-success rounded-4 px-4" id="btnSaveMaterial"><i class="fa-solid fa-check"></i> บันทึก</button>
+      <div class="modal-footer modal-custom-footer py-3 px-4 justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary rounded-pill px-4 py-2 fw-medium shadow-sm" data-bs-dismiss="modal">
+          <i class="fa-solid fa-xmark me-1"></i> ยกเลิก
+        </button>
+        <button type="button" class="btn btn-success rounded-pill px-4 py-2 fw-medium shadow-sm" id="btnSaveMaterial">
+          <i class="fa-solid fa-check me-1"></i> บันทึกข้อมูล
+        </button>
       </div>
     </div>
   </div>
@@ -2943,36 +3010,57 @@
 
 <!-- Modal รับเข้า / เบิกจ่าย วัสดุ (Stock In / Stock Out) -->
 <div class="modal fade" id="modalStockMaterial" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-4 shadow">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fs-5" id="modalStockTitle"><i class="fa-duotone fa-boxes-packing text-primary me-2"></i> รับเข้า / เบิกจ่ายวัสดุ</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
+    <div class="modal-content rounded-5 shadow-lg border-0">
+      <div class="modal-header modal-custom-header py-3 px-4">
+        <h5 class="modal-title fw-bold mb-0 text-dark" id="modalStockTitle">
+          <i class="fa-duotone fa-boxes-packing text-primary me-2"></i> รับเข้า / เบิกจ่ายวัสดุ
+        </h5>
+        <button type="button" class="btn-close rounded-circle p-2" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-4">
         <input type="hidden" id="stockMatKey">
         <input type="hidden" id="stockAction">
-        <div class="mb-3">
-          <label class="col-form-label fw-bold">รายการวัสดุ:</label>
-          <h6 id="stockMatName" class="text-primary mb-1"></h6>
-          <p class="small text-body-secondary mb-0">คงเหลือปัจจุบัน: <span id="stockCurrentQty" class="fw-bold fs-6 text-dark">0</span> <span id="stockMatUnit"></span></p>
+        <div class="p-3 rounded-4 mb-3" style="background-color: var(--darkback); border: 1px solid rgba(0,0,0,0.08);">
+          <div class="d-flex align-items-center justify-content-between mb-1">
+            <span class="font-size-12 text-body-secondary fw-medium">รายการวัสดุ</span>
+            <span class="badge text-bg-light border font-size-12">คงคลัง</span>
+          </div>
+          <h6 id="stockMatName" class="text-primary fw-bold mb-2"></h6>
+          <div class="d-flex align-items-center text-body-secondary small">
+            <i class="fa-duotone fa-boxes-stacked me-2"></i>
+            <span>คงเหลือปัจจุบัน: <strong id="stockCurrentQty" class="fs-6 text-dark">0</strong> <span id="stockMatUnit"></span></span>
+          </div>
         </div>
         <div class="mb-3">
-          <label for="stockQuantity" class="col-form-label fw-bold" id="stockQtyLabel">จำนวนที่ต้องการเบิก/รับเข้า: <span class="text-danger">*</span></label>
-          <input type="number" class="form-control rounded-3" id="stockQuantity" min="1" value="1" required>
+          <label for="stockQuantity" class="form-label font-size-14 fw-medium text-body-secondary mb-1" id="stockQtyLabel">จำนวนที่ต้องการเบิก / รับเข้า: <span class="text-danger">*</span></label>
+          <div class="field-input">
+            <i class="fa-duotone fa-calculator input-icon fs-5"></i>
+            <input type="number" class="form-field" id="stockQuantity" min="1" value="1" required>
+          </div>
         </div>
         <div class="mb-3">
-          <label for="stockUser" class="col-form-label fw-bold" id="stockUserLabel">ชื่อผู้เบิก / ผู้รับ:</label>
-          <input type="text" class="form-control rounded-3" id="stockUser" placeholder="ระบุชื่อ-นามสกุล">
+          <label for="stockUser" class="form-label font-size-14 fw-medium text-body-secondary mb-1" id="stockUserLabel">ชื่อผู้เบิก / ผู้รับ:</label>
+          <div class="field-input">
+            <i class="fa-duotone fa-user input-icon fs-5"></i>
+            <input type="text" class="form-field" id="stockUser" placeholder="ระบุชื่อ-นามสกุล">
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="stockPurpose" class="col-form-label fw-bold" id="stockPurposeLabel">วัตถุประสงค์ / หมายเหตุ:</label>
-          <textarea class="form-control rounded-3" id="stockPurpose" rows="2" placeholder="เช่น ใช้ในโครงการอบรม, เอกสารงานสารบรรณ"></textarea>
+        <div class="mb-2">
+          <label for="stockPurpose" class="form-label font-size-14 fw-medium text-body-secondary mb-1" id="stockPurposeLabel">วัตถุประสงค์ / หมายเหตุ:</label>
+          <div class="field-input align-items-start pt-2">
+            <i class="fa-duotone fa-memo-pad input-icon fs-5 mt-1"></i>
+            <textarea class="form-field" id="stockPurpose" rows="2" placeholder="เช่น ใช้ในโครงการอบรม, เอกสารงานสารบรรณ"></textarea>
+          </div>
         </div>
       </div>
-      <div class="modal-footer border-0">
-        <button type="button" class="btn btn-secondary rounded-4 px-3" data-bs-dismiss="modal">ยกเลิก</button>
-        <button type="button" class="btn btn-primary rounded-4 px-4" id="btnConfirmStock"><i class="fa-solid fa-check"></i> ยืนยัน</button>
+      <div class="modal-footer modal-custom-footer py-3 px-4 justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary rounded-pill px-4 py-2 fw-medium shadow-sm" data-bs-dismiss="modal">
+          <i class="fa-solid fa-xmark me-1"></i> ยกเลิก
+        </button>
+        <button type="button" class="btn btn-primary rounded-pill px-4 py-2 fw-medium shadow-sm" id="btnConfirmStock">
+          <i class="fa-solid fa-check me-1"></i> ยืนยัน
+        </button>
       </div>
     </div>
   </div>
@@ -2980,60 +3068,94 @@
 
 <!-- Modal ทำรายการยืมวัสดุ/ครุภัณฑ์ -->
 <div class="modal fade" id="modalBorrowItem" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-4 shadow">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fs-5"><i class="fa-duotone fa-swap-arrows text-primary me-2"></i> ทำรายการขอยืมวัสดุ-ครุภัณฑ์</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 580px;">
+    <div class="modal-content rounded-5 shadow-lg border-0">
+      <div class="modal-header modal-custom-header py-3 px-4">
+        <h5 class="modal-title fw-bold mb-0 text-dark">
+          <i class="fa-duotone fa-swap-arrows text-primary me-2"></i> ทำรายการขอยืมวัสดุ-ครุภัณฑ์
+        </h5>
+        <button type="button" class="btn-close rounded-circle p-2" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-4">
         <form id="formBorrowItem">
           <div class="mb-3">
-            <label class="col-form-label fw-bold">ประเภททรัพย์สิน:</label>
-            <div class="d-flex gap-3">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="borrowType" id="borrowTypeEquip" value="ครุภัณฑ์" checked>
-                <label class="form-check-label" for="borrowTypeEquip">ครุภัณฑ์</label>
+            <label class="form-label font-size-14 fw-medium text-body-secondary mb-2">ประเภททรัพย์สิน <span class="text-danger">*</span></label>
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="borrow-type-card w-100" for="borrowTypeEquip">
+                  <input class="form-check-input d-none" type="radio" name="borrowType" id="borrowTypeEquip" value="ครุภัณฑ์" checked>
+                  <div class="d-flex align-items-center gap-2 py-1">
+                    <i class="fa-duotone fa-computer fs-5 text-primary"></i>
+                    <span class="fw-semibold">ครุภัณฑ์</span>
+                  </div>
+                </label>
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="borrowType" id="borrowTypeMat" value="วัสดุ">
-                <label class="form-check-label" for="borrowTypeMat">วัสดุ</label>
+              <div class="col-6">
+                <label class="borrow-type-card w-100" for="borrowTypeMat">
+                  <input class="form-check-input d-none" type="radio" name="borrowType" id="borrowTypeMat" value="วัสดุ">
+                  <div class="d-flex align-items-center gap-2 py-1">
+                    <i class="fa-duotone fa-box-open fs-5 text-success"></i>
+                    <span class="fw-semibold">วัสดุ</span>
+                  </div>
+                </label>
               </div>
             </div>
           </div>
           <div class="mb-3">
-            <label for="borrowItemSelect" class="col-form-label fw-bold">เลือกรายการที่ต้องการยืม: <span class="text-danger">*</span></label>
-            <select class="form-select rounded-3" id="borrowItemSelect" required></select>
-          </div>
-          <div class="row">
-            <div class="col-6 mb-3">
-              <label for="borrowerName" class="col-form-label fw-bold">ชื่อผู้ยืม: <span class="text-danger">*</span></label>
-              <input type="text" class="form-control rounded-3" id="borrowerName" required placeholder="ชื่อ-นามสกุล ผู้ยืม">
-            </div>
-            <div class="col-6 mb-3">
-              <label for="borrowerAgency" class="col-form-label fw-bold">หน่วยงานผู้ยืม:</label>
-              <select class="form-select rounded-3" id="borrowerAgency"></select>
+            <label for="borrowItemSelect" class="form-label font-size-14 fw-medium text-body-secondary mb-1">เลือกรายการที่ต้องการยืม <span class="text-danger">*</span></label>
+            <div class="field-input">
+              <i class="fa-duotone fa-list-check input-icon fs-5"></i>
+              <select class="form-field" id="borrowItemSelect" required></select>
             </div>
           </div>
-          <div class="row">
-            <div class="col-6 mb-3">
-              <label for="borrowDate" class="col-form-label fw-bold">วันที่ยืม: <span class="text-danger">*</span></label>
-              <input type="date" class="form-control rounded-3" id="borrowDate" required>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="borrowerName" class="form-label font-size-14 fw-medium text-body-secondary mb-1">ชื่อผู้ยืม <span class="text-danger">*</span></label>
+              <div class="field-input">
+                <i class="fa-duotone fa-user input-icon fs-5"></i>
+                <input type="text" class="form-field" id="borrowerName" required placeholder="ชื่อ-นามสกุล ผู้ยืม">
+              </div>
             </div>
-            <div class="col-6 mb-3">
-              <label for="returnDueDate" class="col-form-label fw-bold">กำหนดส่งคืน: <span class="text-danger">*</span></label>
-              <input type="date" class="form-control rounded-3" id="returnDueDate" required>
+            <div class="col-md-6">
+              <label for="borrowerAgency" class="form-label font-size-14 fw-medium text-body-secondary mb-1">หน่วยงานผู้ยืม</label>
+              <div class="field-input">
+                <i class="fa-duotone fa-building input-icon fs-5"></i>
+                <select class="form-field" id="borrowerAgency"></select>
+              </div>
             </div>
           </div>
-          <div class="mb-3">
-            <label for="borrowPurpose" class="col-form-label fw-bold">วัตถุประสงค์การใช้งาน:</label>
-            <textarea class="form-control rounded-3" id="borrowPurpose" rows="2" placeholder="เช่น ใช้ในการประชุมสภา, ใช้งานนอกสถานที่"></textarea>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="borrowDate" class="form-label font-size-14 fw-medium text-body-secondary mb-1">วันที่ยืม <span class="text-danger">*</span></label>
+              <div class="field-input">
+                <i class="fa-duotone fa-calendar-days input-icon fs-5"></i>
+                <input type="date" class="form-field" id="borrowDate" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="returnDueDate" class="form-label font-size-14 fw-medium text-body-secondary mb-1">กำหนดส่งคืน <span class="text-danger">*</span></label>
+              <div class="field-input">
+                <i class="fa-duotone fa-calendar-check input-icon fs-5"></i>
+                <input type="date" class="form-field" id="returnDueDate" required>
+              </div>
+            </div>
+          </div>
+          <div class="mb-2">
+            <label for="borrowPurpose" class="form-label font-size-14 fw-medium text-body-secondary mb-1">วัตถุประสงค์การใช้งาน</label>
+            <div class="field-input align-items-start pt-2">
+              <i class="fa-duotone fa-memo-pad input-icon fs-5 mt-1"></i>
+              <textarea class="form-field" id="borrowPurpose" rows="2" placeholder="เช่น ใช้ในการประชุมสภา, ใช้งานนอกสถานที่"></textarea>
+            </div>
           </div>
         </form>
       </div>
-      <div class="modal-footer border-0">
-        <button type="button" class="btn btn-secondary rounded-4 px-3" data-bs-dismiss="modal">ยกเลิก</button>
-        <button type="button" class="btn btn-primary rounded-4 px-4" id="btnSaveBorrow"><i class="fa-solid fa-check"></i> ยืนยันการยืม</button>
+      <div class="modal-footer modal-custom-footer py-3 px-4 justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary rounded-pill px-4 py-2 fw-medium shadow-sm" data-bs-dismiss="modal">
+          <i class="fa-solid fa-xmark me-1"></i> ยกเลิก
+        </button>
+        <button type="button" class="btn btn-primary rounded-pill px-4 py-2 fw-medium shadow-sm" id="btnSaveBorrow">
+          <i class="fa-solid fa-check me-1"></i> ยืนยันการยืม
+        </button>
       </div>
     </div>
   </div>
@@ -3041,39 +3163,53 @@
 
 <!-- Modal บันทึกรับคืน -->
 <div class="modal fade" id="modalReturnItem" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-4 shadow">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fs-5"><i class="fa-duotone fa-arrow-rotate-left text-success me-2"></i> บันทึกรับคืนพัสดุ/ครุภัณฑ์</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
+    <div class="modal-content rounded-5 shadow-lg border-0">
+      <div class="modal-header modal-custom-header py-3 px-4">
+        <h5 class="modal-title fw-bold mb-0 text-dark">
+          <i class="fa-duotone fa-arrow-rotate-left text-success me-2"></i> บันทึกรับคืนพัสดุ/ครุภัณฑ์
+        </h5>
+        <button type="button" class="btn-close rounded-circle p-2" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-4">
         <input type="hidden" id="returnBorrowKey">
-        <div class="mb-3">
-          <label class="col-form-label fw-bold">รายการ:</label>
-          <p id="returnItemName" class="text-primary mb-0 fw-bold"></p>
+        <div class="p-3 rounded-4 mb-3" style="background-color: var(--darkback); border: 1px solid rgba(0,0,0,0.08);">
+          <div class="mb-2">
+            <span class="font-size-12 text-body-secondary fw-medium">รายการทรัพย์สิน</span>
+            <p id="returnItemName" class="text-primary mb-0 fw-bold fs-6"></p>
+          </div>
+          <div>
+            <span class="font-size-12 text-body-secondary fw-medium">ผู้ยืมทรัพย์สิน</span>
+            <p id="returnBorrowerName" class="text-body-secondary mb-0 fw-medium"></p>
+          </div>
         </div>
         <div class="mb-3">
-          <label class="col-form-label fw-bold">ผู้ยืม:</label>
-          <p id="returnBorrowerName" class="text-body-secondary mb-0"></p>
+          <label for="actualReturnDate" class="form-label font-size-14 fw-medium text-body-secondary mb-1">วันที่คืนจริง <span class="text-danger">*</span></label>
+          <div class="field-input">
+            <i class="fa-duotone fa-calendar-check input-icon fs-5"></i>
+            <input type="date" class="form-field" id="actualReturnDate" required>
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="actualReturnDate" class="col-form-label fw-bold">วันที่คืนจริง: <span class="text-danger">*</span></label>
-          <input type="date" class="form-control rounded-3" id="actualReturnDate" required>
-        </div>
-        <div class="mb-3">
-          <label for="returnCondition" class="col-form-label fw-bold">สภาพทรัพย์สินเมื่อคืน:</label>
-          <select class="form-select rounded-3" id="returnCondition">
-            <option value="สภาพปกติพร้อมใช้งาน" selected>สภาพปกติพร้อมใช้งาน</option>
-            <option value="ชำรุดเล็กน้อย (ส่งซ่อม)">ชำรุดเล็กน้อย (ส่งซ่อม)</option>
-            <option value="ชำรุดเสียหายหนัก">ชำรุดเสียหายหนัก</option>
-            <option value="อุปกรณ์ไม่ครบ">อุปกรณ์ไม่ครบ</option>
-          </select>
+        <div class="mb-2">
+          <label for="returnCondition" class="form-label font-size-14 fw-medium text-body-secondary mb-1">สภาพทรัพย์สินเมื่อคืน</label>
+          <div class="field-input">
+            <i class="fa-duotone fa-clipboard-check input-icon fs-5"></i>
+            <select class="form-field" id="returnCondition">
+              <option value="สภาพปกติพร้อมใช้งาน" selected>สภาพปกติพร้อมใช้งาน</option>
+              <option value="ชำรุดเล็กน้อย (ส่งซ่อม)">ชำรุดเล็กน้อย (ส่งซ่อม)</option>
+              <option value="ชำรุดเสียหายหนัก">ชำรุดเสียหายหนัก</option>
+              <option value="อุปกรณ์ไม่ครบ">อุปกรณ์ไม่ครบ</option>
+            </select>
+          </div>
         </div>
       </div>
-      <div class="modal-footer border-0">
-        <button type="button" class="btn btn-secondary rounded-4 px-3" data-bs-dismiss="modal">ยกเลิก</button>
-        <button type="button" class="btn btn-success rounded-4 px-4" id="btnConfirmReturn"><i class="fa-solid fa-check"></i> บันทึกรับคืน</button>
+      <div class="modal-footer modal-custom-footer py-3 px-4 justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary rounded-pill px-4 py-2 fw-medium shadow-sm" data-bs-dismiss="modal">
+          <i class="fa-solid fa-xmark me-1"></i> ยกเลิก
+        </button>
+        <button type="button" class="btn btn-success rounded-pill px-4 py-2 fw-medium shadow-sm" id="btnConfirmReturn">
+          <i class="fa-solid fa-check me-1"></i> บันทึกรับคืน
+        </button>
       </div>
     </div>
   </div>
